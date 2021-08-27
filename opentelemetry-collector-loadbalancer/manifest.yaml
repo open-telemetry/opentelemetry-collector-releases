@@ -1,5 +1,5 @@
 dist:
-  module: github.com/open-telemetry/opentelemetry-collector-distributions/loadbalancer
+  module: github.com/open-telemetry/opentelemetry-collector-releases/loadbalancer
   name: opentelemetry-collector-loadbalancer
   description: OpenTelemetry Collector Load Balancer
   version: 0.30.0

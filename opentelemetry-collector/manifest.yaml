@@ -1,5 +1,5 @@
 dist:
-  module: github.com/open-telemetry/opentelemetry-collector-distributions/core
+  module: github.com/open-telemetry/opentelemetry-collector-releases/core
   name: opentelemetry-collector
   description: OpenTelemetry Collector
   version: 0.33.1
