@@ -1,0 +1,29 @@
+nfpms:
+  - id: "{distribution}"
+    package_name: "{distribution}"
+    license: Apache 2.0
+    description: "OpenTelemetry Collector - {distribution}"
+
+    formats:
+      - apk
+      - deb
+      - rpm
+
+    scripts:
+      preinstall: "{distribution}/preinstall.sh"
+      postinstall: "{distribution}/postinstall.sh"
+      preremove: "{distribution}/preremove.sh"
+
+    builds:
+      - "{distribution}"
+    contents:
+      - src: "{distribution}/{distribution}.service"
+        dst: "/lib/systemd/system/{distribution}.service"
+
+      - src: "{distribution}/{distribution}.conf"
+        dst: "/etc/{distribution}/{distribution}.conf"
+        type: "config|noreplace"
+
+      - src: "configs/{distribution}.yaml"
+        dst: "/etc/{distribution}/config.yaml"
+        type: config

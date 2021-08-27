@@ -1,0 +1,27 @@
+builds:
+  - id: "{distribution}"
+    dir: "{distribution}/_build"
+    binary: "{distribution}"
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - 386
+      - amd64
+      - arm
+      - arm64
+      - s390x
+    goarm:
+      - 6
+      - 7
+
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+    ignore:
+      - goos: windows
+        goarch: arm
