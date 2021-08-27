@@ -1,0 +1,15 @@
+[Unit]
+Description=OpenTelemetry Collector Load Balancer
+After=network.target
+
+[Service]
+EnvironmentFile=/etc/opentelemetry-collector-loadbalancer/opentelemetry-collector-loadbalancer.conf
+ExecStart=/usr/local/bin/opentelemetry-collector-loadbalancer $OTELCOLLB_OPTIONS
+KillMode=mixed
+Restart=on-failure
+Type=simple
+User=otellb
+Group=otellb
+
+[Install]
+WantedBy=multi-user.target

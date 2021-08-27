@@ -1,0 +1,3 @@
+project_name: opentelemetry-collector-releases
+checksum:
+  name_template: "{{ .ProjectName }}_checksums.txt"

@@ -1,0 +1,148 @@
+project_name: opentelemetry-collector-releases
+checksum:
+  name_template: "{{ .ProjectName }}_checksums.txt"
+archives:
+  - id: "opentelemetry-collector"
+    name_template: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
+    builds:
+      - "opentelemetry-collector"
+  - id: "opentelemetry-collector-loadbalancer"
+    name_template: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
+    builds:
+      - "opentelemetry-collector-loadbalancer"
+builds:
+  - id: "opentelemetry-collector"
+    dir: "opentelemetry-collector/_build"
+    binary: "opentelemetry-collector"
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - 386
+      - amd64
+      - arm
+      - arm64
+      - s390x
+    goarm:
+      - 6
+      - 7
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+    ignore:
+      - goos: windows
+        goarch: arm
+  - id: "opentelemetry-collector-loadbalancer"
+    dir: "opentelemetry-collector-loadbalancer/_build"
+    binary: "opentelemetry-collector-loadbalancer"
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - 386
+      - amd64
+      - arm
+      - arm64
+      - s390x
+    goarm:
+      - 6
+      - 7
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+    ignore:
+      - goos: windows
+        goarch: arm
+docker_manifests:
+  - name_template: quay.io/jpkroehling/opentelemetry-collector:{{ .Tag }}
+    image_templates:
+      - quay.io/jpkroehling/opentelemetry-collector:{{ .Tag }}-amd64
+  - name_template: quay.io/jpkroehling/opentelemetry-collector-loadbalancer:{{ .Tag }}
+    image_templates:
+      - quay.io/jpkroehling/opentelemetry-collector-loadbalancer:{{ .Tag }}-amd64
+dockers:
+  - image_templates:
+      - "quay.io/jpkroehling/opentelemetry-collector:{{ .Tag }}-amd64"
+    dockerfile: "opentelemetry-collector/Dockerfile"
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/amd64"
+    extra_files:
+      - "configs/opentelemetry-collector.yaml"
+    goarch: amd64
+  - image_templates:
+      - "quay.io/jpkroehling/opentelemetry-collector-loadbalancer:{{ .Tag }}-amd64"
+    dockerfile: "opentelemetry-collector-loadbalancer/Dockerfile"
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/amd64"
+    extra_files:
+      - "configs/opentelemetry-collector-loadbalancer.yaml"
+    goarch: amd64
+nfpms:
+  - id: "opentelemetry-collector-loadbalancer"
+    package_name: "opentelemetry-collector-loadbalancer"
+    license: Apache 2.0
+    description: "OpenTelemetry Collector - opentelemetry-collector-loadbalancer"
+    formats:
+      - apk
+      - deb
+      - rpm
+    scripts:
+      preinstall: "opentelemetry-collector-loadbalancer/preinstall.sh"
+      postinstall: "opentelemetry-collector-loadbalancer/postinstall.sh"
+      preremove: "opentelemetry-collector-loadbalancer/preremove.sh"
+    builds:
+      - "opentelemetry-collector-loadbalancer"
+    contents:
+      - src: "opentelemetry-collector-loadbalancer/opentelemetry-collector-loadbalancer.service"
+        dst: "/lib/systemd/system/opentelemetry-collector-loadbalancer.service"
+      - src: "opentelemetry-collector-loadbalancer/opentelemetry-collector-loadbalancer.conf"
+        dst: "/etc/opentelemetry-collector-loadbalancer/opentelemetry-collector-loadbalancer.conf"
+        type: "config|noreplace"
+      - src: "configs/opentelemetry-collector-loadbalancer.yaml"
+        dst: "/etc/opentelemetry-collector-loadbalancer/config.yaml"
+        type: config
+  - id: "opentelemetry-collector"
+    package_name: "opentelemetry-collector"
+    license: Apache 2.0
+    description: "OpenTelemetry Collector - opentelemetry-collector"
+    formats:
+      - apk
+      - deb
+      - rpm
+    scripts:
+      preinstall: "opentelemetry-collector/preinstall.sh"
+      postinstall: "opentelemetry-collector/postinstall.sh"
+      preremove: "opentelemetry-collector/preremove.sh"
+    builds:
+      - "opentelemetry-collector"
+    contents:
+      - src: "opentelemetry-collector/opentelemetry-collector.service"
+        dst: "/lib/systemd/system/opentelemetry-collector.service"
+      - src: "opentelemetry-collector/opentelemetry-collector.conf"
+        dst: "/etc/opentelemetry-collector/opentelemetry-collector.conf"
+        type: "config|noreplace"
+      - src: "configs/opentelemetry-collector.yaml"
+        dst: "/etc/opentelemetry-collector/config.yaml"
+        type: config

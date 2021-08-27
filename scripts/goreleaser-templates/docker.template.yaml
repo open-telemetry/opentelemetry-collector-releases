@@ -1,0 +1,16 @@
+dockers:
+- image_templates:
+    - "quay.io/jpkroehling/{distribution}:{{ .Tag }}-amd64"
+  dockerfile: "{distribution}/Dockerfile"
+  use: buildx
+  build_flag_templates:
+    - "--pull"
+    - "--label=org.opencontainers.image.created={{.Date}}"
+    - "--label=org.opencontainers.image.name={{.ProjectName}}"
+    - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+    - "--label=org.opencontainers.image.version={{.Version}}"
+    - "--label=org.opencontainers.image.source={{.GitURL}}"
+    - "--platform=linux/amd64"
+  extra_files:
+    - "configs/{distribution}.yaml"
+  goarch: amd64
