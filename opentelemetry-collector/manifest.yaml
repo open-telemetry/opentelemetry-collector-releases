@@ -2,27 +2,27 @@ dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/core
   name: opentelemetry-collector
   description: OpenTelemetry Collector
-  version: 0.33.1
+  version: 0.34.0
   output_path: ./_build
-  otelcol_version: 0.33.1-0.20210820002854-d3000232f8f6
+  otelcol_version: 0.34.0
 
 receivers:
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/opencensusreceiver 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver 150692dbbceb3ff0df75c912e835f1feaac0be93
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver 9b0e90027913f53d4231eb1762063cf67df61051
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver 9b0e90027913f53d4231eb1762063cf67df61051
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver 9b0e90027913f53d4231eb1762063cf67df61051
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/opencensusreceiver 9b0e90027913f53d4231eb1762063cf67df61051
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver 9b0e90027913f53d4231eb1762063cf67df61051
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver 9b0e90027913f53d4231eb1762063cf67df61051
   - import: go.opentelemetry.io/collector/receiver/otlpreceiver
     core: true
 exporters:
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/jaegerexporter 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/zipkinexporter 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/opencensusexporter 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter 150692dbbceb3ff0df75c912e835f1feaac0be93
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter 9b0e90027913f53d4231eb1762063cf67df61051
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/jaegerexporter 9b0e90027913f53d4231eb1762063cf67df61051
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter 9b0e90027913f53d4231eb1762063cf67df61051
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/opencensusexporter 9b0e90027913f53d4231eb1762063cf67df61051
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter 9b0e90027913f53d4231eb1762063cf67df61051
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter 9b0e90027913f53d4231eb1762063cf67df61051
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/zipkinexporter 9b0e90027913f53d4231eb1762063cf67df61051
   - import: go.opentelemetry.io/collector/exporter/otlpexporter
     core: true
   - import: go.opentelemetry.io/collector/exporter/otlphttpexporter
@@ -30,20 +30,18 @@ exporters:
   - import: go.opentelemetry.io/collector/exporter/loggingexporter
     core: true
 extensions:
-  - import: go.opentelemetry.io/collector/extension/healthcheckextension
-    core: true
-  - import: go.opentelemetry.io/collector/extension/pprofextension
-    core: true
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension 9b0e90027913f53d4231eb1762063cf67df61051
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension 9b0e90027913f53d4231eb1762063cf67df61051
   - import: go.opentelemetry.io/collector/extension/zpagesextension
     core: true
   - import: go.opentelemetry.io/collector/extension/ballastextension
     core: true
 processors:
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor 150692dbbceb3ff0df75c912e835f1feaac0be93
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor 9b0e90027913f53d4231eb1762063cf67df61051
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor 9b0e90027913f53d4231eb1762063cf67df61051
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor 9b0e90027913f53d4231eb1762063cf67df61051
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor 9b0e90027913f53d4231eb1762063cf67df61051
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor 9b0e90027913f53d4231eb1762063cf67df61051
   - import: go.opentelemetry.io/collector/processor/batchprocessor
     core: true
   - import: go.opentelemetry.io/collector/processor/memorylimiter
@@ -51,12 +49,19 @@ processors:
 excludes:
   - github.com/google/flatbuffers v1.12.0
 replaces:
-  - github.com/open-telemetry/opentelemetry-collector-contrib/internal/common => github.com/open-telemetry/opentelemetry-collector-contrib/internal/common 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal => github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter => github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter => github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/scrapererror => github.com/open-telemetry/opentelemetry-collector-contrib/receiver/scrapererror 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/scraperhelper => github.com/open-telemetry/opentelemetry-collector-contrib/receiver/scraperhelper 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/jaeger => github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/jaeger 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/opencensus => github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/opencensus 150692dbbceb3ff0df75c912e835f1feaac0be93
-  - github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/zipkin => github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/zipkin 150692dbbceb3ff0df75c912e835f1feaac0be93
+  - github.com/open-telemetry/opentelemetry-collector-contrib/internal/common => github.com/open-telemetry/opentelemetry-collector-contrib/internal/common 9b0e90027913f53d4231eb1762063cf67df61051
+  - github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal => github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal 9b0e90027913f53d4231eb1762063cf67df61051
+
+  - github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter => github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter 9b0e90027913f53d4231eb1762063cf67df61051
+  - github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter => github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter 9b0e90027913f53d4231eb1762063cf67df61051
+  - github.com/open-telemetry/opentelemetry-collector-contrib/exporter/zipkinexporter => github.com/open-telemetry/opentelemetry-collector-contrib/exporter/zipkinexporter 9b0e90027913f53d4231eb1762063cf67df61051
+
+  - github.com/open-telemetry/opentelemetry-collector-contrib/pkg/resourcetotelemetry => github.com/open-telemetry/opentelemetry-collector-contrib/pkg/resourcetotelemetry 9b0e90027913f53d4231eb1762063cf67df61051
+  - github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/jaeger => github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/jaeger 9b0e90027913f53d4231eb1762063cf67df61051
+  - github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/opencensus => github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/opencensus 9b0e90027913f53d4231eb1762063cf67df61051
+  - github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/zipkin => github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/zipkin 9b0e90027913f53d4231eb1762063cf67df61051
+
+  - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/opencensusreceiver => github.com/open-telemetry/opentelemetry-collector-contrib/receiver/opencensusreceiver 9b0e90027913f53d4231eb1762063cf67df61051
+  - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver => github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver 9b0e90027913f53d4231eb1762063cf67df61051
+  - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/scraperhelper => github.com/open-telemetry/opentelemetry-collector-contrib/receiver/scraperhelper 9b0e90027913f53d4231eb1762063cf67df61051
+  - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver => github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver 9b0e90027913f53d4231eb1762063cf67df61051
