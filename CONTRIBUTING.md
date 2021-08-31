@@ -6,22 +6,28 @@ This repository contains a set of resources that ultimately results in OpenTelem
 
 ### Distribution directory
 
-Each distribution has its own directory at the root of this repository, such as `opentelemetry-collector` or `opentelemetry-collector-loadbalancer`. Within each one of those, you'll find at least two files:
+Each distribution has its own directory at the root of this repository, such as `opentelemetry-collector`. Within each one of those, you'll find at least two files:
 
 - `Dockerfile`, determining how to build the container image for this distribution
 - `manifest.yaml`, which is used with the [opentelemetry-collector-builder](https://github.com/open-telemetry/opentelemetry-collector-builder) to generate the sources for the distribution.
 
 Within each distribution, you are expected to be able to build it using the builder, like:
 
-    $ opentelemetry-collector-builder --config manifest.yaml
+```shell
+opentelemetry-collector-builder --config manifest.yaml
+```
 
 You can build all distributions by running:
 
-    $ make build
+```shell
+make build
+```
 
 If you only interested in generating the sources for the distributions, use:
 
-    $ make generate
+```shell
+make generate
+```
 
 ### Distribution configurations
 
@@ -37,5 +43,6 @@ The main `Makefile` is mostly a wrapper around scripts under the [./scripts](./s
 
 Once there's a change either to the templates or to the list of distributions, a new `.goreleaser` file can be generated with:
 
-    $ make generate-goreleaser
-
+```shell
+make generate-goreleaser
+```
