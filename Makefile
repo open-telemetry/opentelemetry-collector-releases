@@ -7,7 +7,7 @@ YQ_VERSION ?= 4.11.1
 YQ_DIR ?= ${OTELCOL_BUILDER_DIR}
 YQ ?= ${YQ_DIR}/yq
 
-DISTRIBUTIONS ?= "opentelemetry-collector,opentelemetry-collector-loadbalancer"
+DISTRIBUTIONS ?= "opentelemetry-collector"
 
 ci: check build
 check: ensure-goreleaser-up-to-date

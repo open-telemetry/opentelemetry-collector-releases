@@ -15,7 +15,7 @@ done
 
 if [ -z $distributions ]; then
     echo "List of distributions to use with goreleaser not provided. Use '-d' to specify the names of the distributions. Ex.:"
-    echo "$0 -d opentelemetry-collector,opentelemetry-collector-loadbalancer"
+    echo "$0 -d opentelemetry-collector"
     exit 1
 fi
 

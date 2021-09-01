@@ -14,4 +14,3 @@ More details about each individual distribution can be seen in its own readme fi
 Current list of distributions:
 
 - [OpenTelemetry Collector (also known as "core")](./opentelemetry-collector)
-- [Load balancer](./opentelemetry-collector-loadbalancer)
