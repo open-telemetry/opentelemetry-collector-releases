@@ -15,6 +15,6 @@
 # limitations under the License.
 
 if command -v systemctl >/dev/null 2>&1; then
-    systemctl stop opentelemetry-collector.service
-    systemctl disable opentelemetry-collector.service
+    systemctl stop otelcol.service
+    systemctl disable otelcol.service
 fi

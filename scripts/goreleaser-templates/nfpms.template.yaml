@@ -10,17 +10,17 @@ nfpms:
       - rpm
 
     scripts:
-      preinstall: "{distribution}/preinstall.sh"
-      postinstall: "{distribution}/postinstall.sh"
-      preremove: "{distribution}/preremove.sh"
+      preinstall: "distributions/{distribution}/preinstall.sh"
+      postinstall: "distributions/{distribution}/postinstall.sh"
+      preremove: "distributions/{distribution}/preremove.sh"
 
     builds:
       - "{distribution}"
     contents:
-      - src: "{distribution}/{distribution}.service"
+      - src: "distributions/{distribution}/{distribution}.service"
         dst: "/lib/systemd/system/{distribution}.service"
 
-      - src: "{distribution}/{distribution}.conf"
+      - src: "distributions/{distribution}/{distribution}.conf"
         dst: "/etc/{distribution}/{distribution}.conf"
         type: "config|noreplace"
 

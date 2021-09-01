@@ -15,8 +15,8 @@
 # limitations under the License.
 
 if command -v systemctl >/dev/null 2>&1; then
-    systemctl enable opentelemetry-collector.service
-    if [ -f /etc/opentelemetry-collector/config.yaml ]; then
-        systemctl start opentelemetry-collector.service
+    systemctl enable otelcol.service
+    if [ -f /etc/otelcol/config.yaml ]; then
+        systemctl start otelcol.service
     fi
 fi

@@ -1,7 +1,7 @@
 dockers:
 - image_templates:
     - "quay.io/jpkroehling/{distribution}:{{ .Tag }}-amd64"
-  dockerfile: "{distribution}/Dockerfile"
+  dockerfile: "distributions/{distribution}/Dockerfile"
   use: buildx
   build_flag_templates:
     - "--pull"

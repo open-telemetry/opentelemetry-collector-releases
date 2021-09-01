@@ -2,14 +2,14 @@ project_name: opentelemetry-collector-releases
 checksum:
   name_template: "{{ .ProjectName }}_checksums.txt"
 archives:
-  - id: "opentelemetry-collector"
+  - id: "otelcol"
     name_template: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
     builds:
-      - "opentelemetry-collector"
+      - "otelcol"
 builds:
-  - id: "opentelemetry-collector"
-    dir: "opentelemetry-collector/_build"
-    binary: "opentelemetry-collector"
+  - id: "otelcol"
+    dir: "distributions/otelcol/_build"
+    binary: "otelcol"
     env:
       - CGO_ENABLED=0
     goos:
@@ -33,13 +33,13 @@ builds:
       - goos: windows
         goarch: arm
 docker_manifests:
-  - name_template: quay.io/jpkroehling/opentelemetry-collector:{{ .Tag }}
+  - name_template: quay.io/jpkroehling/otelcol:{{ .Tag }}
     image_templates:
-      - quay.io/jpkroehling/opentelemetry-collector:{{ .Tag }}-amd64
+      - quay.io/jpkroehling/otelcol:{{ .Tag }}-amd64
 dockers:
   - image_templates:
-      - "quay.io/jpkroehling/opentelemetry-collector:{{ .Tag }}-amd64"
-    dockerfile: "opentelemetry-collector/Dockerfile"
+      - "quay.io/jpkroehling/otelcol:{{ .Tag }}-amd64"
+    dockerfile: "distributions/otelcol/Dockerfile"
     use: buildx
     build_flag_templates:
       - "--pull"
@@ -50,29 +50,29 @@ dockers:
       - "--label=org.opencontainers.image.source={{.GitURL}}"
       - "--platform=linux/amd64"
     extra_files:
-      - "configs/opentelemetry-collector.yaml"
+      - "configs/otelcol.yaml"
     goarch: amd64
 nfpms:
-  - id: "opentelemetry-collector"
-    package_name: "opentelemetry-collector"
+  - id: "otelcol"
+    package_name: "otelcol"
     license: Apache 2.0
-    description: "OpenTelemetry Collector - opentelemetry-collector"
+    description: "OpenTelemetry Collector - otelcol"
     formats:
       - apk
       - deb
       - rpm
     scripts:
-      preinstall: "opentelemetry-collector/preinstall.sh"
-      postinstall: "opentelemetry-collector/postinstall.sh"
-      preremove: "opentelemetry-collector/preremove.sh"
+      preinstall: "distributions/otelcol/preinstall.sh"
+      postinstall: "distributions/otelcol/postinstall.sh"
+      preremove: "distributions/otelcol/preremove.sh"
     builds:
-      - "opentelemetry-collector"
+      - "otelcol"
     contents:
-      - src: "opentelemetry-collector/opentelemetry-collector.service"
-        dst: "/lib/systemd/system/opentelemetry-collector.service"
-      - src: "opentelemetry-collector/opentelemetry-collector.conf"
-        dst: "/etc/opentelemetry-collector/opentelemetry-collector.conf"
+      - src: "distributions/otelcol/otelcol.service"
+        dst: "/lib/systemd/system/otelcol.service"
+      - src: "distributions/otelcol/otelcol.conf"
+        dst: "/etc/otelcol/otelcol.conf"
         type: "config|noreplace"
-      - src: "configs/opentelemetry-collector.yaml"
-        dst: "/etc/opentelemetry-collector/config.yaml"
+      - src: "configs/otelcol.yaml"
+        dst: "/etc/otelcol/config.yaml"
         type: config

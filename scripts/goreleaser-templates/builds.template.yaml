@@ -1,6 +1,6 @@
 builds:
   - id: "{distribution}"
-    dir: "{distribution}/_build"
+    dir: "distributions/{distribution}/_build"
     binary: "{distribution}"
     env:
       - CGO_ENABLED=0
