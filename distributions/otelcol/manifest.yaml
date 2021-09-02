@@ -13,8 +13,6 @@ receivers:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/opencensusreceiver v0.34.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.34.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver v0.34.0
-  - import: go.opentelemetry.io/collector/receiver/otlpreceiver
-    core: true
 exporters:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.34.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/jaegerexporter v0.34.0
@@ -23,29 +21,15 @@ exporters:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.34.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.34.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/zipkinexporter v0.34.0
-  - import: go.opentelemetry.io/collector/exporter/otlpexporter
-    core: true
-  - import: go.opentelemetry.io/collector/exporter/otlphttpexporter
-    core: true
-  - import: go.opentelemetry.io/collector/exporter/loggingexporter
-    core: true
 extensions:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.34.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.34.0
-  - import: go.opentelemetry.io/collector/extension/zpagesextension
-    core: true
-  - import: go.opentelemetry.io/collector/extension/ballastextension
-    core: true
 processors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.34.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.34.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor v0.34.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor v0.34.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.34.0
-  - import: go.opentelemetry.io/collector/processor/batchprocessor
-    core: true
-  - import: go.opentelemetry.io/collector/processor/memorylimiter
-    core: true
 excludes:
   - github.com/google/flatbuffers v1.12.0
 replaces:
