@@ -2,7 +2,7 @@ FROM alpine:3.13 as certs
 RUN apk --update add ca-certificates
 
 FROM alpine:3.13 AS otelcol
-COPY opentelemetry-collector /otelcol
+COPY otelcol /otelcol
 # Note that this shouldn't be necessary, but in some cases the file seems to be
 # copied with the execute bit lost (see #1317)
 RUN chmod 755 /otelcol
@@ -14,7 +14,7 @@ USER ${USER_UID}
 
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=otelcol /otelcol /
-COPY configs/opentelemetry-collector.yaml /etc/otel/config.yaml
+COPY configs/otelcol.yaml /etc/otel/config.yaml
 ENTRYPOINT ["/otelcol"]
 CMD ["--config", "/etc/otel/config.yaml"]
 EXPOSE 4317 55678 55679

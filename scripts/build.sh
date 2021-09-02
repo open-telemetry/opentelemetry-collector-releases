@@ -30,7 +30,7 @@ echo "Distributions to build: $distributions";
 
 for distribution in $(echo $distributions | tr "," "\n")
 do
-    pushd "${REPO_DIR}/${distribution}" > /dev/null
+    pushd "${REPO_DIR}/distributions/${distribution}" > /dev/null
     mkdir -p _build
 
     ${BUILDER} --skip-compilation=${skipcompilation} --go ${GO} --config manifest.yaml > _build/build.log 2>&1
