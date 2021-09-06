@@ -32,6 +32,8 @@ builds:
     ignore:
       - goos: windows
         goarch: arm
+      - goos: windows
+        goarch: arm64
 docker_manifests:
   - name_template: quay.io/jpkroehling/otelcol:{{ .Tag }}
     image_templates:
