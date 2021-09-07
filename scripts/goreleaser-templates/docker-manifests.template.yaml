@@ -1,7 +1,4 @@
 docker_manifests:
-  - name_template: quay.io/opentelemetry/{distribution}:{{ .Tag }}
+  - name_template: otel/{distribution}:{{ .Tag }}
     image_templates:
-      - quay.io/opentelemetry/{distribution}:{{ .Tag }}-amd64
-  - name_template: docker.io/otel/{distribution}:{{ .Tag }}
-    image_templates:
-      - docker.io/otel/{distribution}:{{ .Tag }}-amd64
+      - otel/{distribution}:{{ .Tag }}-amd64
