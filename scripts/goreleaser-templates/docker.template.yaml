@@ -1,6 +1,7 @@
 dockers:
 - image_templates:
-    - "quay.io/jpkroehling/{distribution}:{{ .Tag }}-amd64"
+    - "quay.io/opentelemetry/{distribution}:{{ .Tag }}-amd64"
+    - "docker.io/otel/{distribution}:{{ .Tag }}-amd64"
   dockerfile: "distributions/{distribution}/Dockerfile"
   use: buildx
   build_flag_templates:

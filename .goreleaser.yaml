@@ -35,12 +35,16 @@ builds:
       - goos: windows
         goarch: arm64
 docker_manifests:
-  - name_template: quay.io/jpkroehling/otelcol:{{ .Tag }}
+  - name_template: quay.io/opentelemetry/otelcol:{{ .Tag }}
     image_templates:
-      - quay.io/jpkroehling/otelcol:{{ .Tag }}-amd64
+      - quay.io/opentelemetry/otelcol:{{ .Tag }}-amd64
+  - name_template: docker.io/otel/otelcol:{{ .Tag }}
+    image_templates:
+      - docker.io/otel/otelcol:{{ .Tag }}-amd64
 dockers:
   - image_templates:
-      - "quay.io/jpkroehling/otelcol:{{ .Tag }}-amd64"
+      - "quay.io/opentelemetry/otelcol:{{ .Tag }}-amd64"
+      - "docker.io/otel/otelcol:{{ .Tag }}-amd64"
     dockerfile: "distributions/otelcol/Dockerfile"
     use: buildx
     build_flag_templates:
