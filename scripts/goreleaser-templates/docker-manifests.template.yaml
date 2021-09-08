@@ -1,4 +1,4 @@
 docker_manifests:
-  - name_template: quay.io/jpkroehling/{distribution}:{{ .Tag }}
+  - name_template: otel/{distribution}:{{ .Tag }}
     image_templates:
-      - quay.io/jpkroehling/{distribution}:{{ .Tag }}-amd64
+      - otel/{distribution}:{{ .Tag }}-amd64

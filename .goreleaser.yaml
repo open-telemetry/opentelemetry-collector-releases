@@ -35,12 +35,12 @@ builds:
       - goos: windows
         goarch: arm64
 docker_manifests:
-  - name_template: quay.io/jpkroehling/otelcol:{{ .Tag }}
+  - name_template: otel/otelcol:{{ .Tag }}
     image_templates:
-      - quay.io/jpkroehling/otelcol:{{ .Tag }}-amd64
+      - otel/otelcol:{{ .Tag }}-amd64
 dockers:
   - image_templates:
-      - "quay.io/jpkroehling/otelcol:{{ .Tag }}-amd64"
+      - "otel/otelcol:{{ .Tag }}-amd64"
     dockerfile: "distributions/otelcol/Dockerfile"
     use: buildx
     build_flag_templates:
