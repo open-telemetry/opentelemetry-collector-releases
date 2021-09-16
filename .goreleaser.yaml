@@ -35,9 +35,9 @@ builds:
       - goos: windows
         goarch: arm64
 docker_manifests:
-  - name_template: otel/otelcol:{{ .Tag }}
+  - name_template: otel/opentelemetry-collector:{{ .Tag }}
     image_templates:
-      - otel/otelcol:{{ .Tag }}-amd64
+      - otel/opentelemetry-collector:{{ .Tag }}-amd64
 dockers:
   - image_templates:
       - "otel/otelcol:{{ .Tag }}-amd64"
