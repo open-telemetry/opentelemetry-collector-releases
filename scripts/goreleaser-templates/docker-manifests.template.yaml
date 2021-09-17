@@ -1,4 +1,4 @@
 docker_manifests:
-  - name_template: otel/{distribution}:{{ .Tag }}
+  - name_template: ${CONTAINER_BASE_NAME}:{{ .Tag }}
     image_templates:
-      - otel/{distribution}:{{ .Tag }}-amd64
+      - ${CONTAINER_BASE_NAME}:{{ .Tag }}-amd64

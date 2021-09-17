@@ -27,7 +27,16 @@ for template in $templates
 do
     for distribution in $(echo $distributions | tr "," "\n")
     do
-        sed "s/{distribution}/${distribution}/gi" "${TEMPLATES_DIR}/${template}.template.yaml" > "${GEN_YAML_DIR}/${distribution}-${template}.yaml"
+        export CONTAINER_BASE_NAME="otel/{distribution}"
+        DIST_CONF="${REPO_DIR}/distributions/${distribution}/distribution.conf"
+
+        if [ -f "${DIST_CONF}" ]; then
+            set -o allexport
+            source "${DIST_CONF}"
+            set +o allexport
+        fi
+
+        sed "s/{distribution}/${distribution}/gi" "${TEMPLATES_DIR}/${template}.template.yaml" | envsubst > "${GEN_YAML_DIR}/${distribution}-${template}.yaml"
         if [ $? != 0 ]; then
             echo "❌ ERROR: failed to generate '${template}' YAML snippets for '${distribution}'."
             exit 1
