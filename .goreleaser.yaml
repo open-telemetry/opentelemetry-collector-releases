@@ -40,7 +40,7 @@ docker_manifests:
       - otel/opentelemetry-collector:{{ .Tag }}-amd64
 dockers:
   - image_templates:
-      - "otel/otelcol:{{ .Tag }}-amd64"
+      - "otel/opentelemetry-collector:{{ .Tag }}-amd64"
     dockerfile: "distributions/otelcol/Dockerfile"
     use: buildx
     build_flag_templates:
