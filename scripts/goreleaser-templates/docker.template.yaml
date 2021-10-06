@@ -1,6 +1,6 @@
 dockers:
 - image_templates:
-    - "${CONTAINER_BASE_NAME}:{{ .Tag }}-amd64"
+    - "${CONTAINER_BASE_NAME}:{{ .Version }}-amd64"
   dockerfile: "distributions/{distribution}/Dockerfile"
   use: buildx
   build_flag_templates:
