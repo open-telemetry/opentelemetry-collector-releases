@@ -33,7 +33,7 @@ ocb:
 ifeq (, $(shell which ocb))
 	@{ \
 	set -e ;\
-	echo Installing opentelemetry-collector-builder at $(OTELCOL_BUILDER_DIR);\
+	echo Installing ocb at $(OTELCOL_BUILDER_DIR);\
 	mkdir -p $(OTELCOL_BUILDER_DIR) ;\
 	curl -sLo $(OTELCOL_BUILDER) "https://github.com/open-telemetry/opentelemetry-collector/releases/download/cmd%2Fbuilder%2Fv$(OTELCOL_BUILDER_VERSION)/ocb_$(OTELCOL_BUILDER_VERSION)_linux_amd64" ;\
 	chmod +x $(OTELCOL_BUILDER) ;\
