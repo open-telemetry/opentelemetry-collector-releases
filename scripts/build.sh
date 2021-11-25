@@ -1,6 +1,6 @@
 #!/bin/bash
 REPO_DIR="$( cd "$(dirname $( dirname "${BASH_SOURCE[0]}" ))" &> /dev/null && pwd )"
-BUILDER=$(which opentelemetry-collector-builder)
+BUILDER=$(which ocb)
 GO=$(which go)
 
 # default values
