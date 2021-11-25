@@ -1,7 +1,7 @@
 GO=$(shell which go)
-OTELCOL_BUILDER_VERSION ?= 0.37.0
+OTELCOL_BUILDER_VERSION ?= 0.40.0
 OTELCOL_BUILDER_DIR ?= ~/bin
-OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/opentelemetry-collector-builder
+OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
 
 YQ_VERSION ?= 4.11.1
 YQ_DIR ?= ${OTELCOL_BUILDER_DIR}
@@ -12,7 +12,7 @@ DISTRIBUTIONS ?= "otelcol"
 ci: check build
 check: ensure-goreleaser-up-to-date
 
-build: otelcol-builder
+build: ocb
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -b ${OTELCOL_BUILDER} -g ${GO}
 
 generate: generate-sources generate-goreleaser
@@ -20,7 +20,7 @@ generate: generate-sources generate-goreleaser
 generate-goreleaser: yq
 	@./scripts/generate-goreleaser-config.sh -d "${DISTRIBUTIONS}" -y "${YQ}"
 
-generate-sources: otelcol-builder
+generate-sources: ocb
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER} -g ${GO}
 
 goreleaser-verify:
@@ -29,17 +29,17 @@ goreleaser-verify:
 ensure-goreleaser-up-to-date: generate-goreleaser
 	@git diff -s --exit-code .goreleaser.yaml || (echo "Build failed: The goreleaser templates have changed but the .goreleaser.yaml hasn't. Run 'make generate-goreleaser' and update your PR." && exit 1)
 
-otelcol-builder:
-ifeq (, $(shell which opentelemetry-collector-builder))
+ocb:
+ifeq (, $(shell which ocb))
 	@{ \
 	set -e ;\
-	echo Installing opentelemetry-collector-builder at $(OTELCOL_BUILDER_DIR);\
+	echo Installing ocb at $(OTELCOL_BUILDER_DIR);\
 	mkdir -p $(OTELCOL_BUILDER_DIR) ;\
-	curl -sLo $(OTELCOL_BUILDER) https://github.com/open-telemetry/opentelemetry-collector-builder/releases/download/v$(OTELCOL_BUILDER_VERSION)/opentelemetry-collector-builder_$(OTELCOL_BUILDER_VERSION)_linux_amd64 ;\
+	curl -sLo $(OTELCOL_BUILDER) "https://github.com/open-telemetry/opentelemetry-collector/releases/download/cmd%2Fbuilder%2Fv$(OTELCOL_BUILDER_VERSION)/ocb_$(OTELCOL_BUILDER_VERSION)_linux_amd64" ;\
 	chmod +x $(OTELCOL_BUILDER) ;\
 	}
 else
-OTELCOL_BUILDER=$(shell which opentelemetry-collector-builder)
+OTELCOL_BUILDER=$(shell which ocb)
 endif
 
 yq:

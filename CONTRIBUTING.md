@@ -9,12 +9,12 @@ This repository contains a set of resources that ultimately results in OpenTelem
 Each distribution has its own directory at the root of this repository, such as `opentelemetry-collector`. Within each one of those, you'll find at least two files:
 
 - `Dockerfile`, determining how to build the container image for this distribution
-- `manifest.yaml`, which is used with the [opentelemetry-collector-builder](https://github.com/open-telemetry/opentelemetry-collector-builder) to generate the sources for the distribution.
+- `manifest.yaml`, which is used with [ocb](https://github.com/open-telemetry/opentelemetry-collector/tree/main/cmd/builder) to generate the sources for the distribution.
 
 Within each distribution, you are expected to be able to build it using the builder, like:
 
 ```shell
-opentelemetry-collector-builder --config manifest.yaml
+ocb --config manifest.yaml
 ```
 
 You can build all distributions by running:
