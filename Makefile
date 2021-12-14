@@ -7,7 +7,7 @@ YQ_VERSION ?= 4.11.1
 YQ_DIR ?= ${OTELCOL_BUILDER_DIR}
 YQ ?= ${YQ_DIR}/yq
 
-DISTRIBUTIONS ?= "otelcol"
+DISTRIBUTIONS ?= "otelcol,otelcol-contrib"
 
 ci: check build
 check: ensure-goreleaser-up-to-date
