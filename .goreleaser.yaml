@@ -38,9 +38,6 @@ docker_manifests:
   - name_template: otel/opentelemetry-collector:{{ .Version }}
     image_templates:
       - otel/opentelemetry-collector:{{ .Version }}-amd64
-      - otel/opentelemetry-collector:{{ .Version }}-armv6
-      - otel/opentelemetry-collector:{{ .Version }}-armv7
-      - otel/opentelemetry-collector:{{ .Version }}-arm64
 dockers:
   - image_templates:
       - "otel/opentelemetry-collector:{{ .Version }}-amd64"
@@ -57,53 +54,6 @@ dockers:
     extra_files:
       - "configs/otelcol.yaml"
     goarch: amd64
-  - image_templates:
-      - "otel/opentelemetry-collector:{{ .Version }}-armv6"
-    dockerfile: "distributions/otelcol/Dockerfile"
-    use: buildx
-    build_flag_templates:
-      - "--pull"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.name={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/arm/v6"
-    extra_files:
-      - "configs/otelcol.yaml"
-    goarch: arm
-    goarm: 6
-  - image_templates:
-      - "otel/opentelemetry-collector:{{ .Version }}-armv7"
-    dockerfile: "distributions/otelcol/Dockerfile"
-    use: buildx
-    build_flag_templates:
-      - "--pull"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.name={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/arm/v7"
-    extra_files:
-      - "configs/otelcol.yaml"
-    goarch: arm
-    goarm: 7
-  - image_templates:
-      - "otel/opentelemetry-collector:{{ .Version }}-arm64"
-    dockerfile: "distributions/otelcol/Dockerfile"
-    use: buildx
-    build_flag_templates:
-      - "--pull"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.name={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/arm64"
-    extra_files:
-      - "configs/otelcol.yaml"
-    goarch: arm64
 nfpms:
   - id: "otelcol"
     package_name: "otelcol"
