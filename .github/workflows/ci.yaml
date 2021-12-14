@@ -23,9 +23,3 @@ jobs:
 
       - name: Verify
         run: make ci
-
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
-        with:
-          version: latest
-          args: --snapshot --rm-dist
