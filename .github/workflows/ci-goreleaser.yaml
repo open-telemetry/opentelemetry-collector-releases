@@ -1,0 +1,33 @@
+name: Continuous Integration - GoReleaser
+
+on:
+  push:
+    branches: [main]
+    paths: [".goreleaser.yaml"]
+  pull_request:
+    branches: [main]
+    paths: [".goreleaser.yaml"]
+
+jobs:
+  check-goreleaser:
+    name: Check GoReleaser Configuration
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      - name: Generate the sources
+        run: make generate-sources
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          version: latest
+          args: --snapshot --rm-dist
