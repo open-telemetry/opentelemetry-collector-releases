@@ -3,6 +3,7 @@ nfpms:
     package_name: "{distribution}"
     license: Apache 2.0
     description: "OpenTelemetry Collector - {distribution}"
+    maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
 
     formats:
       - apk

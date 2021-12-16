@@ -6,6 +6,10 @@ archives:
     name_template: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
     builds:
       - "otelcol"
+  - id: "otelcol-contrib"
+    name_template: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
+    builds:
+      - "otelcol-contrib"
 builds:
   - id: "otelcol"
     dir: "distributions/otelcol/_build"
@@ -19,12 +23,29 @@ builds:
     goarch:
       - 386
       - amd64
-      - arm
       - arm64
-      - s390x
-    goarm:
-      - 6
-      - 7
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+    ignore:
+      - goos: windows
+        goarch: arm
+      - goos: windows
+        goarch: arm64
+  - id: "otelcol-contrib"
+    dir: "distributions/otelcol-contrib/_build"
+    binary: "otelcol-contrib"
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - 386
+      - amd64
+      - arm64
     flags:
       - -trimpath
     ldflags:
@@ -35,10 +56,28 @@ builds:
       - goos: windows
         goarch: arm64
 docker_manifests:
+  - name_template: otel/opentelemetry-collector-contrib:{{ .Version }}
+    image_templates:
+      - otel/opentelemetry-collector-contrib:{{ .Version }}-amd64
   - name_template: otel/opentelemetry-collector:{{ .Version }}
     image_templates:
       - otel/opentelemetry-collector:{{ .Version }}-amd64
 dockers:
+  - image_templates:
+      - "otel/opentelemetry-collector-contrib:{{ .Version }}-amd64"
+    dockerfile: "distributions/otelcol-contrib/Dockerfile"
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/amd64"
+    extra_files:
+      - "configs/otelcol-contrib.yaml"
+    goarch: amd64
   - image_templates:
       - "otel/opentelemetry-collector:{{ .Version }}-amd64"
     dockerfile: "distributions/otelcol/Dockerfile"
@@ -55,10 +94,35 @@ dockers:
       - "configs/otelcol.yaml"
     goarch: amd64
 nfpms:
+  - id: "otelcol-contrib"
+    package_name: "otelcol-contrib"
+    license: Apache 2.0
+    description: "OpenTelemetry Collector - otelcol-contrib"
+    maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
+    formats:
+      - apk
+      - deb
+      - rpm
+    scripts:
+      preinstall: "distributions/otelcol-contrib/preinstall.sh"
+      postinstall: "distributions/otelcol-contrib/postinstall.sh"
+      preremove: "distributions/otelcol-contrib/preremove.sh"
+    builds:
+      - "otelcol-contrib"
+    contents:
+      - src: "distributions/otelcol-contrib/otelcol-contrib.service"
+        dst: "/lib/systemd/system/otelcol-contrib.service"
+      - src: "distributions/otelcol-contrib/otelcol-contrib.conf"
+        dst: "/etc/otelcol-contrib/otelcol-contrib.conf"
+        type: "config|noreplace"
+      - src: "configs/otelcol-contrib.yaml"
+        dst: "/etc/otelcol-contrib/config.yaml"
+        type: config
   - id: "otelcol"
     package_name: "otelcol"
     license: Apache 2.0
     description: "OpenTelemetry Collector - otelcol"
+    maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
     formats:
       - apk
       - deb
