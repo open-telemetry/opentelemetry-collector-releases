@@ -32,7 +32,9 @@ for distribution in $(echo $distributions | tr "," "\n")
 do
     pushd "${REPO_DIR}/distributions/${distribution}" > /dev/null
     mkdir -p _build
-
+    echo Building: ${distribution}
+    echo Using Builder: ${BUILDER}
+    echo Using Go: ${GO}
     ${BUILDER} --skip-compilation=${skipcompilation} --go ${GO} --config manifest.yaml > _build/build.log 2>&1
     if [ $? != 0 ]; then
         echo "❌ ERROR: failed to build the distribution '${distribution}'."

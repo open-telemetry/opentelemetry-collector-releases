@@ -12,15 +12,15 @@ DISTRIBUTIONS ?= "otelcol,otelcol-contrib"
 ci: check build
 check: ensure-goreleaser-up-to-date
 
-build: ocb
+build: go ocb
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -b ${OTELCOL_BUILDER} -g ${GO}
 
 generate: generate-sources generate-goreleaser
 
-generate-goreleaser: yq
+generate-goreleaser: yq envsubst
 	@./scripts/generate-goreleaser-config.sh -d "${DISTRIBUTIONS}" -y "${YQ}"
 
-generate-sources: ocb
+generate-sources: go ocb
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER} -g ${GO}
 
 goreleaser-verify:
@@ -30,7 +30,7 @@ ensure-goreleaser-up-to-date: generate-goreleaser
 	@git diff -s --exit-code .goreleaser.yaml || (echo "Build failed: The goreleaser templates have changed but the .goreleaser.yaml hasn't. Run 'make generate-goreleaser' and update your PR." && exit 1)
 
 ocb:
-ifeq (, $(shell which ocb >/dev/null 2>/dev/null))
+ifeq (, $(shell command -v ocb 2>/dev/null))
 	@{ \
 	set -e ;\
 	os=$$(uname | tr A-Z a-z) ;\
@@ -43,11 +43,21 @@ ifeq (, $(shell which ocb >/dev/null 2>/dev/null))
 	chmod +x $(OTELCOL_BUILDER) ;\
 	}
 else
-OTELCOL_BUILDER=$(shell which ocb)
+OTELCOL_BUILDER=$(shell command -v ocb)
+endif
+
+go:
+ifeq (, $(shell command -v go 2>/dev/null))
+$(error go command not found. Please install golang. https://go.dev/doc/install )
+endif
+
+envsubst:
+ifeq (, $(shell command -v envsubst 2>/dev/null))
+$(error envsubst command not found. Please install gettext. )
 endif
 
 yq:
-ifeq (, $(shell which yq >/dev/null 2>/dev/null))
+ifeq (, $(shell command -v yq 2>/dev/null ))
 	@{ \
 	set -e ;\
 	os=$$(uname | tr A-Z a-z) ;\
