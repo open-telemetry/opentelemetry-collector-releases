@@ -3,10 +3,15 @@ dist:
   name: otelcol-contrib
   description: OpenTelemetry Collector Contrib
   version: 0.41.0
+  include_core: false
   output_path: ./_build
   otelcol_version: 0.41.0
 
 extensions:
+  - import: go.opentelemetry.io/collector/extension/zpagesextension
+    gomod: go.opentelemetry.io/collector v0.41.0
+  - import: go.opentelemetry.io/collector/extension/ballastextension
+    gomod: go.opentelemetry.io/collector v0.41.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/asapauthextension v0.41.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.41.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/bearertokenauthextension v0.41.0
@@ -22,44 +27,54 @@ extensions:
     import: github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage/filestorage
 
 exporters:
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/alibabacloudlogserviceexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awskinesisexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/azuremonitorexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/carbonexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/elasticexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/f5cloudexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/honeycombexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/humioexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/influxdbexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/jaegerexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/jaegerthrifthttpexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/lokiexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/opencensusexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sentryexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/skywalkingexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/stackdriverexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sumologicexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/tanzuobservabilityexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/tencentcloudlogserviceexporter v0.41.0
-- gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/zipkinexporter v0.41.0
+  - import: go.opentelemetry.io/collector/exporter/loggingexporter
+    gomod: go.opentelemetry.io/collector v0.41.0
+  - import: go.opentelemetry.io/collector/exporter/otlpexporter
+    gomod: go.opentelemetry.io/collector v0.41.0
+  - import: go.opentelemetry.io/collector/exporter/otlphttpexporter
+    gomod: go.opentelemetry.io/collector v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/alibabacloudlogserviceexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awskinesisexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/azuremonitorexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/carbonexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/elasticexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/f5cloudexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/honeycombexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/humioexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/influxdbexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/jaegerexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/jaegerthrifthttpexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/lokiexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/opencensusexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sentryexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/skywalkingexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/stackdriverexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sumologicexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/tanzuobservabilityexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/tencentcloudlogserviceexporter v0.41.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/zipkinexporter v0.41.0
 
 processors:
+  - import: go.opentelemetry.io/collector/processor/batchprocessor
+    gomod: go.opentelemetry.io/collector v0.41.0
+  - import: go.opentelemetry.io/collector/processor/memorylimiterprocessor
+    gomod: go.opentelemetry.io/collector v0.41.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.41.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor v0.41.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor v0.41.0
@@ -78,6 +93,8 @@ processors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor v0.41.0
 
 receivers:
+  - import: go.opentelemetry.io/collector/receiver/otlpreceiver
+    gomod: go.opentelemetry.io/collector v0.41.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver v0.41.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.41.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.41.0
