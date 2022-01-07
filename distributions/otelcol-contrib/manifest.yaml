@@ -3,7 +3,6 @@ dist:
   name: otelcol-contrib
   description: OpenTelemetry Collector Contrib
   version: 0.42.0
-  include_core: false
   output_path: ./_build
   otelcol_version: 0.42.0
 
