@@ -10,9 +10,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/fs"
 	"log"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/goreleaser/goreleaser/pkg/config"
@@ -35,14 +37,20 @@ func main() {
 	}
 	dists := strings.Split(*distsFlag, ",")
 
-	project := Generate(ImagePrefixes, dists)
+	tree := os.DirFS(".")
+	imageNames, err := readImageNames(tree)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	project := Generate(ImagePrefixes, imageNames, dists)
 
 	if err := yaml.NewEncoder(os.Stdout).Encode(&project); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func Generate(imagePrefixes []string, dists []string) config.Project {
+func Generate(imagePrefixes []string, imageNames map[string]string, dists []string) config.Project {
 	return config.Project{
 		ProjectName: "opentelemetry-collector-releases",
 		Checksum: config.Checksum{
@@ -52,8 +60,8 @@ func Generate(imagePrefixes []string, dists []string) config.Project {
 		Builds:          Builds(dists),
 		Archives:        Archives(dists),
 		NFPMs:           Packages(dists),
-		Dockers:         DockerImages(imagePrefixes, dists),
-		DockerManifests: DockerManifests(imagePrefixes, dists),
+		Dockers:         DockerImages(imagePrefixes, dists, imageNames),
+		DockerManifests: DockerManifests(imagePrefixes, dists, imageNames),
 	}
 }
 
@@ -146,10 +154,10 @@ func Package(dist string) config.NFPM {
 	}
 }
 
-func DockerImages(imagePrefixes, dists []string) (r []config.Docker) {
+func DockerImages(imagePrefixes, dists []string, imageNames map[string]string) (r []config.Docker) {
 	for _, dist := range dists {
 		for _, arch := range Architectures {
-			r = append(r, DockerImage(imagePrefixes, dist, arch))
+			r = append(r, DockerImage(imagePrefixes, imageNames[dist], dist, arch))
 		}
 	}
 	return
@@ -157,12 +165,12 @@ func DockerImages(imagePrefixes, dists []string) (r []config.Docker) {
 
 // DockerImage configures goreleaser to build a container image.
 // https://goreleaser.com/customization/docker/
-func DockerImage(imagePrefixes []string, dist, arch string) config.Docker {
+func DockerImage(imagePrefixes []string, imageName, dist, arch string) config.Docker {
 	var imageTemplates []string
 	for _, prefix := range imagePrefixes {
 		imageTemplates = append(
 			imageTemplates,
-			fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, dist, arch),
+			fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName, arch),
 		)
 	}
 
@@ -190,29 +198,54 @@ func DockerImage(imagePrefixes []string, dist, arch string) config.Docker {
 	}
 }
 
-func DockerManifests(imagePrefixes, dists []string) (r []config.DockerManifest) {
+func DockerManifests(imagePrefixes, dists []string, imageNames map[string]string) (r []config.DockerManifest) {
 	for _, dist := range dists {
-		r = append(r, DockerManifest(imagePrefixes, dist)...)
+		r = append(r, DockerManifest(imagePrefixes, imageNames[dist])...)
 	}
 	return
 }
 
 // DockerManifest configures goreleaser to build a multi-arch container image manifest.
 // https://goreleaser.com/customization/docker_manifest/
-func DockerManifest(imagePrefixes []string, dist string) (manifests []config.DockerManifest) {
+func DockerManifest(imagePrefixes []string, imageName string) (manifests []config.DockerManifest) {
 	for _, prefix := range imagePrefixes {
 		var imageTemplates []string
 		for _, arch := range Architectures {
 			imageTemplates = append(
 				imageTemplates,
-				fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, dist, arch),
+				fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName, arch),
 			)
 		}
 
 		manifests = append(manifests, config.DockerManifest{
-			NameTemplate:   fmt.Sprintf("%s/%s:{{ .Version }}", prefix, dist),
+			NameTemplate:   fmt.Sprintf("%s/%s:{{ .Version }}", prefix, imageName),
 			ImageTemplates: imageTemplates,
 		})
 	}
 	return
+}
+
+// readImageNames returns a mapping from distribution name to the container
+// image name for that distribution.
+func readImageNames(tree fs.FS) (map[string]string, error) {
+	entries, err := fs.ReadDir(tree, "distributions")
+	if err != nil {
+		return nil, err
+	}
+
+	names := make(map[string]string, len(entries))
+	for _, e := range entries {
+		if !e.IsDir() {
+			continue
+		}
+		name := e.Name()
+		imageName, err := fs.ReadFile(tree, filepath.Join("distributions", name, "image-name"))
+		if err != nil {
+			return nil, fmt.Errorf("read image name for %s: %w", name, err)
+		}
+
+		names[name] = string(imageName)
+	}
+
+	return names, nil
 }
