@@ -2,3 +2,4 @@ docker_manifests:
   - name_template: ${CONTAINER_BASE_NAME}:{{ .Version }}
     image_templates:
       - ${CONTAINER_BASE_NAME}:{{ .Version }}-amd64
+      - ${CONTAINER_BASE_NAME}:{{ .Version }}-arm64

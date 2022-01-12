@@ -41,8 +41,25 @@ The main `Makefile` is mostly a wrapper around scripts under the [./scripts](./s
 
 [goreleaser](https://goreleaser.com) plays a big role in producing the final artifacts. Given that the final configuration file for this tool would be huge and would cause relatively big changes for each new distribution, a `Makefile` target exists to generate the `.goreleaser.yaml` for the repository. The `Makefile` contains a list of distributions (`DISTRIBUTIONS`) that is passed down to the script, which will generate snippets based on the templates from `./scripts/goreleaser-templates/`. Adding a new distribution is then only a matter of adding the distribution's directory, plus adding it to the Makefile. Adding a new snippet is only a matter of adding a new template.
 
-Once there's a change either to the templates or to the list of distributions, a new `.goreleaser` file can be generated with:
+Once there's a change either to the templates or to the list of distributions, a new `.goreleaser.yaml` file can be generated with:
 
 ```shell
 make generate-goreleaser
+```
+
+After that, you can test the goreleaser build process with:
+
+```shell
+make goreleaser-verify
+```
+
+#### Building multi-architecture Docker images
+
+goreleaser will build Docker images for x86_64 and arm64 processors. The build process involves executing `RUN` steps on the target architecture, which means the system you run it on needs support for emulating foreign architectures.
+
+This is accomplished by installing [qemu](https://www.qemu.org/), and then [enabling support](https://github.com/multiarch/qemu-user-static#readme) for qemu within Docker:
+
+```shell
+apt-get install qemu binfmt-support qemu-user-static
+docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 ```

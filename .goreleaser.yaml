@@ -59,9 +59,11 @@ docker_manifests:
   - name_template: otel/opentelemetry-collector-contrib:{{ .Version }}
     image_templates:
       - otel/opentelemetry-collector-contrib:{{ .Version }}-amd64
+      - otel/opentelemetry-collector-contrib:{{ .Version }}-arm64
   - name_template: otel/opentelemetry-collector:{{ .Version }}
     image_templates:
       - otel/opentelemetry-collector:{{ .Version }}-amd64
+      - otel/opentelemetry-collector:{{ .Version }}-arm64
 dockers:
   - image_templates:
       - "otel/opentelemetry-collector-contrib:{{ .Version }}-amd64"
@@ -79,6 +81,21 @@ dockers:
       - "configs/otelcol-contrib.yaml"
     goarch: amd64
   - image_templates:
+      - "otel/opentelemetry-collector-contrib:{{ .Version }}-arm64"
+    dockerfile: "distributions/otelcol-contrib/Dockerfile"
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/arm64"
+    extra_files:
+      - "configs/otelcol-contrib.yaml"
+    goarch: arm64
+  - image_templates:
       - "otel/opentelemetry-collector:{{ .Version }}-amd64"
     dockerfile: "distributions/otelcol/Dockerfile"
     use: buildx
@@ -93,6 +110,21 @@ dockers:
     extra_files:
       - "configs/otelcol.yaml"
     goarch: amd64
+  - image_templates:
+      - "otel/opentelemetry-collector:{{ .Version }}-arm64"
+    dockerfile: "distributions/otelcol/Dockerfile"
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/arm64"
+    extra_files:
+      - "configs/otelcol.yaml"
+    goarch: arm64
 nfpms:
   - id: "otelcol-contrib"
     package_name: "otelcol-contrib"
