@@ -109,9 +109,7 @@ dockers:
   goarch: "386"
   dockerfile: distributions/otelcol/Dockerfile
   image_templates:
-  - |-
-    otel/opentelemetry-collector
-    :{{ .Version }}-386
+  - otel/opentelemetry-collector:{{ .Version }}-386
   extra_files:
   - configs/otelcol.yaml
   build_flag_templates:
@@ -127,9 +125,7 @@ dockers:
   goarch: amd64
   dockerfile: distributions/otelcol/Dockerfile
   image_templates:
-  - |-
-    otel/opentelemetry-collector
-    :{{ .Version }}-amd64
+  - otel/opentelemetry-collector:{{ .Version }}-amd64
   extra_files:
   - configs/otelcol.yaml
   build_flag_templates:
@@ -145,9 +141,7 @@ dockers:
   goarch: arm64
   dockerfile: distributions/otelcol/Dockerfile
   image_templates:
-  - |-
-    otel/opentelemetry-collector
-    :{{ .Version }}-arm64
+  - otel/opentelemetry-collector:{{ .Version }}-arm64
   extra_files:
   - configs/otelcol.yaml
   build_flag_templates:
@@ -163,9 +157,7 @@ dockers:
   goarch: "386"
   dockerfile: distributions/otelcol-contrib/Dockerfile
   image_templates:
-  - |-
-    otel/opentelemetry-collector-contrib
-    :{{ .Version }}-386
+  - otel/opentelemetry-collector-contrib:{{ .Version }}-386
   extra_files:
   - configs/otelcol-contrib.yaml
   build_flag_templates:
@@ -181,9 +173,7 @@ dockers:
   goarch: amd64
   dockerfile: distributions/otelcol-contrib/Dockerfile
   image_templates:
-  - |-
-    otel/opentelemetry-collector-contrib
-    :{{ .Version }}-amd64
+  - otel/opentelemetry-collector-contrib:{{ .Version }}-amd64
   extra_files:
   - configs/otelcol-contrib.yaml
   build_flag_templates:
@@ -199,9 +189,7 @@ dockers:
   goarch: arm64
   dockerfile: distributions/otelcol-contrib/Dockerfile
   image_templates:
-  - |-
-    otel/opentelemetry-collector-contrib
-    :{{ .Version }}-arm64
+  - otel/opentelemetry-collector-contrib:{{ .Version }}-arm64
   extra_files:
   - configs/otelcol-contrib.yaml
   build_flag_templates:
@@ -214,29 +202,13 @@ dockers:
   - --label=org.opencontainers.image.source={{.GitURL}}
   use: buildx
 docker_manifests:
-- name_template: |-
-    otel/opentelemetry-collector
-    :{{ .Version }}
+- name_template: otel/opentelemetry-collector:{{ .Version }}
   image_templates:
-  - |-
-    otel/opentelemetry-collector
-    :{{ .Version }}-386
-  - |-
-    otel/opentelemetry-collector
-    :{{ .Version }}-amd64
-  - |-
-    otel/opentelemetry-collector
-    :{{ .Version }}-arm64
-- name_template: |-
-    otel/opentelemetry-collector-contrib
-    :{{ .Version }}
+  - otel/opentelemetry-collector:{{ .Version }}-386
+  - otel/opentelemetry-collector:{{ .Version }}-amd64
+  - otel/opentelemetry-collector:{{ .Version }}-arm64
+- name_template: otel/opentelemetry-collector-contrib:{{ .Version }}
   image_templates:
-  - |-
-    otel/opentelemetry-collector-contrib
-    :{{ .Version }}-386
-  - |-
-    otel/opentelemetry-collector-contrib
-    :{{ .Version }}-amd64
-  - |-
-    otel/opentelemetry-collector-contrib
-    :{{ .Version }}-arm64
+  - otel/opentelemetry-collector-contrib:{{ .Version }}-386
+  - otel/opentelemetry-collector-contrib:{{ .Version }}-amd64
+  - otel/opentelemetry-collector-contrib:{{ .Version }}-arm64
