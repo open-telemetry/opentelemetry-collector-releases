@@ -37,9 +37,9 @@ do
     pushd "${REPO_DIR}/distributions/${distribution}" > /dev/null
     mkdir -p _build
 
-    echo Building: ${distribution}
-    echo Using Builder: ${BUILDER}
-    echo Using Go: ${GO}
+    echo "Building: $distribution"
+    echo "Using Builder: $(command -v "$BUILDER")"
+    echo "Using Go: $(command -v "$GO")"
 
     if "$BUILDER" --skip-compilation=${skipcompilation} --go "$GO" --config manifest.yaml > _build/build.log 2>&1; then
         echo "✅ SUCCESS: distribution '${distribution}' built."
