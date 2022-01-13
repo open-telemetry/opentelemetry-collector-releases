@@ -1,11 +1,9 @@
-GO=$(shell which go)
+GO ?= go
+GORELEASER ?= goreleaser
+
 OTELCOL_BUILDER_VERSION ?= 0.42.0
 OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
-
-YQ_VERSION ?= 4.11.1
-YQ_DIR ?= ${OTELCOL_BUILDER_DIR}
-YQ ?= ${YQ_DIR}/yq
 
 DISTRIBUTIONS ?= "otelcol,otelcol-contrib"
 
@@ -17,21 +15,23 @@ build: go ocb
 
 generate: generate-sources generate-goreleaser
 
-generate-goreleaser: yq envsubst
-	@./scripts/generate-goreleaser-config.sh -d "${DISTRIBUTIONS}" -y "${YQ}"
+generate-goreleaser: go
+	@${GO} run -tags releaser goreleaser/configure.go -d "${DISTRIBUTIONS}" > .goreleaser.yaml
 
 generate-sources: go ocb
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER} -g ${GO}
 
-goreleaser-verify:
-	@goreleaser release --snapshot --rm-dist
+goreleaser-verify: goreleaser
+	@${GORELEASER} release --snapshot --rm-dist
 
 ensure-goreleaser-up-to-date: generate-goreleaser
 	@git diff -s --exit-code .goreleaser.yaml || (echo "Build failed: The goreleaser templates have changed but the .goreleaser.yaml hasn't. Run 'make generate-goreleaser' and update your PR." && exit 1)
 
+.PHONY: ocb
 ocb:
 ifeq (, $(shell command -v ocb 2>/dev/null))
 	@{ \
+	[ ! -x '$(OTELCOL_BUILDER)' ] || exit 0; \
 	set -e ;\
 	os=$$(uname | tr A-Z a-z) ;\
 	machine=$$(uname -m) ;\
@@ -46,29 +46,20 @@ else
 OTELCOL_BUILDER=$(shell command -v ocb)
 endif
 
+.PHONY: go
 go:
-ifeq (, $(shell command -v go 2>/dev/null))
-$(error go command not found. Please install golang. https://go.dev/doc/install )
-endif
-
-envsubst:
-ifeq (, $(shell command -v envsubst 2>/dev/null))
-$(error envsubst command not found. Please install gettext. )
-endif
-
-yq:
-ifeq (, $(shell command -v yq 2>/dev/null ))
 	@{ \
-	set -e ;\
-	os=$$(uname | tr A-Z a-z) ;\
-	machine=$$(uname -m) ;\
-	[ "$${machine}" != x86 ] || machine=386 ;\
-	[ "$${machine}" != x86_64 ] || machine=amd64 ;\
-	echo "Installing yq ($${os}/$${machine}) at $(YQ_DIR)";\
-	mkdir -p $(YQ_DIR) ;\
-	curl -sLo $(YQ) https://github.com/mikefarah/yq/releases/download/v$(YQ_VERSION)/yq_$${os}_$${machine} ;\
-	chmod +x $(YQ) ;\
+		if ! command -v '$(GO)' >/dev/null 2>/dev/null; then \
+			echo >&2 '$(GO) command not found. Please install golang. https://go.dev/doc/install'; \
+			exit 1; \
+		fi \
 	}
-else
-YQ=$(shell which yq)
-endif
+
+.PHONY: goreleaser
+goreleaser:
+	@{ \
+		if ! command -v '$(GORELEASER)' >/dev/null 2>/dev/null; then \
+			echo >&2 '$(GORELEASER) command not found. Please install goreleaser. https://goreleaser.com/install/'; \
+			exit 1; \
+		fi \
+	}

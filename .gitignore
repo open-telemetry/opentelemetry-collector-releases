@@ -1,5 +1,4 @@
 vendor
 **/_build
 dist/
-.generated-yaml
 .idea
