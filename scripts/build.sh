@@ -32,23 +32,24 @@ fi
 
 echo "Distributions to build: $distributions";
 
-for distribution in $(echo $distributions | tr "," "\n")
+for distribution in $(echo "$distributions" | tr "," "\n")
 do
     pushd "${REPO_DIR}/distributions/${distribution}" > /dev/null
     mkdir -p _build
+
     echo Building: ${distribution}
     echo Using Builder: ${BUILDER}
     echo Using Go: ${GO}
-    ${BUILDER} --skip-compilation=${skipcompilation} --go ${GO} --config manifest.yaml > _build/build.log 2>&1
-    if [ $? != 0 ]; then
+
+    if "$BUILDER" --skip-compilation=${skipcompilation} --go "$GO" --config manifest.yaml > _build/build.log 2>&1; then
+        echo "✅ SUCCESS: distribution '${distribution}' built."
+    else
         echo "❌ ERROR: failed to build the distribution '${distribution}'."
         echo "🪵 Build logs for '${distribution}'"
         echo "----------------------"
         cat _build/build.log
         echo "----------------------"
         exit 1
-    else
-        echo "✅ SUCCESS: distribution '${distribution}' built."
     fi
 
     popd > /dev/null
