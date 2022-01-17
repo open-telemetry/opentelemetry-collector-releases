@@ -12,4 +12,5 @@ More details about each individual distribution can be seen in its own readme fi
 
 Current list of distributions:
 
-- [OpenTelemetry Collector (also known as "otelcol")](./opentelemetry-collector)
+- [OpenTelemetry Collector (also known as "otelcol")](./distributions/otelcol)
+- [OpenTelemetry Collector Contrib (also known as "otelcol-contrib")](./distributions/otelcol-contrib)
