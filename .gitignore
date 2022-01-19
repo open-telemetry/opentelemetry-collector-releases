@@ -2,3 +2,5 @@ vendor
 **/_build
 dist/
 .idea
+# Third-Party license drops
+cmd/otelcol/third-party
