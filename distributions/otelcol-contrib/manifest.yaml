@@ -13,6 +13,7 @@ extensions:
     gomod: go.opentelemetry.io/collector v0.0.0-20220121210129-2c5eb7ca1ad5
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/asapauthextension v0.0.0-20220121223728-59cc13ebd5d5
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.0.0-20220121223728-59cc13ebd5d5
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/basicauthextension v0.0.0-20220121223728-59cc13ebd5d5
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/bearertokenauthextension v0.0.0-20220121223728-59cc13ebd5d5
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/fluentbitextension v0.0.0-20220121223728-59cc13ebd5d5
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.0.0-20220121223728-59cc13ebd5d5
