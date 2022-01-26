@@ -34,6 +34,7 @@ exporters:
   - import: go.opentelemetry.io/collector/exporter/otlphttpexporter
     gomod: go.opentelemetry.io/collector v0.0.0-20220121210129-2c5eb7ca1ad5
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/alibabacloudlogserviceexporter v0.0.0-20220121223728-59cc13ebd5d5
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awscloudwatchlogsexporter v0.0.0-20220121223728-59cc13ebd5d5
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.0.0-20220121223728-59cc13ebd5d5
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awskinesisexporter v0.0.0-20220121223728-59cc13ebd5d5
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.0.0-20220121223728-59cc13ebd5d5
