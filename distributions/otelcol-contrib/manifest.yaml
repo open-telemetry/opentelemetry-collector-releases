@@ -4,7 +4,7 @@ dist:
   description: OpenTelemetry Collector Contrib
   version: 0.43.0
   output_path: ./_build
-  otelcol_version: v0.43.1
+  otelcol_version: 0.43.1
 
 extensions:
   - import: go.opentelemetry.io/collector/extension/zpagesextension
