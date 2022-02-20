@@ -53,3 +53,13 @@ jobs:
           args: release --rm-dist --timeout 1h
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update latest tag
+        uses: silverlyra/latest-image-action@v0.1.0
+        with:
+          repository: |
+            otel/opentelemetry-collector
+            otel/opentelemetry-collector-contib
+            ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector
+            ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contib
+          candidate-tag: ${{ github.ref_name }}
