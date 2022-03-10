@@ -41,6 +41,7 @@ exporters:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.46.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/azuremonitorexporter v0.46.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/carbonexporter v0.46.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/clickhouseexporter v0.46.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/coralogixexporter v0.46.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.46.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.46.0
