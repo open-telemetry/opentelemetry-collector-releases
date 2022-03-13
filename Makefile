@@ -89,7 +89,7 @@ distribution/otelcol:
 	cd distributions/otelcol/_build && go-licenses save . --save_path=../third-party
 
 .PHONY: otelcol-contrib-licenses
-otelcol-licenses: distribution/otelcol-contrib
+otelcol-contrib-licenses: distribution/otelcol-contrib
 
 distribution/otelcol-contrib:
 	@echo creating third_party directory with licenses + reciprical source	
