@@ -10,10 +10,11 @@ DISTRIBUTIONS ?= "otelcol,otelcol-contrib"
 ci: check build
 check: ensure-goreleaser-up-to-date
 
-build: go ocb
+build: go go-licenses ocb
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -b ${OTELCOL_BUILDER} -g ${GO}
 
-generate: generate-sources generate-goreleaser
+generate: generate-sources otelcol-licenses otelcol-contrib-licenses generate-goreleaser
+
 
 generate-goreleaser: go
 	@${GO} run -tags releaser goreleaser/configure.go -d "${DISTRIBUTIONS}" > .goreleaser.yaml
@@ -75,3 +76,21 @@ push-tag:
 	@[ "${TAG}" ] || ( echo ">> env var TAG is not set"; exit 1 )
 	@echo "Pushing tag ${TAG}"
 	@git push git@github.com:open-telemetry/opentelemetry-collector-releases.git ${TAG}
+
+.PHONY: go-licenses
+go-licenses:
+	 go get github.com/google/go-licenses && go build github.com/google/go-licenses && cp go-licenses /usr/bin
+
+.PHONY: otelcol-licenses
+otelcol-licenses: distribution/otelcol
+
+distribution/otelcol:
+	@echo creating third_party directory with licenses + reciprical source	
+	cd distributions/otelcol/_build && go-licenses save . --save_path=../third-party
+
+.PHONY: otelcol-contrib-licenses
+otelcol-licenses: distribution/otelcol-contrib
+
+distribution/otelcol-contrib:
+	@echo creating third_party directory with licenses + reciprical source	
+	cd distributions/otelcol-contrib/_build && go-licenses save . --save_path=../third-party

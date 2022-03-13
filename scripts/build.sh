@@ -36,6 +36,7 @@ for distribution in $(echo "$distributions" | tr "," "\n")
 do
     pushd "${REPO_DIR}/distributions/${distribution}" > /dev/null
     mkdir -p _build
+    mkdir -p third_party
 
     echo "Building: $distribution"
     echo "Using Builder: $(command -v "$BUILDER")"
