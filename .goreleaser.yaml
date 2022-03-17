@@ -27,7 +27,6 @@ builds:
   - linux
   - windows
   goarch:
-  - "386"
   - amd64
   - arm64
   ignore:
@@ -160,24 +159,6 @@ dockers:
   - --label=org.opencontainers.image.source={{.GitURL}}
   use: buildx
 - goos: linux
-  goarch: "386"
-  dockerfile: distributions/otelcol-contrib/Dockerfile
-  image_templates:
-  - otel/opentelemetry-collector-contrib:{{ .Version }}-386
-  - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{
-    .Version }}-386
-  extra_files:
-  - configs/otelcol-contrib.yaml
-  build_flag_templates:
-  - --pull
-  - --platform=linux/386
-  - --label=org.opencontainers.image.created={{.Date}}
-  - --label=org.opencontainers.image.name={{.ProjectName}}
-  - --label=org.opencontainers.image.revision={{.FullCommit}}
-  - --label=org.opencontainers.image.version={{.Version}}
-  - --label=org.opencontainers.image.source={{.GitURL}}
-  use: buildx
-- goos: linux
   goarch: amd64
   dockerfile: distributions/otelcol-contrib/Dockerfile
   image_templates:
@@ -230,14 +211,11 @@ docker_manifests:
     .Version }}-arm64
 - name_template: otel/opentelemetry-collector-contrib:{{ .Version }}
   image_templates:
-  - otel/opentelemetry-collector-contrib:{{ .Version }}-386
   - otel/opentelemetry-collector-contrib:{{ .Version }}-amd64
   - otel/opentelemetry-collector-contrib:{{ .Version }}-arm64
 - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{
     .Version }}
   image_templates:
-  - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{
-    .Version }}-386
   - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{
     .Version }}-amd64
   - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{
