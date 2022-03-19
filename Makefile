@@ -79,7 +79,7 @@ push-tag:
 
 .PHONY: go-licenses
 go-licenses:
-	 go get github.com/google/go-licenses && go build github.com/google/go-licenses && mv go-licenses /usr/bin/
+	 cd ${OTELCOL_BUILDER_DIR} && go install github.com/google/go-licenses@latest
 
 .PHONY: otelcol-licenses
 otelcol-licenses: distribution/otelcol
