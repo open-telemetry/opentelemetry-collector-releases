@@ -145,12 +145,7 @@ receivers:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver v0.47.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zookeeperreceiver v0.47.0
 
+# When adding a replace, add a comment before it to document why it's needed and when it can be removed
 replaces:
-  - github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter => github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.47.0
-  - github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter => github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.47.0
-  - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver => github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.47.0
-  - github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/cwlogs => github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/cwlogs v0.47.0
-  - github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/ecsutil => github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/ecsutil v0.47.0
-  - github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal => github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal v0.47.0
-  - github.com/open-telemetry/opentelemetry-collector-contrib/internal/sharedcomponent  => github.com/open-telemetry/opentelemetry-collector-contrib/internal/sharedcomponent v0.47.0
+  # See https://github.com/google/gnostic/issues/262
   - github.com/googleapis/gnostic v0.5.6 => github.com/googleapis/gnostic v0.5.5
