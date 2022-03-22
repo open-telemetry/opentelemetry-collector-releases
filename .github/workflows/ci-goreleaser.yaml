@@ -3,10 +3,16 @@ name: Continuous Integration - GoReleaser
 on:
   push:
     branches: [main]
-    paths: [".goreleaser.yaml"]
+    paths:
+    - ".goreleaser.yaml"
+    - "./distributions/otelcol/manifest.yaml"
+    - "./distributions/otelcol-contrib/manifest.yaml"
   pull_request:
     branches: [main]
-    paths: [".goreleaser.yaml"]
+    paths:
+    - ".goreleaser.yaml"
+    - "./distributions/otelcol/manifest.yaml"
+    - "./distributions/otelcol-contrib/manifest.yaml"
 
 jobs:
   check-goreleaser:
