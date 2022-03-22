@@ -5,14 +5,14 @@ on:
     branches: [main]
     paths:
     - ".goreleaser.yaml"
-    - "./distributions/otelcol/manifest.yaml"
-    - "./distributions/otelcol-contrib/manifest.yaml"
+    - "distributions/otelcol/manifest.yaml"
+    - "distributions/otelcol-contrib/manifest.yaml"
   pull_request:
     branches: [main]
     paths:
     - ".goreleaser.yaml"
-    - "./distributions/otelcol/manifest.yaml"
-    - "./distributions/otelcol-contrib/manifest.yaml"
+    - "distributions/otelcol/manifest.yaml"
+    - "distributions/otelcol-contrib/manifest.yaml"
 
 jobs:
   check-goreleaser:
