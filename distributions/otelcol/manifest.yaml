@@ -1,7 +1,7 @@
 dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/core
   name: otelcol
-  description: OpenTelemetry Collector - Revert this change
+  description: OpenTelemetry Collector
   version: 0.47.0
   output_path: ./_build
   otelcol_version: 0.47.0
