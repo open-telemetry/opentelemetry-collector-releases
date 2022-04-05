@@ -85,6 +85,7 @@ func Build(dist string) config.Build {
 		Goos:   []string{"darwin", "linux", "windows"},
 		Goarch: architecturesForDist(dist),
 		Ignore: []config.IgnoredBuild{
+			{Goos: "darwin", Goarch: "386"},
 			{Goos: "windows", Goarch: "arm64"},
 		},
 	}
