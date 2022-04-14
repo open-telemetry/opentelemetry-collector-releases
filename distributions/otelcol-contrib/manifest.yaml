@@ -69,7 +69,6 @@ exporters:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.49.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/skywalkingexporter v0.49.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.49.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/stackdriverexporter v0.49.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sumologicexporter v0.49.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/tanzuobservabilityexporter v0.49.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/tencentcloudlogserviceexporter v0.49.0
