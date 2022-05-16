@@ -17,7 +17,7 @@ import (
 
 	"github.com/goreleaser/goreleaser/pkg/config"
 	"github.com/goreleaser/nfpm/v2/files"
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -75,13 +75,14 @@ func Builds(dists []string) (r []config.Build) {
 // https://goreleaser.com/customization/build/
 func Build(dist string) config.Build {
 	return config.Build{
-		ID:      dist,
-		Dir:     path.Join("distributions", dist, "_build"),
-		Binary:  dist,
-		Env:     []string{"CGO_ENABLED=0"},
-		Flags:   []string{"-trimpath"},
-		Ldflags: []string{"-s", "-w"},
-
+		ID:     dist,
+		Dir:    path.Join("distributions", dist, "_build"),
+		Binary: dist,
+		Env:    []string{"CGO_ENABLED=0"},
+		BuildDetails: config.BuildDetails{
+			Flags:   []string{"-trimpath"},
+			Ldflags: []string{"-s", "-w"},
+		},
 		Goos:   []string{"darwin", "linux", "windows"},
 		Goarch: architecturesForDist(dist),
 		Ignore: []config.IgnoredBuild{
