@@ -25,13 +25,11 @@ jobs:
           fetch-depth: 0
 
       - name: Setup QEMU
-        id: qemu
         uses: docker/setup-qemu-action@v2
         with:
           platforms: arm64
 
       - name: Setup Docker Buildx
-        id: buildx
         uses: docker/setup-buildx-action@v2
 
       - name: Setup Go
