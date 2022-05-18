@@ -94,6 +94,7 @@ processors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanmetricsprocessor v0.51.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor v0.51.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor v0.51.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.51.0
 
 receivers:
   - import: go.opentelemetry.io/collector/receiver/otlpreceiver
