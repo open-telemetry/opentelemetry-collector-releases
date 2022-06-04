@@ -22,7 +22,7 @@ import (
 
 var (
 	ImagePrefixes = []string{"otel", "ghcr.io/open-telemetry/opentelemetry-collector-releases"}
-	Architectures = []string{"386", "amd64", "arm64"}
+	Architectures = []string{"386", "amd64", "arm64", "arm"}
 
 	distsFlag = flag.String("d", "", "Collector distributions(s) to build, comma-separated")
 )
@@ -80,6 +80,8 @@ func Build(dist string) config.Build {
 		Goarch: Architectures,
 		Ignore: []config.IgnoredBuild{
 			{Goos: "darwin", Goarch: "386"},
+			{Goos: "darwin", Goarch: "arm"},
+			{Goos: "windows", Goarch: "arm"},
 			{Goos: "windows", Goarch: "arm64"},
 		},
 	}

@@ -13,10 +13,10 @@ builds:
   ignore:
   - goos: darwin
     goarch: "386"
-  - os: darwin
-    arch: arm
-  - os: windows
-    arch: arm    
+  - goos: darwin
+    goarch: arm
+  - goos: windows
+    goarch: arm
   - goos: windows
     goarch: arm64
   dir: distributions/otelcol/_build
@@ -41,10 +41,10 @@ builds:
   ignore:
   - goos: darwin
     goarch: "386"
-  - os: darwin
-    arch: arm
-  - os: windows
-    arch: arm    
+  - goos: darwin
+    goarch: arm
+  - goos: windows
+    goarch: arm
   - goos: windows
     goarch: arm64
   dir: distributions/otelcol-contrib/_build
