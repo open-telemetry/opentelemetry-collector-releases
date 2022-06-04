@@ -9,9 +9,14 @@ builds:
   - "386"
   - amd64
   - arm64
+  - arm
   ignore:
   - goos: darwin
     goarch: "386"
+  - os: darwin
+    arch: arm
+  - os: windows
+    arch: arm    
   - goos: windows
     goarch: arm64
   dir: distributions/otelcol/_build
@@ -32,9 +37,14 @@ builds:
   - "386"
   - amd64
   - arm64
+  - arm
   ignore:
   - goos: darwin
     goarch: "386"
+  - os: darwin
+    arch: arm
+  - os: windows
+    arch: arm    
   - goos: windows
     goarch: arm64
   dir: distributions/otelcol-contrib/_build
@@ -164,6 +174,24 @@ dockers:
   - --label=org.opencontainers.image.source={{.GitURL}}
   use: buildx
 - goos: linux
+  goarch: arm
+  dockerfile: distributions/otelcol/Dockerfile
+  image_templates:
+  - otel/opentelemetry-collector:{{ .Version }}-arm
+  - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{
+    .Version }}-arm
+  extra_files:
+  - configs/otelcol.yaml
+  build_flag_templates:
+  - --pull
+  - --platform=linux/arm
+  - --label=org.opencontainers.image.created={{.Date}}
+  - --label=org.opencontainers.image.name={{.ProjectName}}
+  - --label=org.opencontainers.image.revision={{.FullCommit}}
+  - --label=org.opencontainers.image.version={{.Version}}
+  - --label=org.opencontainers.image.source={{.GitURL}}
+  use: buildx
+- goos: linux
   goarch: "386"
   dockerfile: distributions/otelcol-contrib/Dockerfile
   image_templates:
@@ -217,12 +245,31 @@ dockers:
   - --label=org.opencontainers.image.version={{.Version}}
   - --label=org.opencontainers.image.source={{.GitURL}}
   use: buildx
+- goos: linux
+  goarch: arm
+  dockerfile: distributions/otelcol-contrib/Dockerfile
+  image_templates:
+  - otel/opentelemetry-collector-contrib:{{ .Version }}-arm
+  - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{
+    .Version }}-arm
+  extra_files:
+  - configs/otelcol-contrib.yaml
+  build_flag_templates:
+  - --pull
+  - --platform=linux/arm
+  - --label=org.opencontainers.image.created={{.Date}}
+  - --label=org.opencontainers.image.name={{.ProjectName}}
+  - --label=org.opencontainers.image.revision={{.FullCommit}}
+  - --label=org.opencontainers.image.version={{.Version}}
+  - --label=org.opencontainers.image.source={{.GitURL}}
+  use: buildx
 docker_manifests:
 - name_template: otel/opentelemetry-collector:{{ .Version }}
   image_templates:
   - otel/opentelemetry-collector:{{ .Version }}-386
   - otel/opentelemetry-collector:{{ .Version }}-amd64
   - otel/opentelemetry-collector:{{ .Version }}-arm64
+  - otel/opentelemetry-collector:{{ .Version }}-arm
 - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{
     .Version }}
   image_templates:
@@ -232,11 +279,14 @@ docker_manifests:
     .Version }}-amd64
   - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{
     .Version }}-arm64
+  - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{
+    .Version }}-arm
 - name_template: otel/opentelemetry-collector-contrib:{{ .Version }}
   image_templates:
   - otel/opentelemetry-collector-contrib:{{ .Version }}-386
   - otel/opentelemetry-collector-contrib:{{ .Version }}-amd64
   - otel/opentelemetry-collector-contrib:{{ .Version }}-arm64
+  - otel/opentelemetry-collector-contrib:{{ .Version }}-arm
 - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{
     .Version }}
   image_templates:
@@ -246,3 +296,5 @@ docker_manifests:
     .Version }}-amd64
   - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{
     .Version }}-arm64
+  - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{
+    .Version }}-arm
