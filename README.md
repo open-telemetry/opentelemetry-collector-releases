@@ -5,7 +5,7 @@ This repository assembles OpenTelemetry Collector distributions, such as the "co
 Each distribution contains:
 
 - Binaries for a multitude of platforms and architectures
-- Multi-arch container images (x86_64 and arm64)
+- Multi-arch container images (x86_64, 386, arm64 and arm)
 - Packages to be used with Linux distributions (apk, RPM, deb), Mac OS (brew)
 
 More details about each individual distribution can be seen in its own readme files.
