@@ -51,6 +51,7 @@ exporters:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.54.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudexporter v0.54.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudpubsubexporter v0.54.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlemanagedprometheusexporter v0.54.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/honeycombexporter v0.54.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/humioexporter v0.54.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/influxdbexporter v0.54.0
