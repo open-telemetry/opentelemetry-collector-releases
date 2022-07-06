@@ -101,6 +101,7 @@ processors:
 receivers:
   - import: go.opentelemetry.io/collector/receiver/otlpreceiver
     gomod: go.opentelemetry.io/collector v0.54.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/flinkmetricsreceiver v0.54.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/apachereceiver v0.54.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver v0.54.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.54.0
