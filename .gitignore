@@ -3,3 +3,4 @@ vendor
 dist/
 .idea
 .generated-yaml/
+.vscode
