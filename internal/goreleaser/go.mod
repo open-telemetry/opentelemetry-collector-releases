@@ -1,14 +1,10 @@
-// Deprecated: will be removed in next minor version
-module github.com/open-telemetry/opentelemetry-collector-releases
+module github.com/open-telemetry/opentelemetry-collector-releases/internal/goreleaser
 
 go 1.17
-
-replace github.com/open-telemetry/opentelemetry-collector-releases/internal/goreleaser => ./internal/goreleaser
 
 require (
 	github.com/goreleaser/goreleaser v1.9.2
 	github.com/goreleaser/nfpm/v2 v2.16.0
-	github.com/open-telemetry/opentelemetry-collector-releases/internal/goreleaser v0.0.0-00010101000000-000000000000
 	gopkg.in/yaml.v2 v2.4.0
 )
 
