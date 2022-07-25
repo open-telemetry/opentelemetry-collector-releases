@@ -55,7 +55,7 @@ make goreleaser-verify
 
 #### Building multi-architecture Docker images
 
-goreleaser will build Docker images for x86_64 and arm64 processors. The build process involves executing `RUN` steps on the target architecture, which means the system you run it on needs support for emulating foreign architectures.
+goreleaser will build Docker images for x86_64, 386 arm64 and arm processors. The build process involves executing `RUN` steps on the target architecture, which means the system you run it on needs support for emulating foreign architectures.
 
 This is accomplished by installing [qemu](https://www.qemu.org/), and then [enabling support](https://github.com/multiarch/qemu-user-static#readme) for qemu within Docker:
 
