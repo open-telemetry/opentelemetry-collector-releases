@@ -17,22 +17,15 @@ import (
 
 	"github.com/goreleaser/goreleaser/pkg/config"
 	"github.com/goreleaser/nfpm/v2/files"
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 )
 
 var (
 	ImagePrefixes = []string{"otel", "ghcr.io/open-telemetry/opentelemetry-collector-releases"}
+	Architectures = []string{"386", "amd64", "arm64"}
 
 	distsFlag = flag.String("d", "", "Collector distributions(s) to build, comma-separated")
 )
-
-func architecturesForDist(dist string) []string {
-	architectures := []string{"386", "amd64", "arm64"}
-	if dist == "otelcol-contrib" {
-		architectures = []string{"amd64", "arm64"}
-	}
-	return architectures
-}
 
 func main() {
 	flag.Parse()
@@ -75,15 +68,16 @@ func Builds(dists []string) (r []config.Build) {
 // https://goreleaser.com/customization/build/
 func Build(dist string) config.Build {
 	return config.Build{
-		ID:      dist,
-		Dir:     path.Join("distributions", dist, "_build"),
-		Binary:  dist,
-		Env:     []string{"CGO_ENABLED=0"},
-		Flags:   []string{"-trimpath"},
-		Ldflags: []string{"-s", "-w"},
-
+		ID:     dist,
+		Dir:    path.Join("distributions", dist, "_build"),
+		Binary: dist,
+		Env:    []string{"CGO_ENABLED=0"},
+		BuildDetails: config.BuildDetails{
+			Flags:   []string{"-trimpath"},
+			Ldflags: []string{"-s", "-w"},
+		},
 		Goos:   []string{"darwin", "linux", "windows"},
-		Goarch: architecturesForDist(dist),
+		Goarch: Architectures,
 		Ignore: []config.IgnoredBuild{
 			{Goos: "darwin", Goarch: "386"},
 			{Goos: "windows", Goarch: "arm64"},
@@ -156,7 +150,7 @@ func Package(dist string) config.NFPM {
 
 func DockerImages(imagePrefixes, dists []string) (r []config.Docker) {
 	for _, dist := range dists {
-		for _, arch := range architecturesForDist(dist) {
+		for _, arch := range Architectures {
 			r = append(r, DockerImage(imagePrefixes, dist, arch))
 		}
 	}
@@ -210,7 +204,7 @@ func DockerManifests(imagePrefixes, dists []string) (r []config.DockerManifest) 
 func DockerManifest(imagePrefixes []string, dist string) (manifests []config.DockerManifest) {
 	for _, prefix := range imagePrefixes {
 		var imageTemplates []string
-		for _, arch := range architecturesForDist(dist) {
+		for _, arch := range Architectures {
 			imageTemplates = append(
 				imageTemplates,
 				fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName(dist), arch),
