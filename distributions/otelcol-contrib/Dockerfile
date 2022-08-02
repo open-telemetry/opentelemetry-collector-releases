@@ -12,6 +12,7 @@ FROM scratch
 ARG USER_UID=10001
 USER ${USER_UID}
 
+COPY --from=certs /etc/os-release etc/os-release
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=otelcol-contrib /otelcol-contrib /
 COPY configs/otelcol-contrib.yaml /etc/otelcol-contrib/config.yaml
