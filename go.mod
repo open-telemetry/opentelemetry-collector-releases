@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/goreleaser/goreleaser v1.9.2
-	github.com/goreleaser/nfpm/v2 v2.16.0
+	github.com/goreleaser/nfpm/v2 v2.17.0
 	gopkg.in/yaml.v2 v2.4.0
 )
 
