@@ -48,3 +48,10 @@ jobs:
           args: release --rm-dist --timeout 1h
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push latest Docker tag
+        run: |
+          ./scripts/push-latest.sh otel/opentelemetry-collector ${{ github.ref_name }}
+          ./scripts/push-latest.sh otel/opentelemetry-collector-contrib ${{ github.ref_name }}
+          ./scripts/push-latest.sh ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector ${{ github.ref_name }}
+          ./scripts/push-latest.sh ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contib ${{ github.ref_name }}
