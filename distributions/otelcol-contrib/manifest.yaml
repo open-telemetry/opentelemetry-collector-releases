@@ -15,6 +15,7 @@ extensions:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.57.2
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/basicauthextension v0.57.2
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/bearertokenauthextension v0.57.2
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/headerssetter v0.57.2
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.57.2
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/httpforwarder v0.57.2
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/oauth2clientauthextension v0.57.2
