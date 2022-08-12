@@ -17,13 +17,13 @@ builds:
     goarch: arm64
   dir: distributions/otelcol/_build
   binary: otelcol
-  env:
-  - CGO_ENABLED=0
   ldflags:
   - -s
   - -w
   flags:
   - -trimpath
+  env:
+  - CGO_ENABLED=0
 - id: otelcol-contrib
   goos:
   - darwin
@@ -41,13 +41,13 @@ builds:
     goarch: arm64
   dir: distributions/otelcol-contrib/_build
   binary: otelcol-contrib
-  env:
-  - CGO_ENABLED=0
   ldflags:
   - -s
   - -w
   flags:
   - -trimpath
+  env:
+  - CGO_ENABLED=0
 archives:
 - id: otelcol
   builds:
