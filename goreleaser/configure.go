@@ -71,8 +71,8 @@ func Build(dist string) config.Build {
 		ID:     dist,
 		Dir:    path.Join("distributions", dist, "_build"),
 		Binary: dist,
-		Env:    []string{"CGO_ENABLED=0"},
 		BuildDetails: config.BuildDetails{
+			Env:     []string{"CGO_ENABLED=0"},
 			Flags:   []string{"-trimpath"},
 			Ldflags: []string{"-s", "-w"},
 		},
