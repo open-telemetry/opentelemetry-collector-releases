@@ -2,9 +2,9 @@ dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/core
   name: otelcol
   description: OpenTelemetry Collector
-  version: 0.58.0
+  version: 0.59.0
   output_path: ./_build
-  otelcol_version: 0.58.0
+  otelcol_version: 0.59.0
 
 receivers:
   - import: go.opentelemetry.io/collector/receiver/otlpreceiver
