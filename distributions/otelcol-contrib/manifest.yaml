@@ -170,3 +170,8 @@ replaces:
   - github.com/googleapis/gnostic v0.5.6 => github.com/googleapis/gnostic v0.5.5
   # See https://github.com/open-telemetry/opentelemetry-collector-contrib/pull/12322#issuecomment-1185029670
   - github.com/docker/go-connections v0.4.1-0.20210727194412-58542c764a11 => github.com/docker/go-connections v0.4.0
+
+  # the Loki translator attempts to bring something like v1.8.2-0.20220303173753-edfe657b5405, which is older than v0.38.0
+  # at the time of this inclusion, v0.38.0 was the latest version available (also tagged as v2.38.0)
+  # see https://github.com/open-telemetry/opentelemetry-collector-contrib/pull/14106
+  - github.com/prometheus/prometheus => github.com/prometheus/prometheus v0.38.0
