@@ -1,6 +1,6 @@
 module github.com/open-telemetry/opentelemetry-collector-releases
 
-go 1.17
+go 1.18
 
 require (
 	github.com/goreleaser/goreleaser v1.11.4
