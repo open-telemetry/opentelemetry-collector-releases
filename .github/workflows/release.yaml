@@ -30,7 +30,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: sigstore/cosign-installer@v2
+      - uses: sigstore/cosign-installer@v3
+
+      - uses: anchore/sbom-action/download-syft@v0.14.3
 
       - uses: docker/setup-qemu-action@v3
         with:
@@ -73,7 +75,7 @@ jobs:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-          COSIGN_EXPERIMENTAL: true
+          COSIGN_YES: true
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
       - uses: actions/upload-artifact@v3
@@ -96,7 +98,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: sigstore/cosign-installer@v2
+      - uses: sigstore/cosign-installer@v3
 
       - uses: anchore/sbom-action/download-syft@v0.14.3
 
@@ -134,5 +136,5 @@ jobs:
           args: continue --merge --timeout 2h
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COSIGN_EXPERIMENTAL: true
+          COSIGN_YES: true
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}

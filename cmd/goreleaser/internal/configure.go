@@ -42,12 +42,15 @@ func Generate(imagePrefixes []string, dists []string) config.Project {
 		Checksum: config.Checksum{
 			NameTemplate: "{{ .ProjectName }}_checksums.txt",
 		},
-
+		Env:             []string{"COSIGN_YES=true"},
 		Builds:          Builds(dists),
 		Archives:        Archives(dists),
 		NFPMs:           Packages(dists),
 		Dockers:         DockerImages(imagePrefixes, dists),
 		DockerManifests: DockerManifests(imagePrefixes, dists),
+		Signs:           Sign(),
+		DockerSigns:     DockerSigns(),
+		SBOMs:           SBOM(),
 	}
 }
 
@@ -252,5 +255,49 @@ func archName(arch, armVersion string) string {
 		return fmt.Sprintf("%s/v%s", arch, armVersion)
 	default:
 		return arch
+	}
+}
+
+func Sign() []config.Sign {
+	return []config.Sign{
+		{
+			Artifacts:   "all",
+			Signature:   "${artifact}.sig",
+			Certificate: "${artifact}.pem",
+			Cmd:         "cosign",
+			Args: []string{
+				"sign-blob",
+				"--output-signature",
+				"${artifact}.sig",
+				"--output-certificate",
+				"${artifact}.pem",
+				"${artifact}",
+			},
+		},
+	}
+}
+
+func DockerSigns() []config.Sign {
+	return []config.Sign{
+		{
+			Artifacts: "all",
+			Args: []string{
+				"sign",
+				"${artifact}",
+			},
+		},
+	}
+}
+
+func SBOM() []config.SBOM {
+	return []config.SBOM{
+		{
+			ID:        "archive",
+			Artifacts: "archive",
+		},
+		{
+			ID:        "package",
+			Artifacts: "package",
+		},
 	}
 }
