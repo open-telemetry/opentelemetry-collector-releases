@@ -2,15 +2,15 @@ dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/contrib
   name: otelcol-contrib
   description: OpenTelemetry Collector Contrib
-  version: 0.62.0
+  version: 0.62.1
   output_path: ./_build
-  otelcol_version: 0.62.0
+  otelcol_version: 0.62.1
 
 extensions:
   - import: go.opentelemetry.io/collector/extension/zpagesextension
-    gomod: go.opentelemetry.io/collector v0.62.0
+    gomod: go.opentelemetry.io/collector v0.62.1
   - import: go.opentelemetry.io/collector/extension/ballastextension
-    gomod: go.opentelemetry.io/collector v0.62.0
+    gomod: go.opentelemetry.io/collector v0.62.1
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/asapauthextension v0.62.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.62.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/basicauthextension v0.62.0
@@ -30,11 +30,11 @@ extensions:
 
 exporters:
   - import: go.opentelemetry.io/collector/exporter/loggingexporter
-    gomod: go.opentelemetry.io/collector v0.62.0
+    gomod: go.opentelemetry.io/collector v0.62.1
   - import: go.opentelemetry.io/collector/exporter/otlpexporter
-    gomod: go.opentelemetry.io/collector v0.62.0
+    gomod: go.opentelemetry.io/collector v0.62.1
   - import: go.opentelemetry.io/collector/exporter/otlphttpexporter
-    gomod: go.opentelemetry.io/collector v0.62.0
+    gomod: go.opentelemetry.io/collector v0.62.1
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/alibabacloudlogserviceexporter v0.62.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awscloudwatchlogsexporter v0.62.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.62.0
@@ -79,9 +79,9 @@ exporters:
 
 processors:
   - import: go.opentelemetry.io/collector/processor/batchprocessor
-    gomod: go.opentelemetry.io/collector v0.62.0
+    gomod: go.opentelemetry.io/collector v0.62.1
   - import: go.opentelemetry.io/collector/processor/memorylimiterprocessor
-    gomod: go.opentelemetry.io/collector v0.62.0
+    gomod: go.opentelemetry.io/collector v0.62.1
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.62.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor v0.62.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor v0.62.0
@@ -103,7 +103,7 @@ processors:
 
 receivers:
   - import: go.opentelemetry.io/collector/receiver/otlpreceiver
-    gomod: go.opentelemetry.io/collector v0.62.0
+    gomod: go.opentelemetry.io/collector v0.62.1
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/activedirectorydsreceiver v0.62.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/aerospikereceiver v0.62.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/apachereceiver v0.62.0
