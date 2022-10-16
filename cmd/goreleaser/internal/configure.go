@@ -156,6 +156,7 @@ func DockerImage(imagePrefixes []string, dist, arch string) config.Docker {
 		imageTemplates = append(
 			imageTemplates,
 			fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName(dist), arch),
+			fmt.Sprintf("%s/%s:latest-%s", prefix, imageName(dist), arch),
 		)
 	}
 
@@ -185,29 +186,29 @@ func DockerImage(imagePrefixes []string, dist, arch string) config.Docker {
 
 func DockerManifests(imagePrefixes, dists []string) (r []config.DockerManifest) {
 	for _, dist := range dists {
-		r = append(r, DockerManifest(imagePrefixes, dist)...)
+		for _, prefix := range imagePrefixes {
+			r = append(r, DockerManifest(prefix, `{{ .Version }}`, dist))
+			r = append(r, DockerManifest(prefix, "latest", dist))
+		}
 	}
 	return
 }
 
 // DockerManifest configures goreleaser to build a multi-arch container image manifest.
 // https://goreleaser.com/customization/docker_manifest/
-func DockerManifest(imagePrefixes []string, dist string) (manifests []config.DockerManifest) {
-	for _, prefix := range imagePrefixes {
-		var imageTemplates []string
-		for _, arch := range Architectures {
-			imageTemplates = append(
-				imageTemplates,
-				fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName(dist), arch),
-			)
-		}
-
-		manifests = append(manifests, config.DockerManifest{
-			NameTemplate:   fmt.Sprintf("%s/%s:{{ .Version }}", prefix, imageName(dist)),
-			ImageTemplates: imageTemplates,
-		})
+func DockerManifest(prefix, version, dist string) config.DockerManifest {
+	var imageTemplates []string
+	for _, arch := range Architectures {
+		imageTemplates = append(
+			imageTemplates,
+			fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist), version, arch),
+		)
 	}
-	return
+
+	return config.DockerManifest{
+		NameTemplate:   fmt.Sprintf("%s/%s:%s", prefix, imageName(dist), version),
+		ImageTemplates: imageTemplates,
+	}
 }
 
 // imageName translates a distribution name to a container image name.
