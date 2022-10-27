@@ -9,7 +9,7 @@ As this distribution contains many components, it is a good starting point to tr
 * reduce the size of the collector, reducing deployment times for the collector
 * improve the security of the collector by reducing the available attack surface area
 
-Building a custom collector can be achieved using the [OpenTelemetry Collector Builder](https://github.com/open-telemetry/opentelemetry-collector/tree/main/cmd/builder).
+Building a [custom collector](https://opentelemetry.io/docs/collector/custom-collector/) can be achieved using the [OpenTelemetry Collector Builder](https://github.com/open-telemetry/opentelemetry-collector/tree/main/cmd/builder).
 
 ## Components
 
