@@ -16,8 +16,8 @@ github.com/goreleaser/fileglob v1.3.0 h1:/X6J7U8lbDpQtBvGcwwPS6OpzkNVlVEsFUVRx9+
 github.com/goreleaser/fileglob v1.3.0/go.mod h1:Jx6BoXv3mbYkEzwm9THo7xbr5egkAraxkGorbJb4RxU=
 github.com/goreleaser/goreleaser v1.12.3 h1:sTJXdkGQO9eAP6pwEUazaD6ERJewZ7yzQexWEGPUVg4=
 github.com/goreleaser/goreleaser v1.12.3/go.mod h1:eBdKNaOsGUZWcSgXdMQliud+CiQhhO0m4cgSjb+S1ms=
-github.com/goreleaser/nfpm/v2 v2.20.0 h1:Q/CrX54KUMluz6+M/pjTbknFd5Dao8qXi0C6ZuFCtfY=
-github.com/goreleaser/nfpm/v2 v2.20.0/go.mod h1:/Fh6XfwT/T+D4qtNC2iXmHSD/1UT20JkvBXyJ6nFmOY=
+github.com/goreleaser/nfpm/v2 v2.21.0 h1:zpj6IF8QlPuxVlrGw4F/VwG+fAWL4hjs3LQWCA4UAUs=
+github.com/goreleaser/nfpm/v2 v2.21.0/go.mod h1:TbVnjb/AJL/LwuQkLxfgG34fZTWM1LnScNHQroTNYO8=
 github.com/iancoleman/orderedmap v0.0.0-20190318233801-ac98e3ecb4b0/go.mod h1:N0Wam8K1arqPXNWjMo21EXnBPOPp36vB07FNRdD2geA=
 github.com/iancoleman/orderedmap v0.2.0 h1:sq1N/TFpYH++aViPcaKjys3bDClUEU7s5B+z6jq8pNA=
 github.com/iancoleman/orderedmap v0.2.0/go.mod h1:N0Wam8K1arqPXNWjMo21EXnBPOPp36vB07FNRdD2geA=
@@ -59,7 +59,7 @@ github.com/rogpeppe/go-internal v1.6.1 h1:/FiVV8dS/e+YqF2JvO3yXRFbBLTIuSDkuC7aBO
 github.com/rogpeppe/go-internal v1.6.1/go.mod h1:xXDCJY+GAPziupqXw64V24skbSoqbTEfhy4qGm1nDQc=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.1-0.20190311161405-34c6fa2dc709/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
-github.com/stretchr/testify v1.8.0 h1:pSgiaMZlXftHpm5L7V1+rVB+AZJydKsMxsQBIJw4PKk=
+github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
 golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20220209214540-3681064d5158/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
