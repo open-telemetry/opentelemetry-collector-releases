@@ -3,8 +3,8 @@ module github.com/open-telemetry/opentelemetry-collector-releases
 go 1.18
 
 require (
-	github.com/goreleaser/goreleaser v1.12.3
-	github.com/goreleaser/nfpm/v2 v2.21.0
+	github.com/goreleaser/goreleaser v1.13.0
+	github.com/goreleaser/nfpm/v2 v2.22.1
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -15,7 +15,7 @@ require (
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/goreleaser/fileglob v1.3.0 // indirect
 	github.com/iancoleman/orderedmap v0.2.0 // indirect
-	github.com/invopop/jsonschema v0.6.0 // indirect
+	github.com/invopop/jsonschema v0.7.0 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
