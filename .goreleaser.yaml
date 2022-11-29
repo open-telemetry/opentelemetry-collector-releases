@@ -59,6 +59,8 @@ archives:
       name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
     - package_name: otelcol
+      dependencies:
+        - /bin/sh
       contents:
         - src: distributions/otelcol/otelcol.service
           dst: /lib/systemd/system/otelcol.service
@@ -83,6 +85,8 @@ nfpms:
       description: OpenTelemetry Collector - otelcol
       license: Apache 2.0
     - package_name: otelcol-contrib
+      dependencies:
+        - /bin/sh
       contents:
         - src: distributions/otelcol-contrib/otelcol-contrib.service
           dst: /lib/systemd/system/otelcol-contrib.service
