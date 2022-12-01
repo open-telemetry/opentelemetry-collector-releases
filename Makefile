@@ -64,14 +64,11 @@ goreleaser:
 		fi \
 	}
 
-.PHONY: add-tag
-add-tag:
+REMOTE?=git@github.com:open-telemetry/opentelemetry-collector-release.git
+.PHONY: push-tags
+push-tags:
 	@[ "${TAG}" ] || ( echo ">> env var TAG is not set"; exit 1 )
 	@echo "Adding tag ${TAG}"
 	@git tag -a ${TAG} -s -m "Version ${TAG}"
-
-.PHONY: push-tag
-push-tag:
-	@[ "${TAG}" ] || ( echo ">> env var TAG is not set"; exit 1 )
 	@echo "Pushing tag ${TAG}"
-	@git push git@github.com:open-telemetry/opentelemetry-collector-releases.git ${TAG}
+	@git push ${REMOTE} ${TAG}
