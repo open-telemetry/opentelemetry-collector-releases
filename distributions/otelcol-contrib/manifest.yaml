@@ -62,6 +62,7 @@ exporters:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.67.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.67.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/pulsarexporter v0.67.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/purefareceiver v0.67.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.67.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sentryexporter v0.67.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.67.0
@@ -142,6 +143,7 @@ receivers:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/podmanreceiver v0.67.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver v0.67.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.67.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/purefareceiver v0.67.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/rabbitmqreceiver v0.67.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/receivercreator v0.67.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/redisreceiver v0.67.0
