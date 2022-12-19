@@ -43,7 +43,7 @@ jobs:
         run: make generate-sources
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v3
+        uses: goreleaser/goreleaser-action@v4
         with:
           version: latest
           args: --snapshot --rm-dist --skip-sign --skip-sbom --timeout 2h
