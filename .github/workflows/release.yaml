@@ -129,7 +129,7 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: latest
-          args: continue --merge --rm-dist --timeout 2h
+          args: continue --merge --timeout 2h
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_EXPERIMENTAL: true
