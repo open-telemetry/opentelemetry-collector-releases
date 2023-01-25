@@ -57,7 +57,7 @@ exporters:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter v0.70.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.70.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/lokiexporter v0.70.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/mezmoexporter v0.70.0
+  - gomod: github.com/logdna/opentelemetry-collector-contrib/exporter/mezmoexporter v0.0.0-20230125034916-9d2569399aa1
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/opencensusexporter v0.70.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.70.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.70.0
