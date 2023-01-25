@@ -145,6 +145,7 @@ receivers:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/postgresqlreceiver v0.70.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.70.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/purefareceiver v0.70.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/purefbreceiver v0.70.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/rabbitmqreceiver v0.70.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/receivercreator v0.70.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/redisreceiver v0.70.0
