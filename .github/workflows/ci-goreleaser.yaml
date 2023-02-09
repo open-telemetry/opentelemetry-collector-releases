@@ -17,6 +17,9 @@ on:
 jobs:
   check-goreleaser:
     name: Check GoReleaser Configuration
+    strategy:
+      matrix:
+        GOOS: [linux, windows, darwin]
     runs-on: ubuntu-20.04
 
     steps:
@@ -45,5 +48,9 @@ jobs:
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
+          distribution: goreleaser-pro
           version: latest
           args: --snapshot --rm-dist --skip-sign --skip-sbom --timeout 2h
+        env:
+          GOOS: ${{ matrix.GOOS }}
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
