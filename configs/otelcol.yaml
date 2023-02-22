@@ -36,7 +36,7 @@ processors:
 
 exporters:
   logging:
-    logLevel: debug
+    verbosity: detailed
 
 service:
 
