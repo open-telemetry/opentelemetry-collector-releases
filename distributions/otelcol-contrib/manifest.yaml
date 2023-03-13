@@ -186,3 +186,5 @@ replaces:
   - github.com/docker/go-connections v0.4.1-0.20210727194412-58542c764a11 => github.com/docker/go-connections v0.4.0
   # see https://github.com/mattn/go-ieproxy/issues/45
   - github.com/mattn/go-ieproxy => github.com/mattn/go-ieproxy v0.0.1
+  # component was merged into contrib after v0.73.0 was released, remove this when releasing 0.74.0
+  - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/cloudflarereceiver => github.com/open-telemetry/opentelemetry-collector-contrib/receiver/cloudflarereceiver v0.0.0-20230313204356-4f27accf111d
