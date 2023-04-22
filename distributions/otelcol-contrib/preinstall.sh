@@ -14,4 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-getent passwd otelcol-contrib >/dev/null || useradd --system --user-group --no-create-home --shell /sbin/nologin otelcol-contrib
+getent passwd otelcol-contrib >/dev/null || useradd --system --user-group --groups systemd-journal --no-create-home --shell /sbin/nologin otelcol-contrib
