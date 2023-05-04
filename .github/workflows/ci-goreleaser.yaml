@@ -39,7 +39,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
-          go-version: '~1.19.6'
+          go-version: '~1.19.9'
           check-latest: true
 
       - name: Generate the sources
