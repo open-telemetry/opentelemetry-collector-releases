@@ -60,7 +60,7 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: latest
-          args: release --rm-dist --split --timeout 2h
+          args: release --clean --split --timeout 2h
         env:
           GOOS: ${{ matrix.GOOS }}
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
