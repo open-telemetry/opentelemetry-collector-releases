@@ -22,7 +22,7 @@ generate-sources: go ocb
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER} -g ${GO}
 
 goreleaser-verify: goreleaser
-	@${GORELEASER} release --snapshot --rm-dist
+	@${GORELEASER} release --snapshot --clean
 
 ensure-goreleaser-up-to-date: generate-goreleaser
 	@git diff -s --exit-code .goreleaser.yaml || (echo "Build failed: The goreleaser templates have changed but the .goreleaser.yaml hasn't. Run 'make generate-goreleaser' and update your PR." && exit 1)
