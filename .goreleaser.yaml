@@ -1,4 +1,13 @@
 project_name: opentelemetry-collector-releases
+partial:
+  # By what you want to build the partial things.
+  #
+  # Valid options are `target` and `goos`:
+  # - `target`: `GOOS` + `GOARCH`.
+  # - `goos`: `GOOS` only
+  #
+  # Default: `goos`.
+  by: target
 builds:
     - id: otelcol
       goos:
