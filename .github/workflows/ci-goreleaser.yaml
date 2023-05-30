@@ -20,12 +20,6 @@ jobs:
     strategy:
       matrix:
         GOOS: [linux, windows, darwin]
-        GOARCH: ["386", amd64, arm64, ppc64le]
-        exclude:
-          - GOOS: darwin
-            GOARCH: "386"
-          - GOOS: windows
-            GOARCH: arm64
     runs-on: ubuntu-20.04
 
     steps:
@@ -59,5 +53,4 @@ jobs:
           args: --snapshot --clean --skip-sign --skip-sbom --timeout 2h --split
         env:
           GOOS: ${{ matrix.GOOS }}
-          GOARCH: ${{ matrix.GOARCH }}
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
