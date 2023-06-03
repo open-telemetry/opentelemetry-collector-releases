@@ -28,9 +28,12 @@ import (
 	"github.com/goreleaser/nfpm/v2/files"
 )
 
+const ArmArch = "arm"
+
 var (
 	ImagePrefixes = []string{"otel", "ghcr.io/open-telemetry/opentelemetry-collector-releases"}
 	Architectures = []string{"386", "amd64", "arm", "arm64", "ppc64le"}
+	ArmVersions   = []string{"7"}
 )
 
 func Generate(imagePrefixes []string, dists []string) config.Project {
@@ -69,6 +72,7 @@ func Build(dist string) config.Build {
 		},
 		Goos:   []string{"darwin", "linux", "windows"},
 		Goarch: Architectures,
+		Goarm:  ArmVersions,
 		Ignore: []config.IgnoredBuild{
 			{Goos: "darwin", Goarch: "386"},
 			{Goos: "darwin", Goarch: "arm"},
@@ -144,7 +148,14 @@ func Package(dist string) config.NFPM {
 func DockerImages(imagePrefixes, dists []string) (r []config.Docker) {
 	for _, dist := range dists {
 		for _, arch := range Architectures {
-			r = append(r, DockerImage(imagePrefixes, dist, arch))
+			switch arch {
+			case ArmArch:
+				for _, vers := range ArmVersions {
+					r = append(r, DockerImage(imagePrefixes, dist, arch, vers))
+				}
+			default:
+				r = append(r, DockerImage(imagePrefixes, dist, arch, ""))
+			}
 		}
 	}
 	return
@@ -152,13 +163,14 @@ func DockerImages(imagePrefixes, dists []string) (r []config.Docker) {
 
 // DockerImage configures goreleaser to build a container image.
 // https://goreleaser.com/customization/docker/
-func DockerImage(imagePrefixes []string, dist, arch string) config.Docker {
+func DockerImage(imagePrefixes []string, dist, arch, armVersion string) config.Docker {
+	dockerArchName := archName(arch, armVersion)
 	var imageTemplates []string
 	for _, prefix := range imagePrefixes {
 		imageTemplates = append(
 			imageTemplates,
-			fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName(dist), arch),
-			fmt.Sprintf("%s/%s:latest-%s", prefix, imageName(dist), arch),
+			fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName(dist), dockerArchName),
+			fmt.Sprintf("%s/%s:latest-%s", prefix, imageName(dist), dockerArchName),
 		)
 	}
 
@@ -173,7 +185,7 @@ func DockerImage(imagePrefixes []string, dist, arch string) config.Docker {
 		Use: "buildx",
 		BuildFlagTemplates: []string{
 			"--pull",
-			fmt.Sprintf("--platform=linux/%s", arch),
+			fmt.Sprintf("--platform=linux/%s", dockerArchName),
 			label("created", ".Date"),
 			label("name", ".ProjectName"),
 			label("revision", ".FullCommit"),
@@ -183,6 +195,7 @@ func DockerImage(imagePrefixes []string, dist, arch string) config.Docker {
 		Files:  []string{path.Join("configs", fmt.Sprintf("%s.yaml", dist))},
 		Goos:   "linux",
 		Goarch: arch,
+		Goarm:  armVersion,
 	}
 }
 
@@ -201,10 +214,20 @@ func DockerManifests(imagePrefixes, dists []string) (r []config.DockerManifest) 
 func DockerManifest(prefix, version, dist string) config.DockerManifest {
 	var imageTemplates []string
 	for _, arch := range Architectures {
-		imageTemplates = append(
-			imageTemplates,
-			fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist), version, arch),
-		)
+		switch arch {
+		case ArmArch:
+			for _, armVers := range ArmVersions {
+				imageTemplates = append(
+					imageTemplates,
+					fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist), version, archName(arch, armVers)),
+				)
+			}
+		default:
+			imageTemplates = append(
+				imageTemplates,
+				fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist), version, arch),
+			)
+		}
 	}
 
 	return config.DockerManifest{
@@ -216,4 +239,14 @@ func DockerManifest(prefix, version, dist string) config.DockerManifest {
 // imageName translates a distribution name to a container image name.
 func imageName(dist string) string {
 	return strings.Replace(dist, "otelcol", "opentelemetry-collector", 1)
+}
+
+// archName translates architecture to docker platform names.
+func archName(arch, armVersion string) string {
+	switch arch {
+	case ArmArch:
+		return fmt.Sprintf("%s/v%s", arch, armVersion)
+	default:
+		return arch
+	}
 }
