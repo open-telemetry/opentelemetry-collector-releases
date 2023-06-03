@@ -30,7 +30,7 @@ import (
 
 var (
 	ImagePrefixes = []string{"otel", "ghcr.io/open-telemetry/opentelemetry-collector-releases"}
-	Architectures = []string{"386", "amd64", "arm64", "ppc64le"}
+	Architectures = []string{"386", "amd64", "arm", "arm64", "ppc64le"}
 )
 
 func Generate(imagePrefixes []string, dists []string) config.Project {
@@ -71,6 +71,8 @@ func Build(dist string) config.Build {
 		Goarch: Architectures,
 		Ignore: []config.IgnoredBuild{
 			{Goos: "darwin", Goarch: "386"},
+			{Goos: "darwin", Goarch: "arm"},
+			{Goos: "windows", Goarch: "arm"},
 			{Goos: "windows", Goarch: "arm64"},
 		},
 	}

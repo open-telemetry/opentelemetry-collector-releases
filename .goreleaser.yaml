@@ -10,11 +10,16 @@ builds:
       goarch:
         - "386"
         - amd64
+        - arm
         - arm64
         - ppc64le
       ignore:
         - goos: darwin
           goarch: "386"
+        - goos: darwin
+          goarch: arm
+        - goos: windows
+          goarch: arm
         - goos: windows
           goarch: arm64
       dir: distributions/otelcol/_build
@@ -34,11 +39,16 @@ builds:
       goarch:
         - "386"
         - amd64
+        - arm
         - arm64
         - ppc64le
       ignore:
         - goos: darwin
           goarch: "386"
+        - goos: darwin
+          goarch: arm
+        - goos: windows
+          goarch: arm
         - goos: windows
           goarch: arm64
       dir: distributions/otelcol-contrib/_build
@@ -150,6 +160,25 @@ dockers:
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
     - goos: linux
+      goarch: arm
+      dockerfile: distributions/otelcol/Dockerfile
+      image_templates:
+        - otel/opentelemetry-collector:{{ .Version }}-arm32v7
+        - otel/opentelemetry-collector:latest-arm32v7
+        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-arm32v7
+        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-arm32v7
+      extra_files:
+        - configs/otelcol.yaml
+      build_flag_templates:
+        - --pull
+        - --platform=linux/arm/v7
+        - --label=org.opencontainers.image.created={{.Date}}
+        - --label=org.opencontainers.image.name={{.ProjectName}}
+        - --label=org.opencontainers.image.revision={{.FullCommit}}
+        - --label=org.opencontainers.image.version={{.Version}}
+        - --label=org.opencontainers.image.source={{.GitURL}}
+      use: buildx
+    - goos: linux
       goarch: arm64
       dockerfile: distributions/otelcol/Dockerfile
       image_templates:
@@ -226,6 +255,25 @@ dockers:
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
     - goos: linux
+      goarch: arm
+      dockerfile: distributions/otelcol-contrib/Dockerfile
+      image_templates:
+        - otel/opentelemetry-collector-contrib:{{ .Version }}-arm32v7
+        - otel/opentelemetry-collector-contrib:latest-arm32v7
+        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-arm32v7
+        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-arm32v7
+      extra_files:
+        - configs/otelcol-contrib.yaml
+      build_flag_templates:
+        - --pull
+        - --platform=linux/arm/v7
+        - --label=org.opencontainers.image.created={{.Date}}
+        - --label=org.opencontainers.image.name={{.ProjectName}}
+        - --label=org.opencontainers.image.revision={{.FullCommit}}
+        - --label=org.opencontainers.image.version={{.Version}}
+        - --label=org.opencontainers.image.source={{.GitURL}}
+      use: buildx    
+    - goos: linux
       goarch: arm64
       dockerfile: distributions/otelcol-contrib/Dockerfile
       image_templates:
@@ -268,47 +316,55 @@ docker_manifests:
       image_templates:
         - otel/opentelemetry-collector:{{ .Version }}-386
         - otel/opentelemetry-collector:{{ .Version }}-amd64
+        - otel/opentelemetry-collector:{{ .Version }}-arm32v7
         - otel/opentelemetry-collector:{{ .Version }}-arm64
         - otel/opentelemetry-collector:{{ .Version }}-ppc64le
     - name_template: otel/opentelemetry-collector:latest
       image_templates:
         - otel/opentelemetry-collector:latest-386
         - otel/opentelemetry-collector:latest-amd64
+        - otel/opentelemetry-collector:latest-arm32v7
         - otel/opentelemetry-collector:latest-arm64
         - otel/opentelemetry-collector:latest-ppc64le
     - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}
       image_templates:
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-386
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-amd64
+        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-arm32v7        
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-arm64
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-ppc64le
     - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest
       image_templates:
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-386
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-amd64
+        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-arm32v7        
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-arm64
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-ppc64le
     - name_template: otel/opentelemetry-collector-contrib:{{ .Version }}
       image_templates:
         - otel/opentelemetry-collector-contrib:{{ .Version }}-386
         - otel/opentelemetry-collector-contrib:{{ .Version }}-amd64
+        - otel/opentelemetry-collector-contrib:{{ .Version }}-arm32v7        
         - otel/opentelemetry-collector-contrib:{{ .Version }}-arm64
         - otel/opentelemetry-collector-contrib:{{ .Version }}-ppc64le
     - name_template: otel/opentelemetry-collector-contrib:latest
       image_templates:
         - otel/opentelemetry-collector-contrib:latest-386
         - otel/opentelemetry-collector-contrib:latest-amd64
+        - otel/opentelemetry-collector-contrib:latest-arm32v7        
         - otel/opentelemetry-collector-contrib:latest-arm64
         - otel/opentelemetry-collector-contrib:latest-ppc64le
     - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}
       image_templates:
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-386
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-amd64
+        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-arm32v7        
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-arm64
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-ppc64le
     - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest
       image_templates:
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-386
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-amd64
+        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-arm32v7        
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-arm64
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-ppc64le
