@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/goreleaser/goreleaser v1.18.2
-	github.com/goreleaser/nfpm/v2 v2.29.0
+	github.com/goreleaser/nfpm/v2 v2.30.1
 	gopkg.in/yaml.v3 v3.0.1
 )
 
