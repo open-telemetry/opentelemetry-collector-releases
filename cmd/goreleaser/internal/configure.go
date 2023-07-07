@@ -167,10 +167,11 @@ func DockerImage(imagePrefixes []string, dist, arch, armVersion string) config.D
 	dockerArchName := archName(arch, armVersion)
 	var imageTemplates []string
 	for _, prefix := range imagePrefixes {
+		dockerArchTag := strings.ReplaceAll(dockerArchName, "/", "")
 		imageTemplates = append(
 			imageTemplates,
-			fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName(dist), dockerArchName),
-			fmt.Sprintf("%s/%s:latest-%s", prefix, imageName(dist), dockerArchName),
+			fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName(dist), dockerArchTag),
+			fmt.Sprintf("%s/%s:latest-%s", prefix, imageName(dist), dockerArchTag),
 		)
 	}
 
@@ -217,9 +218,10 @@ func DockerManifest(prefix, version, dist string) config.DockerManifest {
 		switch arch {
 		case ArmArch:
 			for _, armVers := range ArmVersions {
+				dockerArchTag := strings.ReplaceAll(archName(arch, armVers), "/", "")
 				imageTemplates = append(
 					imageTemplates,
-					fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist), version, archName(arch, armVers)),
+					fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist), version, dockerArchTag),
 				)
 			}
 		default:
