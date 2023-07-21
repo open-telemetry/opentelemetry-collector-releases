@@ -17,8 +17,8 @@ github.com/goreleaser/fileglob v1.3.0 h1:/X6J7U8lbDpQtBvGcwwPS6OpzkNVlVEsFUVRx9+
 github.com/goreleaser/fileglob v1.3.0/go.mod h1:Jx6BoXv3mbYkEzwm9THo7xbr5egkAraxkGorbJb4RxU=
 github.com/goreleaser/goreleaser v1.19.2 h1:m24wCy0UzBTGO3zqezAxcoA87RBySRRL0dyJjiNfdjQ=
 github.com/goreleaser/goreleaser v1.19.2/go.mod h1:94HBElBUlnXzMZi9Yae1ev8WGeeh21RrxNWYBJW+cxU=
-github.com/goreleaser/nfpm/v2 v2.31.0 h1:cb8QSZ7tPnUlWPEdYcWwNWXiRvmVPznJ6LYiOIdOJ6Y=
-github.com/goreleaser/nfpm/v2 v2.31.0/go.mod h1:qlMQCbOTapyqRss16vAPwK/WAjWKdt0gY3vh4wipm8I=
+github.com/goreleaser/nfpm/v2 v2.32.0 h1:0eOOiSLGch55HvltFDfnd5Z0H28tO61YY6JaXznFKUc=
+github.com/goreleaser/nfpm/v2 v2.32.0/go.mod h1:EdmpSQzxrZRmsR25NJW1+RUD9vW5BY5qwIObxHX7U5c=
 github.com/iancoleman/orderedmap v0.0.0-20190318233801-ac98e3ecb4b0/go.mod h1:N0Wam8K1arqPXNWjMo21EXnBPOPp36vB07FNRdD2geA=
 github.com/iancoleman/orderedmap v0.2.0 h1:sq1N/TFpYH++aViPcaKjys3bDClUEU7s5B+z6jq8pNA=
 github.com/iancoleman/orderedmap v0.2.0/go.mod h1:N0Wam8K1arqPXNWjMo21EXnBPOPp36vB07FNRdD2geA=
