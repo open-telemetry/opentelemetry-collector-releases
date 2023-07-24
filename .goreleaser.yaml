@@ -1,12 +1,9 @@
-partial:
-  by: target
 project_name: opentelemetry-collector-releases
 builds:
     - id: otelcol
       goos:
         - darwin
         - linux
-        - windows
       goarch:
         - "386"
         - amd64
@@ -20,6 +17,27 @@ builds:
           goarch: "386"
         - goos: darwin
           goarch: arm
+      dir: distributions/otelcol/_build
+      binary: otelcol
+      ldflags:
+        - -s
+        - -w
+      flags:
+        - -trimpath
+      env:
+        - CGO_ENABLED=0
+    - id: otelcol-windows
+      goos:
+        - windows
+      goarch:
+        - "386"
+        - amd64
+        - arm
+        - arm64
+        - ppc64le
+      goarm:
+        - "7"
+      ignore:
         - goos: windows
           goarch: arm
         - goos: windows
@@ -37,7 +55,6 @@ builds:
       goos:
         - darwin
         - linux
-        - windows
       goarch:
         - "386"
         - amd64
@@ -51,6 +68,27 @@ builds:
           goarch: "386"
         - goos: darwin
           goarch: arm
+      dir: distributions/otelcol-contrib/_build
+      binary: otelcol-contrib
+      ldflags:
+        - -s
+        - -w
+      flags:
+        - -trimpath
+      env:
+        - CGO_ENABLED=0
+    - id: otelcol-contrib-windows
+      goos:
+        - windows
+      goarch:
+        - "386"
+        - amd64
+        - arm
+        - arm64
+        - ppc64le
+      goarm:
+        - "7"
+      ignore:
         - goos: windows
           goarch: arm
         - goos: windows
@@ -68,11 +106,25 @@ archives:
     - id: otelcol
       builds:
         - otelcol
+        - otelcol-windows
       name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
+      format: tar.gz
+    - id: otelcol-windows
+      builds:
+        - otelcol-windows
+      name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
+      format: zip
     - id: otelcol-contrib
       builds:
         - otelcol-contrib
+        - otelcol-contrib-windows
       name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
+      format: tar.gz
+    - id: otelcol-contrib-windows
+      builds:
+        - otelcol-contrib-windows
+      name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
+      format: zip
 nfpms:
     - package_name: otelcol
       contents:

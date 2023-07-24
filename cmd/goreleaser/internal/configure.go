@@ -53,7 +53,7 @@ func Generate(imagePrefixes []string, dists []string) config.Project {
 
 func Builds(dists []string) (r []config.Build) {
 	for _, dist := range dists {
-		r = append(r, Build(dist))
+		r = append(r, Build(dist), WindowsBuild(dist))
 	}
 	return
 }
@@ -70,12 +70,32 @@ func Build(dist string) config.Build {
 			Flags:   []string{"-trimpath"},
 			Ldflags: []string{"-s", "-w"},
 		},
-		Goos:   []string{"darwin", "linux", "windows"},
+		Goos:   []string{"darwin", "linux"},
 		Goarch: Architectures,
 		Goarm:  ArmVersions,
 		Ignore: []config.IgnoredBuild{
 			{Goos: "darwin", Goarch: "386"},
 			{Goos: "darwin", Goarch: "arm"},
+		},
+	}
+}
+
+// WindowsBuild configures a goreleaser build.
+// https://goreleaser.com/customization/build/
+func WindowsBuild(dist string) config.Build {
+	return config.Build{
+		ID:     fmt.Sprintf("%s-windows", dist),
+		Dir:    path.Join("distributions", dist, "_build"),
+		Binary: dist,
+		BuildDetails: config.BuildDetails{
+			Env:     []string{"CGO_ENABLED=0"},
+			Flags:   []string{"-trimpath"},
+			Ldflags: []string{"-s", "-w"},
+		},
+		Goos:   []string{"windows"},
+		Goarch: Architectures,
+		Goarm:  ArmVersions,
+		Ignore: []config.IgnoredBuild{
 			{Goos: "windows", Goarch: "arm"},
 			{Goos: "windows", Goarch: "arm64"},
 		},
@@ -84,7 +104,7 @@ func Build(dist string) config.Build {
 
 func Archives(dists []string) (r []config.Archive) {
 	for _, dist := range dists {
-		r = append(r, Archive(dist))
+		r = append(r, Archive(dist), WindowsZipArchive(dist))
 	}
 	return
 }
@@ -95,7 +115,19 @@ func Archive(dist string) config.Archive {
 	return config.Archive{
 		ID:           dist,
 		NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}",
-		Builds:       []string{dist},
+		Builds:       []string{dist, fmt.Sprintf("%s-windows", dist)},
+		Format:       "tar.gz",
+	}
+}
+
+// WindowsZipArchive configures a goreleaser archive (tarball).
+// https://goreleaser.com/customization/archive/
+func WindowsZipArchive(dist string) config.Archive {
+	return config.Archive{
+		ID:           fmt.Sprintf("%s-windows", dist),
+		NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}",
+		Builds:       []string{fmt.Sprintf("%s-windows", dist)},
+		Format:       "zip",
 	}
 }
 
