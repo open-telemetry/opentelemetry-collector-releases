@@ -31,3 +31,4 @@ Current list of distributions:
     - linux_amd64 and linux_arm64 container images
     - Packages to be used with Linux distributions (apk, RPM, deb), Mac OS (brew) for each distributed binary.
 
+Support for a distribution implies all the duties covered by the Approver and Maintainer role requirements. In addition, support means that the Collector SIG is the owner and maintainer of the binaries/images of the different Collector distributions and is responsible for the pipeline that produces those artifacts.
