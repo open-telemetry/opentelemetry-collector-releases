@@ -8,7 +8,7 @@ Each distribution contains:
 
 - Binaries for a multitude of platforms and architectures (at least linux_amd64, linux_arm64, windows_amd64 and darwin_arm64)
 - Multi-arch container images (at least amd64 and arm64)
-- Packages to be used with Linux distributions (apk, RPM, deb), Mac OS (brew) for the above mentioned architectures
+- Packages to be used with Linux distributions (apk, RPM, deb), Mac OS (brew) for the above-mentioned architectures
 
 More details about each individual distribution can be seen in its own readme files.
 
