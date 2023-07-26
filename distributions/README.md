@@ -4,7 +4,7 @@ Support for a distribution implies all the duties covered by the Approver and Ma
 
 Distributions supported by the Collector SIG should fulfill the following criteria:
 
-1. Support at least 1 distribution that includes support for Prometheus, Jaeger, Zipkin, and OpenCensus.
+1. Support at least one distribution that is recommended for production which includes support for Prometheus, Jaeger, Zipkin, and OpenCensus.
 2. Serve a specific purpose and those purposes should have minimal overlap.
 3. Meet general needs and not be too niche.
 4. Only target the needs of the OpenTelemetry project.
