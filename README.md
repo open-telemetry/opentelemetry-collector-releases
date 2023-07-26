@@ -8,7 +8,7 @@ Each distribution contains:
 
 - Binaries for a multitude of platforms and architectures (at least linux_amd64, linux_arm64, windows_amd64 and darwin_arm64)
 - Multi-arch container images (at least amd64 and arm64)
-- Packages to be used with Linux distributions (apk, RPM, deb), Mac OS (brew)
+- Packages to be used with Linux distributions (apk, RPM, deb), Mac OS (brew) for the above mentioned architectures
 
 More details about each individual distribution can be seen in its own readme files.
 
@@ -26,7 +26,7 @@ Current list of distributions:
 - Distributions supported by the Collector SIG are not required to be production ready and may be focused on development and proof of concept use cases.  The distribution should clearly indicate whether the Collector SIG considers it to be production ready.
 - Distributions supported by the Collector SIG must only include components from the `opentelemetry-collector` and `opentelemetry-collector-contrib` repositories.
 - Distributions supported by the Collector SIG should have a clearly defined list of criteria for which components are included.
-- Distributions supported by the Collector must include the following assets except where the specific purpose of the distribution is naturally associated with a subset of these assets. In such cases, it should be clearly stated which assets are skipped and why.  Additional asset may be included if the distro desires:
+- Distributions supported by the Collector SIG must include the following assets except where the specific purpose of the distribution is naturally associated with a subset of these assets. In such cases, it should be clearly stated which assets are skipped and why.  Additional asset may be included if the distro desires:
     - Binaries for linux_amd64, linux_arm64, windows_amd64 and darwin_arm64
     - linux_amd64 and linux_arm64 container images
     - Packages to be used with Linux distributions (apk, RPM, deb), Mac OS (brew) for each distributed binary.
