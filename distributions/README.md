@@ -7,8 +7,8 @@ The Collector SIG will support at least one distribution that is recommended for
 Distributions supported by the Collector SIG should fulfill the following criteria:
 
 1. Serve a specific purpose that has minimal overlap with the purpose of any other distribution.
-2. Meet general needs and not be too niche.
-3. Only target the needs of the OpenTelemetry project.
+2. Should meet general needs and be desired by many users.
+3. Should not be specific to any vendor.
 4. May be focused on development or proof of concept use cases.  The distribution should clearly indicate whether the Collector SIG recommends the distribution be used in production environments.
 5. Must only include components from the `opentelemetry-collector` and `opentelemetry-collector-contrib` repositories.
 6. Have a clearly defined list of criteria for which components are included.
