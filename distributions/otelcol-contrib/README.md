@@ -14,3 +14,8 @@ Building a [custom collector](https://opentelemetry.io/docs/collector/custom-col
 ## Components
 
 The full list of components is available in the [manifest](manifest.yaml)
+
+### Rules for Component Inclusion
+
+- Include all components from opentelemetry-collector and opentelemetry-collector-contrib that have at least 1 signal at [Alpha stability](https://github.com/open-telemetry/opentelemetry-collector#alpha) or higher.
+- Components that are marked [Unmaintained](https://github.com/open-telemetry/opentelemetry-collector#unmaintained) will be kept in the distribution for six months. After six months of being unmaintained the component will be removed from the distribution.
