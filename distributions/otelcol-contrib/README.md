@@ -14,3 +14,7 @@ Building a [custom collector](https://opentelemetry.io/docs/collector/custom-col
 ## Components
 
 The full list of components is available in the [manifest](manifest.yaml)
+
+### Rules for Component Inclusion
+
+- Include all extensions at [Alpha stability](https://github.com/open-telemetry/opentelemetry-collector#alpha) or higher and pipeline components that have at least 1 signal at [Alpha stability](https://github.com/open-telemetry/opentelemetry-collector#alpha) or higher.
