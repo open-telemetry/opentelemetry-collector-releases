@@ -1,3 +1,5 @@
+partial:
+  by: target
 project_name: opentelemetry-collector-releases
 builds:
     - id: otelcol
