@@ -16,6 +16,7 @@ receivers:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver v0.85.0
 
 exporters:
+  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.85.0
   - gomod: go.opentelemetry.io/collector/exporter/loggingexporter v0.85.0
   - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.85.0
   - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.85.0
