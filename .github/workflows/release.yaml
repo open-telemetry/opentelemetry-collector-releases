@@ -32,7 +32,7 @@ jobs:
         with:
           platforms: arm64,ppc64le,linux/arm/v7
 
-      - uses: docker/setup-buildx-action@v2
+      - uses: docker/setup-buildx-action@v3
 
       - uses: actions/setup-go@v4
         with:
@@ -100,7 +100,7 @@ jobs:
         with:
           platforms: arm64,ppc64le
 
-      - uses: docker/setup-buildx-action@v2
+      - uses: docker/setup-buildx-action@v3
 
       - uses: actions/setup-go@v4
         with:
