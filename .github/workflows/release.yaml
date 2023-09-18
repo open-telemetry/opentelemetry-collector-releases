@@ -59,7 +59,7 @@ jobs:
         run: |
           echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - uses: goreleaser/goreleaser-action@v4
+      - uses: goreleaser/goreleaser-action@v5
         if: steps.cache.outputs.cache-hit != 'true' # do not run if cache hit
         with:
           distribution: goreleaser-pro
@@ -122,7 +122,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: goreleaser/goreleaser-action@v4
+      - uses: goreleaser/goreleaser-action@v5
         if: steps.cache.outputs.cache-hit != 'true' # do not run if cache hit
         with:
           distribution: goreleaser-pro
