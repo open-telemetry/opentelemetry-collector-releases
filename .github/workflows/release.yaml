@@ -28,7 +28,7 @@ jobs:
 
       - uses: sigstore/cosign-installer@v2
 
-      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-qemu-action@v3
         with:
           platforms: arm64,ppc64le,linux/arm/v7
 
@@ -96,7 +96,7 @@ jobs:
 
       - uses: anchore/sbom-action/download-syft@v0.14.3
 
-      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-qemu-action@v3
         with:
           platforms: arm64,ppc64le
 
