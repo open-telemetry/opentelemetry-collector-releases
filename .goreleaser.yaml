@@ -13,6 +13,7 @@ builds:
         - arm
         - arm64
         - ppc64le
+        - s390x
       goarm:
         - "7"
       ignore:
@@ -20,10 +21,14 @@ builds:
           goarch: "386"
         - goos: darwin
           goarch: arm
+        - goos: darwin
+          goarch: s390x
         - goos: windows
           goarch: arm
         - goos: windows
           goarch: arm64
+        - goos: windows
+          goarch: s390x
       dir: distributions/otelcol/_build
       binary: otelcol
       ldflags:
@@ -44,6 +49,7 @@ builds:
         - arm
         - arm64
         - ppc64le
+        - s390x
       goarm:
         - "7"
       ignore:
@@ -51,10 +57,14 @@ builds:
           goarch: "386"
         - goos: darwin
           goarch: arm
+        - goos: darwin
+          goarch: s390x
         - goos: windows
           goarch: arm
         - goos: windows
           goarch: arm64
+        - goos: windows
+          goarch: s390x
       dir: distributions/otelcol-contrib/_build
       binary: otelcol-contrib
       ldflags:
@@ -222,6 +232,25 @@ dockers:
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
     - goos: linux
+      goarch: s390x
+      dockerfile: distributions/otelcol/Dockerfile
+      image_templates:
+        - otel/opentelemetry-collector:{{ .Version }}-s390x
+        - otel/opentelemetry-collector:latest-s390x
+        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-s390x
+        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-s390x
+      extra_files:
+        - configs/otelcol.yaml
+      build_flag_templates:
+        - --pull
+        - --platform=linux/s390x
+        - --label=org.opencontainers.image.created={{.Date}}
+        - --label=org.opencontainers.image.name={{.ProjectName}}
+        - --label=org.opencontainers.image.revision={{.FullCommit}}
+        - --label=org.opencontainers.image.version={{.Version}}
+        - --label=org.opencontainers.image.source={{.GitURL}}
+      use: buildx
+    - goos: linux
       goarch: "386"
       dockerfile: distributions/otelcol-contrib/Dockerfile
       image_templates:
@@ -317,6 +346,25 @@ dockers:
         - --label=org.opencontainers.image.version={{.Version}}
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
+    - goos: linux
+      goarch: s390x
+      dockerfile: distributions/otelcol-contrib/Dockerfile
+      image_templates:
+        - otel/opentelemetry-collector-contrib:{{ .Version }}-s390x
+        - otel/opentelemetry-collector-contrib:latest-s390x
+        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-s390x
+        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-s390x
+      extra_files:
+        - configs/otelcol-contrib.yaml
+      build_flag_templates:
+        - --pull
+        - --platform=linux/s390x
+        - --label=org.opencontainers.image.created={{.Date}}
+        - --label=org.opencontainers.image.name={{.ProjectName}}
+        - --label=org.opencontainers.image.revision={{.FullCommit}}
+        - --label=org.opencontainers.image.version={{.Version}}
+        - --label=org.opencontainers.image.source={{.GitURL}}
+      use: buildx
 docker_manifests:
     - name_template: otel/opentelemetry-collector:{{ .Version }}
       image_templates:
@@ -325,6 +373,7 @@ docker_manifests:
         - otel/opentelemetry-collector:{{ .Version }}-armv7
         - otel/opentelemetry-collector:{{ .Version }}-arm64
         - otel/opentelemetry-collector:{{ .Version }}-ppc64le
+        - otel/opentelemetry-collector:{{ .Version }}-s390x
     - name_template: otel/opentelemetry-collector:latest
       image_templates:
         - otel/opentelemetry-collector:latest-386
@@ -332,6 +381,7 @@ docker_manifests:
         - otel/opentelemetry-collector:latest-armv7
         - otel/opentelemetry-collector:latest-arm64
         - otel/opentelemetry-collector:latest-ppc64le
+        - otel/opentelemetry-collector:latest-s390x
     - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}
       image_templates:
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-386
@@ -339,6 +389,7 @@ docker_manifests:
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-armv7
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-arm64
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-ppc64le
+        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-s390x
     - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest
       image_templates:
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-386
@@ -346,6 +397,7 @@ docker_manifests:
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-armv7
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-arm64
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-ppc64le
+        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-s390x
     - name_template: otel/opentelemetry-collector-contrib:{{ .Version }}
       image_templates:
         - otel/opentelemetry-collector-contrib:{{ .Version }}-386
@@ -353,6 +405,7 @@ docker_manifests:
         - otel/opentelemetry-collector-contrib:{{ .Version }}-armv7
         - otel/opentelemetry-collector-contrib:{{ .Version }}-arm64
         - otel/opentelemetry-collector-contrib:{{ .Version }}-ppc64le
+        - otel/opentelemetry-collector-contrib:{{ .Version }}-s390x
     - name_template: otel/opentelemetry-collector-contrib:latest
       image_templates:
         - otel/opentelemetry-collector-contrib:latest-386
@@ -360,6 +413,7 @@ docker_manifests:
         - otel/opentelemetry-collector-contrib:latest-armv7
         - otel/opentelemetry-collector-contrib:latest-arm64
         - otel/opentelemetry-collector-contrib:latest-ppc64le
+        - otel/opentelemetry-collector-contrib:latest-s390x
     - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}
       image_templates:
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-386
@@ -367,6 +421,7 @@ docker_manifests:
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-armv7
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-arm64
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-ppc64le
+        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-s390x
     - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest
       image_templates:
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-386
@@ -374,3 +429,4 @@ docker_manifests:
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-armv7
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-arm64
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-ppc64le
+        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-s390x
