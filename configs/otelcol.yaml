@@ -1,5 +1,4 @@
-# To limit exposure to denial of service attacks,
-# consider changing the host IP on servers from 0.0.0.0 to a specific network interface.
+# To limit exposure to denial of service attacks, change the host in endpoints below from 0.0.0.0 to a specific network interface.
 # See https://github.com/open-telemetry/opentelemetry-collector/blob/main/docs/security-best-practices.md#safeguards-against-denial-of-service-attacks
 
 extensions:
