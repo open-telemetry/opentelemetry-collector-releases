@@ -9,47 +9,51 @@ jobs:
     strategy:
       matrix:
         GOOS: [linux, windows, darwin]
-        GOARCH: ["386", amd64, arm64, ppc64le, arm]
+        GOARCH: ["386", amd64, arm64, ppc64le, arm, s390x]
         exclude:
           - GOOS: darwin
             GOARCH: "386"
+          - GOOS: darwin
+            GOARCH: s390x
           - GOOS: windows
             GOARCH: arm64
           - GOOS: darwin
             GOARCH: arm
           - GOOS: windows
             GOARCH: arm
+          - GOOS: windows
+            GOARCH: s390x
     runs-on: ubuntu-20.04
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - uses: sigstore/cosign-installer@v2
 
-      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-qemu-action@v3
         with:
-          platforms: arm64,ppc64le,linux/arm/v7
+          platforms: arm64,ppc64le,linux/arm/v7,s390x
 
-      - uses: docker/setup-buildx-action@v2
+      - uses: docker/setup-buildx-action@v3
 
       - uses: actions/setup-go@v4
         with:
-          go-version: '~1.21'
+          go-version: '~1.21.3'
           check-latest: true
 
       - name: Generate distribution sources
         run: make generate-sources
 
       - name: Log into Docker.io
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Login to GitHub Package Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -59,7 +63,7 @@ jobs:
         run: |
           echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - uses: goreleaser/goreleaser-action@v4
+      - uses: goreleaser/goreleaser-action@v5
         if: steps.cache.outputs.cache-hit != 'true' # do not run if cache hit
         with:
           distribution: goreleaser-pro
@@ -88,23 +92,23 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - uses: sigstore/cosign-installer@v2
 
-      - uses: anchore/sbom-action/download-syft@v0.14.3
+      - uses: anchore/sbom-action/download-syft@v0.15.0
 
-      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-qemu-action@v3
         with:
-          platforms: arm64,ppc64le
+          platforms: arm64,ppc64le,s390x
 
-      - uses: docker/setup-buildx-action@v2
+      - uses: docker/setup-buildx-action@v3
 
       - uses: actions/setup-go@v4
         with:
-          go-version: '~1.21'
+          go-version: '~1.21.3'
           check-latest: true
 
       - uses: actions/download-artifact@v3
@@ -116,13 +120,13 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
       - name: Login to GitHub Package Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: goreleaser/goreleaser-action@v4
+      - uses: goreleaser/goreleaser-action@v5
         if: steps.cache.outputs.cache-hit != 'true' # do not run if cache hit
         with:
           distribution: goreleaser-pro

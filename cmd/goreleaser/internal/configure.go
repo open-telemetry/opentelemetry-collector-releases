@@ -32,7 +32,7 @@ const ArmArch = "arm"
 
 var (
 	ImagePrefixes = []string{"otel", "ghcr.io/open-telemetry/opentelemetry-collector-releases"}
-	Architectures = []string{"386", "amd64", "arm", "arm64", "ppc64le"}
+	Architectures = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
 	ArmVersions   = []string{"7"}
 )
 
@@ -76,8 +76,10 @@ func Build(dist string) config.Build {
 		Ignore: []config.IgnoredBuild{
 			{Goos: "darwin", Goarch: "386"},
 			{Goos: "darwin", Goarch: "arm"},
+			{Goos: "darwin", Goarch: "s390x"},
 			{Goos: "windows", Goarch: "arm"},
 			{Goos: "windows", Goarch: "arm64"},
+			{Goos: "windows", Goarch: "s390x"},
 		},
 	}
 }
