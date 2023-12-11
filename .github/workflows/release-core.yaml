@@ -1,4 +1,4 @@
-name: Release
+name: Release Core
 
 on:
   push:
@@ -70,7 +70,7 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: latest
-          args: release --clean --split --timeout 2h
+          args: release --clean --split --timeout 2h --id otelcol
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
@@ -133,7 +133,7 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: latest
-          args: continue --merge --timeout 2h
+          args: continue --merge --timeout 2h --id otelcol
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_YES: true

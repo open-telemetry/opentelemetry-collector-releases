@@ -202,6 +202,9 @@ func DockerImage(imagePrefixes []string, dist, arch, armVersion string) config.D
 		Goos:   "linux",
 		Goarch: arch,
 		Goarm:  armVersion,
+		IDs: []string{
+			dist,
+		},
 	}
 }
 

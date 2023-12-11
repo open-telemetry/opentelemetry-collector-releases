@@ -1,0 +1,69 @@
+name: Continuous Integration - GoReleaser - Contrib
+
+on:
+  push:
+    branches: [main]
+    paths:
+    - ".goreleaser.yaml"
+    - "distributions/otelcol-contrib/manifest.yaml"
+  pull_request:
+    branches: [main]
+    paths:
+    - ".goreleaser.yaml"
+    - "distributions/otelcol-contrib/manifest.yaml"
+
+jobs:
+  check-goreleaser:
+    name: Check GoReleaser Configuration
+    strategy:
+      matrix:
+        GOOS: [linux, windows, darwin]
+        GOARCH: ["386", amd64, arm64, ppc64le, arm, s390x]
+        exclude:
+          - GOOS: darwin
+            GOARCH: "386"
+          - GOOS: darwin
+            GOARCH: s390x
+          - GOOS: windows
+            GOARCH: arm64
+          - GOOS: darwin
+            GOARCH: arm
+          - GOOS: windows
+            GOARCH: arm
+          - GOOS: windows
+            GOARCH: s390x
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64,ppc64le,linux/arm/v7,s390x
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '~1.21.7'
+          check-latest: true
+
+      - name: Generate the sources
+        run: make generate-sources
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser-pro
+          version: latest
+          args: --snapshot --clean --skip-sign --skip-sbom --timeout 2h --split --id otelcol-contrib
+        env:
+          GOOS: ${{ matrix.GOOS }}
+          GOARCH: ${{ matrix.GOARCH }}
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
