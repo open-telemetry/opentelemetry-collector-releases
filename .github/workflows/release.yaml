@@ -76,7 +76,7 @@ jobs:
           COSIGN_EXPERIMENTAL: true
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: all-artifacts
           path: dist/*/*
