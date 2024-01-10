@@ -63,4 +63,9 @@ service:
       processors: [batch]
       exporters: [debug]
 
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug]
+
   extensions: [health_check, pprof, zpages]
