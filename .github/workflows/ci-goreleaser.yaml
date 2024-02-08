@@ -54,7 +54,7 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: --snapshot --clean --skip-sign --skip-sbom --timeout 2h --split
+          args: --snapshot --clean --skip-sign --skip-sbom --timeout 2h
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}

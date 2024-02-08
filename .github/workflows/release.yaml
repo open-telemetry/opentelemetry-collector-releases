@@ -58,7 +58,7 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: release --clean --split --timeout 2h
+          args: release --clean --timeout 2h
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
