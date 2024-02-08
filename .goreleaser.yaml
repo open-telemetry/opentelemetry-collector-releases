@@ -28,10 +28,8 @@ dockers:
       goarch: amd64
       dockerfile: distributions/otelcol-contrib/Dockerfile
       image_templates:
-        - otel/opentelemetry-collector-contrib:{{ .Version }}-amd64
-        - otel/opentelemetry-collector-contrib:latest-amd64
-        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-amd64
-        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-amd64
+        - ghcr.io/overorion/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-amd64
+        - ghcr.io/overorion/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-amd64
       extra_files:
         - configs/otelcol-contrib.yaml
       build_flag_templates:
@@ -47,10 +45,8 @@ dockers:
       goarch: arm64
       dockerfile: distributions/otelcol-contrib/Dockerfile
       image_templates:
-        - otel/opentelemetry-collector-contrib:{{ .Version }}-arm64
-        - otel/opentelemetry-collector-contrib:latest-arm64
-        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-arm64
-        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-arm64
+        - ghcr.io/overorion/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-arm64
+        - ghcr.io/overorion/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-arm64
       extra_files:
         - configs/otelcol-contrib.yaml
       build_flag_templates:
@@ -63,15 +59,11 @@ dockers:
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
 docker_manifests:
-    - name_template: otel/opentelemetry-collector-contrib:latest
+    - name_template: ghcr.io/overorion/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}
       image_templates:
-        - otel/opentelemetry-collector-contrib:latest-amd64
-        - otel/opentelemetry-collector-contrib:latest-arm64
-    - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}
+        - ghcr.io/overorion/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-amd64
+        - ghcr.io/overorion/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-arm64
+    - name_template: ghcr.io/overorion/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest
       image_templates:
-        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-amd64
-        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-arm64
-    - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest
-      image_templates:
-        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-amd64
-        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-arm64
+        - ghcr.io/overorion/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-amd64
+        - ghcr.io/overorion/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-arm64
