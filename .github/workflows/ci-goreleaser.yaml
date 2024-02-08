@@ -52,10 +52,9 @@ jobs:
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
-          distribution: goreleaser-pro
+          distribution: goreleaser
           version: latest
           args: --snapshot --clean --skip-sign --skip-sbom --timeout 2h --split
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
-          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}

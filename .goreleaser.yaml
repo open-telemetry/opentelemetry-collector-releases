@@ -10,8 +10,6 @@ builds:
       goarch:
         - amd64
         - arm64
-      goarm:
-        - "7"
       ignore:
         - goos: windows
           goarch: arm64
@@ -32,8 +30,6 @@ builds:
       goarch:
         - amd64
         - arm64
-      goarm:
-        - "7"
       ignore:
         - goos: windows
           goarch: arm64

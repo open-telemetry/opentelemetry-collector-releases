@@ -56,7 +56,7 @@ jobs:
       - uses: goreleaser/goreleaser-action@v5
         if: steps.cache.outputs.cache-hit != 'true' # do not run if cache hit
         with:
-          distribution: goreleaser-pro
+          distribution: goreleaser
           version: latest
           args: release --clean --split --timeout 2h
         env:
@@ -64,7 +64,6 @@ jobs:
           GOARCH: ${{ matrix.GOARCH }}
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           COSIGN_EXPERIMENTAL: true
-          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
       - uses: actions/upload-artifact@v3
         with:
@@ -119,10 +118,9 @@ jobs:
       - uses: goreleaser/goreleaser-action@v5
         if: steps.cache.outputs.cache-hit != 'true' # do not run if cache hit
         with:
-          distribution: goreleaser-pro
+          distribution: goreleaser
           version: latest
           args: continue --merge --timeout 2h
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_EXPERIMENTAL: true
-          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
