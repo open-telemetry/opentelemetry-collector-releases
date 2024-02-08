@@ -1,25 +1,5 @@
 project_name: opentelemetry-collector-releases
 builds:
-    - id: otelcol
-      goos:
-        - darwin
-        - linux
-        - windows
-      goarch:
-        - amd64
-        - arm64
-      ignore:
-        - goos: windows
-          goarch: arm64
-      dir: distributions/otelcol/_build
-      binary: otelcol
-      ldflags:
-        - -s
-        - -w
-      flags:
-        - -trimpath
-      env:
-        - CGO_ENABLED=0
     - id: otelcol-contrib
       goos:
         - darwin
@@ -42,39 +22,11 @@ builds:
       env:
         - CGO_ENABLED=0
 archives:
-    - id: otelcol
-      builds:
-        - otelcol
-      name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
     - id: otelcol-contrib
       builds:
         - otelcol-contrib
       name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
-    - package_name: otelcol
-      contents:
-        - src: distributions/otelcol/otelcol.service
-          dst: /lib/systemd/system/otelcol.service
-        - src: distributions/otelcol/otelcol.conf
-          dst: /etc/otelcol/otelcol.conf
-          type: config|noreplace
-        - src: configs/otelcol.yaml
-          dst: /etc/otelcol/config.yaml
-          type: config
-      scripts:
-        preinstall: distributions/otelcol/preinstall.sh
-        postinstall: distributions/otelcol/postinstall.sh
-        preremove: distributions/otelcol/preremove.sh
-      id: otelcol
-      builds:
-        - otelcol
-      formats:
-        - apk
-        - deb
-        - rpm
-      maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
-      description: OpenTelemetry Collector - otelcol
-      license: Apache 2.0
     - package_name: otelcol-contrib
       contents:
         - src: distributions/otelcol-contrib/otelcol-contrib.service
@@ -102,44 +54,6 @@ nfpms:
 checksum:
     name_template: '{{ .ProjectName }}_checksums.txt'
 dockers:
-    - goos: linux
-      goarch: amd64
-      dockerfile: distributions/otelcol/Dockerfile
-      image_templates:
-        - otel/opentelemetry-collector:{{ .Version }}-amd64
-        - otel/opentelemetry-collector:latest-amd64
-        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-amd64
-        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-amd64
-      extra_files:
-        - configs/otelcol.yaml
-      build_flag_templates:
-        - --pull
-        - --platform=linux/amd64
-        - --label=org.opencontainers.image.created={{.Date}}
-        - --label=org.opencontainers.image.name={{.ProjectName}}
-        - --label=org.opencontainers.image.revision={{.FullCommit}}
-        - --label=org.opencontainers.image.version={{.Version}}
-        - --label=org.opencontainers.image.source={{.GitURL}}
-      use: buildx
-    - goos: linux
-      goarch: arm64
-      dockerfile: distributions/otelcol/Dockerfile
-      image_templates:
-        - otel/opentelemetry-collector:{{ .Version }}-arm64
-        - otel/opentelemetry-collector:latest-arm64
-        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-arm64
-        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-arm64
-      extra_files:
-        - configs/otelcol.yaml
-      build_flag_templates:
-        - --pull
-        - --platform=linux/arm64
-        - --label=org.opencontainers.image.created={{.Date}}
-        - --label=org.opencontainers.image.name={{.ProjectName}}
-        - --label=org.opencontainers.image.revision={{.FullCommit}}
-        - --label=org.opencontainers.image.version={{.Version}}
-        - --label=org.opencontainers.image.source={{.GitURL}}
-      use: buildx
     - goos: linux
       goarch: amd64
       dockerfile: distributions/otelcol-contrib/Dockerfile
@@ -179,26 +93,6 @@ dockers:
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
 docker_manifests:
-    - name_template: otel/opentelemetry-collector:{{ .Version }}
-      image_templates:
-        - otel/opentelemetry-collector:{{ .Version }}-amd64
-        - otel/opentelemetry-collector:{{ .Version }}-arm64
-    - name_template: otel/opentelemetry-collector:latest
-      image_templates:
-        - otel/opentelemetry-collector:latest-amd64
-        - otel/opentelemetry-collector:latest-arm64
-    - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}
-      image_templates:
-        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-amd64
-        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-arm64
-    - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest
-      image_templates:
-        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-amd64
-        - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-arm64
-    - name_template: otel/opentelemetry-collector-contrib:{{ .Version }}
-      image_templates:
-        - otel/opentelemetry-collector-contrib:{{ .Version }}-amd64
-        - otel/opentelemetry-collector-contrib:{{ .Version }}-arm64
     - name_template: otel/opentelemetry-collector-contrib:latest
       image_templates:
         - otel/opentelemetry-collector-contrib:latest-amd64
