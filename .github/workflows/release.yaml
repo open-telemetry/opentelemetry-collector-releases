@@ -9,20 +9,10 @@ jobs:
     strategy:
       matrix:
         GOOS: [linux, windows, darwin]
-        GOARCH: ["386", amd64, arm64, ppc64le, arm, s390x]
+        GOARCH: [amd64, arm64]
         exclude:
-          - GOOS: darwin
-            GOARCH: "386"
-          - GOOS: darwin
-            GOARCH: s390x
           - GOOS: windows
             GOARCH: arm64
-          - GOOS: darwin
-            GOARCH: arm
-          - GOOS: windows
-            GOARCH: arm
-          - GOOS: windows
-            GOARCH: s390x
     runs-on: ubuntu-20.04
 
     steps:
@@ -34,7 +24,7 @@ jobs:
 
       - uses: docker/setup-qemu-action@v3
         with:
-          platforms: arm64,ppc64le,linux/arm/v7,s390x
+          platforms: arm64
 
       - uses: docker/setup-buildx-action@v3
 
@@ -102,7 +92,7 @@ jobs:
 
       - uses: docker/setup-qemu-action@v3
         with:
-          platforms: arm64,ppc64le,s390x
+          platforms: arm64
 
       - uses: docker/setup-buildx-action@v3
 
