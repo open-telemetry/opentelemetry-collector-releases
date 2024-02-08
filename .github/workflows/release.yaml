@@ -36,11 +36,11 @@ jobs:
       - name: Generate distribution sources
         run: make generate-sources
 
-      - name: Log into Docker.io
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      # - name: Log into Docker.io
+      #   uses: docker/login-action@v3
+      #   with:
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Login to GitHub Package Registry
         uses: docker/login-action@v3
@@ -105,8 +105,8 @@ jobs:
           name: all-artifacts
           path: dist
 
-      - name: Log into Docker.io
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      # - name: Log into Docker.io
+      #   run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
       - name: Login to GitHub Package Registry
         uses: docker/login-action@v3
