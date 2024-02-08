@@ -9,7 +9,6 @@ jobs:
     strategy:
       matrix:
         GOOS: [linux]
-        GOARCH: [amd64, arm64]
     runs-on: ubuntu-20.04
 
     steps:
@@ -58,7 +57,6 @@ jobs:
           args: release --clean --timeout 2h
         env:
           GOOS: ${{ matrix.GOOS }}
-          GOARCH: ${{ matrix.GOARCH }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_EXPERIMENTAL: true
 
