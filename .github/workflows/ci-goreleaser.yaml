@@ -19,11 +19,8 @@ jobs:
     name: Check GoReleaser Configuration
     strategy:
       matrix:
-        GOOS: [linux, windows, darwin]
+        GOOS: [linux, darwin]
         GOARCH: [amd64, arm64,]
-        exclude:
-          - GOOS: windows
-            GOARCH: arm64
     runs-on: ubuntu-20.04
 
     steps:

@@ -4,13 +4,9 @@ builds:
       goos:
         - darwin
         - linux
-        - windows
       goarch:
         - amd64
         - arm64
-      ignore:
-        - goos: windows
-          goarch: arm64
 
       dir: distributions/otelcol-contrib/_build
       binary: otelcol-contrib
