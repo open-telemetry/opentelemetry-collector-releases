@@ -2,7 +2,6 @@ project_name: opentelemetry-collector-releases
 builds:
     - id: otelcol-contrib
       goos:
-        - darwin
         - linux
       goarch:
         - amd64

@@ -19,7 +19,7 @@ jobs:
     name: Check GoReleaser Configuration
     strategy:
       matrix:
-        GOOS: [linux, darwin]
+        GOOS: [linux]
         GOARCH: [amd64, arm64,]
     runs-on: ubuntu-20.04
 
