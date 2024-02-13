@@ -51,7 +51,7 @@ jobs:
       - uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
-          version: latest
+          version: v1.24.0
           args: release --clean --timeout 2h
         env:
           GOOS: ${{ matrix.GOOS }}
