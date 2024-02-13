@@ -6,7 +6,6 @@ builds:
       goarch:
         - amd64
         - arm64
-
       dir: distributions/otelcol-contrib/_build
       binary: otelcol-contrib
       ldflags:
