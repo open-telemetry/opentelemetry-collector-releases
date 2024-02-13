@@ -31,7 +31,7 @@ import (
 const ArmArch = "arm"
 
 var (
-	ImagePrefixes = []string{"ghcr.io/axoflow/opentelemetry-collector-releases"}
+	ImagePrefixes = []string{"ghcr.io/axoflow/axoflow-otel-collector"}
 	Architectures = []string{"amd64", "arm64"}
 	ArmVersions   = []string{}
 )
