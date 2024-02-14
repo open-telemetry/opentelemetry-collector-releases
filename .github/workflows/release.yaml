@@ -10,6 +10,7 @@ jobs:
       id-token: write
       packages: write
       contents: write
+      security-events: write
 
     strategy:
       matrix:
@@ -49,6 +50,7 @@ jobs:
           echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - uses: goreleaser/goreleaser-action@v5
+        id: goreleaser-action
         with:
           distribution: goreleaser
           version: v1.24.0
@@ -62,3 +64,33 @@ jobs:
         with:
           name: all-artifacts
           path: dist/*/*
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Extract Docker image with digest
+        id: image-with-digest
+        shell: bash
+        run: |
+         echo '${{ steps.goreleaser-action.outputs.artifacts }}' >> output-artifacts.json
+         DOCKER_IMAGE=$(jq -r '.[] | select(.type == "Docker Manifest" and (.path | test(":[0-9]+"))) | "\(.path)@\(.extra.Digest)"' ./output-artifacts.json)
+         echo "DOCKER_IMAGE=$DOCKER_IMAGE" >> "$GITHUB_OUTPUT"
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.17.0
+        with:
+          image-ref: ${{ steps.image-with-digest.outputs.DOCKER_IMAGE }}
+          format: sarif
+          output: trivy-results.sarif
+
+      - name: Upload Trivy scan results as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "[${{ github.job }}] Trivy scan results"
+          path: trivy-results.sarif
+          retention-days: 5
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif
