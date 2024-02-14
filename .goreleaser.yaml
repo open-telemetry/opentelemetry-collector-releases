@@ -430,3 +430,22 @@ docker_manifests:
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-arm64
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-ppc64le
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-s390x
+brews:
+  - name: otelcol
+    description: "OpenTelemtry collector distribution containing both core and contrib components"
+    homepage: "https://opentelemetry.io/docs/collector/"
+    license: "Apache-2.0"
+    ids:
+      - otelcol
+    repository:
+      owner: open-telemetry
+      name: homebrew-tap
+  - name: otelcol-contrib
+    description: "OpenTelemtry collector distribution containing only core components"
+    homepage: "https://opentelemetry.io/docs/collector/"
+    license: "Apache-2.0"
+    ids:
+      - otelcol-contrib
+    repository:
+      owner: open-telemetry
+      name: homebrew-tap
