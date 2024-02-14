@@ -27,8 +27,8 @@ dockers:
       goarch: amd64
       dockerfile: distributions/otelcol-contrib/Dockerfile
       image_templates:
-        - ghcr.io/axoflow/axoflow-otel-collector/opentelemetry-collector-contrib:{{ .Version }}-amd64
-        - ghcr.io/axoflow/axoflow-otel-collector/opentelemetry-collector-contrib:latest-amd64
+        - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-amd64
+        - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-amd64
       extra_files:
         - configs/otelcol-contrib.yaml
       build_flag_templates:
@@ -44,8 +44,8 @@ dockers:
       goarch: arm64
       dockerfile: distributions/otelcol-contrib/Dockerfile
       image_templates:
-        - ghcr.io/axoflow/axoflow-otel-collector/opentelemetry-collector-contrib:{{ .Version }}-arm64
-        - ghcr.io/axoflow/axoflow-otel-collector/opentelemetry-collector-contrib:latest-arm64
+        - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-arm64
+        - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-arm64
       extra_files:
         - configs/otelcol-contrib.yaml
       build_flag_templates:
@@ -58,11 +58,11 @@ dockers:
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
 docker_manifests:
-    - name_template: ghcr.io/axoflow/axoflow-otel-collector/opentelemetry-collector-contrib:{{ .Version }}
+    - name_template: ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}
       image_templates:
-        - ghcr.io/axoflow/axoflow-otel-collector/opentelemetry-collector-contrib:{{ .Version }}-amd64
-        - ghcr.io/axoflow/axoflow-otel-collector/opentelemetry-collector-contrib:{{ .Version }}-arm64
-    - name_template: ghcr.io/axoflow/axoflow-otel-collector/opentelemetry-collector-contrib:latest
+        - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-amd64
+        - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-arm64
+    - name_template: ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest
       image_templates:
-        - ghcr.io/axoflow/axoflow-otel-collector/opentelemetry-collector-contrib:latest-amd64
-        - ghcr.io/axoflow/axoflow-otel-collector/opentelemetry-collector-contrib:latest-arm64
+        - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-amd64
+        - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-arm64
