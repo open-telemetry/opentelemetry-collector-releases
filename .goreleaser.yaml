@@ -1,6 +1,8 @@
 partial:
   by: target
 project_name: opentelemetry-collector-releases
+env:
+    - COSIGN_YES=true
 builds:
     - id: otelcol
       goos:
@@ -430,3 +432,26 @@ docker_manifests:
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-arm64
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-ppc64le
         - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-s390x
+
+signs:
+    - cmd: cosign
+      args:
+        - sign-blob
+        - --output-signature
+        - ${artifact}.sig
+        - --output-certificate
+        - ${artifact}.pem
+        - ${artifact}
+      signature: ${artifact}.sig
+      artifacts: all
+      certificate: ${artifact}.pem
+docker_signs:
+    - args:
+        - sign
+        - ${artifact}
+      artifacts: all
+sboms:
+    - id: archive
+      artifacts: archive
+    - id: package
+      artifacts: package
