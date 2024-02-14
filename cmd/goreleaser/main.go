@@ -37,14 +37,14 @@ func main() {
 
 	project := internal.Generate(internal.ImagePrefixes, dists)
 
-	temp := map[string]any{
+	partial := map[string]any{
 		"partial": map[string]any{
 			"by": "target",
 		},
 	}
 	e := yaml.NewEncoder(os.Stdout)
 	e.SetIndent(2)
-	if err := e.Encode(temp); err != nil {
+	if err := e.Encode(partial); err != nil {
 		log.Fatal(err)
 	}
 
