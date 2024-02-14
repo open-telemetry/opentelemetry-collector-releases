@@ -31,9 +31,9 @@ import (
 const ArmArch = "arm"
 
 var (
-	ImagePrefixes = []string{"otel", "ghcr.io/open-telemetry/opentelemetry-collector-releases"}
-	Architectures = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
-	ArmVersions   = []string{"7"}
+	ImagePrefixes = []string{"ghcr.io/axoflow/axoflow-otel-collector"}
+	Architectures = []string{"amd64", "arm64"}
+	ArmVersions   = []string{}
 )
 
 func Generate(imagePrefixes []string, dists []string) config.Project {
@@ -43,9 +43,9 @@ func Generate(imagePrefixes []string, dists []string) config.Project {
 			NameTemplate: "{{ .ProjectName }}_checksums.txt",
 		},
 
-		Builds:          Builds(dists),
-		Archives:        Archives(dists),
-		NFPMs:           Packages(dists),
+		Builds:   Builds(dists),
+		Archives: Archives(dists),
+		//NFPMs:           Packages(dists),
 		Dockers:         DockerImages(imagePrefixes, dists),
 		DockerManifests: DockerManifests(imagePrefixes, dists),
 	}
@@ -70,17 +70,9 @@ func Build(dist string) config.Build {
 			Flags:   []string{"-trimpath"},
 			Ldflags: []string{"-s", "-w"},
 		},
-		Goos:   []string{"darwin", "linux", "windows"},
+		Goos:   []string{"linux"},
 		Goarch: Architectures,
 		Goarm:  ArmVersions,
-		Ignore: []config.IgnoredBuild{
-			{Goos: "darwin", Goarch: "386"},
-			{Goos: "darwin", Goarch: "arm"},
-			{Goos: "darwin", Goarch: "s390x"},
-			{Goos: "windows", Goarch: "arm"},
-			{Goos: "windows", Goarch: "arm64"},
-			{Goos: "windows", Goarch: "s390x"},
-		},
 	}
 }
 
