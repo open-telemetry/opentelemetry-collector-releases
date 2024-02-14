@@ -43,9 +43,8 @@ func Generate(imagePrefixes []string, dists []string) config.Project {
 			NameTemplate: "{{ .ProjectName }}_checksums.txt",
 		},
 
-		Builds:   Builds(dists),
-		Archives: Archives(dists),
-		//NFPMs:           Packages(dists),
+		Builds:          Builds(dists),
+		Archives:        Archives(dists),
 		Dockers:         DockerImages(imagePrefixes, dists),
 		DockerManifests: DockerManifests(imagePrefixes, dists),
 	}
