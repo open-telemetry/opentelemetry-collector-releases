@@ -79,7 +79,7 @@ jobs:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-          COSIGN_EXPERIMENTAL: true
+          COSIGN_YES: true
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
       - uses: actions/upload-artifact@v3
