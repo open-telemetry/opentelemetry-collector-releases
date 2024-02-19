@@ -1,0 +1,22 @@
+name: Continuous Integration - Core - GoReleaser
+
+on:
+  push:
+    branches: [main]
+    paths:
+    - ".goreleaser.yaml"
+    - "distributions/otelcol/manifest.yaml"
+  pull_request:
+    branches: [main]
+    paths:
+    - ".goreleaser.yaml"
+    - "distributions/otelcol/manifest.yaml"
+
+
+jobs:
+  check-goreleaser:
+    name: Continuous Integration - Core - GoReleaser
+    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    with:
+      distribution: otelcol
+    secrets: inherit

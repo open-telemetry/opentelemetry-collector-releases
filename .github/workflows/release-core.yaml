@@ -1,0 +1,14 @@
+name: Release Core
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    name: Release Core
+    uses: ./.github/workflows/base-release.yaml
+    with:
+      distribution: otelcol
+    secrets: inherit
+    permissions: write-all

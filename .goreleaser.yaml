@@ -137,7 +137,9 @@ nfpms:
 checksum:
     name_template: '{{ .ProjectName }}_checksums.txt'
 dockers:
-    - goos: linux
+    - ids:
+        - otelcol
+      goos: linux
       goarch: "386"
       dockerfile: distributions/otelcol/Dockerfile
       image_templates:
@@ -156,7 +158,9 @@ dockers:
         - --label=org.opencontainers.image.version={{.Version}}
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
-    - goos: linux
+    - ids:
+        - otelcol
+      goos: linux
       goarch: amd64
       dockerfile: distributions/otelcol/Dockerfile
       image_templates:
@@ -175,7 +179,9 @@ dockers:
         - --label=org.opencontainers.image.version={{.Version}}
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
-    - goos: linux
+    - ids:
+        - otelcol
+      goos: linux
       goarch: arm
       goarm: "7"
       dockerfile: distributions/otelcol/Dockerfile
@@ -195,7 +201,9 @@ dockers:
         - --label=org.opencontainers.image.version={{.Version}}
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
-    - goos: linux
+    - ids:
+        - otelcol
+      goos: linux
       goarch: arm64
       dockerfile: distributions/otelcol/Dockerfile
       image_templates:
@@ -214,7 +222,9 @@ dockers:
         - --label=org.opencontainers.image.version={{.Version}}
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
-    - goos: linux
+    - ids:
+        - otelcol
+      goos: linux
       goarch: ppc64le
       dockerfile: distributions/otelcol/Dockerfile
       image_templates:
@@ -233,7 +243,9 @@ dockers:
         - --label=org.opencontainers.image.version={{.Version}}
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
-    - goos: linux
+    - ids:
+        - otelcol
+      goos: linux
       goarch: s390x
       dockerfile: distributions/otelcol/Dockerfile
       image_templates:
@@ -252,7 +264,9 @@ dockers:
         - --label=org.opencontainers.image.version={{.Version}}
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
-    - goos: linux
+    - ids:
+        - otelcol-contrib
+      goos: linux
       goarch: "386"
       dockerfile: distributions/otelcol-contrib/Dockerfile
       image_templates:
@@ -271,7 +285,9 @@ dockers:
         - --label=org.opencontainers.image.version={{.Version}}
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
-    - goos: linux
+    - ids:
+        - otelcol-contrib
+      goos: linux
       goarch: amd64
       dockerfile: distributions/otelcol-contrib/Dockerfile
       image_templates:
@@ -290,7 +306,9 @@ dockers:
         - --label=org.opencontainers.image.version={{.Version}}
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
-    - goos: linux
+    - ids:
+        - otelcol-contrib
+      goos: linux
       goarch: arm
       goarm: "7"
       dockerfile: distributions/otelcol-contrib/Dockerfile
@@ -310,7 +328,9 @@ dockers:
         - --label=org.opencontainers.image.version={{.Version}}
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
-    - goos: linux
+    - ids:
+        - otelcol-contrib
+      goos: linux
       goarch: arm64
       dockerfile: distributions/otelcol-contrib/Dockerfile
       image_templates:
@@ -329,7 +349,9 @@ dockers:
         - --label=org.opencontainers.image.version={{.Version}}
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
-    - goos: linux
+    - ids:
+        - otelcol-contrib
+      goos: linux
       goarch: ppc64le
       dockerfile: distributions/otelcol-contrib/Dockerfile
       image_templates:
@@ -348,7 +370,9 @@ dockers:
         - --label=org.opencontainers.image.version={{.Version}}
         - --label=org.opencontainers.image.source={{.GitURL}}
       use: buildx
-    - goos: linux
+    - ids:
+        - otelcol-contrib
+      goos: linux
       goarch: s390x
       dockerfile: distributions/otelcol-contrib/Dockerfile
       image_templates:

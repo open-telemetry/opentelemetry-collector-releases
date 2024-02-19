@@ -1,26 +1,19 @@
-name: Continuous Integration - GoReleaser
+name: Reusable GoReleaser CI workflow
 
 on:
-  push:
-    branches: [main]
-    paths:
-    - ".goreleaser.yaml"
-    - "distributions/otelcol/manifest.yaml"
-    - "distributions/otelcol-contrib/manifest.yaml"
-  pull_request:
-    branches: [main]
-    paths:
-    - ".goreleaser.yaml"
-    - "distributions/otelcol/manifest.yaml"
-    - "distributions/otelcol-contrib/manifest.yaml"
+  workflow_call:
+    inputs:
+      distribution:
+        required: true
+        type: string
 
 jobs:
   check-goreleaser:
-    name: Check GoReleaser Configuration
+    name:  Check GoReleaser Configuration for ${{ inputs.distribution }}
     strategy:
       matrix:
-        GOOS: [linux, windows, darwin]
-        GOARCH: ["386", amd64, arm64, ppc64le, arm, s390x]
+        GOOS: [ linux, windows, darwin ]
+        GOARCH: [ "386", amd64, arm64, ppc64le, arm, s390x ]
         exclude:
           - GOOS: darwin
             GOARCH: "386"
@@ -59,12 +52,12 @@ jobs:
       - name: Generate the sources
         run: make generate-sources
 
-      - name: Run GoReleaser
+      - name: Run GoReleaser for ${{ inputs.distribution }}
         uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser-pro
           version: latest
-          args: --snapshot --clean --skip-sign --skip-sbom --timeout 2h --split
+          args: --snapshot --clean --skip-sign --skip-sbom --timeout 2h --split --id ${{ inputs.distribution }}
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
