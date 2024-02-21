@@ -74,6 +74,7 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: latest
+          workdir: distributions/${{ inputs.distribution }}
           args: release --clean --split --timeout 2h --id ${{ inputs.distribution }}
         env:
           GOOS: ${{ matrix.GOOS }}
@@ -137,6 +138,7 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: latest
+          workdir: distributions/${{ inputs.distribution }}
           args: continue --merge --timeout 2h
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

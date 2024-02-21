@@ -57,6 +57,7 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: latest
+          workdir: distributions/${{ inputs.distribution }}
           args: --snapshot --clean --skip-sign --skip-sbom --timeout 2h --split --id ${{ inputs.distribution }}
         env:
           GOOS: ${{ matrix.GOOS }}
