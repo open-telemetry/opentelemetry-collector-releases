@@ -1,6 +1,6 @@
 partial:
   by: target
-project_name: opentelemetry-collector-releases
+project_name: opentelemetry-collector-releases-otelcol
 env:
   - COSIGN_YES=true
 builds:
