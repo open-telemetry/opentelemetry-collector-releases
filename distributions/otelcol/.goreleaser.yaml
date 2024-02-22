@@ -1,6 +1,6 @@
 partial:
   by: target
-project_name: opentelemetry-collector-releases-otelcol
+project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
 builds:
@@ -71,7 +71,7 @@ nfpms:
     description: OpenTelemetry Collector - otelcol
     license: Apache 2.0
 checksum:
-  name_template: '{{ .ProjectName }}_checksums.txt'
+  name_template: '{{ .ProjectName }}_otelcol_checksums.txt'
 dockers:
   - ids:
       - otelcol
