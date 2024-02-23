@@ -4,13 +4,11 @@ on:
   push:
     branches: [main]
     paths:
-    - ".goreleaser.yaml"
-    - "distributions/otelcol/manifest.yaml"
+      - "distributions/otelcol/**"
   pull_request:
     branches: [main]
     paths:
-    - ".goreleaser.yaml"
-    - "distributions/otelcol/manifest.yaml"
+      - "distributions/otelcol/**"
 
 
 jobs:
