@@ -73,9 +73,7 @@ nfpms:
 checksum:
   name_template: '{{ .ProjectName }}_otelcol_checksums.txt'
 dockers:
-  - ids:
-      - otelcol
-    goos: linux
+  - goos: linux
     goarch: "386"
     dockerfile: Dockerfile
     image_templates:
@@ -94,9 +92,7 @@ dockers:
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
     use: buildx
-  - ids:
-      - otelcol
-    goos: linux
+  - goos: linux
     goarch: amd64
     dockerfile: Dockerfile
     image_templates:
@@ -115,9 +111,7 @@ dockers:
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
     use: buildx
-  - ids:
-      - otelcol
-    goos: linux
+  - goos: linux
     goarch: arm
     goarm: "7"
     dockerfile: Dockerfile
@@ -137,9 +131,7 @@ dockers:
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
     use: buildx
-  - ids:
-      - otelcol
-    goos: linux
+  - goos: linux
     goarch: arm64
     dockerfile: Dockerfile
     image_templates:
@@ -158,9 +150,7 @@ dockers:
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
     use: buildx
-  - ids:
-      - otelcol
-    goos: linux
+  - goos: linux
     goarch: ppc64le
     dockerfile: Dockerfile
     image_templates:
@@ -179,9 +169,7 @@ dockers:
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
     use: buildx
-  - ids:
-      - otelcol
-    goos: linux
+  - goos: linux
     goarch: s390x
     dockerfile: Dockerfile
     image_templates:
