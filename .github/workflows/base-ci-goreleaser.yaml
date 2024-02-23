@@ -9,7 +9,6 @@ on:
 
 jobs:
   check-goreleaser:
-    name:  Check GoReleaser Configuration for ${{ inputs.distribution }}
     strategy:
       matrix:
         GOOS: [ linux, windows, darwin ]

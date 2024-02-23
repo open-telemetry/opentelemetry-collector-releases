@@ -9,7 +9,6 @@ on:
 
 jobs:
   prepare:
-    name: Prepare ${{ inputs.distribution }} Release
     strategy:
       matrix:
         GOOS: [linux, windows, darwin]
