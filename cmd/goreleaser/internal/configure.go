@@ -36,29 +36,28 @@ var (
 	ArmVersions   = []string{"7"}
 )
 
-func Generate(imagePrefixes []string, dists []string) config.Project {
+func Generate(dist string) config.Project {
 	return config.Project{
 		ProjectName: "opentelemetry-collector-releases",
 		Checksum: config.Checksum{
-			NameTemplate: "{{ .ProjectName }}_checksums.txt",
+			NameTemplate: fmt.Sprintf("{{ .ProjectName }}_%v_checksums.txt", dist),
 		},
 		Env:             []string{"COSIGN_YES=true"},
-		Builds:          Builds(dists),
-		Archives:        Archives(dists),
-		NFPMs:           Packages(dists),
-		Dockers:         DockerImages(imagePrefixes, dists),
-		DockerManifests: DockerManifests(imagePrefixes, dists),
+		Builds:          Builds(dist),
+		Archives:        Archives(dist),
+		NFPMs:           Packages(dist),
+		Dockers:         DockerImages(dist),
+		DockerManifests: DockerManifests(dist),
 		Signs:           Sign(),
 		DockerSigns:     DockerSigns(),
 		SBOMs:           SBOM(),
 	}
 }
 
-func Builds(dists []string) (r []config.Build) {
-	for _, dist := range dists {
-		r = append(r, Build(dist))
+func Builds(dist string) []config.Build {
+	return []config.Build{
+		Build(dist),
 	}
-	return
 }
 
 // Build configures a goreleaser build.
@@ -66,7 +65,7 @@ func Builds(dists []string) (r []config.Build) {
 func Build(dist string) config.Build {
 	return config.Build{
 		ID:     dist,
-		Dir:    path.Join("distributions", dist, "_build"),
+		Dir:    "_build",
 		Binary: dist,
 		BuildDetails: config.BuildDetails{
 			Env:     []string{"CGO_ENABLED=0"},
@@ -87,11 +86,10 @@ func Build(dist string) config.Build {
 	}
 }
 
-func Archives(dists []string) (r []config.Archive) {
-	for _, dist := range dists {
-		r = append(r, Archive(dist))
+func Archives(dist string) (r []config.Archive) {
+	return []config.Archive{
+		Archive(dist),
 	}
-	return
 }
 
 // Archive configures a goreleaser archive (tarball).
@@ -104,11 +102,10 @@ func Archive(dist string) config.Archive {
 	}
 }
 
-func Packages(dists []string) (r []config.NFPM) {
-	for _, dist := range dists {
-		r = append(r, Package(dist))
+func Packages(dist string) (r []config.NFPM) {
+	return []config.NFPM{
+		Package(dist),
 	}
-	return
 }
 
 // Package configures goreleaser to build a system package.
@@ -126,22 +123,22 @@ func Package(dist string) config.NFPM {
 		NFPMOverridables: config.NFPMOverridables{
 			PackageName: dist,
 			Scripts: config.NFPMScripts{
-				PreInstall:  path.Join("distributions", dist, "preinstall.sh"),
-				PostInstall: path.Join("distributions", dist, "postinstall.sh"),
-				PreRemove:   path.Join("distributions", dist, "preremove.sh"),
+				PreInstall:  "preinstall.sh",
+				PostInstall: "postinstall.sh",
+				PreRemove:   "preremove.sh",
 			},
 			Contents: files.Contents{
 				{
-					Source:      path.Join("distributions", dist, fmt.Sprintf("%s.service", dist)),
+					Source:      fmt.Sprintf("%s.service", dist),
 					Destination: path.Join("/lib", "systemd", "system", fmt.Sprintf("%s.service", dist)),
 				},
 				{
-					Source:      path.Join("distributions", dist, fmt.Sprintf("%s.conf", dist)),
+					Source:      fmt.Sprintf("%s.conf", dist),
 					Destination: path.Join("/etc", dist, fmt.Sprintf("%s.conf", dist)),
 					Type:        "config|noreplace",
 				},
 				{
-					Source:      path.Join("configs", fmt.Sprintf("%s.yaml", dist)),
+					Source:      "config.yaml",
 					Destination: path.Join("/etc", dist, "config.yaml"),
 					Type:        "config",
 				},
@@ -150,28 +147,27 @@ func Package(dist string) config.NFPM {
 	}
 }
 
-func DockerImages(imagePrefixes, dists []string) (r []config.Docker) {
-	for _, dist := range dists {
-		for _, arch := range Architectures {
-			switch arch {
-			case ArmArch:
-				for _, vers := range ArmVersions {
-					r = append(r, DockerImage(imagePrefixes, dist, arch, vers))
-				}
-			default:
-				r = append(r, DockerImage(imagePrefixes, dist, arch, ""))
+func DockerImages(dist string) []config.Docker {
+	r := make([]config.Docker, 0)
+	for _, arch := range Architectures {
+		switch arch {
+		case ArmArch:
+			for _, vers := range ArmVersions {
+				r = append(r, DockerImage(dist, arch, vers))
 			}
+		default:
+			r = append(r, DockerImage(dist, arch, ""))
 		}
 	}
-	return
+	return r
 }
 
 // DockerImage configures goreleaser to build a container image.
 // https://goreleaser.com/customization/docker/
-func DockerImage(imagePrefixes []string, dist, arch, armVersion string) config.Docker {
+func DockerImage(dist, arch, armVersion string) config.Docker {
 	dockerArchName := archName(arch, armVersion)
 	var imageTemplates []string
-	for _, prefix := range imagePrefixes {
+	for _, prefix := range ImagePrefixes {
 		dockerArchTag := strings.ReplaceAll(dockerArchName, "/", "")
 		imageTemplates = append(
 			imageTemplates,
@@ -186,7 +182,7 @@ func DockerImage(imagePrefixes []string, dist, arch, armVersion string) config.D
 
 	return config.Docker{
 		ImageTemplates: imageTemplates,
-		Dockerfile:     path.Join("distributions", dist, "Dockerfile"),
+		Dockerfile:     "Dockerfile",
 
 		Use: "buildx",
 		BuildFlagTemplates: []string{
@@ -198,24 +194,20 @@ func DockerImage(imagePrefixes []string, dist, arch, armVersion string) config.D
 			label("version", ".Version"),
 			label("source", ".GitURL"),
 		},
-		Files:  []string{path.Join("configs", fmt.Sprintf("%s.yaml", dist))},
+		Files:  []string{"config.yaml"},
 		Goos:   "linux",
 		Goarch: arch,
 		Goarm:  armVersion,
-		IDs: []string{
-			dist,
-		},
 	}
 }
 
-func DockerManifests(imagePrefixes, dists []string) (r []config.DockerManifest) {
-	for _, dist := range dists {
-		for _, prefix := range imagePrefixes {
-			r = append(r, DockerManifest(prefix, `{{ .Version }}`, dist))
-			r = append(r, DockerManifest(prefix, "latest", dist))
-		}
+func DockerManifests(dist string) []config.DockerManifest {
+	r := make([]config.DockerManifest, 0)
+	for _, prefix := range ImagePrefixes {
+		r = append(r, DockerManifest(prefix, `{{ .Version }}`, dist))
+		r = append(r, DockerManifest(prefix, "latest", dist))
 	}
-	return
+	return r
 }
 
 // DockerManifest configures goreleaser to build a multi-arch container image manifest.
