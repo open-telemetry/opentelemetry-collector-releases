@@ -15,7 +15,7 @@ extensions:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/bearertokenauthextension v0.95.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/headerssetterextension v0.95.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.95.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/httpforwarder v0.95.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/httpforwarderextension v0.95.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/jaegerremotesampling v0.95.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/oauth2clientauthextension v0.95.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/dockerobserver v0.95.0
