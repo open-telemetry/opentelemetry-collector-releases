@@ -85,7 +85,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: all-artifacts
-          path: dist/*/*
+          path: dist/**/*
 
   release:
     name: ${{ inputs.distribution }} Release
