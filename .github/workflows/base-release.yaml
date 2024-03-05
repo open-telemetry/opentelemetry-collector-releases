@@ -84,8 +84,9 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: all-artifacts
+          name: artifacts-${{ inputs.distribution }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
           path: distributions/${{ inputs.distribution }}/dist/**/*
+          if-no-files-found: error
 
   release:
     name: ${{ inputs.distribution }} Release
@@ -119,8 +120,12 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: all-artifacts
-          path: dist
+          pattern: artifacts-${{ inputs.distribution }}-*
+          path: distributions/${{ inputs.distribution }}/dist
+          merge-multiple: true
+
+      - name: Display structure of downloaded files
+        run: ls -R distributions/${{ inputs.distribution }}/dist
 
       - name: Log into Docker.io
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
