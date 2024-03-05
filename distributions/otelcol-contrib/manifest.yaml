@@ -80,6 +80,7 @@ exporters:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/syslogexporter v0.94.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/tencentcloudlogserviceexporter v0.94.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/zipkinexporter v0.94.0
+  - gomod: github.com/overorion/fluentforwardexporter v0.1.3
 
 processors:
   - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.94.1
