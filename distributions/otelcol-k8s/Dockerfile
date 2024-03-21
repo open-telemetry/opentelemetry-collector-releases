@@ -11,4 +11,4 @@ COPY --chmod=755 otelcol-k8s /otelcol-k8s
 COPY config.yaml /etc/otelcol-k8s/config.yaml
 ENTRYPOINT ["/otelcol-k8s"]
 CMD ["--config", "/etc/otelcol-k8s/config.yaml"]
-EXPOSE 4317 55678 55679
+EXPOSE 4317 4318 55678 55679 6831 14268 14250 9411
