@@ -5,7 +5,7 @@ OTELCOL_BUILDER_VERSION ?= 0.97.0
 OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
 
-DISTRIBUTIONS ?= "otelcol,otelcol-contrib"
+DISTRIBUTIONS ?= "otelcol,otelcol-contrib,otelcol-k8s"
 
 ci: check build
 check: ensure-goreleaser-up-to-date

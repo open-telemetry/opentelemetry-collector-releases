@@ -1,0 +1,14 @@
+name: Release k8s
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    name: Release Contrib
+    uses: ./.github/workflows/base-release.yaml
+    with:
+      distribution: otelcol-k8s
+    secrets: inherit
+    permissions: write-all

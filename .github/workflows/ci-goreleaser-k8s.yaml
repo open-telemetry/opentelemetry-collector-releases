@@ -1,0 +1,19 @@
+name: Continuous Integration - k8s - GoReleaser
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "distributions/otelcol-k8s/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "distributions/otelcol-k8s/**"
+
+jobs:
+  check-goreleaser:
+    name: Continuous Integration - k8s - GoReleaser
+    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    with:
+      distribution: otelcol-k8s
+    secrets: inherit
