@@ -1,6 +1,0 @@
-vendor
-**/_build
-dist/
-.idea
-.generated-yaml/
-.vscode
