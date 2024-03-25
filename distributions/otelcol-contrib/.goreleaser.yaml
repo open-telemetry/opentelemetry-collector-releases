@@ -55,7 +55,7 @@ nfpms:
         type: config|noreplace
       - src: config.yaml
         dst: /etc/otelcol-contrib/config.yaml
-        type: config
+        type: config|noreplace
     scripts:
       preinstall: preinstall.sh
       postinstall: postinstall.sh
