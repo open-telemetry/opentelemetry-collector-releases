@@ -2,9 +2,9 @@ dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/contrib
   name: otelcol-contrib
   description: OpenTelemetry Collector Contrib
-  version: 0.94.0
+  version: 0.96.0
   output_path: ./_build
-  otelcol_version: 0.94.1
+  otelcol_version: 0.96.0
 
 extensions:
   - gomod: go.opentelemetry.io/collector/extension/zpagesextension v0.94.1
@@ -15,7 +15,7 @@ extensions:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/bearertokenauthextension v0.96.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/headerssetterextension v0.96.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.96.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/httpforwarder v0.96.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/httpforwarderextension v0.96.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/jaegerremotesampling v0.96.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/oauth2clientauthextension v0.96.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/dockerobserver v0.96.0
@@ -98,7 +98,6 @@ processors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.96.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.96.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/routingprocessor v0.96.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanmetricsprocessor v0.96.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor v0.96.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/sumologicprocessor v0.96.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor v0.96.0
