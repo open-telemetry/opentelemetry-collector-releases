@@ -5,7 +5,7 @@ OTELCOL_BUILDER_VERSION ?= 0.97.0
 OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
 
-DISTRIBUTIONS ?= "otelcol-contrib"
+DISTRIBUTIONS ?= "axoflow-otel-collector"
 
 ci: check build
 check: ensure-goreleaser-up-to-date
@@ -64,7 +64,7 @@ goreleaser:
 		fi \
 	}
 
-REMOTE?=git@github.com:axoflow/opentelemetry-collector-releases.git
+REMOTE?=git@github.com:axoflow/axoflow-otel-collector-releases.git
 .PHONY: push-tags
 push-tags:
 	@[ "${TAG}" ] || ( echo ">> env var TAG is not set"; exit 1 )

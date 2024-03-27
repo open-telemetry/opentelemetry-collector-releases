@@ -1,0 +1,15 @@
+[Unit]
+Description=OpenTelemetry Collector Contrib
+After=network.target
+
+[Service]
+EnvironmentFile=/etc/axoflow-otel-collector/axoflow-otel-collector.conf
+ExecStart=/usr/bin/axoflow-otel-collector $OTELCOL_OPTIONS
+KillMode=mixed
+Restart=on-failure
+Type=simple
+User=axoflow-otel-collector
+Group=axoflow-otel-collector
+
+[Install]
+WantedBy=multi-user.target

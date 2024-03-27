@@ -1,7 +1,7 @@
 dist:
-  module: github.com/open-telemetry/opentelemetry-collector-releases/contrib
-  name: otelcol-contrib
-  description: OpenTelemetry Collector Contrib
+  module: github.com/axoflow/axoflow-otel-collector-releases
+  name: axoflow-otel-collector
+  description: Axoflow Distribution for OpenTelemetry Collector
   version: 0.97.0
   output_path: ./_build
   otelcol_version: 0.97.0

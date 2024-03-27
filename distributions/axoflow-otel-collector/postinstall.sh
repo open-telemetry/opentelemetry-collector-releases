@@ -15,8 +15,8 @@
 # limitations under the License.
 
 if command -v systemctl >/dev/null 2>&1; then
-    systemctl enable otelcol-contrib.service
-    if [ -f /etc/otelcol-contrib/config.yaml ]; then
-        systemctl start otelcol-contrib.service
+    systemctl enable axoflow-otel-collector.service
+    if [ -f /etc/axoflow-otel-collector/config.yaml ]; then
+        systemctl start axoflow-otel-collector.service
     fi
 fi
