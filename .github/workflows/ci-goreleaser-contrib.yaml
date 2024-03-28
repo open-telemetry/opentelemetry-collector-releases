@@ -5,10 +5,22 @@ on:
     branches: [main]
     paths:
       - "distributions/otelcol-contrib/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
   pull_request:
     branches: [main]
     paths:
       - "distributions/otelcol-contrib/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
 
 jobs:
   check-goreleaser:
