@@ -8,7 +8,6 @@ USER ${USER_UID}
 
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --chmod=755 otelcol-k8s /otelcol-k8s
-COPY config.yaml /etc/otelcol-k8s/config.yaml
 ENTRYPOINT ["/otelcol-k8s"]
 # `4137` and `4318`: OTLP
 # `55678`: OpenCensus
