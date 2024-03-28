@@ -6,13 +6,19 @@ on:
       distribution:
         required: true
         type: string
+      goos:
+        required: true
+        type: string
+      goarch:
+        required: true
+        type: string
 
 jobs:
   check-goreleaser:
     strategy:
       matrix:
-        GOOS: [ linux, windows, darwin ]
-        GOARCH: [ "386", amd64, arm64, ppc64le, arm, s390x ]
+        GOOS: ${{ fromJSON( inputs.goos) }}
+        GOARCH: ${{ fromJSON( inputs.goarch) }}
         exclude:
           - GOOS: darwin
             GOARCH: "386"
