@@ -37,8 +37,6 @@ dockers:
       - otel/opentelemetry-collector-k8s:latest-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-amd64
-    extra_files:
-      - config.yaml
     build_flag_templates:
       - --pull
       - --platform=linux/amd64
@@ -56,8 +54,6 @@ dockers:
       - otel/opentelemetry-collector-k8s:latest-arm64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-arm64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-arm64
-    extra_files:
-      - config.yaml
     build_flag_templates:
       - --pull
       - --platform=linux/arm64
@@ -75,8 +71,6 @@ dockers:
       - otel/opentelemetry-collector-k8s:latest-ppc64le
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-ppc64le
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-ppc64le
-    extra_files:
-      - config.yaml
     build_flag_templates:
       - --pull
       - --platform=linux/ppc64le
@@ -94,8 +88,6 @@ dockers:
       - otel/opentelemetry-collector-k8s:latest-s390x
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-s390x
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-s390x
-    extra_files:
-      - config.yaml
     build_flag_templates:
       - --pull
       - --platform=linux/s390x
