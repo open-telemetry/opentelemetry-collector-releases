@@ -35,7 +35,7 @@ jobs:
 
       - uses: sigstore/cosign-installer@v3
 
-      - uses: anchore/sbom-action/download-syft@v0.15.9
+      - uses: anchore/sbom-action/download-syft@v0.15.10
 
       - uses: docker/setup-qemu-action@v3
         with:
@@ -105,7 +105,7 @@ jobs:
 
       - uses: sigstore/cosign-installer@v3
 
-      - uses: anchore/sbom-action/download-syft@v0.15.9
+      - uses: anchore/sbom-action/download-syft@v0.15.10
 
       - uses: docker/setup-qemu-action@v3
         with:
