@@ -26,7 +26,7 @@ goreleaser-verify: goreleaser
 	@${GORELEASER} release --snapshot --clean
 
 ensure-goreleaser-up-to-date: generate-goreleaser
-	@git diff -s --exit-code distributions/*/.goreleaser.yaml || (echo "Build failed: The goreleaser templates have changed but the .goreleaser.yamls haven't. Run 'make generate-goreleaser' and update your PR." && exit 0)
+	@git diff -s --exit-code distributions/*/.goreleaser.yaml || (echo "Check failed: The goreleaser templates have changed but the .goreleaser.yamls haven't. Run 'make generate-goreleaser' and update your PR." && exit 1)
 
 .PHONY: ocb
 ocb:
