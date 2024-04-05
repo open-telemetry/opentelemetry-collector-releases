@@ -140,7 +140,7 @@ func Package(dist string) config.NFPM {
 				{
 					Source:      "config.yaml",
 					Destination: path.Join("/etc", dist, "config.yaml"),
-					Type:        "config",
+					Type:        "config|noreplace",
 				},
 			},
 		},
