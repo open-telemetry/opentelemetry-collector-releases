@@ -2,9 +2,9 @@ dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/k8s
   name: otelcol-k8s
   description: OpenTelemetry Collector for Kubernetes
-  version: 0.96.0
+  version: 0.97.0
   output_path: ./_build
-  otelcol_version: 0.96.0
+  otelcol_version: 0.97.0
 
 extensions:
   - gomod: go.opentelemetry.io/collector/extension/zpagesextension v0.97.0
