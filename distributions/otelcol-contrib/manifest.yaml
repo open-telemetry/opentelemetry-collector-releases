@@ -33,6 +33,7 @@ extensions:
 exporters:
   - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.97.0
   - gomod: go.opentelemetry.io/collector/exporter/loggingexporter v0.97.0
+  - gomod: go.opentelemetry.io/collector/exporter/nopexporter v0.97.0
   - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.97.0
   - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/alibabacloudlogserviceexporter v0.97.0
@@ -103,6 +104,7 @@ processors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.97.0
 
 receivers:
+  - gomod: go.opentelemetry.io/collector/receiver/nopreceiver v0.97.0
   - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/activedirectorydsreceiver v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/aerospikereceiver v0.97.0
