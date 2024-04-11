@@ -91,6 +91,7 @@ dockers:
       - --label=org.opencontainers.image.revision={{.FullCommit}}
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
   - goos: linux
     goarch: amd64
@@ -110,6 +111,7 @@ dockers:
       - --label=org.opencontainers.image.revision={{.FullCommit}}
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
   - goos: linux
     goarch: arm
@@ -130,6 +132,7 @@ dockers:
       - --label=org.opencontainers.image.revision={{.FullCommit}}
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
   - goos: linux
     goarch: arm64
@@ -149,6 +152,7 @@ dockers:
       - --label=org.opencontainers.image.revision={{.FullCommit}}
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
   - goos: linux
     goarch: ppc64le
@@ -168,6 +172,7 @@ dockers:
       - --label=org.opencontainers.image.revision={{.FullCommit}}
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
   - goos: linux
     goarch: s390x
@@ -187,6 +192,7 @@ dockers:
       - --label=org.opencontainers.image.revision={{.FullCommit}}
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
 docker_manifests:
   - name_template: otel/opentelemetry-collector:{{ .Version }}
