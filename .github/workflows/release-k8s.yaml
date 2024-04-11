@@ -6,7 +6,7 @@ on:
 
 jobs:
   release:
-    name: Release Contrib
+    name: Release k8s
     uses: ./.github/workflows/base-release.yaml
     with:
       distribution: otelcol-k8s
