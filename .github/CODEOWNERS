@@ -13,3 +13,5 @@
 #
 
 * @open-telemetry/collector-contrib-approvers
+
+distributions/otelcol-k8s/ @open-telemetry/collector-contrib-approvers @open-telemetry/helm-approvers @open-telemetry/operator-approvers
