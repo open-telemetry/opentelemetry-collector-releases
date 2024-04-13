@@ -193,6 +193,7 @@ func DockerImage(dist, arch, armVersion string) config.Docker {
 			label("revision", ".FullCommit"),
 			label("version", ".Version"),
 			label("source", ".GitURL"),
+			"--label=org.opencontainers.image.licenses=Apache-2.0",
 		},
 		Files:  []string{"config.yaml"},
 		Goos:   "linux",
