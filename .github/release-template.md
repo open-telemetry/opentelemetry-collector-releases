@@ -1,0 +1,1 @@
+Check the [v{{.Version}} contrib changelog](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v{{.Version}}) and the [v{{.Version}} core changelog](https://github.com/open-telemetry/opentelemetry-collector/releases/tag/v{{.Version}}) for changelogs on specific components.
