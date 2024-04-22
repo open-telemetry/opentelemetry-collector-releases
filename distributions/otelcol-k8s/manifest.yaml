@@ -17,8 +17,7 @@ extensions:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/k8sobserver v0.99.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/oidcauthextension v0.99.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.99.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage v0.99.0
-    import: github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage/filestorage
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage/filestorage v0.99.0
 
 exporters:
   - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.99.0
