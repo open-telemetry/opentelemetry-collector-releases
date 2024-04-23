@@ -1,7 +1,7 @@
 dist:
-  module: github.com/open-telemetry/opentelemetry-collector-releases/contrib
-  name: otelcol-contrib
-  description: OpenTelemetry Collector Contrib
+  module: github.com/axoflow/axoflow-otel-collector-releases
+  name: axoflow-otel-collector
+  description: Axoflow Distribution for OpenTelemetry Collector
   version: 0.97.0
   output_path: ./_build
   otelcol_version: 0.97.0
@@ -79,6 +79,7 @@ exporters:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/syslogexporter v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/tencentcloudlogserviceexporter v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/zipkinexporter v0.97.0
+  - gomod: github.com/axoflow/fluentforwardexporter v0.0.2
 
 processors:
   - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.97.0
@@ -97,7 +98,8 @@ processors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/remotetapprocessor v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.97.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/routingprocessor v0.97.0
+  # TODO: check if can be reenabled
+  # - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/routingprocessor v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/sumologicprocessor v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor v0.97.0
@@ -133,7 +135,7 @@ receivers:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filestatsreceiver v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/flinkmetricsreceiver v0.97.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/fluentforwardreceiver v0.97.0
+#  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/fluentforwardreceiver v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/googlecloudpubsubreceiver v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/googlecloudspannerreceiver v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/haproxyreceiver v0.97.0
@@ -144,7 +146,8 @@ receivers:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jmxreceiver v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/journaldreceiver v0.97.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/k8sclusterreceiver v0.97.0
+  # TODO: check if can be reenabled
+  # - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/k8sclusterreceiver v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/k8seventsreceiver v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/k8sobjectsreceiver v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkametricsreceiver v0.97.0
@@ -199,7 +202,8 @@ connectors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/countconnector v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/datadogconnector v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/routingconnector v0.97.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/servicegraphconnector v0.97.0
+  # TODO: check if can be reenabled
+  # - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/servicegraphconnector v0.97.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/spanmetricsconnector v0.97.0
 
 # When adding a replace, add a comment before it to document why it's needed and when it can be removed
@@ -212,3 +216,4 @@ replaces:
   - github.com/mattn/go-ieproxy => github.com/mattn/go-ieproxy v0.0.1
   # see https://github.com/openshift/api/pull/1515
   - github.com/openshift/api => github.com/openshift/api v0.0.0-20230726162818-81f778f3b3ec
+  - github.com/IBM/fluent-forward-go => github.com/IBM/fluent-forward-go v0.2.3-0.20240418091724-720f8df4306a

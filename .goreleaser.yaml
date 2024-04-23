@@ -1,13 +1,13 @@
-project_name: opentelemetry-collector-releases
+project_name: axoflow-otel-collector-releases
 builds:
-    - id: otelcol-contrib
+    - id: axoflow-otel-collector
       goos:
         - linux
       goarch:
         - amd64
         - arm64
-      dir: distributions/otelcol-contrib/_build
-      binary: otelcol-contrib
+      dir: distributions/axoflow-otel-collector/_build
+      binary: axoflow-otel-collector
       ldflags:
         - -s
         - -w
@@ -16,21 +16,21 @@ builds:
       env:
         - CGO_ENABLED=0
 archives:
-    - id: otelcol-contrib
+    - id: axoflow-otel-collector
       builds:
-        - otelcol-contrib
+        - axoflow-otel-collector
       name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 checksum:
     name_template: '{{ .ProjectName }}_checksums.txt'
 dockers:
     - goos: linux
       goarch: amd64
-      dockerfile: distributions/otelcol-contrib/Dockerfile
+      dockerfile: distributions/axoflow-otel-collector/Dockerfile
       image_templates:
         - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-amd64
         - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-amd64
       extra_files:
-        - configs/otelcol-contrib.yaml
+        - configs/axoflow-otel-collector.yaml
       build_flag_templates:
         - --pull
         - --platform=linux/amd64
@@ -42,12 +42,12 @@ dockers:
       use: buildx
     - goos: linux
       goarch: arm64
-      dockerfile: distributions/otelcol-contrib/Dockerfile
+      dockerfile: distributions/axoflow-otel-collector/Dockerfile
       image_templates:
         - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-arm64
         - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-arm64
       extra_files:
-        - configs/otelcol-contrib.yaml
+        - configs/axoflow-otel-collector.yaml
       build_flag_templates:
         - --pull
         - --platform=linux/arm64

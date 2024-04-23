@@ -38,7 +38,7 @@ var (
 
 func Generate(imagePrefixes []string, dists []string) config.Project {
 	return config.Project{
-		ProjectName: "opentelemetry-collector-releases",
+		ProjectName: "axoflow-otel-collector-releases",
 		Checksum: config.Checksum{
 			NameTemplate: "{{ .ProjectName }}_checksums.txt",
 		},
@@ -233,7 +233,7 @@ func DockerManifest(prefix, version, dist string) config.DockerManifest {
 
 // imageName translates a distribution name to a container image name.
 func imageName(dist string) string {
-	return strings.Replace(dist, "otelcol", "opentelemetry-collector", 1)
+	return strings.Replace(dist, "otelcol", "axoflow-otel-collector", 1)
 }
 
 // archName translates architecture to docker platform names.
