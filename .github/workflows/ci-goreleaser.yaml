@@ -48,6 +48,6 @@ jobs:
         with:
           distribution: goreleaser
           version: v1.24.0
-          args: --snapshot --clean --skip-sign --skip-sbom --timeout 2h
+          args: --snapshot --clean --skip=sign,sbom --timeout 2h
         env:
           GOOS: ${{ matrix.GOOS }}
