@@ -3,6 +3,16 @@ partial:
 project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
+brews:
+  - name: otelcol-contrib
+    repository:
+      owner: open-telemetry
+      name: homebrew-tap
+    description: OpenTelemetry collector distribution containing both core and contrib components
+    homepage: https://opentelemetry.io/docs/collector/
+    license: Apache-2.0
+    ids:
+      - otelcol-contrib
 builds:
   - id: otelcol-contrib
     goos:
@@ -249,13 +259,3 @@ sboms:
     artifacts: archive
   - id: package
     artifacts: package
-brews:
-  - name: otelcol-contrib
-    description: "OpenTelemetry collector distribution containing only core components"
-    homepage: "https://opentelemetry.io/docs/collector/"
-    license: "Apache-2.0"
-    ids:
-      - otelcol-contrib
-    repository:
-      owner: open-telemetry
-      name: homebrew-tap
