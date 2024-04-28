@@ -251,7 +251,7 @@ sboms:
     artifacts: package
 brews:
   - name: otelcol
-    description: "OpenTelemtry collector distribution containing both core and contrib components"
+    description: "OpenTelemetry collector distribution containing both core and contrib components"
     homepage: "https://opentelemetry.io/docs/collector/"
     license: "Apache-2.0"
     ids:
