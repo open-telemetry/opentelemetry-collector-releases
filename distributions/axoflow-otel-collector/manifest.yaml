@@ -217,3 +217,4 @@ replaces:
   # see https://github.com/openshift/api/pull/1515
   - github.com/openshift/api => github.com/openshift/api v0.0.0-20230726162818-81f778f3b3ec
   - github.com/IBM/fluent-forward-go => github.com/IBM/fluent-forward-go v0.2.3-0.20240418091724-720f8df4306a
+  - github.com/open-telemetry/opentelemetry-collector-contrib/connector/countconnector =>  github.com/kristofgyuracz/opentelemetry-collector-contrib/connector/countconnector v0.98.0-dev5
