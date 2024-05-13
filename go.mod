@@ -6,7 +6,7 @@ toolchain go1.21.7
 
 require (
 	github.com/goreleaser/goreleaser v1.25.1
-	github.com/goreleaser/nfpm/v2 v2.36.1
+	github.com/goreleaser/nfpm/v2 v2.37.1
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -30,6 +30,6 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/wk8/go-ordered-map/v2 v2.1.8 // indirect
-	golang.org/x/sys v0.18.0 // indirect
+	golang.org/x/sys v0.20.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )
