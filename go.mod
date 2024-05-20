@@ -1,11 +1,10 @@
 module github.com/open-telemetry/opentelemetry-collector-releases
 
 go 1.21
-
-toolchain go1.21.7
+toolchain go1.22.2
 
 require (
-	github.com/goreleaser/goreleaser v1.25.1
+	github.com/goreleaser/goreleaser v1.26.1
 	github.com/goreleaser/nfpm/v2 v2.37.1
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -28,7 +27,7 @@ require (
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
-	github.com/rogpeppe/go-internal v1.11.0 // indirect
+	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/wk8/go-ordered-map/v2 v2.1.8 // indirect
 	golang.org/x/sys v0.20.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
