@@ -70,6 +70,12 @@ nfpms:
     maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
     description: OpenTelemetry Collector - otelcol
     license: Apache 2.0
+msi:
+  name: "otelcol_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}"
+  wxs: ./windows/installer.wxs
+  extra_files:
+    - config.yaml
+    - ./windows/opentelemetry.ico
 checksum:
   name_template: '{{ .ProjectName }}_otelcol_checksums.txt'
 dockers:
