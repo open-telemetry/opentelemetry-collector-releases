@@ -73,7 +73,6 @@
       <CustomAction
          Id="CopyConfig"
          ExeCommand="xcopy /y &quot;[CONFIG]&quot; &quot;[INSTALLDIR]config.yaml*&quot;"
-         Directory="INSTALLDIR"
          Impersonate="no"
          Execute="deferred" Return="check"/>
       <InstallExecuteSequence>
