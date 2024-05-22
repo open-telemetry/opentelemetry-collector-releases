@@ -12,7 +12,7 @@
          Compressed="yes"
          Comments="Windows Installer Package"/>
       <Media Id="1" Cabinet="product.cab" EmbedCab="yes"/>
-      <Icon Id="ProductIcon" SourceFile="./opentelemetry.ico"/>
+      <Icon Id="ProductIcon" SourceFile="opentelemetry.ico"/>
       <Property Id="ARPPRODUCTICON" Value="ProductIcon"/>
       <Property Id="ARPHELPLINK" Value="https://opentelemetry.io/"/>
       <Property Id="ARPURLINFOABOUT" Value="https://opentelemetry.io/"/>
