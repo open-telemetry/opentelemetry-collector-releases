@@ -42,7 +42,8 @@
                      Source="config.yaml"/>
 
                   <!-- Since we may have overwritten the config file (see below), we need to explicitly remove it on uninstall -->
-                  <RemoveFile Id="RemoveConfigFile" Name="config.yaml" On="uninstall" />
+                  <!-- RemoveFile not supported by "msitools/wixl" -->
+                  <!-- RemoveFile Id="RemoveConfigFile" Name="config.yaml" On="uninstall" / -->
 
                   <ServiceInstall
                      Id="Sevice"
