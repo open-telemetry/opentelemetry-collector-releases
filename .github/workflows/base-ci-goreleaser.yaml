@@ -73,3 +73,10 @@ jobs:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+
+      - name: Temporary action to upload artifacts
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: artifacts-${{ inputs.distribution }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
+          path: distributions/${{ inputs.distribution }}/dist/**/*
+          if-no-files-found: error
