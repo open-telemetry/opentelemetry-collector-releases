@@ -73,3 +73,9 @@ jobs:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+      
+      - name: Locate artifacts used to build the MSI
+        if: always()
+        run: |
+          pwd
+          find . -type f -name 'opentelemetry.ico'
