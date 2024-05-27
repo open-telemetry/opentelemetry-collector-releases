@@ -5,7 +5,7 @@ go 1.22
 toolchain go1.22.3
 
 require (
-	github.com/goreleaser/goreleaser v1.26.0
+	github.com/goreleaser/goreleaser v1.26.2
 	github.com/goreleaser/nfpm/v2 v2.37.1
 	gopkg.in/yaml.v3 v3.0.1
 )
