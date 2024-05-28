@@ -65,6 +65,15 @@
                      Stop="both"
                      Remove="uninstall"
                      Wait="yes"/>
+
+                  <RegistryKey
+                     Root="HKLM"
+                     Key="SYSTEM\CurrentControlSet\Services\EventLog\Application\{{ .Binary }}">
+                     <RegistryValue 
+                        Type="expandable"
+                        Name="EventMessageFile"
+                        Value="%SystemRoot%\System32\EventCreate.exe"/>
+                  </RegistryKey>
                </Component>
             </Directory>
          </Directory>
