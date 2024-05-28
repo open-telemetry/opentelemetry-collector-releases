@@ -48,7 +48,7 @@
 
                   <ServiceInstall
                      Id="Sevice"
-                     Name="otelcol"
+                     Name="{{ .Binary }}"
                      DisplayName="OpenTelemetry Collector"
                      Description="Collects, processes, and exports telemetry from various configurable sources."
                      Type="ownProcess"
@@ -60,7 +60,7 @@
                      Interactive="no"/>
                   <ServiceControl
                      Id="StartStopRemoveService"
-                     Name="otelcol"
+                     Name="{{ .Binary }}"
                      Start="install"
                      Stop="both"
                      Remove="uninstall"
