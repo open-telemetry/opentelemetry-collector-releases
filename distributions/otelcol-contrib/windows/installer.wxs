@@ -68,7 +68,7 @@
 
                   <RegistryKey
                      Root="HKLM"
-                     Key="SYSTEM\CurrentControlSet\Services\EventLog\Application\{{ .Binary }}">
+                     Key="SYSTEM\CurrentControlSet\Services\EventLog\Application\OpenTelemetry Collector">
                      <RegistryValue 
                         Type="expandable"
                         Name="EventMessageFile"
