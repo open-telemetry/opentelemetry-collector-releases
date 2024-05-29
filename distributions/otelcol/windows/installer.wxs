@@ -1,6 +1,6 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
    <Product
-      Name="OpenTelemetry Collector ({{ .Version }}) - {{ .Binary }} Distribution"
+      Name="OpenTelemetry Collector ({{ .Version }}) - {{ .Binary }} distribution"
       Id="B250A214-D463-4E9B-8902-1DE5C19EA951"
       UpgradeCode="B7C263DD-95A5-436A-A025-DCA5200C2BE3"
       Version="{{ .Version }}"
@@ -27,6 +27,16 @@
          <ComponentRef Id="ApplicationComponent"/>
       </Feature>
 
+      <Property Id="COLLECTOR_SVC_ARGS"/>
+      <CustomAction
+         Id="SetCollectorSvcArgs"
+         Property="COLLECTOR_SVC_ARGS"
+         Value="--config &quot;[INSTALLDIR]config.yaml&quot;"/>
+
+      <InstallExecuteSequence>
+         <Custom Action="SetCollectorSvcArgs" Before="InstallFiles">NOT COLLECTOR_SVC_ARGS</Custom>
+      </InstallExecuteSequence>
+
       <Directory Id="TARGETDIR" Name="SourceDir">
          <Directory Id="ProgramFiles64Folder">
             <Directory Id="INSTALLDIR" Name="OpenTelemetry Collector">
@@ -42,10 +52,6 @@
                      Name="config.yaml"
                      Source="config.yaml"/>
 
-                  <!-- Since we may have overwritten the config file (see below), we need to explicitly remove it on uninstall -->
-                  <!-- RemoveFile not supported by "msitools/wixl" -->
-                  <!-- RemoveFile Id="RemoveConfigFile" Name="config.yaml" On="uninstall" / -->
-
                   <ServiceInstall
                      Id="Sevice"
                      Name="{{ .Binary }}"
@@ -56,7 +62,7 @@
                      Start="auto"
                      Account="LocalSystem"
                      ErrorControl="normal"
-                     Arguments=" --config=&quot;[INSTALLDIR]config.yaml&quot;"
+                     Arguments="[COLLECTOR_SVC_ARGS]"
                      Interactive="no"/>
                   <ServiceControl
                      Id="StartStopRemoveService"
@@ -78,15 +84,5 @@
             </Directory>
          </Directory>
       </Directory>
-
-      <!-- If CONFIG is supplied as a custom argument when installing, overwrite config.yaml with the specified file -->
-      <CustomAction
-         Id="CopyConfig"
-         ExeCommand="xcopy /y &quot;[CONFIG]&quot; &quot;[INSTALLDIR]config.yaml*&quot;"
-         Impersonate="no"
-         Execute="deferred" Return="check"/>
-      <InstallExecuteSequence>
-         <Custom Action="CopyConfig" After="InstallFiles">CONFIG AND NOT Installed</Custom>
-      </InstallExecuteSequence>
    </Product>
 </Wix>
