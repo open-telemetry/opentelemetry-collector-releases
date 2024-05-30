@@ -13,7 +13,7 @@
          Comments="Windows Installer Package"
          InstallScope="perMachine"/>
       <Media Id="1" Cabinet="product.cab" EmbedCab="yes"/>
-      <Icon Id="ProductIcon" SourceFile="$(sys.CURRENTDIR)/windows/opentelemetry.ico"/>
+      <Icon Id="ProductIcon" SourceFile="$(sys.SOURCEFILEDIR)/windows/opentelemetry.ico"/>
       <Property Id="ARPPRODUCTICON" Value="ProductIcon"/>
       <Property Id="ARPHELPLINK" Value="https://opentelemetry.io/"/>
       <Property Id="ARPURLINFOABOUT" Value="https://opentelemetry.io/"/>
