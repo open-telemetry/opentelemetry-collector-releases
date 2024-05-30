@@ -114,7 +114,7 @@ func WinPackage(dist string) config.MSI {
 	return config.MSI{
 		ID:      dist,
 		Name: fmt.Sprintf("%s_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}", dist),
-		WXS:  "./windows/installer.wxs",
+		WXS:  "windows-installer.wxs",
 		Files: []string{
 			"config.yaml",
 			"opentelemetry.ico",

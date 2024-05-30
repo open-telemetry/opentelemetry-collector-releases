@@ -6,7 +6,7 @@ env:
 msi:
   - id: otelcol
     name: otelcol_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}
-    wxs: ./windows/installer.wxs
+    wxs: windows-installer.wxs
     extra_files:
       - config.yaml
       - opentelemetry.ico
