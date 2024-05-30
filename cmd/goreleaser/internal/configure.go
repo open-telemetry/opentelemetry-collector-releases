@@ -117,7 +117,7 @@ func WinPackage(dist string) config.MSI {
 		WXS:  "./windows/installer.wxs",
 		Files: []string{
 			"config.yaml",
-			"./windows/opentelemetry.ico",
+			"opentelemetry.ico",
 		},
 	}
 }

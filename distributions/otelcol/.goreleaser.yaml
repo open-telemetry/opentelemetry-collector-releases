@@ -9,7 +9,7 @@ msi:
     wxs: ./windows/installer.wxs
     extra_files:
       - config.yaml
-      - ./windows/opentelemetry.ico
+      - opentelemetry.ico
 builds:
   - id: otelcol
     goos:
