@@ -3,6 +3,13 @@ partial:
 project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
+msi:
+  - id: otelcol
+    name: otelcol_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}
+    wxs: windows-installer.wxs
+    extra_files:
+      - config.yaml
+      - opentelemetry.ico
 builds:
   - id: otelcol
     goos:
