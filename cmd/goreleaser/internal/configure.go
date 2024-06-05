@@ -51,6 +51,21 @@ func Generate(dist string) config.Project {
 		Signs:           Sign(),
 		DockerSigns:     DockerSigns(),
 		SBOMs:           SBOM(),
+		Brews: []config.Homebrew{
+			{
+				Name:        dist,
+				Description: Description(dist),
+				Homepage:    "https://opentelemetry.io/docs/collector/",
+				License:     "Apache-2.0",
+				IDs: []string{
+					dist,
+				},
+				Repository: config.RepoRef{
+					Owner: "open-telemetry",
+					Name:  "homebrew-tap",
+				},
+			},
+		},
 	}
 }
 
@@ -295,5 +310,16 @@ func SBOM() []config.SBOM {
 			ID:        "package",
 			Artifacts: "package",
 		},
+	}
+}
+
+func Description(dist string) string {
+	switch dist {
+	case "otelcol":
+		return "OpenTelemetry collector distribution containing only core components"
+	case "otelcol-contrib":
+		return "OpenTelemetry collector distribution containing both core and contrib components"
+	default:
+		return ""
 	}
 }
