@@ -2,7 +2,7 @@ dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/k8s
   name: otelcol-k8s
   description: OpenTelemetry Collector for Kubernetes
-  version: 0.102.0
+  version: 0.102.1
   output_path: ./_build
   otelcol_version: 0.102.1
 
