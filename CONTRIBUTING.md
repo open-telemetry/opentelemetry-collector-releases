@@ -6,7 +6,8 @@ This repository contains a set of resources that ultimately results in OpenTelem
 
 ### Distribution directory
 
-Each distribution has its own directory at the root of this repository, such as `opentelemetry-collector`. Within each one of those, you'll find at least two files:
+Each distribution has its own directory under the [`distributions`](./distributions/) folder, such as [`otelcol`](./distributions/otelcol/).
+Within each one of those, you'll find at least two files:
 
 - `Dockerfile`, determining how to build the container image for this distribution
 - `manifest.yaml`, which is used with [ocb](https://github.com/open-telemetry/opentelemetry-collector/tree/main/cmd/builder) to generate the sources for the distribution.

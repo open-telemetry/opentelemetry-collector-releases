@@ -1,0 +1,88 @@
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+   <Product
+      Name="OpenTelemetry Collector ({{ .Version }}) - {{ .Binary }} distribution"
+      Id="B250A214-D463-4E9B-8902-1DE5C19EA951"
+      UpgradeCode="B7C263DD-95A5-436A-A025-DCA5200C2BE3"
+      Version="{{ .Version }}"
+      Manufacturer="OpenTelemetry"
+      Language="1033">
+      
+      <Package
+         InstallerVersion="200"
+         Compressed="yes"
+         Comments="Windows Installer Package"
+         InstallScope="perMachine"/>
+      <Media Id="1" Cabinet="product.cab" EmbedCab="yes"/>
+      <Icon Id="ProductIcon" SourceFile="opentelemetry.ico"/>
+      <Property Id="ARPPRODUCTICON" Value="ProductIcon"/>
+      <Property Id="ARPHELPLINK" Value="https://opentelemetry.io/"/>
+      <Property Id="ARPURLINFOABOUT" Value="https://opentelemetry.io/"/>
+      <Property Id="ARPNOREPAIR" Value="1"/>
+      <Property Id="ARPNOMODIFY" Value="1"/>
+
+      <MajorUpgrade
+         DowngradeErrorMessage="A later version of OpenTelemetry Collector already installed. Setup will now exit."/>
+
+      <Feature Id="Feature" Level="1">
+         <ComponentRef Id="ApplicationComponent"/>
+      </Feature>
+
+      <Property Id="COLLECTOR_SVC_ARGS"/>
+      <CustomAction
+         Id="SetCollectorSvcArgs"
+         Property="COLLECTOR_SVC_ARGS"
+         Value="--config &quot;[INSTALLDIR]config.yaml&quot;"/>
+
+      <InstallExecuteSequence>
+         <Custom Action="SetCollectorSvcArgs" Before="InstallFiles">NOT COLLECTOR_SVC_ARGS</Custom>
+      </InstallExecuteSequence>
+
+      <Directory Id="TARGETDIR" Name="SourceDir">
+         <Directory Id="ProgramFiles64Folder">
+            <Directory Id="INSTALLDIR" Name="OpenTelemetry Collector">
+               <Component Id="ApplicationComponent" Guid="1207C3C4-1830-4DC8-8A7B-2BD7DBE45BC3">
+                  <!-- Files to include -->
+                  <File
+                     Id="{{ .Binary }}.exe"
+                     Name="{{ .Binary }}.exe"
+                     Source="{{ .Binary }}.exe"
+                     KeyPath="yes"/>
+                  <File
+                     Id="config.yaml"
+                     Name="config.yaml"
+                     Source="config.yaml"/>
+
+                  <ServiceInstall
+                     Id="Sevice"
+                     Name="{{ .Binary }}"
+                     DisplayName="OpenTelemetry Collector"
+                     Description="Collects, processes, and exports telemetry from various configurable sources."
+                     Type="ownProcess"
+                     Vital="yes"
+                     Start="auto"
+                     Account="LocalSystem"
+                     ErrorControl="normal"
+                     Arguments="[COLLECTOR_SVC_ARGS]"
+                     Interactive="no"/>
+                  <ServiceControl
+                     Id="StartStopRemoveService"
+                     Name="{{ .Binary }}"
+                     Start="install"
+                     Stop="both"
+                     Remove="uninstall"
+                     Wait="yes"/>
+
+                  <RegistryKey
+                     Root="HKLM"
+                     Key="SYSTEM\CurrentControlSet\Services\EventLog\Application\{{ .Binary }}">
+                     <RegistryValue 
+                        Type="expandable"
+                        Name="EventMessageFile"
+                        Value="%SystemRoot%\System32\EventCreate.exe"/>
+                  </RegistryKey>
+               </Component>
+            </Directory>
+         </Directory>
+      </Directory>
+   </Product>
+</Wix>
