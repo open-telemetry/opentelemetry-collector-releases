@@ -32,7 +32,7 @@ jobs:
             GOARCH: arm
           - GOOS: windows
             GOARCH: s390x
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
@@ -44,6 +44,12 @@ jobs:
         uses: docker/setup-qemu-action@68827325e0b33c7199eb31dd4e31fbe9023e06e3 # v3.0.0
         with:
           platforms: arm64,ppc64le,linux/arm/v7,s390x
+
+      - name: Setup wixl # Required to build MSI packages for Windows
+        if: ${{ matrix.GOOS }} == 'windows' && (${{ matrix.GOARCH }} == '386' || ${{ matrix.GOARCH }} == 'amd64')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wixl
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb # v3.3.0
