@@ -18,7 +18,7 @@ exporters:
   - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.104.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.104.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.104.0
-  - gomod: github.com/axoflow/fluentforwardexporter v0.104.0-kubernetes-metadata.1
+  - gomod: github.com/axoflow/fluentforwardexporter v0.104.0-dev1
 
 processors:
   - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.104.0
