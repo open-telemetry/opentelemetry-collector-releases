@@ -66,5 +66,3 @@ docker_manifests:
       image_templates:
         - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-amd64
         - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-arm64
-release:
-  disable: true
