@@ -47,10 +47,10 @@ replaces:
   # see https://github.com/openshift/api/pull/1515
   - github.com/openshift/api => github.com/openshift/api v0.0.0-20230726162818-81f778f3b3ec
   - github.com/IBM/fluent-forward-go => github.com/IBM/fluent-forward-go v0.2.3-0.20240418091724-720f8df4306a
-  - go.opentelemetry.io/collector => github.com/axoflow/opentelemetry-collector v0.104.0-dev1
-  - github.com/open-telemetry/opentelemetry-collector-contrib/connector/countconnector =>  github.com/axoflow/opentelemetry-collector-contrib/connector/countconnector v0.104.0-dev1
-  - go.opentelemetry.io/collector/exporter => github.com/axoflow/opentelemetry-collector/exporter v0.104.0-dev1
-  - go.opentelemetry.io/collector/pdata => github.com/axoflow/opentelemetry-collector/pdata v0.104.0-dev1
-  - go.opentelemetry.io/collector/receiver => github.com/axoflow/opentelemetry-collector/receiver v0.104.0-dev1
-  - github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza => github.com/axoflow/opentelemetry-collector-contrib/pkg/stanza v0.104.0-dev1
+  - go.opentelemetry.io/collector => github.com/axoflow/opentelemetry-collector v0.104.0-dev4
+  - github.com/open-telemetry/opentelemetry-collector-contrib/connector/countconnector =>  github.com/axoflow/opentelemetry-collector-contrib/connector/countconnector v0.104.0-dev3
+  - go.opentelemetry.io/collector/exporter => github.com/axoflow/opentelemetry-collector/exporter v0.104.0-dev4
+  - go.opentelemetry.io/collector/pdata => github.com/axoflow/opentelemetry-collector/pdata v0.104.0-dev4
+  - go.opentelemetry.io/collector/receiver => github.com/axoflow/opentelemetry-collector/receiver v0.104.0-dev4
+  - github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza => github.com/axoflow/opentelemetry-collector-contrib/pkg/stanza v0.104.0-dev3
 
