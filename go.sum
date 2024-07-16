@@ -21,6 +21,8 @@ github.com/goreleaser/fileglob v1.3.0 h1:/X6J7U8lbDpQtBvGcwwPS6OpzkNVlVEsFUVRx9+
 github.com/goreleaser/fileglob v1.3.0/go.mod h1:Jx6BoXv3mbYkEzwm9THo7xbr5egkAraxkGorbJb4RxU=
 github.com/goreleaser/goreleaser v1.25.1 h1:a9skjeROotTN5GPPJDHDfhmOK4n13cBgJ34sTdXRDN0=
 github.com/goreleaser/goreleaser v1.25.1/go.mod h1:nsbhCYp9eImbE2fyd9/3Tgv5hjuGuDIQRoBozEUEYbc=
+github.com/goreleaser/goreleaser-pro v1.25.1-pro h1:NOoSx96oAK0zNA1+hiL0p6pY1DWL101kwPmpmkiExXk=
+github.com/goreleaser/goreleaser-pro v1.25.1-pro/go.mod h1:7q9HURJC4ZYBT9VyX3XlqjK0kwe5QbG/VIUAJSP3CKc=
 github.com/goreleaser/nfpm/v2 v2.37.1 h1:RUmeEt8OlEVeSzKRrO5Vl5qVWCtUwx4j9uivGuRo5fw=
 github.com/goreleaser/nfpm/v2 v2.37.1/go.mod h1:q8+sZXFqn106/eGw+9V+I8+izFxZ/sJjrhwmEUxXhUg=
 github.com/invopop/jsonschema v0.12.0 h1:6ovsNSuvn9wEQVOyc72aycBMVQFKz7cPdMJn10CvzRI=
