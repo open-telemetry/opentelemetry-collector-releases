@@ -32,3 +32,30 @@ jobs:
       goos: '[ "linux", "windows", "darwin" ]'
       goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x" ]'
     secrets: inherit
+
+#  package-tests:
+#     name: Package tests
+#     needs: check-goreleaser
+#     uses: ./.github/workflows/package-test.yaml
+#     with:
+#       distribution: otelcol
+#       type: '[ "deb", "rpm" ]'
+  package-tests:
+    name: Package Tests
+    runs-on: ubuntu-latest
+    needs: check-goreleaser
+    strategy:
+      matrix:
+        type: ["deb", "rpm"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Download built artifacts
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          name: linux-packages
+
+      - name: Test ${{ matrix.type }} package
+        run: ./scripts/package-tests/package-tests.sh ./otelcol*-SNAPSHOT-*_linux_amd64.${{ matrix.type }} otelcol
+
