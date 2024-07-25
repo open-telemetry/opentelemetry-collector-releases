@@ -24,7 +24,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/goreleaser/goreleaser-pro/pkg/config"
+	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
 )
 
 const ArmArch = "arm"
@@ -51,6 +51,7 @@ func Generate(dist string) config.Project {
 		Signs:           Sign(),
 		DockerSigns:     DockerSigns(),
 		SBOMs:           SBOM(),
+		Version:         2,
 	}
 }
 
@@ -112,7 +113,7 @@ func WinPackages(dist string) []config.MSI {
 // https://goreleaser.com/customization/msi/
 func WinPackage(dist string) config.MSI {
 	return config.MSI{
-		ID:      dist,
+		ID:   dist,
 		Name: fmt.Sprintf("%s_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}", dist),
 		WXS:  "windows-installer.wxs",
 		Files: []string{
