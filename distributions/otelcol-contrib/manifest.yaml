@@ -208,6 +208,7 @@ connectors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/datadogconnector v0.105.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/exceptionsconnector v0.105.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/grafanacloudconnector v0.105.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/otlpjsonconnector v0.105.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/roundrobinconnector v0.105.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/routingconnector v0.105.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/servicegraphconnector v0.105.0
