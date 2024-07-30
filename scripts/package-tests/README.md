@@ -11,9 +11,9 @@ Tools:
 
 ## How to build and test
 
-To build the collector linux packages, a few steps are required:
+To build the Collector Linux packages, a few steps are required:
 
-- Run `make generate` to (re-)generate sources and goreleaser files
+- Run `make generate` to (re-)generate sources and GoReleaser files
 - Go to the distribution folder that you want to build (under the `distributions` folder)
 - Run `goreleaser release --snapshot --clean --skip sbom,sign,archive,docker`
     - This will build a full release with all architectures and packaging types into the `dist` folder inside your
