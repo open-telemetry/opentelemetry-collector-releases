@@ -18,8 +18,8 @@ To build the Collector Linux packages, a few steps are required:
 - Run `goreleaser release --snapshot --clean --skip sbom,sign,archive,docker`
     - This will build a full release with all architectures and packaging types into the `dist` folder inside your
       current folder. (We can skip many parts of the release build that we don't need)
-    - If you run into `unmarshal` errors, start to remove the parts that goreleaser complains about. This likely happens
-      due to a missing goreleaser pro license and therefore feature that you can't use.
+    - We use GoReleaser Pro only features in CI. If you want to run this locally and you run into `unmarshal` errors, 
+    you may have to remove the parts that goreleaser complains about or use a pro license.
 - Go back to the root of the repo
 - To start the package tests,
   run: `./scripts/package-tests/package-tests.sh ./distributions/<otelcol|otelcol-contrib>/dist/<otelcol|otelcol-contrib>_*-SNAPSHOT-*_linux_amd64.<deb|rpm> <otelcol|otelcol-contrib>`
