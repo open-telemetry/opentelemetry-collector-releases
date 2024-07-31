@@ -164,6 +164,7 @@ func Package(dist string) config.NFPM {
 					Type:        "config|noreplace",
 				},
 			},
+			Dependencies: []string{"/bin/sh"},
 		},
 	}
 }

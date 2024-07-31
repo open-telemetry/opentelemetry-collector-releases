@@ -55,6 +55,8 @@ archives:
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
   - package_name: otelcol-contrib
+    dependencies:
+      - /bin/sh
     contents:
       - src: otelcol-contrib.service
         dst: /lib/systemd/system/otelcol-contrib.service
