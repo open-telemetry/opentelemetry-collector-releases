@@ -74,3 +74,10 @@ jobs:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+
+      - name: Upload linux service packages
+        if: ${{ matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' }}
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
+        with:
+          name: linux-packages
+          path: distributions/${{ inputs.distribution }}/dist/linux_amd64/*
