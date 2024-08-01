@@ -69,9 +69,6 @@ nfpms:
       postinstall: postinstall.sh
       preremove: preremove.sh
     overrides:
-      deb:
-        dependencies:
-          - bash
       rpm:
         dependencies:
           - /bin/sh

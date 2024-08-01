@@ -146,11 +146,6 @@ func Package(dist string) config.NFPM {
 					"/bin/sh",
 				},
 			},
-			"deb": {
-				Dependencies: []string{
-					"bash",
-				},
-			},
 		},
 
 		NFPMOverridables: config.NFPMOverridables{
