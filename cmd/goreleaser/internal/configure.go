@@ -148,6 +148,13 @@ func Package(dist string) config.NFPM {
 			},
 		},
 
+		Overrides: map[string]config.NFPMOverridables{
+			"rpm": {
+				Dependencies: []string{
+					"/bin/sh",
+				},
+			},
+		},
 		NFPMOverridables: config.NFPMOverridables{
 			PackageName: dist,
 			Scripts: config.NFPMScripts{
