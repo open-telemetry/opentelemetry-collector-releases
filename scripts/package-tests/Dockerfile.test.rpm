@@ -6,4 +6,5 @@ ENV container docker
 
 RUN dnf install -y initscripts
 
+HEALTHCHECK CMD ["systemctl", "is-system-running"]
 CMD ["/usr/sbin/init"]
