@@ -55,8 +55,6 @@ archives:
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
   - package_name: otelcol
-    dependencies:
-      - /bin/sh
     contents:
       - src: otelcol.service
         dst: /lib/systemd/system/otelcol.service
@@ -70,6 +68,10 @@ nfpms:
       preinstall: preinstall.sh
       postinstall: postinstall.sh
       preremove: preremove.sh
+    overrides:
+      rpm:
+        dependencies:
+          - /bin/sh
     id: otelcol
     builds:
       - otelcol
