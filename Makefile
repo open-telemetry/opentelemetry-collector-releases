@@ -40,8 +40,7 @@ ifeq (, $(shell command -v ocb 2>/dev/null))
 	[ "$${machine}" != x86_64 ] || machine=amd64 ;\
 	echo "Installing ocb ($${os}/$${machine}) at $(OTELCOL_BUILDER_DIR)";\
 	mkdir -p $(OTELCOL_BUILDER_DIR) ;\
-	go install go.opentelemetry.io/collector/cmd/builder@v$(OTELCOL_BUILDER_VERSION) ;\
-	mv $$(go env GOPATH)/bin/builder $(OTELCOL_BUILDER) ;\
+	CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" go.opentelemetry.io/collector/cmd/builder@v$(OTELCOL_BUILDER_VERSION) -o $(OTELCOL_BUILDER) ;\
 	}
 else
 OTELCOL_BUILDER=$(shell command -v ocb)
