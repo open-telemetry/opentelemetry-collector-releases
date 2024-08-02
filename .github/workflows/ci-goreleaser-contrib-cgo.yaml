@@ -1,10 +1,10 @@
-name: Continuous Integration - k8s - GoReleaser
+name: Continuous Integration - Contrib - GoReleaser
 
 on:
   push:
     branches: [main]
     paths:
-      - "distributions/otelcol-k8s/**"
+      - "distributions/otelcol-contrib-cgo/**"
       - "cmd/**"
       - ".github/**"
       - "scripts/**"
@@ -14,7 +14,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - "distributions/otelcol-k8s/**"
+      - "distributions/otelcol-contrib-cgo/**"
       - "cmd/**"
       - ".github/**"
       - "scripts/**"
@@ -24,11 +24,11 @@ on:
 
 jobs:
   check-goreleaser:
-    name: Continuous Integration - k8s - GoReleaser
+    name: Continuous Integration - Contrib CGO - GoReleaser
     uses: ./.github/workflows/base-ci-goreleaser.yaml
     with:
-      distribution: otelcol-k8s
-      goos: '[ "linux" ]'
-      goarch: '[ "amd64", "arm64", "ppc64le", "s390x" ]'
-      runs-on: '[ ubuntu-22.04 ]'
+      distribution: otelcol-contrib-cgo
+      goos: '[ "darwin" ]'
+      goarch: '[ "amd64", "arm64" ]'
+      runs-on: '[ macos-latest ]'
     secrets: inherit
