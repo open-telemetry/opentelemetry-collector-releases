@@ -1,6 +1,6 @@
 dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/contrib
-  name: otelcol-contrib
+  name: otelcol-contrib-cgo
   description: OpenTelemetry Collector Contrib CGO 
   version: 0.106.1
   output_path: ./_build
