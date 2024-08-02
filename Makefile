@@ -64,7 +64,7 @@ goreleaser:
 		fi \
 	}
 
-REMOTE?=git@github.com:open-telemetry/opentelemetry-collector-releases.git
+REMOTE?=git@github.com:jackgopack4/opentelemetry-collector-releases.git
 .PHONY: push-tags
 push-tags:
 	@[ "${TAG}" ] || ( echo ">> env var TAG is not set"; exit 1 )
