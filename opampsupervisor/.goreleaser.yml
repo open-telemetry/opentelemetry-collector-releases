@@ -1,0 +1,39 @@
+before:
+  hooks:
+    - go mod download
+monorepo:
+  dir: ./src
+builds:
+  - main: ./src
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+      - ppc64le
+    ignore:
+      - goos: windows
+        goarch: arm64
+    binary: opampsupervisor
+release:
+  github:
+    owner: open-telemetry
+    name: opentelemetry-collector-releases
+  header: |
+    ### OpAMP Supervisor Release
+archives:
+  - format: binary
+checksum:
+  name_template: "checksums.txt"
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  disable: true
