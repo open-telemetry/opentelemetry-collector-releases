@@ -28,7 +28,7 @@ release:
     owner: open-telemetry
     name: opentelemetry-collector-releases
   header: |
-    ### Images and binaries here: https://github.com/open-telemetry/opentelemetry-collector-releases/releases/tag/{{ .Tag }}
+    ### Images and binaries for collector distributions here: https://github.com/open-telemetry/opentelemetry-collector-releases/releases/tag/{{ .Tag }}
 archives:
   - format: binary
 checksum:
