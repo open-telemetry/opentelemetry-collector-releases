@@ -13,15 +13,8 @@ builds:
       - CGO_ENABLED=0
     goos:
       - linux
-      - windows
-      - darwin
     goarch:
       - amd64
-      - arm64
-      - ppc64le
-    ignore:
-      - goos: windows
-        goarch: arm64
     binary: opampsupervisor
 release:
   github:
