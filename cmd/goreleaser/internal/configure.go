@@ -140,6 +140,13 @@ func Package(dist string) config.NFPM {
 		License:     "Apache 2.0",
 		Description: fmt.Sprintf("OpenTelemetry Collector - %s", dist),
 		Maintainer:  "The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>",
+		Overrides: map[string]config.NFPMOverridables{
+			"rpm": {
+				Dependencies: []string{
+					"/bin/sh",
+				},
+			},
+		},
 
 		NFPMOverridables: config.NFPMOverridables{
 			PackageName: dist,
@@ -164,7 +171,6 @@ func Package(dist string) config.NFPM {
 					Type:        "config|noreplace",
 				},
 			},
-			Dependencies: []string{"/bin/sh"},
 		},
 	}
 }
