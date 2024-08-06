@@ -147,7 +147,7 @@ func Package(dist string) config.NFPM {
 				},
 			},
 		},
-		
+
 		NFPMOverridables: config.NFPMOverridables{
 			PackageName: dist,
 			Scripts: config.NFPMScripts{
