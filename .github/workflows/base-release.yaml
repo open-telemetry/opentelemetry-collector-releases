@@ -32,7 +32,7 @@ jobs:
             GOARCH: arm
           - GOOS: windows
             GOARCH: s390x
-    runs-on: ubuntu-22.04
+    runs-on: ${{ fromJSON( inputs.runs-on) }}
 
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
@@ -101,7 +101,7 @@ jobs:
 
   release:
     name: ${{ inputs.distribution }} Release
-    runs-on: ubuntu-22.04
+    runs-on: ${{ fromJSON( inputs.runs-on) }}
     needs: prepare
 
     permissions:
