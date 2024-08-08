@@ -16,6 +16,6 @@ Distributions supported by the Collector SIG should fulfill the following criter
 7. Must include the following assets except where the specific purpose of the distribution is naturally associated with a subset of these assets. In such cases, it should be clearly stated which assets are skipped and why.  Additional assets may be included if the maintainers agree:
     - Binaries for linux_amd64, linux_arm64, windows_amd64 and darwin_arm64
     - linux_amd64 and linux_arm64 container images
-    - Packages to be used with Linux distributions (apk, RPM, deb), macOS (brew), Windows (MSI) for each distributed binary.
+    - Packages to be used with Linux distributions (RPM, deb), macOS (brew), Windows (MSI) for each distributed binary.
 
 

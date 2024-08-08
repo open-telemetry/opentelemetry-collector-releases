@@ -8,7 +8,7 @@ Each distribution contains:
 
 - Binaries for a multitude of platforms and architectures
 - Multi-arch container images
-- Packages to be used with Linux distributions (apk, RPM, deb), Mac OS (brew) for the above-mentioned architectures
+- Packages to be used with Linux distributions (RPM, deb), Mac OS (brew) for the above-mentioned architectures
 
 More details about each individual distribution can be seen in its own readme files.
 

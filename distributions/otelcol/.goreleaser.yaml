@@ -76,7 +76,6 @@ nfpms:
     builds:
       - otelcol
     formats:
-      - apk
       - deb
       - rpm
     maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
