@@ -18,7 +18,9 @@ builds:
       - -w
     flags:
       - -trimpath
+      - buildmode=pie
     env:
+      - CGO_LDFLAGS='-fstack-protector'
       - CGO_ENABLED=1
 archives:
   - id: otelcol-contrib-cgo
