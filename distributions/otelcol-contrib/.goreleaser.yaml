@@ -261,3 +261,5 @@ sboms:
     artifacts: archive
   - id: package
     artifacts: package
+monorepo:
+  tag_prefix: v
