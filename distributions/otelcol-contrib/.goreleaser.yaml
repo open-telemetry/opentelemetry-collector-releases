@@ -1,5 +1,6 @@
 partial:
   by: target
+version: 2
 project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
@@ -67,6 +68,10 @@ nfpms:
       preinstall: preinstall.sh
       postinstall: postinstall.sh
       preremove: preremove.sh
+    overrides:
+      rpm:
+        dependencies:
+          - /bin/sh
     id: otelcol-contrib
     builds:
       - otelcol-contrib
