@@ -1,6 +1,8 @@
 partial:
   by: target
 version: 2
+monorepo:
+  tag_prefix: v
 project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
