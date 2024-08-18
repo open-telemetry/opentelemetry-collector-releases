@@ -12,6 +12,6 @@ jobs:
       distribution: otelcol
       goos: '[ "linux", "windows", "darwin" ]'
       goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x" ]'
-      runs-on: '[ ubuntu-22.04 ]'
+      runs-on: 'ubuntu-22.04'
     secrets: inherit
     permissions: write-all
