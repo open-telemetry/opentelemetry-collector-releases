@@ -1,4 +1,4 @@
-name: Release Contrib
+name: Release Contrib with CGO
 
 on:
   push:
