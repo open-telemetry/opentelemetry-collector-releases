@@ -24,8 +24,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/goreleaser/goreleaser/pkg/config"
-	"github.com/goreleaser/nfpm/v2/files"
+	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
 )
 
 const ArmArch = "arm"
@@ -45,12 +44,17 @@ func Generate(dist string) config.Project {
 		Env:             []string{"COSIGN_YES=true"},
 		Builds:          Builds(dist),
 		Archives:        Archives(dist),
+		MSI:             WinPackages(dist),
 		NFPMs:           Packages(dist),
 		Dockers:         DockerImages(dist),
 		DockerManifests: DockerManifests(dist),
 		Signs:           Sign(),
 		DockerSigns:     DockerSigns(),
 		SBOMs:           SBOM(),
+		Version:         2,
+		Monorepo:				 config.Monorepo{
+			TagPrefix: "v",
+		},
 	}
 }
 
@@ -102,6 +106,26 @@ func Archive(dist string) config.Archive {
 	}
 }
 
+func WinPackages(dist string) []config.MSI {
+	return []config.MSI{
+		WinPackage(dist),
+	}
+}
+
+// Package configures goreleaser to build a Windows MSI package.
+// https://goreleaser.com/customization/msi/
+func WinPackage(dist string) config.MSI {
+	return config.MSI{
+		ID:   dist,
+		Name: fmt.Sprintf("%s_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}", dist),
+		WXS:  "windows-installer.wxs",
+		Files: []string{
+			"config.yaml",
+			"opentelemetry.ico",
+		},
+	}
+}
+
 func Packages(dist string) (r []config.NFPM) {
 	return []config.NFPM{
 		Package(dist),
@@ -119,6 +143,13 @@ func Package(dist string) config.NFPM {
 		License:     "Apache 2.0",
 		Description: fmt.Sprintf("OpenTelemetry Collector - %s", dist),
 		Maintainer:  "The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>",
+		Overrides: map[string]config.NFPMOverridables{
+			"rpm": {
+				Dependencies: []string{
+					"/bin/sh",
+				},
+			},
+		},
 
 		NFPMOverridables: config.NFPMOverridables{
 			PackageName: dist,
@@ -127,7 +158,7 @@ func Package(dist string) config.NFPM {
 				PostInstall: "postinstall.sh",
 				PreRemove:   "preremove.sh",
 			},
-			Contents: files.Contents{
+			Contents: config.NFPMContents{
 				{
 					Source:      fmt.Sprintf("%s.service", dist),
 					Destination: path.Join("/lib", "systemd", "system", fmt.Sprintf("%s.service", dist)),

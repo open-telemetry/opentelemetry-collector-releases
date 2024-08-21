@@ -14,5 +14,5 @@ The full list of components is available in the [manifest](manifest.yaml).
    - Although you could run a Collector in Kubernetes to reach out to any endpoint, this distribution is not targeting that use case. This distribution is for monitoring Kubernetes and the processes it runs. 
  - All components must be vendor-neutral.
  - Only exporters that use OTLP are allowed.
-   - To facilitate troubleshooting, the debug exporter and file exporter are exceptions.
+   - To facilitate troubleshooting, the nop, debug, and file exporters are exceptions.
  - All technologies OTel promised to support will be included as receivers. Specifically this means the `jaegerreceiver`, `zipkinreceiver`, `opencensusreceiver`, and `prometheusreceiver` will be included.
