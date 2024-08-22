@@ -12,6 +12,9 @@ on:
       goarch:
         required: true
         type: string
+      cgo:
+        required: true
+        type: string
 
 jobs:
   check-goreleaser:
@@ -32,7 +35,7 @@ jobs:
             GOARCH: arm
           - GOOS: windows
             GOARCH: s390x
-    runs-on: ${{ fromJSON( inputs.runs-on) }}
+    runs-on: ${{ ( matrix.GOOS == 'darwin' && contains( fromJSON( inputs.cgo), 'darwin')) && 'macos-14' || 'ubuntu-22.04' }}
 
     steps:
       - name: Checkout

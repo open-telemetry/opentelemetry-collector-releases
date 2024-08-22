@@ -14,7 +14,6 @@ msi:
 builds:
   - id: otelcol-contrib
     goos:
-      - darwin
       - linux
       - windows
     goarch:
@@ -27,12 +26,6 @@ builds:
     goarm:
       - "7"
     ignore:
-      - goos: darwin
-        goarch: "386"
-      - goos: darwin
-        goarch: arm
-      - goos: darwin
-        goarch: s390x
       - goos: windows
         goarch: arm
       - goos: windows
@@ -48,10 +41,28 @@ builds:
       - -trimpath
     env:
       - CGO_ENABLED=0
+  - id: otelcol-contrib-cgo
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    dir: _build
+    binary: otelcol-contrib
+    ldflags:
+      - -s
+      - -w
+    flags:
+      - -trimpath
+      - -buildmode=pie
+    env:
+      - CGO_LDFLAGS='-fstack-protector'
+      - CGO_ENABLED=1
 archives:
   - id: otelcol-contrib
     builds:
       - otelcol-contrib
+      - otelcol-contrib-cgo
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
   - package_name: otelcol-contrib

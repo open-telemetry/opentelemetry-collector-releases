@@ -5,7 +5,7 @@ OTELCOL_BUILDER_VERSION ?= 0.107.0
 OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
 
-DISTRIBUTIONS ?= "otelcol,otelcol-contrib,otelcol-k8s,otelcol-contrib-cgo"
+DISTRIBUTIONS ?= "otelcol,otelcol-contrib,otelcol-k8s"
 GEN_CONFIG_DISTRIBUTIONS ?= "otelcol,otelcol-contrib"
 
 ci: check build
