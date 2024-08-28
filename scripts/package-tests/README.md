@@ -1,4 +1,4 @@
-# Build and test deb/rpm/apk packages
+# Build and test deb/rpm packages
 
 ## Prerequisites
 

@@ -138,7 +138,7 @@ func Package(dist string) config.NFPM {
 	return config.NFPM{
 		ID:      dist,
 		Builds:  []string{dist},
-		Formats: []string{"apk", "deb", "rpm"},
+		Formats: []string{"deb", "rpm"},
 
 		License:     "Apache 2.0",
 		Description: fmt.Sprintf("OpenTelemetry Collector - %s", dist),
