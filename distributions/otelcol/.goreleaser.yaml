@@ -76,7 +76,6 @@ nfpms:
     builds:
       - otelcol
     formats:
-      - apk
       - deb
       - rpm
     maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
@@ -261,3 +260,5 @@ sboms:
     artifacts: archive
   - id: package
     artifacts: package
+monorepo:
+  tag_prefix: v

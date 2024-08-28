@@ -52,6 +52,9 @@ func Generate(dist string) config.Project {
 		DockerSigns:     DockerSigns(),
 		SBOMs:           SBOM(),
 		Version:         2,
+		Monorepo:				 config.Monorepo{
+			TagPrefix: "v",
+		},
 	}
 }
 
@@ -135,7 +138,7 @@ func Package(dist string) config.NFPM {
 	return config.NFPM{
 		ID:      dist,
 		Builds:  []string{dist},
-		Formats: []string{"apk", "deb", "rpm"},
+		Formats: []string{"deb", "rpm"},
 
 		License:     "Apache 2.0",
 		Description: fmt.Sprintf("OpenTelemetry Collector - %s", dist),
