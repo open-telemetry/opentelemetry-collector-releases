@@ -52,6 +52,9 @@ func Generate(dist string) config.Project {
 		DockerSigns:     DockerSigns(),
 		SBOMs:           SBOM(),
 		Version:         2,
+		Monorepo:				 config.Monorepo{
+			TagPrefix: "v",
+		},
 	}
 }
 
