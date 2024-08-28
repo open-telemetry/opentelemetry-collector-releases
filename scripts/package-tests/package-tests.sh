@@ -57,8 +57,10 @@ crun = [
 ]
 EOF
 
-echo
 podman run --name "$container_name" -d "$image_name"
+
+# ensure that the system is up and running by checking if systemctl is running
+$container_exec systemctl is-system-running --quiet --wait
 install_pkg "$container_name" "$PKG_PATH"
 
 # ensure service has started and still running after 5 seconds
