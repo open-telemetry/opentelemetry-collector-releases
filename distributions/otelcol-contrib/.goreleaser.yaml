@@ -56,8 +56,8 @@ builds:
       - -trimpath
       - -buildmode=pie
     env:
-      - CGO_LDFLAGS='-fstack-protector'
       - CGO_ENABLED=1
+      - CGO_LDFLAGS='-fstack-protector'
 archives:
   - id: otelcol-contrib
     builds:

@@ -25,6 +25,7 @@ import (
 )
 
 var distFlag = flag.String("d", "", "Collector distributions to build")
+var cgoFlag = flag.String("c", "", "Cgo enabled flag, followed by the OS that need to be supported, currently only darwin is supported, i.e. '-c darwin'")
 
 func main() {
 	flag.Parse()
@@ -33,7 +34,7 @@ func main() {
 		log.Fatal("no distribution to build")
 	}
 
-	project := internal.Generate(*distFlag)
+	project := internal.Generate(*distFlag, *cgoFlag)
 
 	partial := map[string]any{
 		"partial": map[string]any{
