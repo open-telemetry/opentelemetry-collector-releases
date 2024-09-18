@@ -1,0 +1,33 @@
+name: Continuous Integration - Minimal - GoReleaser
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "distributions/otelcol-minimal/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
+  pull_request:
+    branches: [main]
+    paths:
+      - "distributions/otelcol-minimal/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
+
+jobs:
+  check-goreleaser:
+    name: Continuous Integration - Minimal - GoReleaser
+    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    with:
+      distribution: otelcol-minimal
+      goos: '[ "linux", "windows", "darwin" ]'
+      goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x" ]'
+    secrets: inherit
