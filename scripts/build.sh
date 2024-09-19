@@ -50,7 +50,7 @@ do
 
     if [[ "$latest" = true ]]; then
         export GOPROXY='direct'
-        echo "Using latest main versions for all components."
+        echo "Using latest main versions for all components..."
         sed -i 's/\(gomod: github.com\/open-telemetry\/opentelemetry-collector-contrib.*\?\) v[0-9]\.[0-9]\+\.[0-9]\+/\1 main/' manifest.yaml
         sed -i 's/\(gomod: go\.opentelemetry\.io\/collector.*\?\) v[0-9]\.[0-9]\+\.[0-9]\+/\1 main/' manifest.yaml
         cat manifest.yaml
