@@ -13,7 +13,7 @@ on:
 jobs:
   package-tests:
     name: Package Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         type: ${{ fromJSON(inputs.type) }}
