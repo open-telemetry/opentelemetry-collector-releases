@@ -13,6 +13,9 @@ msi:
       - config.yaml
 builds:
   - id: otelcol-contrib
+    builder: prebuilt
+    prebuilt:
+      path: artifacts/otelcol-contrib_{{ .Os }}_{{ .Arch }}{{ with .Arm }}_{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}/otelcol-contrib{{- if eq .Os "windows" }}.exe{{ end }}
     goos:
       - darwin
       - linux
@@ -41,13 +44,6 @@ builds:
         goarch: s390x
     dir: _build
     binary: otelcol-contrib
-    ldflags:
-      - -s
-      - -w
-    flags:
-      - -trimpath
-    env:
-      - CGO_ENABLED=0
 archives:
   - id: otelcol-contrib
     builds:
