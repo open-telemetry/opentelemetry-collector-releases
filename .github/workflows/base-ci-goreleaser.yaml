@@ -74,7 +74,7 @@ jobs:
 #          coreCommitTime="$(gh api repos/open-telemetry/opentelemetry-collector/commits/main --jq '.commit.committer.date | strptime("%Y-%m-%dT%H:%M:%SZ") | strftime("%Y%m%d%H%M%S")')"
 #
 
-      - name: Generate the sources
+      - name: Generate the sources using latest main
         if: inputs.latest == true
         run: make generate-sources-dev
 
