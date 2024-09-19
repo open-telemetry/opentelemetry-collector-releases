@@ -35,7 +35,6 @@ fi
 
 if [[ "$latest" = true ]]; then
     echo "Using latest commits instead of pinned versions and disabling GOPROXY."
-    export GOPROXY='direct'
 fi
 
 echo "Distributions to build: $distributions";
@@ -49,7 +48,8 @@ do
     echo "Using Builder: $(command -v "$BUILDER")"
     echo "Using Go: $(command -v "$GO")"
 
-    if [[ "$latest" = true ]]; then
+    if [[ "$latest" = 'true' ]]; then
+        export GOPROXY='https://proxy.golang.org/cached-only,direct'
         echo "Using latest main versions for all components..."
         sed -i 's/\(gomod: github.com\/open-telemetry\/opentelemetry-collector-contrib.*\?\) v[0-9]\.[0-9]\+\.[0-9]\+/\1 main/' manifest.yaml
         sed -i 's/\(gomod: go\.opentelemetry\.io\/collector.*\?\) v[0-9]\.[0-9]\+\.[0-9]\+/\1 main/' manifest.yaml

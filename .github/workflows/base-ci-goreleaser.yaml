@@ -64,16 +64,6 @@ jobs:
           go-version: '1.23'
           check-latest: true
 
-#      - name: Prepare development build
-#        if: inputs.latest == true
-#        run: |
-#          contribSha="$(gh api repos/open-telemetry/opentelemetry-collector-contrib/commits/main --jq '.sha[0:12]')"
-#          contribCommitTime="$(gh api repos/open-telemetry/opentelemetry-collector-contrib/commits/main --jq '.commit.committer.date | strptime("%Y-%m-%dT%H:%M:%SZ") | strftime("%Y%m%d%H%M%S")')"
-#
-#          coreSha="$(gh api repos/open-telemetry/opentelemetry-collector/commits/main --jq '.sha[0:12]')"
-#          coreCommitTime="$(gh api repos/open-telemetry/opentelemetry-collector/commits/main --jq '.commit.committer.date | strptime("%Y-%m-%dT%H:%M:%SZ") | strftime("%Y%m%d%H%M%S")')"
-#
-
       - name: Generate the sources using latest main
         if: inputs.latest == true
         run: make generate-sources-dev
