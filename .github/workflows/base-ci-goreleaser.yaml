@@ -79,7 +79,7 @@ jobs:
         run: make generate-sources-dev
 
       - name: Generate the sources
-        if: inputs.latest == false
+        if: inputs.latest != true
         run: make generate-sources
 
       - name: Run GoReleaser for ${{ inputs.distribution }}
