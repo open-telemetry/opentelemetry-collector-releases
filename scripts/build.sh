@@ -52,6 +52,7 @@ do
         echo "Using latest main versions for all components."
         sed -i 's/\(gomod: github.com\/open-telemetry\/opentelemetry-collector-contrib.*\?\) v[0-9]\.[0-9]\+\.[0-9]\+/\1 main/' manifest.yaml
         sed -i 's/\(gomod: go\.opentelemetry\.io\/collector.*\?\) v[0-9]\.[0-9]\+\.[0-9]\+/\1 main/' manifest.yaml
+        cat manifest.yaml
     fi
 
     if "$BUILDER" --skip-compilation="${skipcompilation}" --skip-strict-versioning --go "$GO" --verbose --config manifest.yaml > _build/build.log 2>&1; then
