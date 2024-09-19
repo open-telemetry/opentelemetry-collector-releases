@@ -12,6 +12,11 @@ on:
       goarch:
         required: true
         type: string
+      nightly:
+        required: false
+        type: boolean
+        default: false
+        description: "Set to true to fetch latest otelcol-contrib main branch version instead of building the version in this repo"
 
 env:
   # renovate: datasource=github-tags depName=goreleaser-pro packageName=goreleaser/goreleaser-pro
@@ -64,8 +69,74 @@ jobs:
           go-version: '1.23'
           check-latest: true
 
-      - name: Generate the sources
+      - name: Create artifacts directory to store build artifacts
+        if: inputs.distribution == 'otelcol-contrib'
+        run: mkdir -p distributions/otelcol-contrib/artifacts
+
+      - name: "[Nightly] Get latest finished run ID from contrib repo build-and-test"
+        id: get-run-id
+        if: inputs.distribution == 'otelcol-contrib' && inputs.nightly == true && matrix.GOARCH == 'amd64' && matrix.GOOS == 'linux'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          run_id=$(gh run list \
+            --branch main \
+            --workflow build-and-test \
+            --repo open-telemetry/opentelemetry-collector-contrib \
+            --limit 1 \
+            --status success \
+            --json databaseId \
+            --jq '.[0].databaseId' \
+          )
+          echo "Found run ID: $run_id"
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+
+      - name: "[Nightly] Create sub-directory for otelcol-contrib nightly build"
+        if: inputs.distribution == 'otelcol-contrib' && inputs.nightly == true && matrix.GOARCH == 'amd64' && matrix.GOOS == 'linux'
+        run: mkdir -p distributions/otelcol-contrib/artifacts/otelcol-contrib_linux_amd64_v1
+
+      - name: "[Nightly] Download built otelcol-contrib artifact from contrib repo"
+        if: inputs.distribution == 'otelcol-contrib' && inputs.nightly == true && matrix.GOARCH == 'amd64' && matrix.GOOS == 'linux'
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          name: collector-binaries-linux-amd64
+          repository: open-telemetry/opentelemetry-collector-contrib
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ steps.get-run-id.outputs.run_id }}
+
+      - name: "[Nightly] Move downloaded artifact"
+        if: inputs.distribution == 'otelcol-contrib' && inputs.nightly == true && matrix.GOARCH == 'amd64' && matrix.GOOS == 'linux'
+        run: mv otelcontribcol_linux_amd64 distributions/otelcol-contrib/artifacts/otelcol-contrib_linux_amd64_v1/otelcol-contrib
+
+      - name: Generate the sources for ${{ inputs.distribution }}
+        if: inputs.nightly != true
+        env:
+          DISTRIBUTIONS: ${{ inputs.distribution }}
         run: make generate-sources
+
+        # otelcol-contrib is built in a separate stage
+      - name: Build ${{ inputs.distribution }}
+        if: inputs.distribution == 'otelcol-contrib' && inputs.nightly != true
+        uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf # v6.1.0
+        with:
+          distribution: goreleaser-pro
+          version: ${{ env.GORELEASER_PRO_VERSION }}
+          workdir: distributions/otelcol-contrib
+          args: --snapshot --clean --timeout 2h --split --config .goreleaser-build.yaml
+        env:
+          GOOS: ${{ matrix.GOOS }}
+          GOARCH: ${{ matrix.GOARCH }}
+          GOARM: 7 # Default is 6
+          GOAMD64: v1
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+
+      - name: Move built artifacts
+        if: inputs.distribution == 'otelcol-contrib' && inputs.nightly != true
+        run: mv distributions/otelcol-contrib/dist/**/* distributions/otelcol-contrib/artifacts/
+
+      - name: Show built or downloaded content
+        if: inputs.distribution == 'otelcol-contrib'
+        run: ls -laR distributions/otelcol-contrib/artifacts
 
       - name: Run GoReleaser for ${{ inputs.distribution }}
         uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf # v6.1.0
