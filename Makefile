@@ -5,7 +5,7 @@ OTELCOL_BUILDER_VERSION ?= 0.111.0
 OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
 
-DISTRIBUTIONS ?= "otelcol,otelcol-contrib,otelcol-k8s,otelcol-otlp"
+DISTRIBUTIONS ?= "otelcol,otelcol-contrib,otelcol-k8s"
 GEN_CONFIG_DISTRIBUTIONS ?= "otelcol,otelcol-contrib"
 
 ci: check build
@@ -21,6 +21,9 @@ generate-goreleaser: go
 
 generate-sources: go ocb
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER} -g ${GO}
+
+generate-sources-dev: go ocb
+	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER} -g ${GO} -l true
 
 goreleaser-verify: goreleaser
 	@${GORELEASER} release --snapshot --clean
