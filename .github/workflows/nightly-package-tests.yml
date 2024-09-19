@@ -31,7 +31,7 @@ jobs:
     with:
       distribution: otelcol-contrib
       goos: '[ "linux" ]'
-      goarch: '[ "amd64" ]'
+      goarch: '[ "amd64", "arm64" ]'
       latest: true
     secrets: inherit
 
