@@ -1,10 +1,10 @@
-name: Continuous Integration - Minimal - GoReleaser
+name: Continuous Integration - OTLP - GoReleaser
 
 on:
   push:
     branches: [main]
     paths:
-      - "distributions/otelcol-minimal/**"
+      - "distributions/otelcol-otlp/**"
       - "cmd/**"
       - ".github/**"
       - "scripts/**"
@@ -14,7 +14,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - "distributions/otelcol-minimal/**"
+      - "distributions/otelcol-otlp/**"
       - "cmd/**"
       - ".github/**"
       - "scripts/**"
@@ -24,10 +24,10 @@ on:
 
 jobs:
   check-goreleaser:
-    name: Continuous Integration - Minimal - GoReleaser
+    name: Continuous Integration - OTLP - GoReleaser
     uses: ./.github/workflows/base-ci-goreleaser.yaml
     with:
-      distribution: otelcol-minimal
+      distribution: otelcol-otlp
       goos: '[ "linux", "windows", "darwin" ]'
       goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x" ]'
     secrets: inherit

@@ -15,6 +15,10 @@
 # limitations under the License.
 
 if command -v systemctl >/dev/null 2>&1; then
-    systemctl stop otelcol-minimal.service
-    systemctl disable otelcol-minimal.service
+    systemctl enable otelcol-otlp.service
+    if [ -f /etc/otelcol-otlp/config.yaml ]; then
+        systemctl start otelcol-otlp.service
+    else
+        echo "Make sure to configure otelcol-otlp by creating /etc/otelcol-otlp/config.yaml"
+    fi
 fi

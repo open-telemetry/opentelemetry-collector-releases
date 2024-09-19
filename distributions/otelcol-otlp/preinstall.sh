@@ -14,4 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-getent passwd otelcol-minimal >/dev/null || useradd --system --user-group --no-create-home --shell /sbin/nologin otelcol-minimal
+getent passwd otelcol-otlp >/dev/null || useradd --system --user-group --no-create-home --shell /sbin/nologin otelcol-otlp

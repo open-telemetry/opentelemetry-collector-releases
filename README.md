@@ -17,4 +17,4 @@ Current list of distributions:
 - [OpenTelemetry Collector (also known as "otelcol")](./distributions/otelcol)
 - [OpenTelemetry Collector Contrib (also known as "otelcol-contrib")](./distributions/otelcol-contrib)
 - [OpenTelemetry Collector for Kubernetes (also known as "otelcol-k8s")](./distributions/otelcol-k8s)
-- [OpenTelemetry Collector Minimal (also known as "otelcol-minimal")](./distributions/otelcol-minimal)
+- [OpenTelemetry Collector OTLP (also known as "otelcol-otlp")](./distributions/otelcol-otlp)

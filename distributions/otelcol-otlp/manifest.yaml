@@ -1,7 +1,7 @@
 dist:
-  module: github.com/open-telemetry/opentelemetry-collector-releases/minimal
-  name: otelcol-minimal
-  description: OpenTelemetry Collector Minimal
+  module: github.com/open-telemetry/opentelemetry-collector-releases/otlp
+  name: otelcol-otlp
+  description: OpenTelemetry Collector OTLP
   version: 0.109.0
   output_path: ./_build
   otelcol_version: 0.109.0
