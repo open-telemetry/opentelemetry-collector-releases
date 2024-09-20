@@ -10,4 +10,4 @@ COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifica
 COPY --chmod=755 otelcol-otlp /otelcol-otlp
 ENTRYPOINT ["/otelcol-otlp"]
 CMD ["--config", "/etc/otelcol-otlp/config.yaml"]
-EXPOSE 4317 55678 55679
+EXPOSE 4317 4318
