@@ -36,6 +36,16 @@ jobs:
           fetch-depth: 0
           repository: "open-telemetry/opentelemetry-collector"
           path: ".core"
+      - name: Copy Dockerfile and builder-config.yaml
+        run:  |
+          cp cmd/builder/Dockerfile .core/cmd/builder/Dockerfile
+          cp cmd/builder/builder-config.yaml .core/cmd/builder/builder-config.yaml
+      - uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382 # v3.6.0
+      - uses: anchore/sbom-action/download-syft@61119d458adab75f756bc0b9e4bde25725f86a7a # v0.17.2
+      - uses: docker/setup-qemu-action@49b3bc8e6bdd4a60e6116a5414239cba5943d3cf # v3.2.0
+        with:
+          platforms: amd64, arm64,ppc64le
+      - uses: docker/setup-buildx-action@988b5a0280414f521da01fcc63a27aeeb4b104db # v3.6.1
       - name: Setup Go
         uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
         with:
@@ -57,4 +67,6 @@ jobs:
           args: --snapshot --clean -f cmd/builder/.goreleaser.yml
         env:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT}}
+          COSIGN_YES: false
+          SKIP_SIGNS: true
