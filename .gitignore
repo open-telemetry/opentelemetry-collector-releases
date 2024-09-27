@@ -5,5 +5,3 @@ dist/
 .generated-yaml/
 .vscode
 .core
-cmd/builder/output
-cmd/builder/.secrets
