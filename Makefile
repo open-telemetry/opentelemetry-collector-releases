@@ -1,11 +1,11 @@
 GO ?= go
 GORELEASER ?= goreleaser
 
-OTELCOL_BUILDER_VERSION ?= 0.109.0
+OTELCOL_BUILDER_VERSION ?= 0.110.0
 OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
 
-DISTRIBUTIONS ?= "otelcol,otelcol-contrib,otelcol-k8s"
+DISTRIBUTIONS ?= "otelcol,otelcol-contrib,otelcol-k8s,otelcol-otlp"
 GEN_CONFIG_DISTRIBUTIONS ?= "otelcol,otelcol-contrib"
 
 ci: check build
