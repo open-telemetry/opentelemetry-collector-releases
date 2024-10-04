@@ -89,7 +89,7 @@ jobs:
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
-          GOARM: ${{ matrix.GOARCH == 'arm' && '7' || '' }} # Default is 6
+          GOARM: 7 # Default is 6
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           COSIGN_YES: true
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
