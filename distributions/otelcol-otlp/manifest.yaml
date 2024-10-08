@@ -2,17 +2,17 @@ dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/otlp
   name: otelcol-otlp
   description: OpenTelemetry Collector OTLP
-  version: 0.110.0
+  version: 0.111.0
   output_path: ./_build
-  otelcol_version: 0.110.0
+  otelcol_version: 0.111.0
 
 exporters:
-  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.110.0
-  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.110.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.111.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.111.0
 
 receivers:
-  - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.110.0
+  - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.111.0
 
 providers:
-  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.16.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.16.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.17.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.17.0
