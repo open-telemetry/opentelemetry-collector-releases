@@ -36,10 +36,8 @@ jobs:
           fetch-depth: 0
           repository: "open-telemetry/opentelemetry-collector"
           path: ".core"
-      - name: Copy Dockerfile and builder-config.yaml
-        run:  |
-          cp cmd/builder/Dockerfile .core/cmd/builder/Dockerfile
-          cp cmd/builder/builder-config.yaml .core/cmd/builder/builder-config.yaml
+      - name: Copy Dockerfile to Core Repo directory
+        run:  cp cmd/builder/Dockerfile .core/cmd/builder/Dockerfile
       - uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382 # v3.6.0
       - uses: anchore/sbom-action/download-syft@61119d458adab75f756bc0b9e4bde25725f86a7a # v0.17.2
       - uses: docker/setup-qemu-action@49b3bc8e6bdd4a60e6116a5414239cba5943d3cf # v3.2.0

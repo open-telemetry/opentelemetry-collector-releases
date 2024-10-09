@@ -33,8 +33,6 @@ dockers:
       - johnpeterson785/opentelemetry-collector-builder:latest-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Version }}-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:latest-amd64
-    extra_files: 
-      - builder-config.yaml
     build_flag_templates:
       - --pull
       - --platform=linux/amd64
@@ -52,8 +50,6 @@ dockers:
       - johnpeterson785/opentelemetry-collector-builder:latest-arm64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Version }}-arm64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:latest-arm64
-    extra_files: 
-      - builder-config.yaml
     build_flag_templates:
       - --pull
       - --platform=linux/arm64
@@ -71,8 +67,6 @@ dockers:
       - johnpeterson785/opentelemetry-collector-builder:latest-ppc64le
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Version }}-ppc64le
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:latest-ppc64le
-    extra_files: 
-      - builder-config.yaml
     build_flag_templates:
       - --pull
       - --platform=linux/ppc64le
