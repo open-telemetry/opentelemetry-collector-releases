@@ -1,12 +1,15 @@
-FROM golang:alpine
+FROM golang:1.23-alpine3.20
+RUN apk --update add ca-certificates
 
-WORKDIR /build
+ARG SERVICE_NAME=ocb
 
-# Copy default builder config and ocb binary into the container
-COPY builder-config.yaml /build/builder-config.yaml
-COPY --chmod=755 ocb /build/ocb
+RUN addgroup --gid 1001 -S ${SERVICE_NAME} && \
+    adduser -G ${SERVICE_NAME} --shell /bin/false --disabled-password \
+    -H --uid 1001 ${SERVICE_NAME} && \
+    chown ${SERVICE_NAME}:${SERVICE_NAME} /usr/local/go/bin
 
-ENTRYPOINT [ "./ocb"]
-# default arguments to use provided builder config file from documentation;
-# replace if using a different file location or file name
-CMD [ "--config", "builder-config.yaml" ]
+USER ${SERVICE_NAME}
+WORKDIR /home/${SERVICE_NAME}
+
+COPY --chmod=755 ocb /usr/local/bin/ocb
+ENTRYPOINT [ "ocb" ]
