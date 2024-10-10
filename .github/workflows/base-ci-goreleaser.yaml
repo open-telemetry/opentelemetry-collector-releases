@@ -67,12 +67,13 @@ jobs:
         uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6.0.0
         with:
           distribution: goreleaser-pro
-          version: v2.2.0
+          version: v2.3.2
           workdir: distributions/${{ inputs.distribution }}
           args: --snapshot --clean --skip=sign,sbom --timeout 2h --split
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
+          GOARM: 7 # Default is 6
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
       - name: Upload linux service packages
@@ -80,4 +81,5 @@ jobs:
         uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
         with:
           name: linux-packages
-          path: distributions/${{ inputs.distribution }}/dist/linux_amd64/*
+          path: distributions/${{ inputs.distribution }}/dist/linux_amd64_v1/*
+          if-no-files-found: error
