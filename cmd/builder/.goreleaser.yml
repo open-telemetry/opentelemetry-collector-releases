@@ -29,8 +29,8 @@ dockers:
     goarch: amd64
     dockerfile: Dockerfile
     image_templates:
-      - johnpeterson785/opentelemetry-collector-builder:{{ .Version }}-amd64
-      - johnpeterson785/opentelemetry-collector-builder:latest-amd64
+      - otel/opentelemetry-collector-builder:{{ .Version }}-amd64
+      - otel/opentelemetry-collector-builder:latest-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Version }}-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:latest-amd64
     build_flag_templates:
@@ -46,8 +46,8 @@ dockers:
     goarch: arm64
     dockerfile: Dockerfile
     image_templates:
-      - johnpeterson785/opentelemetry-collector-builder:{{ .Version }}-arm64
-      - johnpeterson785/opentelemetry-collector-builder:latest-arm64
+      - otel/opentelemetry-collector-builder:{{ .Version }}-arm64
+      - otel/opentelemetry-collector-builder:latest-arm64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Version }}-arm64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:latest-arm64
     build_flag_templates:
@@ -63,8 +63,8 @@ dockers:
     goarch: ppc64le
     dockerfile: Dockerfile
     image_templates:
-      - johnpeterson785/opentelemetry-collector-builder:{{ .Version }}-ppc64le
-      - johnpeterson785/opentelemetry-collector-builder:latest-ppc64le
+      - otel/opentelemetry-collector-builder:{{ .Version }}-ppc64le
+      - otel/opentelemetry-collector-builder:latest-ppc64le
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Version }}-ppc64le
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:latest-ppc64le
     build_flag_templates:
@@ -78,16 +78,16 @@ dockers:
       - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
 docker_manifests:
-  - name_template: johnpeterson785/opentelemetry-collector-builder:{{ .Version }}
+  - name_template: otel/opentelemetry-collector-builder:{{ .Version }}
     image_templates:
-      - johnpeterson785/opentelemetry-collector-builder:{{ .Version }}-amd64
-      - johnpeterson785/opentelemetry-collector-builder:{{ .Version }}-arm64
-      - johnpeterson785/opentelemetry-collector-builder:{{ .Version }}-ppc64le
-  - name_template: johnpeterson785/opentelemetry-collector-builder:latest
+      - otel/opentelemetry-collector-builder:{{ .Version }}-amd64
+      - otel/opentelemetry-collector-builder:{{ .Version }}-arm64
+      - otel/opentelemetry-collector-builder:{{ .Version }}-ppc64le
+  - name_template: otel/opentelemetry-collector-builder:latest
     image_templates:
-      - johnpeterson785/opentelemetry-collector-builder:latest-amd64
-      - johnpeterson785/opentelemetry-collector-builder:latest-arm64
-      - johnpeterson785/opentelemetry-collector-builder:latest-ppc64le
+      - otel/opentelemetry-collector-builder:latest-amd64
+      - otel/opentelemetry-collector-builder:latest-arm64
+      - otel/opentelemetry-collector-builder:latest-ppc64le
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Version }}
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Version }}-amd64
