@@ -22,5 +22,8 @@ jobs:
           go-version: '1.23'
           check-latest: true
 
+      - name: Tidy go.mod files
+        run: go mod tidy
+
       - name: Verify
         run: make ci
