@@ -30,4 +30,5 @@ jobs:
       distribution: otelcol-k8s
       goos: '[ "linux" ]'
       goarch: '[ "amd64", "arm64", "ppc64le", "s390x" ]'
+      cgo: '[]'
     secrets: inherit
