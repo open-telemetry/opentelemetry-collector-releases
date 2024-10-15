@@ -12,6 +12,10 @@ on:
       goarch:
         required: true
         type: string
+      latest:
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   check-goreleaser:
@@ -60,7 +64,16 @@ jobs:
           go-version: '1.23'
           check-latest: true
 
-      - name: Generate the sources
+      - name: Generate the sources using latest main for ${{ inputs.distribution }}
+        if: inputs.latest == true
+        env:
+          DISTRIBUTIONS: ${{ inputs.distribution }}
+        run: make generate-sources-dev
+
+      - name: Generate the sources for ${{ inputs.distribution }}
+        if: inputs.latest != true
+        env:
+          DISTRIBUTIONS: ${{ inputs.distribution }}
         run: make generate-sources
 
       - name: Run GoReleaser for ${{ inputs.distribution }}
