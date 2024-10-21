@@ -73,3 +73,24 @@ push-tags:
 	@git tag -a ${TAG} -s -m "Version ${TAG}"
 	@echo "Pushing tag ${TAG}"
 	@git push ${REMOTE} ${TAG}
+
+# Used for debug only
+REMOTE?=git@github.com:open-telemetry/opentelemetry-collector-releases.git
+.PHONY: delete-tags
+delete-tags:
+	@[ "${TAG}" ] || ( echo ">> env var TAG is not set"; exit 1 )
+	@echo "Deleting local tag ${TAG}"
+	@if [ -n "$$(git tag -l ${TAG})" ]; then \
+		git tag -d ${TAG}; \
+	fi
+	@if [ -n "$$(git tag -l cmd/builder/${TAG})" ]; then \
+		git tag -d cmd/builder/${TAG}; \
+	fi
+	@echo "Deleting remote tag ${TAG}"
+	@git push ${REMOTE} :refs/tags/${TAG}
+	@git push ${REMOTE} :refs/tags/cmd/builder/${TAG}
+
+# Used for debug only
+REMOTE?=git@github.com:open-telemetry/opentelemetry-collector-releases.git
+.PHONY: repeat-tags
+repeat-tags: delete-tags push-tags
