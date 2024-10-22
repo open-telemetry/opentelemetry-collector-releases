@@ -46,6 +46,7 @@ builds:
       - -w
     flags:
       - -trimpath
+      - -buildmode=pie
     env:
       - CGO_ENABLED=0
 archives:

@@ -73,7 +73,7 @@ func Build(dist string) config.Build {
 		Binary: dist,
 		BuildDetails: config.BuildDetails{
 			Env:     []string{"CGO_ENABLED=0"},
-			Flags:   []string{"-trimpath"},
+			Flags:   []string{"-trimpath", "-buildmode=pie"},
 			Ldflags: []string{"-s", "-w"},
 		},
 		Goos:   []string{"darwin", "linux", "windows"},
