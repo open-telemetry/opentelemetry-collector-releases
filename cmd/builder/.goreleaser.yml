@@ -8,6 +8,7 @@ version: 2
 builds:
   - flags:
       - -trimpath
+      - -buildmode=pie
     ldflags:
       - -s -w -X go.opentelemetry.io/collector/cmd/builder/internal.version={{ .Version }}
     env:
