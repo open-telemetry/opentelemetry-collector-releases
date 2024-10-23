@@ -52,7 +52,7 @@ func Generate(dist string) config.Project {
 		DockerSigns:     DockerSigns(),
 		SBOMs:           SBOM(),
 		Version:         2,
-		Monorepo:				 config.Monorepo{
+		Monorepo: config.Monorepo{
 			TagPrefix: "v",
 		},
 	}
@@ -321,6 +321,7 @@ func SBOM() []config.SBOM {
 		{
 			ID:        "archive",
 			Artifacts: "archive",
+			Env:       []string{"SYFT_FILE_METADATA_SELECTION=all", "SYFT_FILE_METADATA_DIGESTS=sha256"},
 		},
 		{
 			ID:        "package",
