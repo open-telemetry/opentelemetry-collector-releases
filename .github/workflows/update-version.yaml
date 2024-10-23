@@ -1,0 +1,65 @@
+name: Update Version in Distributions and Prepare PR
+on:
+  workflow_dispatch:
+    inputs:
+      current_beta_core:
+        description: 'Current collector core beta version, e.g. v0.111.0 or 0.111.0'
+        required: false
+        default: ''
+      current_beta_contrib:
+        description: 'Current collector contrib beta version, e.g. v0.111.0 or 0.111.0'
+        required: false
+        default: ''
+      current_stable:
+        description: 'Current stable version, e.g. v1.16.0 or 1.16.0'
+        required: false
+        default: ''
+      next_beta_core:
+        description: 'Next collector core beta version (optional)'
+        required: false
+        default: ''
+      next_beta_contrib:
+        description: 'Next collector contrib beta version (optional)'
+        required: false
+        default: ''
+      next_stable:
+        description: 'Next stable version (optional)'
+        required: false
+        default: ''
+      create_pr:
+        description: 'Create a draft pull request with the changes'
+        required: true
+        type: boolean
+        default: true
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Validate inputs
+        run: |
+          if [ -z "${{ github.event.inputs.current_beta_core }}" ] && [ -z "${{ github.event.inputs.current_beta_contrib }}" ] && [ -z "${{ github.event.inputs.current_stable }}" ]; then
+            echo "Error: At least one of 'current_beta_core', 'current_beta_contrib', or 'current_stable' must be provided."
+            exit 1
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run bump-versions.sh
+        run: |
+          chmod +x .github/workflows/scripts/bump-versions.sh && \
+          args=""
+          if [ "${{ github.event.inputs.create_pr }}" = "true" ]; then
+            args="--commit --pull-request"
+          fi
+          .github/workflows/scripts/bump-versions.sh $args
+        env:
+          current_beta_core: ${{ github.event.inputs.current_beta_core }}
+          current_beta_contrib: ${{ github.event.inputs.current_beta_contrib }}
+          current_stable: ${{ github.event.inputs.current_stable }}
+          next_beta_core: ${{ github.event.inputs.next_beta_core }}
+          next_beta_contrib: ${{ github.event.inputs.next_beta_contrib }}
+          next_stable: ${{ github.event.inputs.next_stable }}
