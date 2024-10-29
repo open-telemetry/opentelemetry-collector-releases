@@ -6,7 +6,6 @@ OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
 
 DISTRIBUTIONS ?= "otelcol,otelcol-contrib,otelcol-k8s,otelcol-otlp"
-GEN_CONFIG_DISTRIBUTIONS ?= "otelcol,otelcol-contrib"
 
 ci: check build
 check: ensure-goreleaser-up-to-date
@@ -17,7 +16,7 @@ build: go ocb
 generate: generate-sources generate-goreleaser
 
 generate-goreleaser: go
-	@./scripts/generate-goreleaser.sh -d "${GEN_CONFIG_DISTRIBUTIONS}" -g ${GO}
+	@./scripts/generate-goreleaser.sh -d "${DISTRIBUTIONS}" -g ${GO}
 
 generate-sources: go ocb
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER} -g ${GO}

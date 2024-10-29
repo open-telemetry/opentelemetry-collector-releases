@@ -9,8 +9,8 @@ msi:
     name: otelcol_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}
     wxs: windows-installer.wxs
     extra_files:
-      - config.yaml
       - opentelemetry.ico
+      - config.yaml
 builds:
   - id: otelcol
     goos:
@@ -46,7 +46,6 @@ builds:
       - -w
     flags:
       - -trimpath
-      - -buildmode=pie
     env:
       - CGO_ENABLED=0
 archives:
