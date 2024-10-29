@@ -94,7 +94,6 @@ func Build(dist string) config.Build {
 		goos = K8sGoos
 		archs = K8sArchs
 		ignore = make([]config.IgnoredBuild, 0)
-		flags = append(flags, "-buildmode=pie")
 		armVersions = make([]string, 0)
 	} else {
 		goos = []string{"darwin", "linux", "windows"}
