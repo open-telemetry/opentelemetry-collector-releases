@@ -21,6 +21,7 @@ package internal
 
 import (
 	"fmt"
+	"log"
 	"path"
 	"strings"
 
@@ -35,15 +36,15 @@ var (
 	ArmVersions   = []string{"7"}
 )
 
-func Generate(dist string) config.Project {
+func Generate(dist string, cgo string) config.Project {
 	return config.Project{
 		ProjectName: "opentelemetry-collector-releases",
 		Checksum: config.Checksum{
 			NameTemplate: fmt.Sprintf("{{ .ProjectName }}_%v_checksums.txt", dist),
 		},
 		Env:             []string{"COSIGN_YES=true"},
-		Builds:          Builds(dist),
-		Archives:        Archives(dist),
+		Builds:          Builds(dist, cgo),
+		Archives:        Archives(dist, cgo),
 		MSI:             WinPackages(dist),
 		NFPMs:           Packages(dist),
 		Dockers:         DockerImages(dist),
@@ -52,15 +53,22 @@ func Generate(dist string) config.Project {
 		DockerSigns:     DockerSigns(),
 		SBOMs:           SBOM(),
 		Version:         2,
-		Monorepo:				 config.Monorepo{
+		Monorepo: config.Monorepo{
 			TagPrefix: "v",
 		},
 	}
 }
 
-func Builds(dist string) []config.Build {
-	return []config.Build{
-		Build(dist),
+func Builds(dist string, cgo string) []config.Build {
+	if len(cgo) == 0 {
+		return []config.Build{
+			Build(dist),
+		}
+	} else if cgo == "darwin" {
+		return BuildCGO(dist)
+	} else {
+		log.Fatal("Unsupport CGO OS version")
+		return []config.Build{}
 	}
 }
 
@@ -90,19 +98,58 @@ func Build(dist string) config.Build {
 	}
 }
 
-func Archives(dist string) (r []config.Archive) {
+func BuildCGO(dist string) []config.Build {
+	return []config.Build{
+		{
+			ID:     dist,
+			Dir:    "_build",
+			Binary: dist,
+			BuildDetails: config.BuildDetails{
+				Env:     []string{"CGO_ENABLED=0"},
+				Flags:   []string{"-trimpath"},
+				Ldflags: []string{"-s", "-w"},
+			},
+			Goos:   []string{"linux", "windows"},
+			Goarch: Architectures,
+			Goarm:  ArmVersions,
+			Ignore: []config.IgnoredBuild{
+				{Goos: "windows", Goarch: "arm"},
+				{Goos: "windows", Goarch: "arm64"},
+				{Goos: "windows", Goarch: "s390x"},
+			},
+		},
+		{
+			ID:     getCgoDistId(dist),
+			Dir:    "_build",
+			Binary: dist,
+			BuildDetails: config.BuildDetails{
+				Env:     []string{"CGO_ENABLED=1", "CGO_LDFLAGS='-fstack-protector'"},
+				Flags:   []string{"-trimpath", "-buildmode=pie"},
+				Ldflags: []string{"-s", "-w"},
+			},
+			Goos:   []string{"darwin"},
+			Goarch: []string{"amd64", "arm64"},
+		},
+	}
+}
+
+func Archives(dist string, cgo string) (r []config.Archive) {
 	return []config.Archive{
-		Archive(dist),
+		Archive(dist, cgo),
 	}
 }
 
 // Archive configures a goreleaser archive (tarball).
 // https://goreleaser.com/customization/archive/
-func Archive(dist string) config.Archive {
+func Archive(dist string, cgo string) config.Archive {
+	builds := []string{dist}
+	if len(cgo) > 0 {
+		builds = append(builds, getCgoDistId(dist))
+	}
 	return config.Archive{
 		ID:           dist,
 		NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}",
-		Builds:       []string{dist},
+		Builds:       builds,
 	}
 }
 
@@ -327,4 +374,8 @@ func SBOM() []config.SBOM {
 			Artifacts: "package",
 		},
 	}
+}
+
+func getCgoDistId(dist string) string {
+	return dist + "-cgo"
 }

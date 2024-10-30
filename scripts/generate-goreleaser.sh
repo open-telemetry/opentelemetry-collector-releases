@@ -23,5 +23,9 @@ echo "Distributions to generate: $distributions";
 
 for distribution in $(echo "$distributions" | tr "," "\n")
 do
-    ${GO} run cmd/goreleaser/main.go -d "${distribution}" > "./distributions/${distribution}/.goreleaser.yaml"
+    if [[ "${distribution}" == "otelcol-contrib" ]]; then
+        ${GO} run cmd/goreleaser/main.go -d "${distribution}" -c "darwin" > "./distributions/${distribution}/.goreleaser.yaml"
+    else
+        ${GO} run cmd/goreleaser/main.go -d "${distribution}" > "./distributions/${distribution}/.goreleaser.yaml"
+    fi
 done
