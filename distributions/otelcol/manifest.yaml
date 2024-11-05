@@ -4,7 +4,6 @@ dist:
   description: OpenTelemetry Collector
   version: 0.112.0
   output_path: ./_build
-  otelcol_version: 0.112.0
 
 receivers:
   - gomod: go.opentelemetry.io/collector/receiver/nopreceiver v0.112.0
