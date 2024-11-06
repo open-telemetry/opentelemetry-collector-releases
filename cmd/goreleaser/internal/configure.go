@@ -27,14 +27,24 @@ import (
 	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
 )
 
-const ArmArch = "arm"
+const (
+	ArmArch          = "arm"
+	CoreDistro       = "otelcol"
+	ContribDistro    = "otelcol-contrib"
+	K8sDistro        = "otelcol-k8s"
+	OTLPDistro       = "otelcol-otlp"
+	DockerHub        = "otel"
+	GHCR             = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
+	BinaryNamePrefix = "otelcol"
+	ImageNamePrefix  = "opentelemetry-collector"
+)
 
 var (
-	ImagePrefixes      = []string{"otel", "ghcr.io/open-telemetry/opentelemetry-collector-releases"}
+	ImagePrefixes      = []string{DockerHub, GHCR}
 	Architectures      = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
 	ArmVersions        = []string{"7"}
-	DefaultConfigDists = map[string]bool{"otelcol": true, "otelcol-contrib": true}
-	MSIWindowsDists    = map[string]bool{"otelcol": true, "otelcol-contrib": true, "otelcol-otlp": true}
+	DefaultConfigDists = map[string]bool{CoreDistro: true, ContribDistro: true}
+	MSIWindowsDists    = map[string]bool{CoreDistro: true, ContribDistro: true, OTLPDistro: true}
 	K8sDockerSkipArchs = map[string]bool{"arm": true, "386": true}
 	K8sGoos            = []string{"linux"}
 	K8sArchs           = []string{"amd64", "arm64", "ppc64le", "s390x"}
@@ -57,7 +67,7 @@ func Generate(dist string) config.Project {
 		DockerSigns:     DockerSigns(),
 		SBOMs:           SBOM(),
 		Version:         2,
-		Monorepo:				 config.Monorepo{
+		Monorepo: config.Monorepo{
 			TagPrefix: "v",
 		},
 	}
@@ -76,8 +86,7 @@ func Build(dist string) config.Build {
 	var archs []string
 	var ignore []config.IgnoredBuild
 	var armVersions []string
-	flags := []string{"-trimpath"}
-	if dist == "otelcol-k8s" {
+	if dist == K8sDistro {
 		goos = K8sGoos
 		archs = K8sArchs
 		ignore = make([]config.IgnoredBuild, 0)
@@ -101,7 +110,7 @@ func Build(dist string) config.Build {
 		Binary: dist,
 		BuildDetails: config.BuildDetails{
 			Env:     []string{"CGO_ENABLED=0"},
-			Flags:   flags,
+			Flags:   []string{"-trimpath"},
 			Ldflags: []string{"-s", "-w"},
 		},
 		Goos:   goos,
@@ -152,7 +161,7 @@ func WinPackage(dist string) config.MSI {
 }
 
 func Packages(dist string) (r []config.NFPM) {
-	if dist == "otelcol-k8s" {
+	if dist == K8sDistro {
 		return []config.NFPM{}
 	}
 	return []config.NFPM{
@@ -212,7 +221,7 @@ func Package(dist string) config.NFPM {
 func DockerImages(dist string) []config.Docker {
 	r := make([]config.Docker, 0)
 	for _, arch := range Architectures {
-		if dist == "otelcol-k8s" {
+		if dist == K8sDistro {
 			if _, ok := K8sDockerSkipArchs[arch]; ok {
 				continue
 			}
@@ -286,7 +295,7 @@ func DockerManifests(dist string) []config.DockerManifest {
 func DockerManifest(prefix, version, dist string) config.DockerManifest {
 	var imageTemplates []string
 	for _, arch := range Architectures {
-		if dist == "otelcol-k8s" {
+		if dist == K8sDistro {
 			if _, ok := K8sDockerSkipArchs[arch]; ok {
 				continue
 			}
@@ -316,7 +325,7 @@ func DockerManifest(prefix, version, dist string) config.DockerManifest {
 
 // imageName translates a distribution name to a container image name.
 func imageName(dist string) string {
-	return strings.Replace(dist, "otelcol", "opentelemetry-collector", 1)
+	return strings.Replace(dist, BinaryNamePrefix, ImageNamePrefix, 1)
 }
 
 // archName translates architecture to docker platform names.
