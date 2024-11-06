@@ -12,7 +12,7 @@ ci: check build
 check: ensure-goreleaser-up-to-date
 
 build: go ocb
-	@./scripts/build.sh -d "${DISTRIBUTIONS}" -b ${OTELCOL_BUILDER} -g ${GO}
+	@./scripts/build.sh -d "${DISTRIBUTIONS}" -b ${OTELCOL_BUILDER}
 
 generate: generate-sources generate-goreleaser
 
@@ -20,7 +20,7 @@ generate-goreleaser: go
 	@./scripts/generate-goreleaser.sh -d "${GEN_CONFIG_DISTRIBUTIONS}" -g ${GO}
 
 generate-sources: go ocb
-	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER} -g ${GO}
+	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER}
 
 goreleaser-verify: goreleaser
 	@${GORELEASER} release --snapshot --clean
