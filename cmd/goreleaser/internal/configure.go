@@ -40,19 +40,6 @@ var (
 	K8sArchs           = []string{"amd64", "arm64", "ppc64le", "s390x"}
 )
 
-// Copied from go/src/internal/platform/supported.go, see:
-// https://cs.opensource.google/go/go/+/d7fcb5cf80953f1d63246f1ae9defa60c5ce2d76:src/internal/platform/supported.go;l=222
-func InternalLinkPIESupported(goos, goarch string) bool {
-	switch goos + "/" + goarch {
-	case "android/arm64",
-		"darwin/amd64", "darwin/arm64",
-		"linux/amd64", "linux/arm64", "linux/ppc64le",
-		"windows/386", "windows/amd64", "windows/arm", "windows/arm64":
-		return true
-	}
-	return false
-}
-
 func Generate(dist string) config.Project {
 	return config.Project{
 		ProjectName: "opentelemetry-collector-releases",
