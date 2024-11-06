@@ -5,13 +5,14 @@
   ],
   "customManagers": [
     {
+      "customType": "regex",
       "fileMatch": [
         "(^|\\/).github\\/.*\\.ya?ml$"
       ],
       "matchStrings": [
         "goreleaser\\/goreleaser-action@[\\S\\s]+version: (?<currentValue>.*?)$"
       ],
-      "depName": "github.com/goreleaser/goreleaser",
+      "depNameTemplate": "github.com/goreleaser/goreleaser",
       "datasourceTemplate": "github-releases"
     }
   ]
