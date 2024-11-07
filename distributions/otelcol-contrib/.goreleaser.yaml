@@ -9,8 +9,8 @@ msi:
     name: otelcol-contrib_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}
     wxs: windows-installer.wxs
     extra_files:
-      - config.yaml
       - opentelemetry.ico
+      - config.yaml
 builds:
   - id: otelcol-contrib
     goos:
