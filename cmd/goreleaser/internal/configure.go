@@ -27,12 +27,27 @@ import (
 	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
 )
 
-const ArmArch = "arm"
+const (
+	ArmArch          = "arm"
+	CoreDistro       = "otelcol"
+	ContribDistro    = "otelcol-contrib"
+	K8sDistro        = "otelcol-k8s"
+	OTLPDistro       = "otelcol-otlp"
+	DockerHub        = "otel"
+	GHCR             = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
+	BinaryNamePrefix = "otelcol"
+	ImageNamePrefix  = "opentelemetry-collector"
+)
 
 var (
-	ImagePrefixes = []string{"otel", "ghcr.io/open-telemetry/opentelemetry-collector-releases"}
-	Architectures = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
-	ArmVersions   = []string{"7"}
+	ImagePrefixes      = []string{DockerHub, GHCR}
+	Architectures      = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
+	ArmVersions        = []string{"7"}
+	DefaultConfigDists = map[string]bool{CoreDistro: true, ContribDistro: true}
+	MSIWindowsDists    = map[string]bool{CoreDistro: true, ContribDistro: true, OTLPDistro: true}
+	K8sDockerSkipArchs = map[string]bool{"arm": true, "386": true}
+	K8sGoos            = []string{"linux"}
+	K8sArchs           = []string{"amd64", "arm64", "ppc64le", "s390x"}
 )
 
 func Generate(dist string) config.Project {
@@ -52,7 +67,7 @@ func Generate(dist string) config.Project {
 		DockerSigns:     DockerSigns(),
 		SBOMs:           SBOM(),
 		Version:         2,
-		Monorepo:				 config.Monorepo{
+		Monorepo: config.Monorepo{
 			TagPrefix: "v",
 		},
 	}
@@ -67,6 +82,28 @@ func Builds(dist string) []config.Build {
 // Build configures a goreleaser build.
 // https://goreleaser.com/customization/build/
 func Build(dist string) config.Build {
+	var goos []string
+	var archs []string
+	var ignore []config.IgnoredBuild
+	var armVersions []string
+	if dist == K8sDistro {
+		goos = K8sGoos
+		archs = K8sArchs
+		ignore = make([]config.IgnoredBuild, 0)
+		armVersions = make([]string, 0)
+	} else {
+		goos = []string{"darwin", "linux", "windows"}
+		archs = Architectures
+		ignore = []config.IgnoredBuild{
+			{Goos: "darwin", Goarch: "386"},
+			{Goos: "darwin", Goarch: "arm"},
+			{Goos: "darwin", Goarch: "s390x"},
+			{Goos: "windows", Goarch: "arm"},
+			{Goos: "windows", Goarch: "arm64"},
+			{Goos: "windows", Goarch: "s390x"},
+		}
+		armVersions = ArmVersions
+	}
 	return config.Build{
 		ID:     dist,
 		Dir:    "_build",
@@ -76,17 +113,10 @@ func Build(dist string) config.Build {
 			Flags:   []string{"-trimpath"},
 			Ldflags: []string{"-s", "-w"},
 		},
-		Goos:   []string{"darwin", "linux", "windows"},
-		Goarch: Architectures,
-		Goarm:  ArmVersions,
-		Ignore: []config.IgnoredBuild{
-			{Goos: "darwin", Goarch: "386"},
-			{Goos: "darwin", Goarch: "arm"},
-			{Goos: "darwin", Goarch: "s390x"},
-			{Goos: "windows", Goarch: "arm"},
-			{Goos: "windows", Goarch: "arm64"},
-			{Goos: "windows", Goarch: "s390x"},
-		},
+		Goos:   goos,
+		Goarch: archs,
+		Goarm:  armVersions,
+		Ignore: ignore,
 	}
 }
 
@@ -107,6 +137,9 @@ func Archive(dist string) config.Archive {
 }
 
 func WinPackages(dist string) []config.MSI {
+	if _, ok := MSIWindowsDists[dist]; !ok {
+		return []config.MSI{}
+	}
 	return []config.MSI{
 		WinPackage(dist),
 	}
@@ -115,18 +148,22 @@ func WinPackages(dist string) []config.MSI {
 // Package configures goreleaser to build a Windows MSI package.
 // https://goreleaser.com/customization/msi/
 func WinPackage(dist string) config.MSI {
+	files := []string{"opentelemetry.ico"}
+	if _, ok := DefaultConfigDists[dist]; ok {
+		files = append(files, "config.yaml")
+	}
 	return config.MSI{
-		ID:   dist,
-		Name: fmt.Sprintf("%s_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}", dist),
-		WXS:  "windows-installer.wxs",
-		Files: []string{
-			"config.yaml",
-			"opentelemetry.ico",
-		},
+		ID:    dist,
+		Name:  fmt.Sprintf("%s_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}", dist),
+		WXS:   "windows-installer.wxs",
+		Files: files,
 	}
 }
 
 func Packages(dist string) (r []config.NFPM) {
+	if dist == K8sDistro {
+		return []config.NFPM{}
+	}
 	return []config.NFPM{
 		Package(dist),
 	}
@@ -135,6 +172,24 @@ func Packages(dist string) (r []config.NFPM) {
 // Package configures goreleaser to build a system package.
 // https://goreleaser.com/customization/nfpm/
 func Package(dist string) config.NFPM {
+	nfpmContents := config.NFPMContents{
+		{
+			Source:      fmt.Sprintf("%s.service", dist),
+			Destination: path.Join("/lib", "systemd", "system", fmt.Sprintf("%s.service", dist)),
+		},
+		{
+			Source:      fmt.Sprintf("%s.conf", dist),
+			Destination: path.Join("/etc", dist, fmt.Sprintf("%s.conf", dist)),
+			Type:        "config|noreplace",
+		},
+	}
+	if _, ok := DefaultConfigDists[dist]; ok {
+		nfpmContents = append(nfpmContents, &config.NFPMContent{
+			Source:      "config.yaml",
+			Destination: path.Join("/etc", dist, "config.yaml"),
+			Type:        "config|noreplace",
+		})
+	}
 	return config.NFPM{
 		ID:      dist,
 		Builds:  []string{dist},
@@ -158,22 +213,7 @@ func Package(dist string) config.NFPM {
 				PostInstall: "postinstall.sh",
 				PreRemove:   "preremove.sh",
 			},
-			Contents: config.NFPMContents{
-				{
-					Source:      fmt.Sprintf("%s.service", dist),
-					Destination: path.Join("/lib", "systemd", "system", fmt.Sprintf("%s.service", dist)),
-				},
-				{
-					Source:      fmt.Sprintf("%s.conf", dist),
-					Destination: path.Join("/etc", dist, fmt.Sprintf("%s.conf", dist)),
-					Type:        "config|noreplace",
-				},
-				{
-					Source:      "config.yaml",
-					Destination: path.Join("/etc", dist, "config.yaml"),
-					Type:        "config|noreplace",
-				},
-			},
+			Contents: nfpmContents,
 		},
 	}
 }
@@ -181,6 +221,11 @@ func Package(dist string) config.NFPM {
 func DockerImages(dist string) []config.Docker {
 	r := make([]config.Docker, 0)
 	for _, arch := range Architectures {
+		if dist == K8sDistro {
+			if _, ok := K8sDockerSkipArchs[arch]; ok {
+				continue
+			}
+		}
 		switch arch {
 		case ArmArch:
 			for _, vers := range ArmVersions {
@@ -197,7 +242,7 @@ func DockerImages(dist string) []config.Docker {
 // https://goreleaser.com/customization/docker/
 func DockerImage(dist, arch, armVersion string) config.Docker {
 	dockerArchName := archName(arch, armVersion)
-	var imageTemplates []string
+	imageTemplates := make([]string, 0)
 	for _, prefix := range ImagePrefixes {
 		dockerArchTag := strings.ReplaceAll(dockerArchName, "/", "")
 		imageTemplates = append(
@@ -210,7 +255,10 @@ func DockerImage(dist, arch, armVersion string) config.Docker {
 	label := func(name, template string) string {
 		return fmt.Sprintf("--label=org.opencontainers.image.%s={{%s}}", name, template)
 	}
-
+	files := make([]string, 0)
+	if _, ok := DefaultConfigDists[dist]; ok {
+		files = append(files, "config.yaml")
+	}
 	return config.Docker{
 		ImageTemplates: imageTemplates,
 		Dockerfile:     "Dockerfile",
@@ -226,7 +274,7 @@ func DockerImage(dist, arch, armVersion string) config.Docker {
 			label("source", ".GitURL"),
 			"--label=org.opencontainers.image.licenses=Apache-2.0",
 		},
-		Files:  []string{"config.yaml"},
+		Files:  files,
 		Goos:   "linux",
 		Goarch: arch,
 		Goarm:  armVersion,
@@ -247,6 +295,11 @@ func DockerManifests(dist string) []config.DockerManifest {
 func DockerManifest(prefix, version, dist string) config.DockerManifest {
 	var imageTemplates []string
 	for _, arch := range Architectures {
+		if dist == K8sDistro {
+			if _, ok := K8sDockerSkipArchs[arch]; ok {
+				continue
+			}
+		}
 		switch arch {
 		case ArmArch:
 			for _, armVers := range ArmVersions {
@@ -272,7 +325,7 @@ func DockerManifest(prefix, version, dist string) config.DockerManifest {
 
 // imageName translates a distribution name to a container image name.
 func imageName(dist string) string {
-	return strings.Replace(dist, "otelcol", "opentelemetry-collector", 1)
+	return strings.Replace(dist, BinaryNamePrefix, ImageNamePrefix, 1)
 }
 
 // archName translates architecture to docker platform names.
