@@ -42,13 +42,23 @@ const (
 var (
 	ImagePrefixes      = []string{DockerHub, GHCR}
 	Architectures      = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
-	ArmVersions        = []string{"7"}
 	DefaultConfigDists = map[string]bool{CoreDistro: true, ContribDistro: true}
 	MSIWindowsDists    = map[string]bool{CoreDistro: true, ContribDistro: true, OTLPDistro: true}
 	K8sDockerSkipArchs = map[string]bool{"arm": true, "386": true}
 	K8sGoos            = []string{"linux"}
 	K8sArchs           = []string{"amd64", "arm64", "ppc64le", "s390x"}
 )
+
+func GenerateContribBuildOnly(dist string) config.Project {
+	return config.Project{
+		ProjectName: "opentelemetry-collector-releases",
+		Builds:      Builds(dist),
+		Version:     2,
+		Monorepo: config.Monorepo{
+			TagPrefix: "v",
+		},
+	}
+}
 
 func Generate(dist string) config.Project {
 	return config.Project{
@@ -84,25 +94,12 @@ func Builds(dist string) []config.Build {
 func Build(dist string) config.Build {
 	var goos []string
 	var archs []string
-	var ignore []config.IgnoredBuild
-	var armVersions []string
 	if dist == K8sDistro {
 		goos = K8sGoos
 		archs = K8sArchs
-		ignore = make([]config.IgnoredBuild, 0)
-		armVersions = make([]string, 0)
 	} else {
 		goos = []string{"darwin", "linux", "windows"}
 		archs = Architectures
-		ignore = []config.IgnoredBuild{
-			{Goos: "darwin", Goarch: "386"},
-			{Goos: "darwin", Goarch: "arm"},
-			{Goos: "darwin", Goarch: "s390x"},
-			{Goos: "windows", Goarch: "arm"},
-			{Goos: "windows", Goarch: "arm64"},
-			{Goos: "windows", Goarch: "s390x"},
-		}
-		armVersions = ArmVersions
 	}
 	return config.Build{
 		ID:     dist,
@@ -115,9 +112,30 @@ func Build(dist string) config.Build {
 		},
 		Goos:   goos,
 		Goarch: archs,
-		Goarm:  armVersions,
-		Ignore: ignore,
+		Goarm:  ArmVersions(dist),
+		Ignore: IgnoreBuildCombinations(dist),
 	}
+}
+
+func IgnoreBuildCombinations(dist string) []config.IgnoredBuild {
+	if dist == K8sDistro {
+		return make([]config.IgnoredBuild, 0)
+	}
+	return []config.IgnoredBuild{
+		{Goos: "darwin", Goarch: "386"},
+		{Goos: "darwin", Goarch: "arm"},
+		{Goos: "darwin", Goarch: "s390x"},
+		{Goos: "windows", Goarch: "arm"},
+		{Goos: "windows", Goarch: "arm64"},
+		{Goos: "windows", Goarch: "s390x"},
+	}
+}
+
+func ArmVersions(dist string) []string {
+	if dist == K8sDistro {
+		return make([]string, 0)
+	}
+	return []string{"7"}
 }
 
 func Archives(dist string) (r []config.Archive) {
@@ -228,7 +246,7 @@ func DockerImages(dist string) []config.Docker {
 		}
 		switch arch {
 		case ArmArch:
-			for _, vers := range ArmVersions {
+			for _, vers := range ArmVersions(dist) {
 				r = append(r, DockerImage(dist, arch, vers))
 			}
 		default:
@@ -302,7 +320,7 @@ func DockerManifest(prefix, version, dist string) config.DockerManifest {
 		}
 		switch arch {
 		case ArmArch:
-			for _, armVers := range ArmVersions {
+			for _, armVers := range ArmVersions(dist) {
 				dockerArchTag := strings.ReplaceAll(archName(arch, armVers), "/", "")
 				imageTemplates = append(
 					imageTemplates,
