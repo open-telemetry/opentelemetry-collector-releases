@@ -60,14 +60,14 @@ func GenerateContribBuildOnly(dist string, buildOrRest bool) config.Project {
 	}
 }
 
-func Generate(dist string, split bool) config.Project {
+func Generate(dist string, buildOrRest bool) config.Project {
 	return config.Project{
 		ProjectName: "opentelemetry-collector-releases",
 		Checksum: config.Checksum{
 			NameTemplate: fmt.Sprintf("{{ .ProjectName }}_%v_checksums.txt", dist),
 		},
 		Env:             []string{"COSIGN_YES=true"},
-		Builds:          Builds(dist, split),
+		Builds:          Builds(dist, buildOrRest),
 		Archives:        Archives(dist),
 		MSI:             WinPackages(dist),
 		NFPMs:           Packages(dist),
