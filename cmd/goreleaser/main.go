@@ -38,9 +38,9 @@ func main() {
 
 	if *distFlag == internal.ContribDistro && *contribBuildOrRestFlag {
 		// Special care needs to be taken for otelcol-contrib since it has a split setup
-		project = internal.GenerateContribBuildOnly(*distFlag)
+		project = internal.GenerateContribBuildOnly(*distFlag, *contribBuildOrRestFlag)
 	} else {
-		project = internal.Generate(*distFlag)
+		project = internal.Generate(*distFlag, *contribBuildOrRestFlag)
 	}
 
 	partial := map[string]any{

@@ -49,10 +49,10 @@ var (
 	K8sArchs           = []string{"amd64", "arm64", "ppc64le", "s390x"}
 )
 
-func GenerateContribBuildOnly(dist string) config.Project {
+func GenerateContribBuildOnly(dist string, buildOrRest bool) config.Project {
 	return config.Project{
 		ProjectName: "opentelemetry-collector-releases",
-		Builds:      Builds(dist),
+		Builds:      Builds(dist, buildOrRest),
 		Version:     2,
 		Monorepo: config.Monorepo{
 			TagPrefix: "v",
@@ -60,14 +60,14 @@ func GenerateContribBuildOnly(dist string) config.Project {
 	}
 }
 
-func Generate(dist string) config.Project {
+func Generate(dist string, split bool) config.Project {
 	return config.Project{
 		ProjectName: "opentelemetry-collector-releases",
 		Checksum: config.Checksum{
 			NameTemplate: fmt.Sprintf("{{ .ProjectName }}_%v_checksums.txt", dist),
 		},
 		Env:             []string{"COSIGN_YES=true"},
-		Builds:          Builds(dist),
+		Builds:          Builds(dist, split),
 		Archives:        Archives(dist),
 		MSI:             WinPackages(dist),
 		NFPMs:           Packages(dist),
@@ -83,15 +83,32 @@ func Generate(dist string) config.Project {
 	}
 }
 
-func Builds(dist string) []config.Build {
+func Builds(dist string, buildOrRest bool) []config.Build {
 	return []config.Build{
-		Build(dist),
+		Build(dist, buildOrRest),
 	}
 }
 
 // Build configures a goreleaser build.
 // https://goreleaser.com/customization/build/
-func Build(dist string) config.Build {
+func Build(dist string, buildOrRest bool) config.Build {
+	if !buildOrRest && dist == ContribDistro {
+		// only return build config for contrib build file
+		return config.Build{
+			ID:      dist,
+			Builder: "prebuilt",
+			PreBuilt: config.PreBuiltOptions{
+				Path: "artifacts/otelcol-contrib_{{ .Os }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}{{ with .Arm }}_{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}/otelcol-contrib{{- if eq .Os \"windows\" }}.exe{{ end }}",
+			},
+			Goos:   []string{"darwin", "linux", "windows"},
+			Goarch: Architectures,
+			Goarm:  ArmVersions(dist),
+			Dir:    "_build",
+			Binary: dist,
+			Ignore: IgnoreBuildCombinations(dist),
+		}
+	}
+
 	var goos []string
 	var archs []string
 	if dist == K8sDistro {
