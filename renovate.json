@@ -78,7 +78,7 @@
         "(^|\\/).github\\/.*\\.ya?ml$"
       ],
       "matchStrings": [
-        "goreleaser\\/goreleaser-action@[\\S\\s]+version: (?<currentValue>.*?)$"
+        "goreleaser\\/goreleaser-action@[\\S\\s]+?version: (?<currentValue>.*?)$"
       ],
       "depNameTemplate": "github.com/goreleaser/goreleaser-pro",
       "datasourceTemplate": "github-releases"
