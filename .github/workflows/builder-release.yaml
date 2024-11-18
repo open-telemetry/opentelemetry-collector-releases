@@ -4,6 +4,10 @@ on:
     tags:
       - "v*"
 
+env:
+  # renovate: datasource=github-tags depName=goreleaser-pro packageName=goreleaser/goreleaser-pro
+  GORELEASER_PRO_VERSION: v2.4.1
+
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
@@ -63,7 +67,7 @@ jobs:
         uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf # v6.1.0
         with:
           distribution: goreleaser-pro
-          version: v2.2.0
+          version: ${{ env.GORELEASER_PRO_VERSION }}
           args: release --clean -f cmd/builder/.goreleaser.yml
         env:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
