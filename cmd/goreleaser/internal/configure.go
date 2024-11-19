@@ -220,7 +220,7 @@ func DockerImage(dist, arch, armVersion string) config.Docker {
 
 	files := make([]string, 0)
 	if _, ok := DefaultConfigDists[dist]; ok {
-		files = append(files, "config.yaml")
+		files = append(files, filepath.Join("distributions", ImageName, "config.yaml"))
 	}
 
 	return config.Docker{
