@@ -118,6 +118,30 @@ archives:
       - otelcol-otlp
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
+  - package_name: otelcol-otlp-pie
+    contents:
+      - src: otelcol-otlp.service
+        dst: /lib/systemd/system/otelcol-otlp.service
+      - src: otelcol-otlp.conf
+        dst: /etc/otelcol-otlp/otelcol-otlp.conf
+        type: config|noreplace
+    scripts:
+      preinstall: preinstall.sh
+      postinstall: postinstall.sh
+      preremove: preremove.sh
+    overrides:
+      rpm:
+        dependencies:
+          - /bin/sh
+    id: otelcol-otlp-pie
+    builds:
+      - otelcol-otlp-pie
+    formats:
+      - deb
+      - rpm
+    maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
+    description: OpenTelemetry Collector - otelcol-otlp
+    license: Apache 2.0
   - package_name: otelcol-otlp
     contents:
       - src: otelcol-otlp.service

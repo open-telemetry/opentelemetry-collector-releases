@@ -209,13 +209,20 @@ func Packages(dist string) (r []config.NFPM) {
 		return []config.NFPM{}
 	}
 	return []config.NFPM{
-		Package(dist),
+		Package(dist, true),
+		Package(dist, false),
 	}
 }
 
 // Package configures goreleaser to build a system package.
 // https://goreleaser.com/customization/nfpm/
-func Package(dist string) config.NFPM {
+func Package(dist string, pie bool) config.NFPM {
+	id := dist
+	build := dist
+	if pie {
+		id = id + "-pie"
+		build = build + "-pie"
+	}
 	nfpmContents := config.NFPMContents{
 		{
 			Source:      fmt.Sprintf("%s.service", dist),
@@ -235,8 +242,8 @@ func Package(dist string) config.NFPM {
 		})
 	}
 	return config.NFPM{
-		ID:      dist,
-		Builds:  []string{dist},
+		ID:      id,
+		Builds:  []string{build},
 		Formats: []string{"deb", "rpm"},
 
 		License:     "Apache 2.0",
@@ -251,7 +258,7 @@ func Package(dist string) config.NFPM {
 		},
 
 		NFPMOverridables: config.NFPMOverridables{
-			PackageName: dist,
+			PackageName: id,
 			Scripts: config.NFPMScripts{
 				PreInstall:  "preinstall.sh",
 				PostInstall: "postinstall.sh",
