@@ -119,7 +119,7 @@ archives:
       - otelcol-contrib
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
-  - package_name: otelcol-contrib
+  - package_name: otelcol-contrib-pie
     contents:
       - src: otelcol-contrib.service
         dst: /lib/systemd/system/otelcol-contrib.service

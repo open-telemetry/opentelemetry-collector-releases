@@ -118,7 +118,7 @@ archives:
       - otelcol-otlp
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
-  - package_name: otelcol-otlp
+  - package_name: otelcol-otlp-pie
     contents:
       - src: otelcol-otlp.service
         dst: /lib/systemd/system/otelcol-otlp.service
