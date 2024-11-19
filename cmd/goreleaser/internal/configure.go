@@ -258,7 +258,7 @@ func Package(dist string, pie bool) config.NFPM {
 		},
 
 		NFPMOverridables: config.NFPMOverridables{
-			PackageName: id,
+			PackageName: dist,
 			Scripts: config.NFPMScripts{
 				PreInstall:  "preinstall.sh",
 				PostInstall: "postinstall.sh",
