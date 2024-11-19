@@ -22,39 +22,49 @@ package internal
 import (
 	"fmt"
 	"path"
+	"path/filepath"
 	"strings"
 
-	"github.com/goreleaser/goreleaser/pkg/config"
-	"github.com/goreleaser/nfpm/v2/files"
+	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
 )
 
-const ArmArch = "arm"
+const (
+	ArmArch    = "arm"
+	CoreDistro = "otelcol"
+	ImageName  = "axoflow-otel-collector"
+)
 
 var (
-	ImagePrefixes = []string{"ghcr.io/axoflow/axoflow-otel-collector"}
-	Architectures = []string{"amd64", "arm64"}
-	ArmVersions   = []string{}
+	ImagePrefixes      = []string{"ghcr.io/axoflow/axoflow-otel-collector"}
+	Architectures      = []string{"amd64", "arm64"}
+	ArmVersions        = []string{}
+	DefaultConfigDists = map[string]bool{ImageName: true}
+	MSIWindowsDists    = map[string]bool{ImageName: true}
 )
 
-func Generate(imagePrefixes []string, dists []string) config.Project {
+func Generate(dist string) config.Project {
 	return config.Project{
 		ProjectName: "axoflow-otel-collector-releases",
 		Checksum: config.Checksum{
-			NameTemplate: "{{ .ProjectName }}_checksums.txt",
+			NameTemplate: fmt.Sprintf("{{ .ProjectName }}_%v_checksums.txt", dist),
 		},
-
-		Builds:          Builds(dists),
-		Archives:        Archives(dists),
-		Dockers:         DockerImages(imagePrefixes, dists),
-		DockerManifests: DockerManifests(imagePrefixes, dists),
+		Builds:          Builds(dist),
+		Archives:        Archives(dist),
+		MSI:             WinPackages(dist),
+		NFPMs:           Packages(dist),
+		Dockers:         DockerImages(dist),
+		DockerManifests: DockerManifests(dist),
+		Version:         2,
+		Monorepo: config.Monorepo{
+			TagPrefix: "v",
+		},
 	}
 }
 
-func Builds(dists []string) (r []config.Build) {
-	for _, dist := range dists {
-		r = append(r, Build(dist))
+func Builds(dist string) []config.Build {
+	return []config.Build{
+		Build(dist),
 	}
-	return
 }
 
 // Build configures a goreleaser build.
@@ -69,17 +79,24 @@ func Build(dist string) config.Build {
 			Flags:   []string{"-trimpath"},
 			Ldflags: []string{"-s", "-w"},
 		},
-		Goos:   []string{"linux"},
+		Goos:   []string{"linux", "windows"},
 		Goarch: Architectures,
 		Goarm:  ArmVersions,
+		Ignore: []config.IgnoredBuild{
+			{Goos: "darwin", Goarch: "386"},
+			{Goos: "darwin", Goarch: "arm"},
+			{Goos: "darwin", Goarch: "s390x"},
+			{Goos: "windows", Goarch: "arm"},
+			{Goos: "windows", Goarch: "arm64"},
+			{Goos: "windows", Goarch: "s390x"},
+		},
 	}
 }
 
-func Archives(dists []string) (r []config.Archive) {
-	for _, dist := range dists {
-		r = append(r, Archive(dist))
+func Archives(dist string) []config.Archive {
+	return []config.Archive{
+		Archive(dist),
 	}
-	return
 }
 
 // Archive configures a goreleaser archive (tarball).
@@ -92,25 +109,70 @@ func Archive(dist string) config.Archive {
 	}
 }
 
-func Packages(dists []string) (r []config.NFPM) {
-	for _, dist := range dists {
-		r = append(r, Package(dist))
+func WinPackages(dist string) []config.MSI {
+	if _, ok := MSIWindowsDists[dist]; !ok {
+		return []config.MSI{}
 	}
-	return
+	return []config.MSI{
+		WinPackage(dist),
+	}
+}
+
+func WinPackage(dist string) config.MSI {
+	files := []string{}
+	if _, ok := DefaultConfigDists[dist]; ok {
+		files = append(files, filepath.Join("distributions", dist, "config.yaml"))
+	}
+	return config.MSI{
+		ID:    dist,
+		Name:  fmt.Sprintf("%s_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}", dist),
+		WXS:   filepath.Join("distributions", dist, "windows-installer.wxs"),
+		Files: files,
+	}
+}
+
+func Packages(dist string) []config.NFPM {
+	return []config.NFPM{
+		Package(dist),
+	}
 }
 
 // Package configures goreleaser to build a system package.
 // https://goreleaser.com/customization/nfpm/
 func Package(dist string) config.NFPM {
+	nfpmContents := config.NFPMContents{
+		{
+			Source:      path.Join("distributions", ImageName, fmt.Sprintf("%s.service", "otelcol-contrib")),
+			Destination: path.Join("/lib", "systemd", "system", fmt.Sprintf("%s.service", dist)),
+		},
+		{
+			Source:      path.Join("distributions", ImageName, fmt.Sprintf("%s.conf", "otelcol-contrib")),
+			Destination: path.Join("/etc", dist, fmt.Sprintf("%s.conf", dist)),
+			Type:        "config|noreplace",
+		},
+	}
+	if _, ok := DefaultConfigDists[dist]; ok {
+		nfpmContents = append(nfpmContents, &config.NFPMContent{
+			Source:      filepath.Join("distributions", ImageName, "config.yaml"),
+			Destination: path.Join("/etc", dist, "config.yaml"),
+			Type:        "config|noreplace",
+		})
+	}
 	return config.NFPM{
 		ID:      dist,
 		Builds:  []string{dist},
-		Formats: []string{"apk", "deb", "rpm"},
+		Formats: []string{"deb", "rpm"},
 
 		License:     "Apache 2.0",
 		Description: fmt.Sprintf("OpenTelemetry Collector - %s", dist),
 		Maintainer:  "The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>",
-
+		Overrides: map[string]config.NFPMOverridables{
+			"rpm": {
+				Dependencies: []string{
+					"/bin/sh",
+				},
+			},
+		},
 		NFPMOverridables: config.NFPMOverridables{
 			PackageName: dist,
 			Scripts: config.NFPMScripts{
@@ -118,48 +180,32 @@ func Package(dist string) config.NFPM {
 				PostInstall: path.Join("distributions", dist, "postinstall.sh"),
 				PreRemove:   path.Join("distributions", dist, "preremove.sh"),
 			},
-			Contents: files.Contents{
-				{
-					Source:      path.Join("distributions", dist, fmt.Sprintf("%s.service", dist)),
-					Destination: path.Join("/lib", "systemd", "system", fmt.Sprintf("%s.service", dist)),
-				},
-				{
-					Source:      path.Join("distributions", dist, fmt.Sprintf("%s.conf", dist)),
-					Destination: path.Join("/etc", dist, fmt.Sprintf("%s.conf", dist)),
-					Type:        "config|noreplace",
-				},
-				{
-					Source:      path.Join("configs", fmt.Sprintf("%s.yaml", dist)),
-					Destination: path.Join("/etc", dist, "config.yaml"),
-					Type:        "config",
-				},
-			},
+			Contents: nfpmContents,
 		},
 	}
 }
 
-func DockerImages(imagePrefixes, dists []string) (r []config.Docker) {
-	for _, dist := range dists {
-		for _, arch := range Architectures {
-			switch arch {
-			case ArmArch:
-				for _, vers := range ArmVersions {
-					r = append(r, DockerImage(imagePrefixes, dist, arch, vers))
-				}
-			default:
-				r = append(r, DockerImage(imagePrefixes, dist, arch, ""))
+func DockerImages(dist string) []config.Docker {
+	r := make([]config.Docker, 0)
+	for _, arch := range Architectures {
+		switch arch {
+		case ArmArch:
+			for _, vers := range ArmVersions {
+				r = append(r, DockerImage(dist, arch, vers))
 			}
+		default:
+			r = append(r, DockerImage(dist, arch, ""))
 		}
 	}
-	return
+	return r
 }
 
 // DockerImage configures goreleaser to build a container image.
 // https://goreleaser.com/customization/docker/
-func DockerImage(imagePrefixes []string, dist, arch, armVersion string) config.Docker {
+func DockerImage(dist, arch, armVersion string) config.Docker {
 	dockerArchName := archName(arch, armVersion)
-	var imageTemplates []string
-	for _, prefix := range imagePrefixes {
+	imageTemplates := make([]string, 0)
+	for _, prefix := range ImagePrefixes {
 		dockerArchTag := strings.ReplaceAll(dockerArchName, "/", "")
 		imageTemplates = append(
 			imageTemplates,
@@ -172,11 +218,15 @@ func DockerImage(imagePrefixes []string, dist, arch, armVersion string) config.D
 		return fmt.Sprintf("--label=org.opencontainers.image.%s={{%s}}", name, template)
 	}
 
+	files := make([]string, 0)
+	if _, ok := DefaultConfigDists[dist]; ok {
+		files = append(files, "config.yaml")
+	}
+
 	return config.Docker{
 		ImageTemplates: imageTemplates,
 		Dockerfile:     path.Join("distributions", dist, "Dockerfile"),
-
-		Use: "buildx",
+		Use:            "buildx",
 		BuildFlagTemplates: []string{
 			"--pull",
 			fmt.Sprintf("--platform=linux/%s", dockerArchName),
@@ -186,21 +236,20 @@ func DockerImage(imagePrefixes []string, dist, arch, armVersion string) config.D
 			label("version", ".Version"),
 			label("source", ".GitURL"),
 		},
-		Files:  []string{path.Join("configs", fmt.Sprintf("%s.yaml", dist))},
+		Files:  files,
 		Goos:   "linux",
 		Goarch: arch,
 		Goarm:  armVersion,
 	}
 }
 
-func DockerManifests(imagePrefixes, dists []string) (r []config.DockerManifest) {
-	for _, dist := range dists {
-		for _, prefix := range imagePrefixes {
-			r = append(r, DockerManifest(prefix, `{{ .Version }}`, dist))
-			r = append(r, DockerManifest(prefix, "latest", dist))
-		}
+func DockerManifests(dist string) []config.DockerManifest {
+	r := make([]config.DockerManifest, 0)
+	for _, prefix := range ImagePrefixes {
+		r = append(r, DockerManifest(prefix, `{{ .Version }}`, dist))
+		r = append(r, DockerManifest(prefix, "latest", dist))
 	}
-	return
+	return r
 }
 
 // DockerManifest configures goreleaser to build a multi-arch container image manifest.
@@ -233,7 +282,7 @@ func DockerManifest(prefix, version, dist string) config.DockerManifest {
 
 // imageName translates a distribution name to a container image name.
 func imageName(dist string) string {
-	return strings.Replace(dist, "otelcol", "axoflow-otel-collector", 1)
+	return strings.Replace(dist, CoreDistro, ImageName, 1)
 }
 
 // archName translates architecture to docker platform names.

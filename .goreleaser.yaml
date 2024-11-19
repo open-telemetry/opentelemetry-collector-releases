@@ -1,70 +1,121 @@
+partial:
+  by: target
+version: 2
 project_name: axoflow-otel-collector-releases
+msi:
+  - id: axoflow-otel-collector
+    name: axoflow-otel-collector_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}
+    wxs: distributions/axoflow-otel-collector/windows-installer.wxs
+    extra_files:
+      - distributions/axoflow-otel-collector/config.yaml
 builds:
-    - id: axoflow-otel-collector
-      goos:
-        - linux
-      goarch:
-        - amd64
-        - arm64
-      dir: distributions/axoflow-otel-collector/_build
-      binary: axoflow-otel-collector
-      ldflags:
-        - -s
-        - -w
-      flags:
-        - -trimpath
-      env:
-        - CGO_ENABLED=0
+  - id: axoflow-otel-collector
+    goos:
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: darwin
+        goarch: "386"
+      - goos: darwin
+        goarch: arm
+      - goos: darwin
+        goarch: s390x
+      - goos: windows
+        goarch: arm
+      - goos: windows
+        goarch: arm64
+      - goos: windows
+        goarch: s390x
+    dir: distributions/axoflow-otel-collector/_build
+    binary: axoflow-otel-collector
+    ldflags:
+      - -s
+      - -w
+    flags:
+      - -trimpath
+    env:
+      - CGO_ENABLED=0
 archives:
-    - id: axoflow-otel-collector
-      builds:
-        - axoflow-otel-collector
-      name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
+  - id: axoflow-otel-collector
+    builds:
+      - axoflow-otel-collector
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
+nfpms:
+  - package_name: axoflow-otel-collector
+    contents:
+      - src: distributions/axoflow-otel-collector/otelcol-contrib.service
+        dst: /lib/systemd/system/axoflow-otel-collector.service
+      - src: distributions/axoflow-otel-collector/otelcol-contrib.conf
+        dst: /etc/axoflow-otel-collector/axoflow-otel-collector.conf
+        type: config|noreplace
+      - src: distributions/axoflow-otel-collector/config.yaml
+        dst: /etc/axoflow-otel-collector/config.yaml
+        type: config|noreplace
+    scripts:
+      preinstall: distributions/axoflow-otel-collector/preinstall.sh
+      postinstall: distributions/axoflow-otel-collector/postinstall.sh
+      preremove: distributions/axoflow-otel-collector/preremove.sh
+    overrides:
+      rpm:
+        dependencies:
+          - /bin/sh
+    id: axoflow-otel-collector
+    builds:
+      - axoflow-otel-collector
+    formats:
+      - deb
+      - rpm
+    maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
+    description: OpenTelemetry Collector - axoflow-otel-collector
+    license: Apache 2.0
 checksum:
-    name_template: '{{ .ProjectName }}_checksums.txt'
+  name_template: '{{ .ProjectName }}_axoflow-otel-collector_checksums.txt'
 dockers:
-    - goos: linux
-      goarch: amd64
-      dockerfile: distributions/axoflow-otel-collector/Dockerfile
-      image_templates:
-        - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-amd64
-        - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-amd64
-      extra_files:
-        - configs/axoflow-otel-collector.yaml
-      build_flag_templates:
-        - --pull
-        - --platform=linux/amd64
-        - --label=org.opencontainers.image.created={{.Date}}
-        - --label=org.opencontainers.image.name={{.ProjectName}}
-        - --label=org.opencontainers.image.revision={{.FullCommit}}
-        - --label=org.opencontainers.image.version={{.Version}}
-        - --label=org.opencontainers.image.source={{.GitURL}}
-      use: buildx
-    - goos: linux
-      goarch: arm64
-      dockerfile: distributions/axoflow-otel-collector/Dockerfile
-      image_templates:
-        - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-arm64
-        - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-arm64
-      extra_files:
-        - configs/axoflow-otel-collector.yaml
-      build_flag_templates:
-        - --pull
-        - --platform=linux/arm64
-        - --label=org.opencontainers.image.created={{.Date}}
-        - --label=org.opencontainers.image.name={{.ProjectName}}
-        - --label=org.opencontainers.image.revision={{.FullCommit}}
-        - --label=org.opencontainers.image.version={{.Version}}
-        - --label=org.opencontainers.image.source={{.GitURL}}
-      use: buildx
+  - goos: linux
+    goarch: amd64
+    dockerfile: distributions/axoflow-otel-collector/Dockerfile
+    image_templates:
+      - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-amd64
+      - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-amd64
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+    use: buildx
+  - goos: linux
+    goarch: arm64
+    dockerfile: distributions/axoflow-otel-collector/Dockerfile
+    image_templates:
+      - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-arm64
+      - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-arm64
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/arm64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+    use: buildx
 docker_manifests:
-    - name_template: ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}
-      image_templates:
-        - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-amd64
-        - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-arm64
-    - name_template: ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest
-      image_templates:
-        - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-amd64
-        - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-arm64
-release:
-  disable: true
+  - name_template: ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}
+    image_templates:
+      - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-amd64
+      - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-arm64
+  - name_template: ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest
+    image_templates:
+      - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-amd64
+      - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-arm64
+monorepo:
+  tag_prefix: v

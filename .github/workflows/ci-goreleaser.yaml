@@ -17,8 +17,9 @@ jobs:
     name: Check GoReleaser Configuration
     strategy:
       matrix:
-        GOOS: [linux]
-    runs-on: ubuntu-20.04
+        GOOS: [linux, windows]
+        GOARCH: [amd64, arm64]
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -31,23 +32,32 @@ jobs:
         with:
           platforms: arm64
 
+      - name: Setup wixl # Required to build MSI packages for Windows
+        if: ${{ matrix.GOOS == 'windows' && ( matrix.GOARCH == 'amd64') }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wixl
+
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '~1.21.7'
+          go-version: '1.23'
           check-latest: true
 
       - name: Generate the sources
         run: make generate-sources
 
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5
+      - name: Run GoReleaser for axoflow-otel-collector
+        uses: goreleaser/goreleaser-action@v6
         with:
-          distribution: goreleaser
-          version: v1.24.0
-          args: --snapshot --clean --skip=sign,sbom --timeout 2h
+          distribution: goreleaser-pro
+          version: v2.3.2
+          workdir: distributions/axoflow-otel-collector
+          args: --snapshot --clean --skip=sign,sbom --timeout 2h --split
         env:
           GOOS: ${{ matrix.GOOS }}
+          GOARCH: ${{ matrix.GOARCH }}
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}

@@ -2,39 +2,49 @@ dist:
   module: github.com/axoflow/axoflow-otel-collector-releases
   name: axoflow-otel-collector
   description: Axoflow Distribution for OpenTelemetry Collector
-  version: 0.98.0
+  version: 0.112.0
   output_path: ./_build
-  otelcol_version: 0.98.0
 
 extensions:
-  - gomod: go.opentelemetry.io/collector/extension/zpagesextension v0.98.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.98.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.98.0
+  - gomod: go.opentelemetry.io/collector/extension/zpagesextension v0.112.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.112.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.112.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/bearertokenauthextension v0.112.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/basicauthextension v0.112.0
 
 exporters:
-  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.98.0
-  - gomod: go.opentelemetry.io/collector/exporter/loggingexporter v0.98.0
-  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.98.0
-  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.98.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.98.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.98.0
-  - gomod: github.com/axoflow/fluentforwardexporter v0.98.0-kubernetes-metadata.1
+  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.112.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.112.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.112.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.112.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.112.0
+  - gomod: github.com/axoflow/fluentforwardexporter v0.112.0
 
 processors:
-  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.98.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.98.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.98.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.98.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.98.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.98.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatocumulativeprocessor v0.98.0
+  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.112.0
+  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.112.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.112.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.112.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.112.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.112.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.112.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatocumulativeprocessor v0.112.0
 
 receivers:
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver v0.98.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver v0.112.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/azureeventhubreceiver v0.112.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/windowseventlogreceiver v0.112.0
 
 connectors:
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/countconnector v0.98.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/routingconnector v0.98.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/countconnector v0.112.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/routingconnector v0.112.0
+
+providers:
+  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.18.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.18.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/httpprovider v1.18.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.18.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.18.0
 
 # When adding a replace, add a comment before it to document why it's needed and when it can be removed
 replaces:
@@ -47,10 +57,11 @@ replaces:
   # see https://github.com/openshift/api/pull/1515
   - github.com/openshift/api => github.com/openshift/api v0.0.0-20230726162818-81f778f3b3ec
   - github.com/IBM/fluent-forward-go => github.com/IBM/fluent-forward-go v0.2.3-0.20240418091724-720f8df4306a
-  - go.opentelemetry.io/collector => github.com/axoflow/opentelemetry-collector v0.98.0
-  - github.com/open-telemetry/opentelemetry-collector-contrib/connector/countconnector =>  github.com/axoflow/opentelemetry-collector-contrib/connector/countconnector v0.98.0-resourceattrs1
-  - go.opentelemetry.io/collector/exporter => github.com/axoflow/opentelemetry-collector/exporter v0.98.0
-  - go.opentelemetry.io/collector/pdata => github.com/axoflow/opentelemetry-collector/pdata v0.98.0
-  - go.opentelemetry.io/collector/receiver => github.com/axoflow/opentelemetry-collector/receiver v0.98.0
-  - github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza => github.com/axoflow/opentelemetry-collector-contrib/pkg/stanza v0.98.0-bytes
-
+  # - go.opentelemetry.io/collector => github.com/axoflow/opentelemetry-collector v0.112.0
+  - github.com/open-telemetry/opentelemetry-collector-contrib/connector/countconnector =>  github.com/axoflow/opentelemetry-collector-contrib/connector/countconnector v0.112.0
+  - go.opentelemetry.io/collector/exporter => github.com/axoflow/opentelemetry-collector/exporter v0.112.0
+  - go.opentelemetry.io/collector/pdata => github.com/axoflow/opentelemetry-collector/pdata v0.112.0
+  - go.opentelemetry.io/collector/receiver => github.com/axoflow/opentelemetry-collector/receiver v0.112.0
+  - go.opentelemetry.io/collector/exporter/exporterhelper/exporterhelperprofiles => github.com/axoflow/opentelemetry-collector/exporter/exporterhelper/exporterhelperprofiles v0.112.0
+  - github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza => github.com/axoflow/opentelemetry-collector-contrib/pkg/stanza v0.112.0
+  - github.com/open-telemetry/opentelemetry-collector-contrib/receiver/azureeventhubreceiver => github.com/axoflow/opentelemetry-collector-contrib/receiver/azureeventhubreceiver v0.112.0

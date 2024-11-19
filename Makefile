@@ -1,7 +1,7 @@
 GO ?= go
 GORELEASER ?= goreleaser
 
-OTELCOL_BUILDER_VERSION ?= 0.98.0
+OTELCOL_BUILDER_VERSION ?= 0.113.0
 OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
 
@@ -11,21 +11,22 @@ ci: check build
 check: ensure-goreleaser-up-to-date
 
 build: go ocb
-	@./scripts/build.sh -d "${DISTRIBUTIONS}" -b ${OTELCOL_BUILDER} -g ${GO}
+	@./scripts/build.sh -d "${DISTRIBUTIONS}" -b ${OTELCOL_BUILDER}
 
 generate: generate-sources generate-goreleaser
 
 generate-goreleaser: go
-	@${GO} run cmd/goreleaser/main.go -d "${DISTRIBUTIONS}" > .goreleaser.yaml
+	chmod +x ./scripts/generate-goreleaser.sh
+	@./scripts/generate-goreleaser.sh -d "${DISTRIBUTIONS}" -g ${GO}
 
 generate-sources: go ocb
-	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER} -g ${GO}
+	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER}
 
 goreleaser-verify: goreleaser
 	@${GORELEASER} release --snapshot --clean
 
 ensure-goreleaser-up-to-date: generate-goreleaser
-	@git diff -s --exit-code .goreleaser.yaml || (echo "Build failed: The goreleaser templates have changed but the .goreleaser.yaml hasn't. Run 'make generate-goreleaser' and update your PR." && exit 0)
+	@git diff -s --exit-code distributions/*/.goreleaser.yaml || (echo "Check failed: The goreleaser templates have changed but the .goreleaser.yamls haven't. Run 'make generate-goreleaser' and update your PR." && exit 1)
 
 .PHONY: ocb
 ocb:
@@ -39,8 +40,8 @@ ifeq (, $(shell command -v ocb 2>/dev/null))
 	[ "$${machine}" != x86_64 ] || machine=amd64 ;\
 	echo "Installing ocb ($${os}/$${machine}) at $(OTELCOL_BUILDER_DIR)";\
 	mkdir -p $(OTELCOL_BUILDER_DIR) ;\
-	curl -sfLo $(OTELCOL_BUILDER) "https://github.com/open-telemetry/opentelemetry-collector/releases/download/cmd%2Fbuilder%2Fv$(OTELCOL_BUILDER_VERSION)/ocb_$(OTELCOL_BUILDER_VERSION)_$${os}_$${machine}" ;\
-	chmod +x $(OTELCOL_BUILDER) ;\
+	CGO_ENABLED=0 go install -trimpath -ldflags="-s -w" go.opentelemetry.io/collector/cmd/builder@v$(OTELCOL_BUILDER_VERSION) ;\
+	mv $$(go env GOPATH)/bin/builder $(OTELCOL_BUILDER) ;\
 	}
 else
 OTELCOL_BUILDER=$(shell command -v ocb)
