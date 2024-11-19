@@ -12,7 +12,7 @@ msi:
       - opentelemetry.ico
       - config.yaml
 builds:
-  - id: otelcol
+  - id: otelcol-pie
     goos:
       - darwin
       - linux

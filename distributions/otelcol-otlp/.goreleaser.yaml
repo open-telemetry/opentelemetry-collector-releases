@@ -11,7 +11,7 @@ msi:
     extra_files:
       - opentelemetry.ico
 builds:
-  - id: otelcol-otlp
+  - id: otelcol-otlp-pie
     goos:
       - darwin
       - linux

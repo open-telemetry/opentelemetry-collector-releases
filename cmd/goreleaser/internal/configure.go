@@ -142,7 +142,7 @@ func Build(dist string, pie bool) config.Build {
 	}
 	ignore = generateIgnored(goos, archs, pie)
 	return config.Build{
-		ID:     dist,
+		ID:     id,
 		Dir:    "_build",
 		Binary: dist,
 		BuildDetails: config.BuildDetails{

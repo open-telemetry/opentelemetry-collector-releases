@@ -5,7 +5,7 @@ project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
 builds:
-  - id: otelcol-k8s
+  - id: otelcol-k8s-pie
     goos:
       - linux
     goarch:
