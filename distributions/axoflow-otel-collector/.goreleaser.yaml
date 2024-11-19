@@ -2,12 +2,16 @@ partial:
   by: target
 version: 2
 project_name: axoflow-otel-collector-releases
+env:
+  - COSIGN_YES=true
+release:
+  disable: "true"
 msi:
   - id: axoflow-otel-collector
     name: axoflow-otel-collector_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}
-    wxs: distributions/axoflow-otel-collector/windows-installer.wxs
+    wxs: windows-installer.wxs
     extra_files:
-      - distributions/axoflow-otel-collector/config.yaml
+      - config.yaml
 builds:
   - id: axoflow-otel-collector
     goos:
@@ -16,6 +20,8 @@ builds:
     goarch:
       - amd64
       - arm64
+    goarm:
+      - "7"
     ignore:
       - goos: darwin
         goarch: "386"
@@ -29,7 +35,7 @@ builds:
         goarch: arm64
       - goos: windows
         goarch: s390x
-    dir: distributions/axoflow-otel-collector/_build
+    dir: _build
     binary: axoflow-otel-collector
     ldflags:
       - -s
@@ -46,18 +52,18 @@ archives:
 nfpms:
   - package_name: axoflow-otel-collector
     contents:
-      - src: distributions/axoflow-otel-collector/otelcol-contrib.service
+      - src: axoflow-otel-collector.service
         dst: /lib/systemd/system/axoflow-otel-collector.service
-      - src: distributions/axoflow-otel-collector/otelcol-contrib.conf
+      - src: axoflow-otel-collector.conf
         dst: /etc/axoflow-otel-collector/axoflow-otel-collector.conf
         type: config|noreplace
-      - src: distributions/axoflow-otel-collector/config.yaml
+      - src: config.yaml
         dst: /etc/axoflow-otel-collector/config.yaml
         type: config|noreplace
     scripts:
-      preinstall: distributions/axoflow-otel-collector/preinstall.sh
-      postinstall: distributions/axoflow-otel-collector/postinstall.sh
-      preremove: distributions/axoflow-otel-collector/preremove.sh
+      preinstall: preinstall.sh
+      postinstall: postinstall.sh
+      preremove: preremove.sh
     overrides:
       rpm:
         dependencies:
@@ -76,12 +82,12 @@ checksum:
 dockers:
   - goos: linux
     goarch: amd64
-    dockerfile: distributions/axoflow-otel-collector/Dockerfile
+    dockerfile: Dockerfile
     image_templates:
       - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-amd64
       - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-amd64
     extra_files:
-      - distributions/axoflow-otel-collector/config.yaml
+      - config.yaml
     build_flag_templates:
       - --pull
       - --platform=linux/amd64
@@ -93,12 +99,12 @@ dockers:
     use: buildx
   - goos: linux
     goarch: arm64
-    dockerfile: distributions/axoflow-otel-collector/Dockerfile
+    dockerfile: Dockerfile
     image_templates:
       - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-arm64
       - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-arm64
     extra_files:
-      - distributions/axoflow-otel-collector/config.yaml
+      - config.yaml
     build_flag_templates:
       - --pull
       - --platform=linux/arm64
@@ -117,5 +123,27 @@ docker_manifests:
     image_templates:
       - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-amd64
       - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-arm64
+signs:
+  - cmd: cosign
+    args:
+      - sign-blob
+      - --output-signature
+      - ${artifact}.sig
+      - --output-certificate
+      - ${artifact}.pem
+      - ${artifact}
+    signature: ${artifact}.sig
+    artifacts: all
+    certificate: ${artifact}.pem
+docker_signs:
+  - args:
+      - sign
+      - ${artifact}
+    artifacts: all
+sboms:
+  - id: archive
+    artifacts: archive
+  - id: package
+    artifacts: package
 monorepo:
   tag_prefix: v

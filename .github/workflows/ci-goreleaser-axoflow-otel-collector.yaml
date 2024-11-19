@@ -1,0 +1,41 @@
+name: Continuous Integration - Axoflow Otel Collector - GoReleaser
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "distributions/axoflow-otel-collector/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
+  pull_request:
+    branches: [main]
+    paths:
+      - "distributions/axoflow-otel-collector/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
+
+jobs:
+  check-goreleaser:
+    name: Continuous Integration - Axoflow Otel Collector - GoReleaser
+    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    with:
+      distribution: axoflow-otel-collector
+      goos: '[ "linux", "windows" ]'
+      goarch: '[ "amd64", "arm64" ]'
+    secrets: inherit
+
+  package-tests:
+     name: Package tests
+     needs: check-goreleaser
+     uses: ./.github/workflows/package-tests.yaml
+     with:
+       distribution: axoflow-otel-collector
+       type: '[ "deb", "rpm" ]'

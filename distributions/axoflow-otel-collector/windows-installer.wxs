@@ -49,7 +49,7 @@
                   <File
                      Id="config.yaml"
                      Name="config.yaml"
-                     Source="distributions/axoflow-otel-collector/config.yaml"/>
+                     Source="config.yaml"/>
 
                   <ServiceInstall
                      Id="Sevice"

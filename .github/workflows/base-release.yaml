@@ -1,0 +1,209 @@
+name: Reusable release workflow
+
+on:
+  workflow_call:
+    inputs:
+      distribution:
+        required: true
+        type: string
+      goos:
+        required: true
+        type: string
+      goarch:
+        required: true
+        type: string
+
+env:
+  GORELEASER_PRO_VERSION: v2.4.1
+
+jobs:
+  prepare:
+    strategy:
+      matrix:
+        GOOS: ${{ fromJSON( inputs.goos) }}
+        GOARCH: ${{ fromJSON( inputs.goarch) }}
+        exclude:
+          - GOOS: darwin
+            GOARCH: "386"
+          - GOOS: darwin
+            GOARCH: s390x
+          - GOOS: windows
+            GOARCH: arm64
+          - GOOS: darwin
+            GOARCH: arm
+          - GOOS: windows
+            GOARCH: arm
+          - GOOS: windows
+            GOARCH: s390x
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Download Syft
+        uses: anchore/sbom-action/download-syft@v0
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64,linux/arm/v7
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          check-latest: true
+
+      - name: Setup wixl # Required to build MSI packages for Windows
+        if: ${{ matrix.GOOS == 'windows' && matrix.GOARCH == 'amd64' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wixl
+
+      - name: Generate distribution sources
+        run: make generate-sources
+
+      - name: Login to GitHub Package Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set SHA short
+        shell: bash
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Run GoReleaser for ${{ inputs.distribution }}
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser-pro
+          version: ${{ env.GORELEASER_PRO_VERSION }}
+          workdir: distributions/${{ inputs.distribution }}
+          args: release --clean --split --timeout 2h
+        env:
+          GOOS: ${{ matrix.GOOS }}
+          GOARCH: ${{ matrix.GOARCH }}
+          GOARM: 7
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COSIGN_YES: true
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-${{ inputs.distribution }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
+          path: distributions/${{ inputs.distribution }}/dist/**/*
+          if-no-files-found: error
+
+  release:
+    name: ${{ inputs.distribution }} Release
+    runs-on: ubuntu-24.04
+    needs: prepare
+
+    permissions:
+      id-token: write
+      packages: write
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Download Syft
+        uses: anchore/sbom-action/download-syft@v0
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          check-latest: true
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: artifacts-${{ inputs.distribution }}-*
+          path: distributions/${{ inputs.distribution }}/dist
+          merge-multiple: true
+
+      - name: Display structure of downloaded files
+        run: ls -R distributions/${{ inputs.distribution }}/dist
+
+      - name: Login to GitHub Package Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run GoReleaser for ${{ inputs.distribution }}
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser-pro
+          version: ${{ env.GORELEASER_PRO_VERSION }}
+          workdir: distributions/${{ inputs.distribution }}
+          args: continue --merge --timeout 2h
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COSIGN_YES: true
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-${{ inputs.distribution }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
+          path: distributions/${{ inputs.distribution }}/dist/**/*
+          if-no-files-found: error
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Extract Docker image with digest
+        id: image-with-digest
+        shell: bash
+        run: |
+         echo '${{ steps.goreleaser-action.outputs.artifacts }}' >> output-artifacts.json
+         DOCKER_IMAGE=$(jq -r '.[] | select(.type == "Docker Manifest" and (.path | test(":[0-9]+"))) | "\(.path)@\(.extra.Digest)"' ./output-artifacts.json)
+         echo "DOCKER_IMAGE=$DOCKER_IMAGE" >> "$GITHUB_OUTPUT"
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.17.0
+        with:
+          image-ref: ${{ steps.image-with-digest.outputs.DOCKER_IMAGE }}
+          format: sarif
+          output: trivy-results.sarif
+
+      - name: Upload Trivy scan results as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "[${{ github.job }}] Trivy scan results"
+          path: trivy-results.sarif
+          retention-days: 5
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif

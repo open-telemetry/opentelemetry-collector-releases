@@ -9,38 +9,11 @@ extensions:
     endpoint: 0.0.0.0:55679
 
 receivers:
-  otlp:
-    protocols:
-      grpc:
-        endpoint: 0.0.0.0:4317
-      http:
-        endpoint: 0.0.0.0:4318
-
-  opencensus:
-    endpoint: 0.0.0.0:55678
-
-  # Collect own metrics
-  prometheus:
-    config:
-      scrape_configs:
-      - job_name: 'otel-collector'
-        scrape_interval: 10s
-        static_configs:
-        - targets: ['0.0.0.0:8888']
-
-  jaeger:
-    protocols:
-      grpc:
-        endpoint: 0.0.0.0:14250
-      thrift_binary:
-        endpoint: 0.0.0.0:6832
-      thrift_compact:
-        endpoint: 0.0.0.0:6831
-      thrift_http:
-        endpoint: 0.0.0.0:14268
-
-  zipkin:
-    endpoint: 0.0.0.0:9411
+  filelog:
+    exclude:
+      - /var/log/pods/*/otc-container/*.log
+    include:
+      - /var/log/pods/*/*/*.log
 
 processors:
   batch:
@@ -50,21 +23,9 @@ exporters:
     verbosity: detailed
 
 service:
-
   pipelines:
-
-    traces:
-      receivers: [otlp, opencensus, jaeger, zipkin]
-      processors: [batch]
-      exporters: [debug]
-
-    metrics:
-      receivers: [otlp, opencensus, prometheus]
-      processors: [batch]
-      exporters: [debug]
-
     logs:
-      receivers: [otlp]
+      receivers: [filelog]
       processors: [batch]
       exporters: [debug]
 

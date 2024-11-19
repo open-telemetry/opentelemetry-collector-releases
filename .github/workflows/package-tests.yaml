@@ -1,0 +1,32 @@
+name: Package Tests
+
+on:
+  workflow_call:
+    inputs:
+      type:
+        required: true
+        type: string
+      distribution:
+        required: true
+        type: string
+
+jobs:
+  package-tests:
+    name: Package Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        type: ${{ fromJSON(inputs.type) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download built artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-packages
+
+      - name: Test ${{ matrix.type }} package
+        run: |
+          chmod +x ./scripts/package-tests/package-tests.sh
+          ./scripts/package-tests/package-tests.sh ./axoflow-otel-collector*-SNAPSHOT-*_linux_amd64.${{ matrix.type }} ${{ inputs.distribution }}

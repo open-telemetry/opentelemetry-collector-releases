@@ -1,0 +1,88 @@
+name: Reusable GoReleaser CI workflow
+
+on:
+  workflow_call:
+    inputs:
+      distribution:
+        required: true
+        type: string
+      goos:
+        required: true
+        type: string
+      goarch:
+        required: true
+        type: string
+
+env:
+  GORELEASER_PRO_VERSION: v2.4.1
+
+jobs:
+  check-goreleaser:
+    strategy:
+      matrix:
+        GOOS: ${{ fromJSON( inputs.goos) }}
+        GOARCH: ${{ fromJSON( inputs.goarch) }}
+        exclude:
+          - GOOS: darwin
+            GOARCH: "386"
+          - GOOS: darwin
+            GOARCH: s390x
+          - GOOS: windows
+            GOARCH: arm64
+          - GOOS: darwin
+            GOARCH: arm
+          - GOOS: windows
+            GOARCH: arm
+          - GOOS: windows
+            GOARCH: s390x
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64,linux/arm/v7
+
+      - name: Setup wixl # Required to build MSI packages for Windows
+        if: ${{ matrix.GOOS == 'windows' && matrix.GOARCH == 'amd64' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wixl
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          check-latest: true
+
+      - name: Generate the sources
+        run: make generate-sources
+
+      - name: Run GoReleaser for ${{ inputs.distribution }}
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser-pro
+          version: ${{ env.GORELEASER_PRO_VERSION }}
+          workdir: distributions/${{ inputs.distribution }}
+          args: --snapshot --clean --skip=sign,sbom --timeout 2h --split
+        env:
+          GOOS: ${{ matrix.GOOS }}
+          GOARCH: ${{ matrix.GOARCH }}
+          GOARM: 7
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+
+      - name: Upload linux service packages
+        if: ${{ matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-packages
+          path: distributions/${{ inputs.distribution }}/dist/linux_amd64_v1/*
+          if-no-files-found: error

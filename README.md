@@ -4,7 +4,7 @@ This repository assembles Axoflow Distribution for OpenTelemetry Collector.
 
 The distribution contains:
 
-- Binaries for linux_amd64 and linux_arm64
+- Binaries for linux_amd64, linux_arm64 and windows_amd64
 - Multi-arch container images (at least amd64 and arm64)
 
 ## Learn more

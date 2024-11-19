@@ -1,0 +1,16 @@
+name: Release Axoflow Otel Collector
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    name: Release Axoflow Otel Collector
+    uses: ./.github/workflows/base-release.yaml
+    with:
+      distribution: axoflow-otel-collector
+      goos: '[ "linux", "windows" ]'
+      goarch: '[ "amd64", "arm64" ]'
+    secrets: inherit
+    permissions: write-all

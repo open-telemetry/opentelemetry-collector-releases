@@ -22,7 +22,6 @@ package internal
 import (
 	"fmt"
 	"path"
-	"path/filepath"
 	"strings"
 
 	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
@@ -37,7 +36,7 @@ const (
 var (
 	ImagePrefixes      = []string{"ghcr.io/axoflow/axoflow-otel-collector"}
 	Architectures      = []string{"amd64", "arm64"}
-	ArmVersions        = []string{}
+	ArmVersions        = []string{"7"}
 	DefaultConfigDists = map[string]bool{ImageName: true}
 	MSIWindowsDists    = map[string]bool{ImageName: true}
 )
@@ -48,15 +47,22 @@ func Generate(dist string) config.Project {
 		Checksum: config.Checksum{
 			NameTemplate: fmt.Sprintf("{{ .ProjectName }}_%v_checksums.txt", dist),
 		},
+		Env:             []string{"COSIGN_YES=true"},
 		Builds:          Builds(dist),
 		Archives:        Archives(dist),
 		MSI:             WinPackages(dist),
 		NFPMs:           Packages(dist),
 		Dockers:         DockerImages(dist),
 		DockerManifests: DockerManifests(dist),
+		Signs:           Sign(),
+		DockerSigns:     DockerSigns(),
+		SBOMs:           SBOM(),
 		Version:         2,
 		Monorepo: config.Monorepo{
 			TagPrefix: "v",
+		},
+		Release: config.Release{
+			Disable: "true",
 		},
 	}
 }
@@ -72,7 +78,7 @@ func Builds(dist string) []config.Build {
 func Build(dist string) config.Build {
 	return config.Build{
 		ID:     dist,
-		Dir:    path.Join("distributions", dist, "_build"),
+		Dir:    "_build",
 		Binary: dist,
 		BuildDetails: config.BuildDetails{
 			Env:     []string{"CGO_ENABLED=0"},
@@ -121,12 +127,12 @@ func WinPackages(dist string) []config.MSI {
 func WinPackage(dist string) config.MSI {
 	files := []string{}
 	if _, ok := DefaultConfigDists[dist]; ok {
-		files = append(files, filepath.Join("distributions", dist, "config.yaml"))
+		files = append(files, "config.yaml")
 	}
 	return config.MSI{
 		ID:    dist,
 		Name:  fmt.Sprintf("%s_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}", dist),
-		WXS:   filepath.Join("distributions", dist, "windows-installer.wxs"),
+		WXS:   "windows-installer.wxs",
 		Files: files,
 	}
 }
@@ -142,18 +148,18 @@ func Packages(dist string) []config.NFPM {
 func Package(dist string) config.NFPM {
 	nfpmContents := config.NFPMContents{
 		{
-			Source:      path.Join("distributions", ImageName, fmt.Sprintf("%s.service", "otelcol-contrib")),
+			Source:      fmt.Sprintf("%s.service", ImageName),
 			Destination: path.Join("/lib", "systemd", "system", fmt.Sprintf("%s.service", dist)),
 		},
 		{
-			Source:      path.Join("distributions", ImageName, fmt.Sprintf("%s.conf", "otelcol-contrib")),
+			Source:      fmt.Sprintf("%s.conf", ImageName),
 			Destination: path.Join("/etc", dist, fmt.Sprintf("%s.conf", dist)),
 			Type:        "config|noreplace",
 		},
 	}
 	if _, ok := DefaultConfigDists[dist]; ok {
 		nfpmContents = append(nfpmContents, &config.NFPMContent{
-			Source:      filepath.Join("distributions", ImageName, "config.yaml"),
+			Source:      "config.yaml",
 			Destination: path.Join("/etc", dist, "config.yaml"),
 			Type:        "config|noreplace",
 		})
@@ -176,9 +182,9 @@ func Package(dist string) config.NFPM {
 		NFPMOverridables: config.NFPMOverridables{
 			PackageName: dist,
 			Scripts: config.NFPMScripts{
-				PreInstall:  path.Join("distributions", dist, "preinstall.sh"),
-				PostInstall: path.Join("distributions", dist, "postinstall.sh"),
-				PreRemove:   path.Join("distributions", dist, "preremove.sh"),
+				PreInstall:  "preinstall.sh",
+				PostInstall: "postinstall.sh",
+				PreRemove:   "preremove.sh",
 			},
 			Contents: nfpmContents,
 		},
@@ -220,12 +226,12 @@ func DockerImage(dist, arch, armVersion string) config.Docker {
 
 	files := make([]string, 0)
 	if _, ok := DefaultConfigDists[dist]; ok {
-		files = append(files, filepath.Join("distributions", ImageName, "config.yaml"))
+		files = append(files, "config.yaml")
 	}
 
 	return config.Docker{
 		ImageTemplates: imageTemplates,
-		Dockerfile:     path.Join("distributions", dist, "Dockerfile"),
+		Dockerfile:     "Dockerfile",
 		Use:            "buildx",
 		BuildFlagTemplates: []string{
 			"--pull",
@@ -282,7 +288,7 @@ func DockerManifest(prefix, version, dist string) config.DockerManifest {
 
 // imageName translates a distribution name to a container image name.
 func imageName(dist string) string {
-	return strings.Replace(dist, CoreDistro, ImageName, 1)
+	return strings.Replace(dist, CoreDistro, dist, 1)
 }
 
 // archName translates architecture to docker platform names.
@@ -292,5 +298,49 @@ func archName(arch, armVersion string) string {
 		return fmt.Sprintf("%s/v%s", arch, armVersion)
 	default:
 		return arch
+	}
+}
+
+func Sign() []config.Sign {
+	return []config.Sign{
+		{
+			Artifacts:   "all",
+			Signature:   "${artifact}.sig",
+			Certificate: "${artifact}.pem",
+			Cmd:         "cosign",
+			Args: []string{
+				"sign-blob",
+				"--output-signature",
+				"${artifact}.sig",
+				"--output-certificate",
+				"${artifact}.pem",
+				"${artifact}",
+			},
+		},
+	}
+}
+
+func DockerSigns() []config.Sign {
+	return []config.Sign{
+		{
+			Artifacts: "all",
+			Args: []string{
+				"sign",
+				"${artifact}",
+			},
+		},
+	}
+}
+
+func SBOM() []config.SBOM {
+	return []config.SBOM{
+		{
+			ID:        "archive",
+			Artifacts: "archive",
+		},
+		{
+			ID:        "package",
+			Artifacts: "package",
+		},
 	}
 }
