@@ -18,26 +18,37 @@ import (
 	"flag"
 	"log"
 	"os"
-	"strings"
 
 	"gopkg.in/yaml.v3"
 
 	"github.com/open-telemetry/opentelemetry-collector-releases/cmd/goreleaser/internal"
 )
 
-var distsFlag = flag.String("d", "", "Collector distributions(s) to build, comma-separated")
+var distFlag = flag.String("d", "", "Collector distributions to build")
 
 func main() {
 	flag.Parse()
 
-	if len(*distsFlag) == 0 {
-		log.Fatal("no distributions to build")
+	if len(*distFlag) == 0 {
+		log.Fatal("no distribution to build")
 	}
-	dists := strings.Split(*distsFlag, ",")
 
-	project := internal.Generate(internal.ImagePrefixes, dists)
+	project := internal.Generate(*distFlag)
 
-	if err := yaml.NewEncoder(os.Stdout).Encode(&project); err != nil {
+	partial := map[string]any{
+		"partial": map[string]any{
+			"by": "target",
+		},
+	}
+	e := yaml.NewEncoder(os.Stdout)
+	e.SetIndent(2)
+	if err := e.Encode(partial); err != nil {
+		log.Fatal(err)
+	}
+
+	e = yaml.NewEncoder(os.Stdout)
+	e.SetIndent(2)
+	if err := e.Encode(&project); err != nil {
 		log.Fatal(err)
 	}
 }

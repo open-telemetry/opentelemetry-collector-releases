@@ -1,4 +1,4 @@
-FROM alpine:3.16 as certs
+FROM alpine:3.20 as certs
 RUN apk --update add ca-certificates
 
 FROM scratch
@@ -11,4 +11,4 @@ COPY --chmod=755 axoflow-otel-collector /axoflow-otel-collector
 COPY configs/axoflow-otel-collector.yaml /etc/axoflow-otel-collector/config.yaml
 ENTRYPOINT ["/axoflow-otel-collector"]
 CMD ["--config", "/etc/axoflow-otel-collector/config.yaml"]
-EXPOSE 4317 55678 55679
+EXPOSE 4317 4318 55678 55679
