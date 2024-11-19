@@ -119,33 +119,6 @@ archives:
       - otelcol-contrib
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
-  - package_name: otelcol-contrib-pie
-    contents:
-      - src: otelcol-contrib.service
-        dst: /lib/systemd/system/otelcol-contrib.service
-      - src: otelcol-contrib.conf
-        dst: /etc/otelcol-contrib/otelcol-contrib.conf
-        type: config|noreplace
-      - src: config.yaml
-        dst: /etc/otelcol-contrib/config.yaml
-        type: config|noreplace
-    scripts:
-      preinstall: preinstall.sh
-      postinstall: postinstall.sh
-      preremove: preremove.sh
-    overrides:
-      rpm:
-        dependencies:
-          - /bin/sh
-    id: otelcol-contrib-pie
-    builds:
-      - otelcol-contrib-pie
-    formats:
-      - deb
-      - rpm
-    maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
-    description: OpenTelemetry Collector - otelcol-contrib
-    license: Apache 2.0
   - package_name: otelcol-contrib
     contents:
       - src: otelcol-contrib.service
