@@ -137,36 +137,10 @@ nfpms:
       rpm:
         dependencies:
           - /bin/sh
-    id: otelcol-pie
-    builds:
-      - otelcol-pie
-    formats:
-      - deb
-      - rpm
-    maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
-    description: OpenTelemetry Collector - otelcol
-    license: Apache 2.0
-  - package_name: otelcol
-    contents:
-      - src: otelcol.service
-        dst: /lib/systemd/system/otelcol.service
-      - src: otelcol.conf
-        dst: /etc/otelcol/otelcol.conf
-        type: config|noreplace
-      - src: config.yaml
-        dst: /etc/otelcol/config.yaml
-        type: config|noreplace
-    scripts:
-      preinstall: preinstall.sh
-      postinstall: postinstall.sh
-      preremove: preremove.sh
-    overrides:
-      rpm:
-        dependencies:
-          - /bin/sh
     id: otelcol
     builds:
       - otelcol
+      - otelcol-pie
     formats:
       - deb
       - rpm
