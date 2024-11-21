@@ -109,14 +109,11 @@ func Build(dist string, buildOrRest bool) config.Build {
 		}
 	}
 
-	var goos []string
-	var archs []string
+	goos := []string{"darwin", "linux", "windows"}
+	archs := Architectures
 	if dist == K8sDistro {
 		goos = K8sGoos
 		archs = K8sArchs
-	} else {
-		goos = []string{"darwin", "linux", "windows"}
-		archs = Architectures
 	}
 	return config.Build{
 		ID:     dist,
@@ -136,7 +133,7 @@ func Build(dist string, buildOrRest bool) config.Build {
 
 func IgnoreBuildCombinations(dist string) []config.IgnoredBuild {
 	if dist == K8sDistro {
-		return make([]config.IgnoredBuild, 0)
+		return nil
 	}
 	return []config.IgnoredBuild{
 		{Goos: "darwin", Goarch: "386"},
@@ -150,12 +147,12 @@ func IgnoreBuildCombinations(dist string) []config.IgnoredBuild {
 
 func ArmVersions(dist string) []string {
 	if dist == K8sDistro {
-		return make([]string, 0)
+		return nil
 	}
 	return []string{"7"}
 }
 
-func Archives(dist string) (r []config.Archive) {
+func Archives(dist string) []config.Archive {
 	return []config.Archive{
 		Archive(dist),
 	}
@@ -173,7 +170,7 @@ func Archive(dist string) config.Archive {
 
 func WinPackages(dist string) []config.MSI {
 	if _, ok := MSIWindowsDists[dist]; !ok {
-		return []config.MSI{}
+		return nil
 	}
 	return []config.MSI{
 		WinPackage(dist),
@@ -195,9 +192,9 @@ func WinPackage(dist string) config.MSI {
 	}
 }
 
-func Packages(dist string) (r []config.NFPM) {
+func Packages(dist string) []config.NFPM {
 	if dist == K8sDistro {
-		return []config.NFPM{}
+		return nil
 	}
 	return []config.NFPM{
 		Package(dist),
@@ -226,21 +223,17 @@ func Package(dist string) config.NFPM {
 		})
 	}
 	return config.NFPM{
-		ID:      dist,
-		Builds:  []string{dist},
-		Formats: []string{"deb", "rpm"},
-
+		ID:          dist,
+		Builds:      []string{dist},
+		Formats:     []string{"deb", "rpm"},
 		License:     "Apache 2.0",
 		Description: fmt.Sprintf("OpenTelemetry Collector - %s", dist),
 		Maintainer:  "The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>",
 		Overrides: map[string]config.NFPMOverridables{
 			"rpm": {
-				Dependencies: []string{
-					"/bin/sh",
-				},
+				Dependencies: []string{"/bin/sh"},
 			},
 		},
-
 		NFPMOverridables: config.NFPMOverridables{
 			PackageName: dist,
 			Scripts: config.NFPMScripts{
@@ -254,12 +247,10 @@ func Package(dist string) config.NFPM {
 }
 
 func DockerImages(dist string) []config.Docker {
-	r := make([]config.Docker, 0)
+	var r []config.Docker
 	for _, arch := range Architectures {
-		if dist == K8sDistro {
-			if _, ok := K8sDockerSkipArchs[arch]; ok {
-				continue
-			}
+		if dist == K8sDistro && K8sDockerSkipArchs[arch] {
+			continue
 		}
 		switch arch {
 		case ArmArch:
