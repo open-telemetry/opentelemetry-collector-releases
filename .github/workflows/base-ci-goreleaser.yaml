@@ -54,7 +54,7 @@ jobs:
           platforms: arm64,ppc64le,linux/arm/v7,s390x
 
       - name: Setup wixl # Required to build MSI packages for Windows
-        if: ${{ matrix.GOOS == 'windows' && ( matrix.GOARCH == '386' || matrix.GOARCH == 'amd64') }}
+        if: matrix.GOOS == 'windows' && ( matrix.GOARCH == '386' || matrix.GOARCH == 'amd64')
         run: |
           sudo apt-get update
           sudo apt-get install -y wixl
@@ -74,18 +74,27 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          run_id=$(gh run list --branch main --workflow build-and-test --repo open-telemetry/opentelemetry-collector-contrib --limit 1 --status success --json databaseId --jq '.[0].databaseId')
+          run_id=$(gh run list \
+            --branch main \
+            --workflow build-and-test \
+            --repo open-telemetry/opentelemetry-collector-contrib \
+            --limit 1 \
+            --status success \
+            --json databaseId \
+            --jq '.[0].databaseId' \
+          )
+          echo "Found run ID: $run_id"
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
 
-      - name: Create artifacts directory to store prebuilt artifacts
+      - name: Create artifacts directory to store build artifacts
         run: mkdir -p distributions/otelcol-contrib/artifacts
 
       - name: Create sub-directory for otelcol-contrib nightly build
-        if: ${{ inputs.distribution == 'otelcol-contrib' && inputs.latest == true }}
+        if: inputs.distribution == 'otelcol-contrib' && inputs.latest == true && matrix.GOARCH == 'amd64' && matrix.GOOS == 'linux'
         run: mkdir -p distributions/otelcol-contrib/artifacts/otelcol-contrib_linux_amd64_v1
 
       - name: Download built otelcol-contrib artifact from contrib repo
-        if: inputs.latest == true
+        if: inputs.latest == true && matrix.GOARCH == 'amd64' && matrix.GOOS == 'linux'
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: collector-binaries-linux-amd64
@@ -104,7 +113,7 @@ jobs:
         run: make generate-sources
 
       - name: Run split GoReleaser build for otelcol-contrib
-        if: ${{ inputs.distribution == 'otelcol-contrib' && inputs.latest != true }}
+        if: inputs.distribution == 'otelcol-contrib' && inputs.latest != true
         uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6.0.0
         with:
           distribution: goreleaser-pro
@@ -118,10 +127,10 @@ jobs:
           GOAMD64: v1
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
-      - if: ${{ inputs.distribution == 'otelcol-contrib' && inputs.latest != true }}
+      - if: inputs.distribution == 'otelcol-contrib' && inputs.latest != true
         run: mv distributions/otelcol-contrib/dist/**/* distributions/otelcol-contrib/artifacts/
 
-      - if: ${{ inputs.distribution == 'otelcol-contrib' }}
+      - if: inputs.distribution == 'otelcol-contrib'
         run: ls -laR distributions/otelcol-contrib/artifacts
 
       - name: Run GoReleaser for ${{ inputs.distribution }}
@@ -138,7 +147,7 @@ jobs:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
       - name: Upload linux service packages
-        if: ${{ matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' }}
+        if: matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64'
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: linux-packages
