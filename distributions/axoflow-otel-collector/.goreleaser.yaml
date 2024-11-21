@@ -17,10 +17,6 @@ builds:
       - windows
     goarch:
       - amd64
-      - arm64
-    ignore:
-      - goos: windows
-        goarch: arm64
     dir: _build
     binary: axoflow-otel-collector
     ldflags:
@@ -84,33 +80,13 @@ dockers:
       - --label=org.opencontainers.image.source={{.GitURL}}
       - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
-  - goos: linux
-    goarch: arm64
-    dockerfile: Dockerfile
-    image_templates:
-      - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-arm64
-      - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-arm64
-    extra_files:
-      - config.yaml
-    build_flag_templates:
-      - --pull
-      - --platform=linux/arm64
-      - --label=org.opencontainers.image.created={{.Date}}
-      - --label=org.opencontainers.image.name={{.ProjectName}}
-      - --label=org.opencontainers.image.revision={{.FullCommit}}
-      - --label=org.opencontainers.image.version={{.Version}}
-      - --label=org.opencontainers.image.source={{.GitURL}}
-      - --label=org.opencontainers.image.licenses=Apache-2.0
-    use: buildx
 docker_manifests:
   - name_template: ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}
     image_templates:
       - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-amd64
-      - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}-arm64
   - name_template: ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest
     image_templates:
       - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-amd64
-      - ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:latest-arm64
 signs:
   - cmd: cosign
     args:

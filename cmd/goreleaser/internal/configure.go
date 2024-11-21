@@ -35,7 +35,7 @@ const (
 
 var (
 	ImagePrefixes      = []string{"ghcr.io/axoflow/axoflow-otel-collector"}
-	Architectures      = []string{"amd64", "arm64"}
+	Architectures      = []string{"amd64"}
 	Goos               = []string{"linux", "windows"}
 	DefaultConfigDists = map[string]bool{ImageName: true}
 	MSIWindowsDists    = map[string]bool{ImageName: true}
@@ -90,9 +90,6 @@ func Build(dist string) config.Build {
 		},
 		Goos:   Goos,
 		Goarch: Architectures,
-		Ignore: []config.IgnoredBuild{
-			{Goos: "windows", Goarch: "arm64"},
-		},
 	}
 }
 

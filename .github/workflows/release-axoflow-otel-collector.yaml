@@ -11,6 +11,6 @@ jobs:
     with:
       distribution: axoflow-otel-collector
       goos: '[ "linux", "windows" ]'
-      goarch: '[ "amd64", "arm64" ]'
+      goarch: '[ "amd64" ]'
     secrets: inherit
     permissions: write-all
