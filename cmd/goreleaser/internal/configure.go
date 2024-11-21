@@ -65,7 +65,7 @@ func Generate(dist string) config.Project {
 			By: "target",
 		},
 		Release: config.Release{
-			Disable: "true",
+			ReplaceExistingArtifacts: true,
 		},
 	}
 }
