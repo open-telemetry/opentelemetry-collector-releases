@@ -1,16 +1,6 @@
 name: Nightly Package Tests - Contrib - GoReleaser
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - "distributions/otelcol-contrib/**"
-      - "cmd/**"
-      - ".github/**"
-      - "scripts/**"
-      - "Makefile"
-      - "go.mod"
-      - "go.sum"
   schedule:
     - cron: "0 2 * * *" # every day at 2am UTC
 
