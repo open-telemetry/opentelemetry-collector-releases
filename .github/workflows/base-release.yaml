@@ -22,6 +22,9 @@ jobs:
       matrix:
         GOOS: ${{ fromJSON( inputs.goos) }}
         GOARCH: ${{ fromJSON( inputs.goarch) }}
+        exclude:
+          - GOOS: windows
+            GOARCH: arm64
     runs-on: ubuntu-24.04
 
     steps:
