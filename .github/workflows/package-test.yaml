@@ -1,4 +1,4 @@
-name: Nightly Package Tests - Contrib - GoReleaser
+name: Package Tests - Contrib
 
 on:
   schedule:
