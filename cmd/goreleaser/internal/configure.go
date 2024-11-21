@@ -29,6 +29,7 @@ import (
 
 const (
 	ArmArch    = "arm"
+	Arm64Arch  = "arm64"
 	CoreDistro = "otelcol"
 	ImageName  = "axoflow-otel-collector"
 )
@@ -36,6 +37,7 @@ const (
 var (
 	ImagePrefixes      = []string{"ghcr.io/axoflow/axoflow-otel-collector"}
 	Architectures      = []string{"amd64", "arm64"}
+	Arm64Versions      = []string{"v8.0"}
 	Goos               = []string{"linux", "windows"}
 	DefaultConfigDists = map[string]bool{ImageName: true}
 	MSIWindowsDists    = map[string]bool{ImageName: true}
@@ -88,8 +90,9 @@ func Build(dist string) config.Build {
 			Flags:   []string{"-trimpath"},
 			Ldflags: []string{"-s", "-w"},
 		},
-		Goos:   Goos,
-		Goarch: Architectures,
+		Goos:    Goos,
+		Goarch:  Architectures,
+		Goarm64: Arm64Versions,
 		Ignore: []config.IgnoredBuild{
 			{Goos: "windows", Goarch: "arm64"},
 		},
@@ -256,10 +259,21 @@ func DockerManifests(dist string) []config.DockerManifest {
 func DockerManifest(prefix, version, dist string) config.DockerManifest {
 	var imageTemplates []string
 	for _, arch := range Architectures {
-		imageTemplates = append(
-			imageTemplates,
-			fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist), version, arch),
-		)
+		switch arch {
+		case Arm64Arch:
+			for _, arm64Vers := range Arm64Versions {
+				dockerArchTag := strings.ReplaceAll(arch64Name(arch, arm64Vers), "/", "_")
+				imageTemplates = append(
+					imageTemplates,
+					fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist), version, dockerArchTag),
+				)
+			}
+		default:
+			imageTemplates = append(
+				imageTemplates,
+				fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist), version, arch),
+			)
+		}
 	}
 
 	return config.DockerManifest{
@@ -281,6 +295,10 @@ func archName(arch, armVersion string) string {
 	default:
 		return arch
 	}
+}
+
+func arch64Name(arch, arm64Version string) string {
+	return fmt.Sprintf("%s/%s", arch, arm64Version)
 }
 
 func Sign() []config.Sign {
