@@ -103,7 +103,7 @@ jobs:
           run-id: ${{ steps.get-run-id.outputs.run_id }}
 
       - name: Move downloaded artifact
-        if: inputs.latest == true
+        if: inputs.latest == true && matrix.GOARCH == 'amd64' && matrix.GOOS == 'linux'
         run: mv otelcontribcol_linux_amd64 distributions/otelcol-contrib/artifacts/otelcol-contrib_linux_amd64_v1/otelcol-contrib
 
       - name: Generate the sources for ${{ inputs.distribution }}
@@ -112,12 +112,13 @@ jobs:
           DISTRIBUTIONS: ${{ inputs.distribution }}
         run: make generate-sources
 
-      - name: Run split GoReleaser build for otelcol-contrib
+        # otelcol-contrib is built in a separate stage
+      - name: Build ${{ inputs.distribution }}
         if: inputs.distribution == 'otelcol-contrib' && inputs.latest != true
-        uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6.0.0
+        uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf # v6.1.0
         with:
           distribution: goreleaser-pro
-          version: v2.3.2
+          version: ${{ env.GORELEASER_PRO_VERSION }}
           workdir: distributions/otelcol-contrib
           args: --snapshot --clean --timeout 2h --split --config .goreleaser-build.yaml
         env:
@@ -130,7 +131,8 @@ jobs:
       - if: inputs.distribution == 'otelcol-contrib' && inputs.latest != true
         run: mv distributions/otelcol-contrib/dist/**/* distributions/otelcol-contrib/artifacts/
 
-      - if: inputs.distribution == 'otelcol-contrib'
+      - name: Show built content
+        if: inputs.distribution == 'otelcol-contrib'
         run: ls -laR distributions/otelcol-contrib/artifacts
 
       - name: Run GoReleaser for ${{ inputs.distribution }}
@@ -147,7 +149,7 @@ jobs:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
       - name: Upload linux service packages
-        if: matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64'
+        if: matrix.GOARCH == 'amd64' && matrix.GOOS == 'linux'
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: linux-packages
