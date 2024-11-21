@@ -60,7 +60,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser-pro
-          version: ${{ env.GORELEASER_PRO_VERSION }}
+          version: v2.3.2
           workdir: distributions/${{ inputs.distribution }}
           args: --snapshot --clean --skip=sign,sbom --timeout 2h --split
         env:
