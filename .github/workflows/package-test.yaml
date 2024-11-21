@@ -1,16 +1,6 @@
 name: Nightly Package Tests - Contrib - GoReleaser
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "distributions/otelcol-contrib/**"
-      - "cmd/**"
-      - ".github/**"
-      - "scripts/**"
-      - "Makefile"
-      - "go.mod"
-      - "go.sum"
   pull_request:
     branches: [main]
     paths:
