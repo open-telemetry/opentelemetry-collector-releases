@@ -145,6 +145,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run GoReleaser for ${{ inputs.distribution }}
+        id: goreleaser-action
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser-pro
