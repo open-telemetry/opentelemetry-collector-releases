@@ -1,30 +1,44 @@
-name: Package Tests
+name: Nightly Package Tests - Contrib - GoReleaser
 
 on:
-  workflow_call:
-    inputs:
-      type:
-        required: true
-        type: string
-      distribution:
-        required: true
-        type: string
+  push:
+    branches: [main]
+    paths:
+      - "distributions/otelcol-contrib/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
+  pull_request:
+    branches: [main]
+    paths:
+      - "distributions/otelcol-contrib/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
+  schedule:
+    - cron: "0 2 * * *" # every day at 2am UTC
 
 jobs:
+  check-goreleaser:
+    name: Continuous Integration - Contrib - GoReleaser
+    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    with:
+      distribution: otelcol-contrib
+      goos: '[ "linux" ]'
+      goarch: '[ "amd64" ]'
+      latest: true
+    secrets: inherit
+
   package-tests:
-    name: Package Tests
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        type: ${{ fromJSON(inputs.type) }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-      - name: Download built artifacts
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
-        with:
-          name: linux-packages
-
-      - name: Test ${{ matrix.type }} package
-        run: ./scripts/package-tests/package-tests.sh ./otelcol*-SNAPSHOT-*_linux_amd64.${{ matrix.type }} ${{ inputs.distribution }}
+    name: Package tests
+    needs: check-goreleaser
+    uses: ./.github/workflows/package-tests.yaml
+    with:
+      distribution: otelcol-contrib
+      type: '[ "deb", "rpm" ]'
