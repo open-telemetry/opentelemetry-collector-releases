@@ -23,18 +23,8 @@ jobs:
         GOOS: ${{ fromJSON( inputs.goos) }}
         GOARCH: ${{ fromJSON( inputs.goarch) }}
         exclude:
-          - GOOS: darwin
-            GOARCH: "386"
-          - GOOS: darwin
-            GOARCH: s390x
           - GOOS: windows
             GOARCH: arm64
-          - GOOS: darwin
-            GOARCH: arm
-          - GOOS: windows
-            GOARCH: arm
-          - GOOS: windows
-            GOARCH: s390x
     runs-on: ubuntu-24.04
 
     steps:
@@ -46,7 +36,7 @@ jobs:
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
         with:
-          platforms: arm64,linux/arm/v7
+          platforms: arm64
 
       - name: Setup wixl # Required to build MSI packages for Windows
         if: ${{ matrix.GOOS == 'windows' && matrix.GOARCH == 'amd64' }}
@@ -76,7 +66,6 @@ jobs:
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
-          GOARM: 7
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
       - name: Upload linux service packages

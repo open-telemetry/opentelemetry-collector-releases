@@ -1,5 +1,3 @@
-partial:
-  by: target
 version: 2
 project_name: axoflow-otel-collector-releases
 env:
@@ -20,21 +18,9 @@ builds:
     goarch:
       - amd64
       - arm64
-    goarm:
-      - "7"
     ignore:
-      - goos: darwin
-        goarch: "386"
-      - goos: darwin
-        goarch: arm
-      - goos: darwin
-        goarch: s390x
-      - goos: windows
-        goarch: arm
       - goos: windows
         goarch: arm64
-      - goos: windows
-        goarch: s390x
     dir: _build
     binary: axoflow-otel-collector
     ldflags:
@@ -48,7 +34,7 @@ archives:
   - id: axoflow-otel-collector
     builds:
       - axoflow-otel-collector
-    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
 nfpms:
   - package_name: axoflow-otel-collector
     contents:
@@ -96,6 +82,7 @@ dockers:
       - --label=org.opencontainers.image.revision={{.FullCommit}}
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
   - goos: linux
     goarch: arm64
@@ -113,6 +100,7 @@ dockers:
       - --label=org.opencontainers.image.revision={{.FullCommit}}
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
 docker_manifests:
   - name_template: ghcr.io/axoflow/axoflow-otel-collector/axoflow-otel-collector:{{ .Version }}
@@ -147,3 +135,5 @@ sboms:
     artifacts: package
 monorepo:
   tag_prefix: v
+partial:
+  by: target

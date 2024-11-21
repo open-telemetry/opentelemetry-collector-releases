@@ -36,7 +36,7 @@ const (
 var (
 	ImagePrefixes      = []string{"ghcr.io/axoflow/axoflow-otel-collector"}
 	Architectures      = []string{"amd64", "arm64"}
-	ArmVersions        = []string{"7"}
+	Goos               = []string{"linux", "windows"}
 	DefaultConfigDists = map[string]bool{ImageName: true}
 	MSIWindowsDists    = map[string]bool{ImageName: true}
 )
@@ -60,6 +60,9 @@ func Generate(dist string) config.Project {
 		Version:         2,
 		Monorepo: config.Monorepo{
 			TagPrefix: "v",
+		},
+		Partial: config.Partial{
+			By: "target",
 		},
 		Release: config.Release{
 			Disable: "true",
@@ -85,21 +88,15 @@ func Build(dist string) config.Build {
 			Flags:   []string{"-trimpath"},
 			Ldflags: []string{"-s", "-w"},
 		},
-		Goos:   []string{"linux", "windows"},
+		Goos:   Goos,
 		Goarch: Architectures,
-		Goarm:  ArmVersions,
 		Ignore: []config.IgnoredBuild{
-			{Goos: "darwin", Goarch: "386"},
-			{Goos: "darwin", Goarch: "arm"},
-			{Goos: "darwin", Goarch: "s390x"},
-			{Goos: "windows", Goarch: "arm"},
 			{Goos: "windows", Goarch: "arm64"},
-			{Goos: "windows", Goarch: "s390x"},
 		},
 	}
 }
 
-func Archives(dist string) []config.Archive {
+func Archives(dist string) (r []config.Archive) {
 	return []config.Archive{
 		Archive(dist),
 	}
@@ -110,7 +107,7 @@ func Archives(dist string) []config.Archive {
 func Archive(dist string) config.Archive {
 	return config.Archive{
 		ID:           dist,
-		NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}",
+		NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}",
 		Builds:       []string{dist},
 	}
 }
@@ -124,6 +121,8 @@ func WinPackages(dist string) []config.MSI {
 	}
 }
 
+// Package configures goreleaser to build a Windows MSI package.
+// https://goreleaser.com/customization/msi/
 func WinPackage(dist string) config.MSI {
 	files := []string{}
 	if _, ok := DefaultConfigDists[dist]; ok {
@@ -137,7 +136,7 @@ func WinPackage(dist string) config.MSI {
 	}
 }
 
-func Packages(dist string) []config.NFPM {
+func Packages(dist string) (r []config.NFPM) {
 	return []config.NFPM{
 		Package(dist),
 	}
@@ -179,6 +178,7 @@ func Package(dist string) config.NFPM {
 				},
 			},
 		},
+
 		NFPMOverridables: config.NFPMOverridables{
 			PackageName: dist,
 			Scripts: config.NFPMScripts{
@@ -194,14 +194,7 @@ func Package(dist string) config.NFPM {
 func DockerImages(dist string) []config.Docker {
 	r := make([]config.Docker, 0)
 	for _, arch := range Architectures {
-		switch arch {
-		case ArmArch:
-			for _, vers := range ArmVersions {
-				r = append(r, DockerImage(dist, arch, vers))
-			}
-		default:
-			r = append(r, DockerImage(dist, arch, ""))
-		}
+		r = append(r, DockerImage(dist, arch, ""))
 	}
 	return r
 }
@@ -223,16 +216,15 @@ func DockerImage(dist, arch, armVersion string) config.Docker {
 	label := func(name, template string) string {
 		return fmt.Sprintf("--label=org.opencontainers.image.%s={{%s}}", name, template)
 	}
-
 	files := make([]string, 0)
 	if _, ok := DefaultConfigDists[dist]; ok {
 		files = append(files, "config.yaml")
 	}
-
 	return config.Docker{
 		ImageTemplates: imageTemplates,
 		Dockerfile:     "Dockerfile",
-		Use:            "buildx",
+
+		Use: "buildx",
 		BuildFlagTemplates: []string{
 			"--pull",
 			fmt.Sprintf("--platform=linux/%s", dockerArchName),
@@ -241,6 +233,7 @@ func DockerImage(dist, arch, armVersion string) config.Docker {
 			label("revision", ".FullCommit"),
 			label("version", ".Version"),
 			label("source", ".GitURL"),
+			"--label=org.opencontainers.image.licenses=Apache-2.0",
 		},
 		Files:  files,
 		Goos:   "linux",
@@ -263,21 +256,10 @@ func DockerManifests(dist string) []config.DockerManifest {
 func DockerManifest(prefix, version, dist string) config.DockerManifest {
 	var imageTemplates []string
 	for _, arch := range Architectures {
-		switch arch {
-		case ArmArch:
-			for _, armVers := range ArmVersions {
-				dockerArchTag := strings.ReplaceAll(archName(arch, armVers), "/", "")
-				imageTemplates = append(
-					imageTemplates,
-					fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist), version, dockerArchTag),
-				)
-			}
-		default:
-			imageTemplates = append(
-				imageTemplates,
-				fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist), version, arch),
-			)
-		}
+		imageTemplates = append(
+			imageTemplates,
+			fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist), version, arch),
+		)
 	}
 
 	return config.DockerManifest{

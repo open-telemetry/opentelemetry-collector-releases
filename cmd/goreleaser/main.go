@@ -34,19 +34,7 @@ func main() {
 	}
 
 	project := internal.Generate(*distFlag)
-
-	partial := map[string]any{
-		"partial": map[string]any{
-			"by": "target",
-		},
-	}
 	e := yaml.NewEncoder(os.Stdout)
-	e.SetIndent(2)
-	if err := e.Encode(partial); err != nil {
-		log.Fatal(err)
-	}
-
-	e = yaml.NewEncoder(os.Stdout)
 	e.SetIndent(2)
 	if err := e.Encode(&project); err != nil {
 		log.Fatal(err)

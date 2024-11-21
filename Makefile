@@ -23,7 +23,7 @@ generate-sources: go ocb
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER}
 
 goreleaser-verify: goreleaser
-	@cd distributions/axoflow-otel-collector && $(GORELEASER) release --snapshot --clean
+	@cd distributions/axoflow-otel-collector && $(GORELEASER) release --snapshot --clean --skip=sign,sbom
 	@cd ../../
 
 ensure-goreleaser-up-to-date: generate-goreleaser

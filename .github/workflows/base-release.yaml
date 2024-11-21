@@ -23,18 +23,8 @@ jobs:
         GOOS: ${{ fromJSON( inputs.goos) }}
         GOARCH: ${{ fromJSON( inputs.goarch) }}
         exclude:
-          - GOOS: darwin
-            GOARCH: "386"
-          - GOOS: darwin
-            GOARCH: s390x
           - GOOS: windows
             GOARCH: arm64
-          - GOOS: darwin
-            GOARCH: arm
-          - GOOS: windows
-            GOARCH: arm
-          - GOOS: windows
-            GOARCH: s390x
     runs-on: ubuntu-24.04
 
     steps:
@@ -52,7 +42,7 @@ jobs:
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
         with:
-          platforms: arm64,linux/arm/v7
+          platforms: arm64
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -93,7 +83,6 @@ jobs:
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
-          GOARM: 7
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_YES: true
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
