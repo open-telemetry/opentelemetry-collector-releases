@@ -77,7 +77,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser-pro
-          version: ${{ env.GORELEASER_PRO_VERSION }}
+          version: v2.3.2
           workdir: distributions/${{ inputs.distribution }}
           args: release --clean --split --timeout 2h
         env:
@@ -149,11 +149,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run GoReleaser for ${{ inputs.distribution }}
-        id: goreleaser-action
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser-pro
-          version: ${{ env.GORELEASER_PRO_VERSION }}
+          version: v2.3.2
           workdir: distributions/${{ inputs.distribution }}
           args: continue --merge --timeout 2h
         env:
