@@ -92,7 +92,10 @@ func Builds(dist string, buildOrRest bool) []config.Build {
 // Build configures a goreleaser build.
 // https://goreleaser.com/customization/build/
 func Build(dist string, buildOrRest bool) config.Build {
-	if !buildOrRest && dist == ContribDistro {
+	goos := []string{"darwin", "linux", "windows"}
+	archs := Architectures
+
+	if dist == ContribDistro && !buildOrRest {
 		// only return build config for contrib build file
 		return config.Build{
 			ID:      dist,
@@ -100,8 +103,8 @@ func Build(dist string, buildOrRest bool) config.Build {
 			PreBuilt: config.PreBuiltOptions{
 				Path: "artifacts/otelcol-contrib_{{ .Os }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}{{ with .Arm }}_{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}/otelcol-contrib{{- if eq .Os \"windows\" }}.exe{{ end }}",
 			},
-			Goos:   []string{"darwin", "linux", "windows"},
-			Goarch: Architectures,
+			Goos:   goos,
+			Goarch: archs,
 			Goarm:  ArmVersions(dist),
 			Dir:    "_build",
 			Binary: dist,
@@ -109,12 +112,11 @@ func Build(dist string, buildOrRest bool) config.Build {
 		}
 	}
 
-	goos := []string{"darwin", "linux", "windows"}
-	archs := Architectures
 	if dist == K8sDistro {
 		goos = K8sGoos
 		archs = K8sArchs
 	}
+
 	return config.Build{
 		ID:     dist,
 		Dir:    "_build",
