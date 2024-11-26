@@ -54,7 +54,7 @@ jobs:
           platforms: arm64,ppc64le,linux/arm/v7,s390x
 
       - name: Setup wixl # Required to build MSI packages for Windows
-        if: matrix.GOOS == 'windows' && ( matrix.GOARCH == '386' || matrix.GOARCH == 'amd64')
+        if: ${{ matrix.GOOS == 'windows' && ( matrix.GOARCH == '386' || matrix.GOARCH == 'amd64') }}
         run: |
           sudo apt-get update
           sudo apt-get install -y wixl
@@ -149,7 +149,7 @@ jobs:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
       - name: Upload linux service packages
-        if: matrix.GOARCH == 'amd64' && matrix.GOOS == 'linux'
+        if: ${{ matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' }}
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: linux-packages
