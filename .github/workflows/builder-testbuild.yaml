@@ -1,6 +1,7 @@
 name: Builder - Check and Test Build
 
 on:
+  merge_group: 
   push:
     branches: [main]
     paths:
