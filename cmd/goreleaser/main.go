@@ -26,7 +26,7 @@ import (
 )
 
 var distFlag = flag.String("d", "", "Collector distributions to build")
-var contribBuildOrRestFlag = flag.Bool("b", false, "Collector Contrib distribution only - switch between build and package config file - set to true to generate build step, false to generate package step")
+var contribBuildOrRestFlag = flag.Bool("generate-build-step", false, "Collector Contrib distribution only - switch between build and package config file - set to true to generate build step, false to generate package step")
 
 func main() {
 	flag.Parse()
