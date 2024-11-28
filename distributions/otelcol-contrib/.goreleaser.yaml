@@ -43,7 +43,7 @@ builds:
     binary: otelcol-contrib
     builder: prebuilt
     prebuilt:
-      path: artifacts/otelcol-contrib_{{ .Os }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}{{ with .Arm }}_{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ with .I386 }}_{{ . }}{{ end }}{{ with .Arm64 }}_{{ . }}{{ end }}/otelcol-contrib{{- if eq .Os "windows" }}.exe{{ end }}
+      path: artifacts/otelcol-contrib_{{ .Target }}/otelcol-contrib{{- if eq .Os "windows" }}.exe{{ end }}
 archives:
   - id: otelcol-contrib
     builds:
