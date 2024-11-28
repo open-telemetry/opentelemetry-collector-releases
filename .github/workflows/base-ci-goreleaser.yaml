@@ -69,9 +69,13 @@ jobs:
           go-version: '1.23'
           check-latest: true
 
+      - name: Create artifacts directory to store build artifacts
+        if: inputs.distribution == 'otelcol-contrib'
+        run: mkdir -p distributions/otelcol-contrib/artifacts
+
       - name: Get latest finished run ID from contrib repo build-and-test
         id: get-run-id
-        if: inputs.nightly == true
+        if: inputs.distribution == 'otelcol-contrib' && inputs.nightly == true && matrix.GOARCH == 'amd64' && matrix.GOOS == 'linux'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -86,10 +90,6 @@ jobs:
           )
           echo "Found run ID: $run_id"
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
-
-      - name: Create artifacts directory to store build artifacts
-        if: inputs.distribution == 'otelcol-contrib'
-        run: mkdir -p distributions/otelcol-contrib/artifacts
 
       - name: Create sub-directory for otelcol-contrib nightly build
         if: inputs.distribution == 'otelcol-contrib' && inputs.nightly == true && matrix.GOARCH == 'amd64' && matrix.GOOS == 'linux'
