@@ -43,12 +43,12 @@ builds:
     binary: otelcol-contrib
     builder: prebuilt
     prebuilt:
-      path: artifacts/otelcol-contrib_{{ .Target }}/otelcol-contrib{{- if eq .Os "windows" }}.exe{{ end }}
+      path: artifacts/otelcol-contrib_{{ .Os }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}{{ with .Arm }}_{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ with .Go386 }}_{{ . }}{{ end }}/otelcol-contrib{{- if eq .Os "windows" }}.exe{{ end }}
 archives:
   - id: otelcol-contrib
     builds:
       - otelcol-contrib
-    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Target }}'
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
   - package_name: otelcol-contrib
     contents:
