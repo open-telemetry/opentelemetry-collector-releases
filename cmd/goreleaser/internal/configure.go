@@ -101,7 +101,7 @@ func Build(dist string, buildOrRest bool) config.Build {
 			ID:      dist,
 			Builder: "prebuilt",
 			PreBuilt: config.PreBuiltOptions{
-				Path: "artifacts/otelcol-contrib_{{ .Os }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}{{ with .Arm }}_{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}/otelcol-contrib{{- if eq .Os \"windows\" }}.exe{{ end }}",
+				Path: "artifacts/otelcol-contrib_{{ .Os }}_{{ .Arch }}{{ with .Amd64 }}_{{ . }}{{ end }}{{ with .Arm }}_{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ with .I386 }}_{{ . }}{{ end }}{{ with .Arm64 }}_{{ . }}{{ end }}/otelcol-contrib{{- if eq .Os \"windows\" }}.exe{{ end }}",
 			},
 			Goos:   goos,
 			Goarch: archs,
