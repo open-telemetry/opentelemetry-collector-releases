@@ -166,7 +166,7 @@ func Archives(dist string) []config.Archive {
 func Archive(dist string) config.Archive {
 	return config.Archive{
 		ID:           dist,
-		NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Target }}",
+		NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}",
 		Builds:       []string{dist},
 	}
 }
