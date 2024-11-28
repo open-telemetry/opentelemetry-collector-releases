@@ -101,12 +101,7 @@ func Build(dist string, buildOrRest bool) config.Build {
 			ID:      dist,
 			Builder: "prebuilt",
 			PreBuilt: config.PreBuiltOptions{
-				Path: "artifacts/otelcol-contrib_{{ .Os }}_{{ .Arch }}" +
-					"{{ with .Amd64 }}_{{ . }}{{ end }}" +
-					"{{ with .Arm }}_{{ . }}{{ end }}" +
-					"{{ with .Mips }}_{{ . }}{{ end }}" +
-					"{{ with .I386 }}_{{ . }}{{ end }}" +
-					"{{ with .Arm64 }}_{{ . }}{{ end }}" +
+				Path: "artifacts/otelcol-contrib_{{ .Target }}" +
 					"/otelcol-contrib{{- if eq .Os \"windows\" }}.exe{{ end }}",
 			},
 			Goos:   goos,
@@ -171,7 +166,7 @@ func Archives(dist string) []config.Archive {
 func Archive(dist string) config.Archive {
 	return config.Archive{
 		ID:           dist,
-		NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}",
+		NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Target }}",
 		Builds:       []string{dist},
 	}
 }

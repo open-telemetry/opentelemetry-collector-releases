@@ -48,7 +48,7 @@ archives:
   - id: otelcol-contrib
     builds:
       - otelcol-contrib
-    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Target }}'
 nfpms:
   - package_name: otelcol-contrib
     contents:
