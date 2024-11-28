@@ -37,7 +37,7 @@ jobs:
   package-tests:
      name: Package tests
      needs: check-goreleaser
-     uses: ./.github/workflows/package-tests.yaml
+     uses: ./.github/workflows/base-package-tests.yaml
      with:
        distribution: otelcol
        type: '[ "deb", "rpm" ]'
