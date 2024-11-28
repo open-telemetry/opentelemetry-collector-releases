@@ -88,6 +88,7 @@ jobs:
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
 
       - name: Create artifacts directory to store build artifacts
+        if: inputs.distribution == 'otelcol-contrib'
         run: mkdir -p distributions/otelcol-contrib/artifacts
 
       - name: Create sub-directory for otelcol-contrib nightly build
@@ -129,7 +130,8 @@ jobs:
           GOAMD64: v1
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
-      - if: inputs.distribution == 'otelcol-contrib' && inputs.nightly != true
+      - name: Move built artifacts
+        if: inputs.distribution == 'otelcol-contrib' && inputs.nightly != true
         run: mv distributions/otelcol-contrib/dist/**/* distributions/otelcol-contrib/artifacts/
 
       - name: Show built content
