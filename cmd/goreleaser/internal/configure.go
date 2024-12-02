@@ -42,7 +42,6 @@ const (
 var (
 	ImagePrefixes      = []string{DockerHub, GHCR}
 	Architectures      = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
-	ArmVersions        = []string{"7"}
 	DefaultConfigDists = map[string]bool{CoreDistro: true, ContribDistro: true}
 	MSIWindowsDists    = map[string]bool{CoreDistro: true, ContribDistro: true, OTLPDistro: true}
 	K8sDockerSkipArchs = map[string]bool{"arm": true, "386": true}
@@ -50,14 +49,25 @@ var (
 	K8sArchs           = []string{"amd64", "arm64", "ppc64le", "s390x"}
 )
 
-func Generate(dist string) config.Project {
+func GenerateContribBuildOnly(dist string, buildOrRest bool) config.Project {
+	return config.Project{
+		ProjectName: "opentelemetry-collector-releases",
+		Builds:      Builds(dist, buildOrRest),
+		Version:     2,
+		Monorepo: config.Monorepo{
+			TagPrefix: "v",
+		},
+	}
+}
+
+func Generate(dist string, buildOrRest bool) config.Project {
 	return config.Project{
 		ProjectName: "opentelemetry-collector-releases",
 		Checksum: config.Checksum{
 			NameTemplate: fmt.Sprintf("{{ .ProjectName }}_%v_checksums.txt", dist),
 		},
 		Env:             []string{"COSIGN_YES=true"},
-		Builds:          Builds(dist),
+		Builds:          Builds(dist, buildOrRest),
 		Archives:        Archives(dist),
 		MSI:             WinPackages(dist),
 		NFPMs:           Packages(dist),
@@ -73,37 +83,41 @@ func Generate(dist string) config.Project {
 	}
 }
 
-func Builds(dist string) []config.Build {
+func Builds(dist string, buildOrRest bool) []config.Build {
 	return []config.Build{
-		Build(dist),
+		Build(dist, buildOrRest),
 	}
 }
 
 // Build configures a goreleaser build.
 // https://goreleaser.com/customization/build/
-func Build(dist string) config.Build {
-	var goos []string
-	var archs []string
-	var ignore []config.IgnoredBuild
-	var armVersions []string
+func Build(dist string, buildOrRest bool) config.Build {
+	goos := []string{"darwin", "linux", "windows"}
+	archs := Architectures
+
+	if dist == ContribDistro && !buildOrRest {
+		// only return build config for contrib build file
+		return config.Build{
+			ID:      dist,
+			Builder: "prebuilt",
+			PreBuilt: config.PreBuiltOptions{
+				Path: "artifacts/otelcol-contrib_{{ .Target }}" +
+					"/otelcol-contrib{{- if eq .Os \"windows\" }}.exe{{ end }}",
+			},
+			Goos:   goos,
+			Goarch: archs,
+			Goarm:  ArmVersions(dist),
+			Dir:    "_build",
+			Binary: dist,
+			Ignore: IgnoreBuildCombinations(dist),
+		}
+	}
+
 	if dist == K8sDistro {
 		goos = K8sGoos
 		archs = K8sArchs
-		ignore = make([]config.IgnoredBuild, 0)
-		armVersions = make([]string, 0)
-	} else {
-		goos = []string{"darwin", "linux", "windows"}
-		archs = Architectures
-		ignore = []config.IgnoredBuild{
-			{Goos: "darwin", Goarch: "386"},
-			{Goos: "darwin", Goarch: "arm"},
-			{Goos: "darwin", Goarch: "s390x"},
-			{Goos: "windows", Goarch: "arm"},
-			{Goos: "windows", Goarch: "arm64"},
-			{Goos: "windows", Goarch: "s390x"},
-		}
-		armVersions = ArmVersions
 	}
+
 	return config.Build{
 		ID:     dist,
 		Dir:    "_build",
@@ -115,12 +129,33 @@ func Build(dist string) config.Build {
 		},
 		Goos:   goos,
 		Goarch: archs,
-		Goarm:  armVersions,
-		Ignore: ignore,
+		Goarm:  ArmVersions(dist),
+		Ignore: IgnoreBuildCombinations(dist),
 	}
 }
 
-func Archives(dist string) (r []config.Archive) {
+func IgnoreBuildCombinations(dist string) []config.IgnoredBuild {
+	if dist == K8sDistro {
+		return nil
+	}
+	return []config.IgnoredBuild{
+		{Goos: "darwin", Goarch: "386"},
+		{Goos: "darwin", Goarch: "arm"},
+		{Goos: "darwin", Goarch: "s390x"},
+		{Goos: "windows", Goarch: "arm"},
+		{Goos: "windows", Goarch: "arm64"},
+		{Goos: "windows", Goarch: "s390x"},
+	}
+}
+
+func ArmVersions(dist string) []string {
+	if dist == K8sDistro {
+		return nil
+	}
+	return []string{"7"}
+}
+
+func Archives(dist string) []config.Archive {
 	return []config.Archive{
 		Archive(dist),
 	}
@@ -138,7 +173,7 @@ func Archive(dist string) config.Archive {
 
 func WinPackages(dist string) []config.MSI {
 	if _, ok := MSIWindowsDists[dist]; !ok {
-		return []config.MSI{}
+		return nil
 	}
 	return []config.MSI{
 		WinPackage(dist),
@@ -160,9 +195,9 @@ func WinPackage(dist string) config.MSI {
 	}
 }
 
-func Packages(dist string) (r []config.NFPM) {
+func Packages(dist string) []config.NFPM {
 	if dist == K8sDistro {
-		return []config.NFPM{}
+		return nil
 	}
 	return []config.NFPM{
 		Package(dist),
@@ -191,21 +226,17 @@ func Package(dist string) config.NFPM {
 		})
 	}
 	return config.NFPM{
-		ID:      dist,
-		Builds:  []string{dist},
-		Formats: []string{"deb", "rpm"},
-
+		ID:          dist,
+		Builds:      []string{dist},
+		Formats:     []string{"deb", "rpm"},
 		License:     "Apache 2.0",
 		Description: fmt.Sprintf("OpenTelemetry Collector - %s", dist),
 		Maintainer:  "The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>",
 		Overrides: map[string]config.NFPMOverridables{
 			"rpm": {
-				Dependencies: []string{
-					"/bin/sh",
-				},
+				Dependencies: []string{"/bin/sh"},
 			},
 		},
-
 		NFPMOverridables: config.NFPMOverridables{
 			PackageName: dist,
 			Scripts: config.NFPMScripts{
@@ -219,16 +250,14 @@ func Package(dist string) config.NFPM {
 }
 
 func DockerImages(dist string) []config.Docker {
-	r := make([]config.Docker, 0)
+	var r []config.Docker
 	for _, arch := range Architectures {
-		if dist == K8sDistro {
-			if _, ok := K8sDockerSkipArchs[arch]; ok {
-				continue
-			}
+		if dist == K8sDistro && K8sDockerSkipArchs[arch] {
+			continue
 		}
 		switch arch {
 		case ArmArch:
-			for _, vers := range ArmVersions {
+			for _, vers := range ArmVersions(dist) {
 				r = append(r, DockerImage(dist, arch, vers))
 			}
 		default:
@@ -302,7 +331,7 @@ func DockerManifest(prefix, version, dist string) config.DockerManifest {
 		}
 		switch arch {
 		case ArmArch:
-			for _, armVers := range ArmVersions {
+			for _, armVers := range ArmVersions(dist) {
 				dockerArchTag := strings.ReplaceAll(archName(arch, armVers), "/", "")
 				imageTemplates = append(
 					imageTemplates,
