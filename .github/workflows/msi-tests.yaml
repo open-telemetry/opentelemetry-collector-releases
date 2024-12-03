@@ -29,14 +29,10 @@ jobs:
       - name: Set MSI tests required environment variables
         run: |
           $ErrorActionPreference = 'Stop'
-          Set-PSDebug -Trace 2
-          Get-ChildItem -Path .\*.msi -Recurse
-          Resolve-Path .\msi\*\*.msi
-          $msi_path = Resolve-Path .\msi\*\*.msi
-          $msi_path
-          Test-Path $msi_path
           $alt_config_path = Resolve-Path .\distributions\${{ inputs.distribution }}\config.yaml
           Test-Path $alt_config_path
+          $msi_path = Resolve-Path .\msi\*\*.msi
+          Test-Path $msi_path
           "MSI_TEST_ALTERNATE_CONFIG_FILE=$alt_config_path" | Out-File -FilePath $env:GITHUB_ENV -Append
           "MSI_TEST_COLLECTOR_PATH=$msi_path" | Out-File -FilePath $env:GITHUB_ENV -Append
           "MSI_TEST_COLLECTOR_SERVICE_NAME=${{ inputs.distribution }}" | Out-File -FilePath $env:GITHUB_ENV -Append
