@@ -31,8 +31,8 @@ jobs:
           $ErrorActionPreference = 'Stop'
           Set-PSDebug -Trace 2
           Get-ChildItem -Path .\*.msi -Recurse
-          Resolve-Path .\*.msi
-          $msi_path = Resolve-Path .\*.msi
+          Resolve-Path .\msi\*\*.msi
+          $msi_path = Resolve-Path .\msi\*\*.msi
           $msi_path
           Test-Path $msi_path
           $alt_config_path = Resolve-Path .\distributions\${{ inputs.distribution }}\config.yaml
