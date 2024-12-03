@@ -26,19 +26,13 @@ jobs:
         with:
           name: msi-packages
 
-      - name: Temporary check for msi location
-        run: |
-          Get-Location
-          Get-ChildItem -Path .\*.msi -Recurse
-  
       - name: Set MSI tests required environment variables
         run: |
           $ErrorActionPreference = 'Stop'
           $alt_config_path = Resolve-Path .\distributions\${{ inputs.distribution }}\config.yaml
           Test-Path $alt_config_path
           "MSI_TEST_ALTERNATE_CONFIG_FILE=$alt_config_path" | Out-File -FilePath $env:GITHUB_ENV -Append
-          Get-Location
-          $msi_path = Resolve-Path .\msi\*.msi
+          $msi_path = Resolve-Path .\*.msi
           Test-Path $msi_path
           "MSI_TEST_COLLECTOR_PATH=$msi_path" | Out-File -FilePath $env:GITHUB_ENV -Append
           "MSI_TEST_COLLECTOR_SERVICE_NAME=${{ inputs.distribution }}" | Out-File -FilePath $env:GITHUB_ENV -Append
