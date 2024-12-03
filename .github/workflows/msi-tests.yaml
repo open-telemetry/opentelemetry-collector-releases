@@ -29,9 +29,11 @@ jobs:
       - name: Set MSI tests required environment variables
         run: |
           $ErrorActionPreference = 'Stop'
-          Set-PSDebug -Trace 1
-          Resolve-Path ./*.msi
-          $msi_path = Resolve-Path ./*.msi
+          Set-PSDebug -Trace 2
+          Get-ChildItem -Path .\*.msi -Recurse
+          Resolve-Path .\*.msi
+          $msi_path = Resolve-Path .\*.msi
+          $msi_path
           Test-Path $msi_path
           $alt_config_path = Resolve-Path .\distributions\${{ inputs.distribution }}\config.yaml
           Test-Path $alt_config_path
