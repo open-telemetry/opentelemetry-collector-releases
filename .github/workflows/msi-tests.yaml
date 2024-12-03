@@ -30,7 +30,8 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           Set-PSDebug -Trace 1
-          $msi_path = Resolve-Path .\*.msi
+          Resolve-Path ./*.msi
+          $msi_path = Resolve-Path ./*.msi
           Test-Path $msi_path
           $alt_config_path = Resolve-Path .\distributions\${{ inputs.distribution }}\config.yaml
           Test-Path $alt_config_path
