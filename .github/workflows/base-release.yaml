@@ -84,6 +84,30 @@ jobs:
         run: |
           echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
+        # otelcol-contrib is built in a separate stage
+      - name: Build ${{ inputs.distribution }}
+        if: inputs.distribution == 'otelcol-contrib' && inputs.nightly != true
+        uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf # v6.1.0
+        with:
+          distribution: goreleaser-pro
+          version: ${{ env.GORELEASER_PRO_VERSION }}
+          workdir: distributions/otelcol-contrib
+          args: --snapshot --clean --timeout 2h --split --config .goreleaser-build.yaml
+        env:
+          GOOS: ${{ matrix.GOOS }}
+          GOARCH: ${{ matrix.GOARCH }}
+          GOARM: 7 # Default is 6
+          GOAMD64: v1
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+
+      - name: Move built artifacts
+        if: inputs.distribution == 'otelcol-contrib' && inputs.nightly != true
+        run: mv distributions/otelcol-contrib/dist/**/* distributions/otelcol-contrib/artifacts/
+
+      - name: Show built or downloaded content
+        if: inputs.distribution == 'otelcol-contrib'
+        run: ls -laR distributions/otelcol-contrib/artifacts
+
       - uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf # v6.1.0
         with:
           distribution: goreleaser-pro
