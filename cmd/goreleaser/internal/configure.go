@@ -48,7 +48,28 @@ var (
 	K8sDockerSkipArchs = map[string]bool{"arm": true, "386": true}
 	K8sGoos            = []string{"linux"}
 	K8sArchs           = []string{"amd64", "arm64", "ppc64le", "s390x"}
+	AlwaysIgnored      = map[config.IgnoredBuild]bool{
+		{Goos: "darwin", Goarch: "386"}:    true,
+		{Goos: "darwin", Goarch: "arm"}:    true,
+		{Goos: "darwin", Goarch: "s390x"}:  true,
+		{Goos: "windows", Goarch: "arm"}:   true,
+		{Goos: "windows", Goarch: "arm64"}: true,
+		{Goos: "windows", Goarch: "s390x"}: true,
+	}
 )
+
+// Copied from go/src/internal/platform/supported.go, see:
+// https://cs.opensource.google/go/go/+/d7fcb5cf80953f1d63246f1ae9defa60c5ce2d76:src/internal/platform/supported.go;l=222
+func InternalLinkPIESupported(goos, goarch string) bool {
+	switch goos + "/" + goarch {
+	case "android/arm64",
+		"darwin/amd64", "darwin/arm64",
+		"linux/amd64", "linux/arm64", "linux/ppc64le",
+		"windows/386", "windows/amd64", "windows/arm", "windows/arm64":
+		return true
+	}
+	return false
+}
 
 func Generate(dist string) config.Project {
 	return config.Project{
@@ -75,43 +96,59 @@ func Generate(dist string) config.Project {
 
 func Builds(dist string) []config.Build {
 	return []config.Build{
-		Build(dist),
+		Build(dist, true),
+		Build(dist, false),
 	}
+}
+
+func generateIgnored(goos, archs []string, pie bool) []config.IgnoredBuild {
+	ignored := make([]config.IgnoredBuild, 0)
+	var build config.IgnoredBuild
+	for _, goos := range goos {
+		for _, arch := range archs {
+			build = config.IgnoredBuild{
+				Goos:   goos,
+				Goarch: arch,
+			}
+			if _, ok := AlwaysIgnored[build]; ok || !pie && InternalLinkPIESupported(goos, arch) || pie && !InternalLinkPIESupported(goos, arch) {
+				ignored = append(ignored, build)
+			}
+		}
+	}
+	return ignored
 }
 
 // Build configures a goreleaser build.
 // https://goreleaser.com/customization/build/
-func Build(dist string) config.Build {
+func Build(dist string, pie bool) config.Build {
 	var goos []string
 	var archs []string
 	var ignore []config.IgnoredBuild
 	var armVersions []string
+	id := dist
+	ldflags := []string{"-s", "-w"}
+	if pie {
+		ldflags = append(ldflags, "-buildmode=pie")
+		id = id + "-pie"
+	}
 	if dist == K8sDistro {
 		goos = K8sGoos
 		archs = K8sArchs
-		ignore = make([]config.IgnoredBuild, 0)
 		armVersions = make([]string, 0)
 	} else {
 		goos = []string{"darwin", "linux", "windows"}
 		archs = Architectures
-		ignore = []config.IgnoredBuild{
-			{Goos: "darwin", Goarch: "386"},
-			{Goos: "darwin", Goarch: "arm"},
-			{Goos: "darwin", Goarch: "s390x"},
-			{Goos: "windows", Goarch: "arm"},
-			{Goos: "windows", Goarch: "arm64"},
-			{Goos: "windows", Goarch: "s390x"},
-		}
 		armVersions = ArmVersions
 	}
+	ignore = generateIgnored(goos, archs, pie)
 	return config.Build{
-		ID:     dist,
+		ID:     id,
 		Dir:    "_build",
 		Binary: dist,
 		BuildDetails: config.BuildDetails{
 			Env:     []string{"CGO_ENABLED=0"},
 			Flags:   []string{"-trimpath"},
-			Ldflags: []string{"-s", "-w"},
+			Ldflags: ldflags,
 		},
 		Goos:   goos,
 		Goarch: archs,
@@ -122,17 +159,24 @@ func Build(dist string) config.Build {
 
 func Archives(dist string) (r []config.Archive) {
 	return []config.Archive{
-		Archive(dist),
+		Archive(dist, true),
+		Archive(dist, false),
 	}
 }
 
 // Archive configures a goreleaser archive (tarball).
 // https://goreleaser.com/customization/archive/
-func Archive(dist string) config.Archive {
+func Archive(dist string, pie bool) config.Archive {
+	id := dist
+	build := dist
+	if pie {
+		id = id + "-pie"
+		build = build + "-pie"
+	}
 	return config.Archive{
-		ID:           dist,
+		ID:           id,
 		NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}",
-		Builds:       []string{dist},
+		Builds:       []string{build},
 	}
 }
 
@@ -172,6 +216,7 @@ func Packages(dist string) (r []config.NFPM) {
 // Package configures goreleaser to build a system package.
 // https://goreleaser.com/customization/nfpm/
 func Package(dist string) config.NFPM {
+	buildPie := dist + "-pie"
 	nfpmContents := config.NFPMContents{
 		{
 			Source:      fmt.Sprintf("%s.service", dist),
@@ -192,7 +237,7 @@ func Package(dist string) config.NFPM {
 	}
 	return config.NFPM{
 		ID:      dist,
-		Builds:  []string{dist},
+		Builds:  []string{dist, buildPie},
 		Formats: []string{"deb", "rpm"},
 
 		License:     "Apache 2.0",

@@ -5,6 +5,27 @@ project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
 builds:
+  - id: otelcol-k8s-pie
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+      - ppc64le
+      - s390x
+    ignore:
+      - goos: linux
+        goarch: s390x
+    dir: _build
+    binary: otelcol-k8s
+    ldflags:
+      - -s
+      - -w
+      - -buildmode=pie
+    flags:
+      - -trimpath
+    env:
+      - CGO_ENABLED=0
   - id: otelcol-k8s
     goos:
       - linux
@@ -13,6 +34,13 @@ builds:
       - arm64
       - ppc64le
       - s390x
+    ignore:
+      - goos: linux
+        goarch: amd64
+      - goos: linux
+        goarch: arm64
+      - goos: linux
+        goarch: ppc64le
     dir: _build
     binary: otelcol-k8s
     ldflags:
@@ -23,6 +51,10 @@ builds:
     env:
       - CGO_ENABLED=0
 archives:
+  - id: otelcol-k8s-pie
+    builds:
+      - otelcol-k8s-pie
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
   - id: otelcol-k8s
     builds:
       - otelcol-k8s

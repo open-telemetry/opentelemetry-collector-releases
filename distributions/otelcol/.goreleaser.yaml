@@ -12,7 +12,7 @@ msi:
       - opentelemetry.ico
       - config.yaml
 builds:
-  - id: otelcol
+  - id: otelcol-pie
     goos:
       - darwin
       - linux
@@ -32,7 +32,68 @@ builds:
       - goos: darwin
         goarch: arm
       - goos: darwin
+        goarch: ppc64le
+      - goos: darwin
         goarch: s390x
+      - goos: linux
+        goarch: "386"
+      - goos: linux
+        goarch: arm
+      - goos: linux
+        goarch: s390x
+      - goos: windows
+        goarch: arm
+      - goos: windows
+        goarch: arm64
+      - goos: windows
+        goarch: ppc64le
+      - goos: windows
+        goarch: s390x
+    dir: _build
+    binary: otelcol
+    ldflags:
+      - -s
+      - -w
+      - -buildmode=pie
+    flags:
+      - -trimpath
+    env:
+      - CGO_ENABLED=0
+  - id: otelcol
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - "386"
+      - amd64
+      - arm
+      - arm64
+      - ppc64le
+      - s390x
+    goarm:
+      - "7"
+    ignore:
+      - goos: darwin
+        goarch: "386"
+      - goos: darwin
+        goarch: amd64
+      - goos: darwin
+        goarch: arm
+      - goos: darwin
+        goarch: arm64
+      - goos: darwin
+        goarch: s390x
+      - goos: linux
+        goarch: amd64
+      - goos: linux
+        goarch: arm64
+      - goos: linux
+        goarch: ppc64le
+      - goos: windows
+        goarch: "386"
+      - goos: windows
+        goarch: amd64
       - goos: windows
         goarch: arm
       - goos: windows
@@ -49,6 +110,10 @@ builds:
     env:
       - CGO_ENABLED=0
 archives:
+  - id: otelcol-pie
+    builds:
+      - otelcol-pie
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
   - id: otelcol
     builds:
       - otelcol
@@ -75,6 +140,7 @@ nfpms:
     id: otelcol
     builds:
       - otelcol
+      - otelcol-pie
     formats:
       - deb
       - rpm
