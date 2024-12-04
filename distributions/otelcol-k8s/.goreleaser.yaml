@@ -1,5 +1,3 @@
-partial:
-  by: target
 version: 2
 project_name: opentelemetry-collector-releases
 env:
@@ -151,3 +149,5 @@ sboms:
     artifacts: package
 monorepo:
   tag_prefix: v
+partial:
+  by: target
