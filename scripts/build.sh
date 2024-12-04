@@ -6,7 +6,7 @@ BUILDER=''
 # default values
 skipcompilation=false
 
-while getopts d:s:b: flag
+while getopts d:s:b:g: flag
 do
     case "${flag}" in
         d) distributions=${OPTARG};;
