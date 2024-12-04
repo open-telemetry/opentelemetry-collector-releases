@@ -86,22 +86,24 @@ jobs:
 
         # otelcol-contrib is built in a separate stage
       - name: Build ${{ inputs.distribution }}
-        if: inputs.distribution == 'otelcol-contrib' && inputs.nightly != true
+        if: inputs.distribution == 'otelcol-contrib'
         uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf # v6.1.0
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
-          workdir: distributions/otelcol-contrib
-          args: --snapshot --clean --timeout 2h --split --config .goreleaser-build.yaml
+          workdir: distributions/${{ inputs.distribution }}
+          args: release --clean --split --timeout 2h --config .goreleaser-build.yaml --release-header-tmpl=../../.github/release-template.md
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
           GOARM: 7 # Default is 6
           GOAMD64: v1
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          COSIGN_YES: true
 
       - name: Move built artifacts
-        if: inputs.distribution == 'otelcol-contrib' && inputs.nightly != true
+        if: inputs.distribution == 'otelcol-contrib'
         run: mv distributions/otelcol-contrib/dist/**/* distributions/otelcol-contrib/artifacts/
 
       - name: Show built or downloaded content
