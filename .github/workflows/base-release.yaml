@@ -84,6 +84,10 @@ jobs:
         run: |
           echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
+      - name: Create artifacts directory to store build artifacts
+        if: inputs.distribution == 'otelcol-contrib'
+        run: mkdir -p distributions/otelcol-contrib/artifacts
+
         # otelcol-contrib is built in a separate stage
       - name: Build ${{ inputs.distribution }}
         if: inputs.distribution == 'otelcol-contrib'
