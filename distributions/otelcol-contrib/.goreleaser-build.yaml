@@ -1,0 +1,43 @@
+partial:
+  by: target
+version: 2
+project_name: opentelemetry-collector-releases
+builds:
+  - id: otelcol-contrib
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - "386"
+      - amd64
+      - arm
+      - arm64
+      - ppc64le
+      - s390x
+    goarm:
+      - "7"
+    ignore:
+      - goos: darwin
+        goarch: "386"
+      - goos: darwin
+        goarch: arm
+      - goos: darwin
+        goarch: s390x
+      - goos: windows
+        goarch: arm
+      - goos: windows
+        goarch: arm64
+      - goos: windows
+        goarch: s390x
+    dir: _build
+    binary: otelcol-contrib
+    ldflags:
+      - -s
+      - -w
+    flags:
+      - -trimpath
+    env:
+      - CGO_ENABLED=0
+monorepo:
+  tag_prefix: v
