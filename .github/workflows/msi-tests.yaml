@@ -26,7 +26,7 @@ jobs:
         with:
           name: msi-packages
 
-      - name: Set MSI tests required environment variables
+      - name: Set required environment variables for MSI tests
         run: |
           $ErrorActionPreference = 'Stop'
           $alt_config_path = Resolve-Path .\distributions\${{ inputs.distribution }}\config.yaml
