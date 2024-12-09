@@ -8,7 +8,10 @@
     "go": "1.22"
   },
   "schedule": ["every tuesday"],
-  "extends": ["config:recommended"],
+  "extends": [
+    "config:recommended",
+    "customManagers:githubActionsVersions"
+  ],
   "packageRules": [
     {
       "matchManagers": ["gomod"],
@@ -69,19 +72,29 @@
       "matchManagers": ["gomod"],
       "matchDepTypes": ["toolchain"],
       "enabled": false
-    }
-  ],
-  "customManagers": [
+    },
     {
-      "customType": "regex",
-      "fileMatch": [
-        "(^|\\/).github\\/.*\\.ya?ml$"
+      "matchManagers": ["custom.regex"],
+      "matchPackageNames": [
+        "goreleaser/goreleaser-pro"
       ],
-      "matchStrings": [
-        "goreleaser\\/goreleaser-action@[\\S\\s]+?version: (?<currentValue>.*?)$"
+      "extractVersion": "^(?<version>.*)-pro$"
+    },
+    {
+      "matchManagers": ["gomod"],
+      "matchPackageNames": [
+        "github.com/goreleaser/goreleaser-pro/v2",
+        "github.com/goreleaser/goreleaser-pro"
       ],
-      "depNameTemplate": "github.com/goreleaser/goreleaser-pro",
-      "datasourceTemplate": "github-releases"
+      "versioning": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)?-(?<compatibility>.*)$"
+    },
+    {
+      "matchPackageNames": [
+        "goreleaser/goreleaser-pro",
+        "github.com/goreleaser/goreleaser-pro/v2",
+        "github.com/goreleaser/goreleaser-pro"
+      ],
+      "groupName": "GoReleaser Pro"
     }
   ],
   "prConcurrentLimit": 200,
