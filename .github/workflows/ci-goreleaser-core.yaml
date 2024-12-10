@@ -23,7 +23,6 @@ on:
       - "go.mod"
       - "go.sum"
 
-
 jobs:
   check-goreleaser:
     name: Continuous Integration - Core - GoReleaser
@@ -41,3 +40,11 @@ jobs:
      with:
        distribution: otelcol
        type: '[ "deb", "rpm" ]'
+
+  msi-tests:
+    name: MSI tests
+    needs: check-goreleaser
+    uses: ./.github/workflows/msi-tests.yaml
+    with:
+      distribution: otelcol
+      type: '[ "msi" ]'
