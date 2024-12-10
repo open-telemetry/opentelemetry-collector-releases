@@ -1,0 +1,24 @@
+name: Package Tests - Contrib
+
+on:
+  schedule:
+    - cron: "0 2 * * *" # every day at 2am UTC
+
+jobs:
+  check-goreleaser:
+    name: Build - Contrib - GoReleaser
+    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    with:
+      distribution: otelcol-contrib
+      goos: '[ "linux" ]'
+      goarch: '[ "amd64" ]'
+      nightly: true
+    secrets: inherit
+
+  package-tests:
+    name: Linux Package tests
+    needs: check-goreleaser
+    uses: ./.github/workflows/base-package-tests.yaml
+    with:
+      distribution: otelcol-contrib
+      type: '[ "deb", "rpm" ]'
