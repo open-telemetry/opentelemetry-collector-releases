@@ -118,26 +118,30 @@ func Build(dist string, buildOrRest bool, pie bool) config.Build {
 	archs := Architectures
 	id := dist
 	ldflags := []string{"-s", "-w"}
+	var prebuiltPath string
+
 	if pie {
 		ldflags = append(ldflags, "-buildmode=pie")
 		id = id + "-pie"
+		prebuiltPath = fmt.Sprintf("artifacts/otelcol-contrib%s_{{ .Target }}/otelcol-contrib{{- if eq .Os \"windows\" }}.exe{{ end }}", "-pie")
+	} else {
+		prebuiltPath = "artifacts/otelcol-contrib_{{ .Target }}/otelcol-contrib{{- if eq .Os \"windows\" }}.exe{{ end }}"
 	}
 
 	if dist == ContribDistro && !buildOrRest {
 		// only return build config for contrib build file
 		return config.Build{
-			ID:      dist,
+			ID:      id,
 			Builder: "prebuilt",
 			PreBuilt: config.PreBuiltOptions{
-				Path: "artifacts/otelcol-contrib_{{ .Target }}" +
-					"/otelcol-contrib{{- if eq .Os \"windows\" }}.exe{{ end }}",
+				Path: prebuiltPath,
 			},
 			Goos:   goos,
 			Goarch: archs,
 			Goarm:  ArmVersions(dist),
 			Dir:    "_build",
 			Binary: dist,
-			Ignore: generateIgnored(dist, goos, archs, pie),
+			Ignore: generateIgnored(goos, archs, pie),
 		}
 	}
 
@@ -158,14 +162,11 @@ func Build(dist string, buildOrRest bool, pie bool) config.Build {
 		Goos:   goos,
 		Goarch: archs,
 		Goarm:  ArmVersions(dist),
-		Ignore: IgnoreBuildCombinations(dist),
+		Ignore: generateIgnored(goos, archs, pie),
 	}
 }
 
-func generateIgnored(dist string, goos, archs []string, pie bool) []config.IgnoredBuild {
-	if dist == K8sDistro {
-		return nil
-	}
+func generateIgnored(goos, archs []string, pie bool) []config.IgnoredBuild {
 	ignored := make([]config.IgnoredBuild, 0)
 	var build config.IgnoredBuild
 	for _, goos := range goos {

@@ -51,14 +51,9 @@ builds:
         goarch: s390x
     dir: _build
     binary: otelcol-contrib
-    ldflags:
-      - -s
-      - -w
-      - -buildmode=pie
-    flags:
-      - -trimpath
-    env:
-      - CGO_ENABLED=0
+    builder: prebuilt
+    prebuilt:
+      path: artifacts/otelcol-contrib-pie_{{ .Target }}/otelcol-contrib{{- if eq .Os "windows" }}.exe{{ end }}
   - id: otelcol-contrib
     goos:
       - darwin
