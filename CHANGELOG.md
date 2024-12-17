@@ -3,3 +3,14 @@
 # Changelog
 
 <!-- next version -->
+
+## v0.116.0
+
+### 🚀 New components 🚀
+
+- `dorisexporter`: add doris exporter to otelcol-contrib releases (#765)
+
+### 💡 Enhancements 💡
+
+- `contrib`: Add failover connector to the contrib distribution. (#701)
+- `contrib`: Add redis storage to the contrib distribution (#768)
