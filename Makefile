@@ -3,7 +3,7 @@ GORELEASER ?= goreleaser
 
 # SRC_ROOT is the top of the source tree.
 SRC_ROOT := $(shell git rev-parse --show-toplevel)
-OTELCOL_BUILDER_VERSION ?= 0.115.0
+OTELCOL_BUILDER_VERSION ?= 0.116.0
 OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
 
