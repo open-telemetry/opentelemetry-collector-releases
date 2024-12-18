@@ -47,28 +47,7 @@ var (
 	K8sDockerSkipArchs = map[string]bool{"arm": true, "386": true}
 	K8sGoos            = []string{"linux"}
 	K8sArchs           = []string{"amd64", "arm64", "ppc64le", "s390x"}
-	AlwaysIgnored      = map[config.IgnoredBuild]bool{
-		{Goos: "darwin", Goarch: "386"}:    true,
-		{Goos: "darwin", Goarch: "arm"}:    true,
-		{Goos: "darwin", Goarch: "s390x"}:  true,
-		{Goos: "windows", Goarch: "arm"}:   true,
-		{Goos: "windows", Goarch: "arm64"}: true,
-		{Goos: "windows", Goarch: "s390x"}: true,
-	}
 )
-
-// Copied from go/src/internal/platform/supported.go, see:
-// https://cs.opensource.google/go/go/+/d7fcb5cf80953f1d63246f1ae9defa60c5ce2d76:src/internal/platform/supported.go;l=222
-func InternalLinkPIESupported(goos, goarch string) bool {
-	switch goos + "/" + goarch {
-	case "android/arm64",
-		"darwin/amd64", "darwin/arm64",
-		"linux/amd64", "linux/arm64", "linux/ppc64le",
-		"windows/386", "windows/amd64", "windows/arm", "windows/arm64":
-		return true
-	}
-	return false
-}
 
 func GenerateContribBuildOnly(dist string, buildOrRest bool) config.Project {
 	return config.Project{
@@ -106,42 +85,31 @@ func Generate(dist string, buildOrRest bool) config.Project {
 
 func Builds(dist string, buildOrRest bool) []config.Build {
 	return []config.Build{
-		Build(dist, buildOrRest, true),
-		Build(dist, buildOrRest, false),
+		Build(dist, buildOrRest),
 	}
 }
 
 // Build configures a goreleaser build.
 // https://goreleaser.com/customization/build/
-func Build(dist string, buildOrRest bool, pie bool) config.Build {
+func Build(dist string, buildOrRest bool) config.Build {
 	goos := []string{"darwin", "linux", "windows"}
 	archs := Architectures
-	id := dist
-	ldflags := []string{"-s", "-w"}
-	var prebuiltPath string
-
-	if pie {
-		ldflags = append(ldflags, "-buildmode=pie")
-		id = id + "-pie"
-		prebuiltPath = fmt.Sprintf("artifacts/otelcol-contrib%s_{{ .Target }}/otelcol-contrib{{- if eq .Os \"windows\" }}.exe{{ end }}", "-pie")
-	} else {
-		prebuiltPath = "artifacts/otelcol-contrib_{{ .Target }}/otelcol-contrib{{- if eq .Os \"windows\" }}.exe{{ end }}"
-	}
 
 	if dist == ContribDistro && !buildOrRest {
 		// only return build config for contrib build file
 		return config.Build{
-			ID:      id,
+			ID:      dist,
 			Builder: "prebuilt",
 			PreBuilt: config.PreBuiltOptions{
-				Path: prebuiltPath,
+				Path: "artifacts/otelcol-contrib_{{ .Target }}" +
+					"/otelcol-contrib{{- if eq .Os \"windows\" }}.exe{{ end }}",
 			},
 			Goos:   goos,
 			Goarch: archs,
 			Goarm:  ArmVersions(dist),
 			Dir:    "_build",
 			Binary: dist,
-			Ignore: generateIgnored(goos, archs, pie),
+			Ignore: IgnoreBuildCombinations(dist),
 		}
 	}
 
@@ -151,36 +119,33 @@ func Build(dist string, buildOrRest bool, pie bool) config.Build {
 	}
 
 	return config.Build{
-		ID:     id,
+		ID:     dist,
 		Dir:    "_build",
 		Binary: dist,
 		BuildDetails: config.BuildDetails{
 			Env:     []string{"CGO_ENABLED=0"},
 			Flags:   []string{"-trimpath"},
-			Ldflags: ldflags,
+			Ldflags: []string{"-s", "-w"},
 		},
 		Goos:   goos,
 		Goarch: archs,
 		Goarm:  ArmVersions(dist),
-		Ignore: generateIgnored(goos, archs, pie),
+		Ignore: IgnoreBuildCombinations(dist),
 	}
 }
 
-func generateIgnored(goos, archs []string, pie bool) []config.IgnoredBuild {
-	ignored := make([]config.IgnoredBuild, 0)
-	var build config.IgnoredBuild
-	for _, goos := range goos {
-		for _, arch := range archs {
-			build = config.IgnoredBuild{
-				Goos:   goos,
-				Goarch: arch,
-			}
-			if _, ok := AlwaysIgnored[build]; ok || !pie && InternalLinkPIESupported(goos, arch) || pie && !InternalLinkPIESupported(goos, arch) {
-				ignored = append(ignored, build)
-			}
-		}
+func IgnoreBuildCombinations(dist string) []config.IgnoredBuild {
+	if dist == K8sDistro {
+		return nil
 	}
-	return ignored
+	return []config.IgnoredBuild{
+		{Goos: "darwin", Goarch: "386"},
+		{Goos: "darwin", Goarch: "arm"},
+		{Goos: "darwin", Goarch: "s390x"},
+		{Goos: "windows", Goarch: "arm"},
+		{Goos: "windows", Goarch: "arm64"},
+		{Goos: "windows", Goarch: "s390x"},
+	}
 }
 
 func ArmVersions(dist string) []string {
@@ -192,24 +157,17 @@ func ArmVersions(dist string) []string {
 
 func Archives(dist string) []config.Archive {
 	return []config.Archive{
-		Archive(dist, true),
-		Archive(dist, false),
+		Archive(dist),
 	}
 }
 
 // Archive configures a goreleaser archive (tarball).
 // https://goreleaser.com/customization/archive/
-func Archive(dist string, pie bool) config.Archive {
-	id := dist
-	build := dist
-	if pie {
-		id = id + "-pie"
-		build = build + "-pie"
-	}
+func Archive(dist string) config.Archive {
 	return config.Archive{
-		ID:           id,
+		ID:           dist,
 		NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}",
-		Builds:       []string{build},
+		Builds:       []string{dist},
 	}
 }
 
@@ -249,7 +207,6 @@ func Packages(dist string) []config.NFPM {
 // Package configures goreleaser to build a system package.
 // https://goreleaser.com/customization/nfpm/
 func Package(dist string) config.NFPM {
-	buildPie := dist + "-pie"
 	nfpmContents := config.NFPMContents{
 		{
 			Source:      fmt.Sprintf("%s.service", dist),
@@ -270,7 +227,7 @@ func Package(dist string) config.NFPM {
 	}
 	return config.NFPM{
 		ID:          dist,
-		Builds:      []string{dist, buildPie},
+		Builds:      []string{dist},
 		Formats:     []string{"deb", "rpm"},
 		License:     "Apache 2.0",
 		Description: fmt.Sprintf("OpenTelemetry Collector - %s", dist),
