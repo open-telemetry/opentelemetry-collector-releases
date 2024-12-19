@@ -22,3 +22,4 @@ jobs:
     with:
       distribution: otelcol-contrib
       type: '[ "deb", "rpm" ]'
+      issue-on-failure: true
