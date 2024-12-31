@@ -1,10 +1,9 @@
 #!/bin/bash
 set -e
-# This script takes either current beta version, current stable version, or both,
-# and optionally next beta version and next stable version, and updates the version
-# in the specified files. If next version is not provided, it will infer the next 
-# semantic version (e.g. v0.110.0 -> v0.111.0 or v1.16.0 -> v1.17.0) based on the 
-# current version(s) passed.
+# This script reads current versions and takes optional next versions, and updates the
+# version in the specified files. If next version is not provided, it will infer the 
+# next semantic version (e.g. v0.110.0 -> v0.111.0 or v1.16.0 -> v1.17.0) based on the 
+# current version(s) read in.
 
 # List of files to update
 manifest_files=(
@@ -154,6 +153,10 @@ else
 fi
 
 # Update versions in each manifest file
+echo "Updating core beta version from $current_beta_core to $next_beta_core,"
+echo "core stable version from $current_stable to $next_stable,"
+echo "contrib beta version from $current_beta_contrib to $next_beta_contrib,"
+echo "and distribution version to $next_distribution_version"
 for file in "${manifest_files[@]}"; do
   if [ -f "$file" ]; then
     $sed_command "s/\(^.*go\.opentelemetry\.io\/collector\/.*\) v$escaped_current_beta_core/\1 v$next_beta_core/" "$file"
@@ -174,7 +177,7 @@ echo "Version update completed."
 make chlog-update VERSION="v$next_distribution_version"
 
 # Commit changes and draft PR
-if [ "$commit_changes" = false ] && [ "$create_pr" = false ]; then
+if [ "$commit_changes" = false ]; then
   echo "Changes not committed and PR not created."
   exit 0
 fi
@@ -230,4 +233,5 @@ else
   fi
 fi
 
-echo "Changes committed and PR created."
+echo "Changes committed and PR created:"
+gh pr view
