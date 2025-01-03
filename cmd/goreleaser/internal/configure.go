@@ -47,6 +47,7 @@ var (
 	K8sDockerSkipArchs = map[string]bool{"arm": true, "386": true}
 	K8sGoos            = []string{"linux"}
 	K8sArchs           = []string{"amd64", "arm64", "ppc64le", "s390x"}
+	Partial            = config.Partial{By: "target"}
 )
 
 func GenerateContribBuildOnly(dist string, buildOrRest bool) config.Project {
@@ -57,6 +58,7 @@ func GenerateContribBuildOnly(dist string, buildOrRest bool) config.Project {
 		Monorepo: config.Monorepo{
 			TagPrefix: "v",
 		},
+		Partial: Partial,
 	}
 }
 
@@ -80,6 +82,7 @@ func Generate(dist string, buildOrRest bool) config.Project {
 		Monorepo: config.Monorepo{
 			TagPrefix: "v",
 		},
+		Partial: Partial,
 	}
 }
 
