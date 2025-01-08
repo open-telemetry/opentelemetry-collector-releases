@@ -48,11 +48,27 @@ var otelColOTLPBuildProj = distribution{
 	msiConfig: newMSIConfig(OTLPDistro),
 	nfpms:     newNfpms(OTLPDistro),
 	containerImages: slices.Concat(
-		// newContainerImages(CoreDistro, "windows", []string{"amd64", "arm64"}, ""),
 		newContainerImages(OTLPDistro, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, "7"),
 	),
 	containerImageManifests: slices.Concat(
 		newContainerImageManifests(OTLPDistro, ImagePrefixes, []string{`{{ .Version }}`, "latest"}),
+	),
+}
+
+var otelK8sBuildProj = distribution{
+	name: K8sDistro,
+	buildConfigs: []fullDistBuildConfig{
+		{
+			targetOS:   []string{"linux"},
+			targetArch: []string{"amd64", "arm64", "ppc64le", "s390x"},
+		},
+	},
+	archives: newArchives(K8sDistro),
+	containerImages: slices.Concat(
+		newContainerImages(K8sDistro, "linux", []string{"amd64", "arm64", "ppc64le", "s390x"}, ""),
+	),
+	containerImageManifests: slices.Concat(
+		newContainerImageManifests(K8sDistro, ImagePrefixes, []string{`{{ .Version }}`, "latest"}),
 	),
 }
 
@@ -62,6 +78,8 @@ func BuildDist(dist string, buildOrRest bool) config.Project {
 		return otelColBuildProj.BuildProject(buildOrRest)
 	case OTLPDistro:
 		return otelColOTLPBuildProj.BuildProject(buildOrRest)
+	case K8sDistro:
+		return otelK8sBuildProj.BuildProject(buildOrRest)
 	default:
 		return config.Project{}
 	}
