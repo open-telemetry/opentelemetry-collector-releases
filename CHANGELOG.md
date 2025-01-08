@@ -4,6 +4,14 @@
 
 <!-- next version -->
 
+## v0.117.0
+
+### 🚀 New components 🚀
+
+- `cgroupruntime`: Add the cgroupruntime extension to the Contrib and K8s distributions (#789)
+- `libhoneyreceiver`: Add libhoneyreceiver to the contrib distribution (#787)
+- `sumconnector`: Add sumconnector to the contrib distribution (#785)
+
 ## v0.116.0
 
 ### 🚀 New components 🚀
