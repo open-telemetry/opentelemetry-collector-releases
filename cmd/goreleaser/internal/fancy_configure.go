@@ -36,10 +36,32 @@ var otelColBuildProj = distribution{
 	),
 }
 
+var otelColOTLPBuildProj = distribution{
+	name: OTLPDistro,
+	buildConfigs: []fullDistBuildConfig{
+		{
+			targetOS:   []string{"darwin", "linux", "windows"},
+			targetArch: []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"},
+		},
+	},
+	archives:  newArchives(OTLPDistro),
+	msiConfig: newMSIConfig(OTLPDistro),
+	nfpms:     newNfpms(OTLPDistro),
+	containerImages: slices.Concat(
+		// newContainerImages(CoreDistro, "windows", []string{"amd64", "arm64"}, ""),
+		newContainerImages(OTLPDistro, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, "7"),
+	),
+	containerImageManifests: slices.Concat(
+		newContainerImageManifests(OTLPDistro, ImagePrefixes, []string{`{{ .Version }}`, "latest"}),
+	),
+}
+
 func BuildDist(dist string, buildOrRest bool) config.Project {
 	switch dist {
 	case CoreDistro:
 		return otelColBuildProj.BuildProject(buildOrRest)
+	case OTLPDistro:
+		return otelColOTLPBuildProj.BuildProject(buildOrRest)
 	default:
 		return config.Project{}
 	}
