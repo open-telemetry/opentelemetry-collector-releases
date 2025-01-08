@@ -3,16 +3,14 @@ package internal
 import (
 	"fmt"
 	"path"
-	"slices"
 
 	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
 )
 
 var (
 	// otelcol (core) distro
-	otelColBuildProj = distribution{
-		name: CoreDistro,
-		buildConfigs: []fullDistBuildConfig{
+	otelColBuildProj = newDistributionBuilder(CoreDistro).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().ConfigFunc(func(d *distribution) {
+		d.buildConfigs = []fullDistBuildConfig{
 			{
 				targetOS:   []string{"darwin", "linux", "windows"},
 				targetArch: []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"},
@@ -25,56 +23,34 @@ var (
 			// 	targetOS:   []string{"darwin"},
 			// 	targetArch: []string{"amd64", "arm64"},
 			// },
-		},
-		archives:  newArchives(CoreDistro),
-		msiConfig: newMSIConfig(CoreDistro),
-		nfpms:     newNfpms(CoreDistro),
-		containerImages: slices.Concat(
-			// newContainerImages(CoreDistro, "windows", []string{"amd64", "arm64"}, ""),
-			newContainerImages(CoreDistro, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, "7"),
-		),
-		containerImageManifests: slices.Concat(
-			newContainerImageManifests(CoreDistro, ImagePrefixes, []string{`{{ .Version }}`, "latest"}),
-		),
-	}
+		}
+		d.containerImages = newContainerImages(d.name, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, "7")
+		d.containerImageManifests = newContainerImageManifests(d.name, ImagePrefixes, []string{`{{ .Version }}`, "latest"})
+	}).Build()
 
 	// otlp distro
-	otelColOTLPBuildProj = distribution{
-		name: OTLPDistro,
-		buildConfigs: []fullDistBuildConfig{
+	otelColOTLPBuildProj = newDistributionBuilder(OTLPDistro).WithDefaultNfpms().WithDefaultMSIConfig().WithDefaultArchives().ConfigFunc(func(d *distribution) {
+		d.buildConfigs = []fullDistBuildConfig{
 			{
 				targetOS:   []string{"darwin", "linux", "windows"},
 				targetArch: []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"},
 			},
-		},
-		archives:  newArchives(OTLPDistro),
-		msiConfig: newMSIConfig(OTLPDistro),
-		nfpms:     newNfpms(OTLPDistro),
-		containerImages: slices.Concat(
-			newContainerImages(OTLPDistro, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, "7"),
-		),
-		containerImageManifests: slices.Concat(
-			newContainerImageManifests(OTLPDistro, ImagePrefixes, []string{`{{ .Version }}`, "latest"}),
-		),
-	}
+		}
+		d.containerImages = newContainerImages(d.name, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, "7")
+		d.containerImageManifests = newContainerImageManifests(d.name, ImagePrefixes, []string{`{{ .Version }}`, "latest"})
+	}).Build()
 
 	// k8s distro
-	otelK8sBuildProj = distribution{
-		name: K8sDistro,
-		buildConfigs: []fullDistBuildConfig{
+	otelK8sBuildProj = newDistributionBuilder(K8sDistro).WithDefaultArchives().ConfigFunc(func(d *distribution) {
+		d.buildConfigs = []fullDistBuildConfig{
 			{
 				targetOS:   []string{"linux"},
 				targetArch: []string{"amd64", "arm64", "ppc64le", "s390x"},
 			},
-		},
-		archives: newArchives(K8sDistro),
-		containerImages: slices.Concat(
-			newContainerImages(K8sDistro, "linux", []string{"amd64", "arm64", "ppc64le", "s390x"}, ""),
-		),
-		containerImageManifests: slices.Concat(
-			newContainerImageManifests(K8sDistro, ImagePrefixes, []string{`{{ .Version }}`, "latest"}),
-		),
-	}
+		}
+		d.containerImages = newContainerImages(d.name, "linux", []string{"amd64", "arm64", "ppc64le", "s390x"}, "")
+		d.containerImageManifests = newContainerImageManifests(d.name, ImagePrefixes, []string{`{{ .Version }}`, "latest"})
+	}).Build()
 )
 
 func BuildDist(dist string, buildOrRest bool) config.Project {
@@ -86,8 +62,44 @@ func BuildDist(dist string, buildOrRest bool) config.Project {
 	case K8sDistro:
 		return otelK8sBuildProj.BuildProject(buildOrRest)
 	default:
-		return panic("Unknown distribution")
+		panic("Unknown distribution")
 	}
+}
+
+type distributionBuilder struct {
+	dist        *distribution
+	configFuncs []func(*distribution)
+}
+
+func newDistributionBuilder(name string) *distributionBuilder {
+	return &distributionBuilder{dist: &distribution{name: name}}
+}
+
+func (b *distributionBuilder) WithDefaultArchives() *distributionBuilder {
+	b.dist.archives = newArchives(b.dist.name)
+	return b
+}
+
+func (b *distributionBuilder) WithDefaultNfpms() *distributionBuilder {
+	b.dist.nfpms = newNfpms(b.dist.name)
+	return b
+}
+
+func (b *distributionBuilder) WithDefaultMSIConfig() *distributionBuilder {
+	b.dist.msiConfig = newMSIConfig(b.dist.name)
+	return b
+}
+
+func (b *distributionBuilder) ConfigFunc(configFunc func(*distribution)) *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, configFunc)
+	return b
+}
+
+func (b *distributionBuilder) Build() *distribution {
+	for _, configFunc := range b.configFuncs {
+		configFunc(b.dist)
+	}
+	return b.dist
 }
 
 type distribution struct {
