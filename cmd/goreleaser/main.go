@@ -40,7 +40,8 @@ func main() {
 		// Special care needs to be taken for otelcol-contrib since it has a split setup
 		project = internal.GenerateContribBuildOnly(*distFlag, *contribBuildOrRestFlag)
 	} else {
-		project = internal.Generate(*distFlag, *contribBuildOrRestFlag)
+		// project = internal.Generate(*distFlag, *contribBuildOrRestFlag)
+		project = internal.BuildDist(*distFlag, *contribBuildOrRestFlag)
 	}
 
 	partial := map[string]any{
