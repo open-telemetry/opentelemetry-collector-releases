@@ -8,69 +8,74 @@ import (
 	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
 )
 
-var otelColBuildProj = distribution{
-	name: CoreDistro,
-	buildConfigs: []fullDistBuildConfig{
-		{
-			targetOS:   []string{"darwin", "linux", "windows"},
-			targetArch: []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"},
+var (
+	// otelcol (core) distro
+	otelColBuildProj = distribution{
+		name: CoreDistro,
+		buildConfigs: []fullDistBuildConfig{
+			{
+				targetOS:   []string{"darwin", "linux", "windows"},
+				targetArch: []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"},
+			},
+			// {
+			// 	targetOS:   []string{"linux"},
+			// 	targetArch: []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"},
+			// },
+			// {
+			// 	targetOS:   []string{"darwin"},
+			// 	targetArch: []string{"amd64", "arm64"},
+			// },
 		},
-		// {
-		// 	targetOS:   []string{"linux"},
-		// 	targetArch: []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"},
-		// },
-		// {
-		// 	targetOS:   []string{"darwin"},
-		// 	targetArch: []string{"amd64", "arm64"},
-		// },
-	},
-	archives:  newArchives(CoreDistro),
-	msiConfig: newMSIConfig(CoreDistro),
-	nfpms:     newNfpms(CoreDistro),
-	containerImages: slices.Concat(
-		// newContainerImages(CoreDistro, "windows", []string{"amd64", "arm64"}, ""),
-		newContainerImages(CoreDistro, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, "7"),
-	),
-	containerImageManifests: slices.Concat(
-		newContainerImageManifests(CoreDistro, ImagePrefixes, []string{`{{ .Version }}`, "latest"}),
-	),
-}
+		archives:  newArchives(CoreDistro),
+		msiConfig: newMSIConfig(CoreDistro),
+		nfpms:     newNfpms(CoreDistro),
+		containerImages: slices.Concat(
+			// newContainerImages(CoreDistro, "windows", []string{"amd64", "arm64"}, ""),
+			newContainerImages(CoreDistro, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, "7"),
+		),
+		containerImageManifests: slices.Concat(
+			newContainerImageManifests(CoreDistro, ImagePrefixes, []string{`{{ .Version }}`, "latest"}),
+		),
+	}
 
-var otelColOTLPBuildProj = distribution{
-	name: OTLPDistro,
-	buildConfigs: []fullDistBuildConfig{
-		{
-			targetOS:   []string{"darwin", "linux", "windows"},
-			targetArch: []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"},
+	// otlp distro
+	otelColOTLPBuildProj = distribution{
+		name: OTLPDistro,
+		buildConfigs: []fullDistBuildConfig{
+			{
+				targetOS:   []string{"darwin", "linux", "windows"},
+				targetArch: []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"},
+			},
 		},
-	},
-	archives:  newArchives(OTLPDistro),
-	msiConfig: newMSIConfig(OTLPDistro),
-	nfpms:     newNfpms(OTLPDistro),
-	containerImages: slices.Concat(
-		newContainerImages(OTLPDistro, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, "7"),
-	),
-	containerImageManifests: slices.Concat(
-		newContainerImageManifests(OTLPDistro, ImagePrefixes, []string{`{{ .Version }}`, "latest"}),
-	),
-}
+		archives:  newArchives(OTLPDistro),
+		msiConfig: newMSIConfig(OTLPDistro),
+		nfpms:     newNfpms(OTLPDistro),
+		containerImages: slices.Concat(
+			newContainerImages(OTLPDistro, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, "7"),
+		),
+		containerImageManifests: slices.Concat(
+			newContainerImageManifests(OTLPDistro, ImagePrefixes, []string{`{{ .Version }}`, "latest"}),
+		),
+	}
 
-var otelK8sBuildProj = distribution{
-	name: K8sDistro,
-	buildConfigs: []fullDistBuildConfig{
-		{
-			targetOS:   []string{"linux"},
-			targetArch: []string{"amd64", "arm64", "ppc64le", "s390x"},
+	// k8s distro
+	otelK8sBuildProj = distribution{
+		name: K8sDistro,
+		buildConfigs: []fullDistBuildConfig{
+			{
+				targetOS:   []string{"linux"},
+				targetArch: []string{"amd64", "arm64", "ppc64le", "s390x"},
+			},
 		},
-	},
-	archives: newArchives(K8sDistro),
-	containerImages: slices.Concat(
-		newContainerImages(K8sDistro, "linux", []string{"amd64", "arm64", "ppc64le", "s390x"}, ""),
-	),
-	containerImageManifests: slices.Concat(
-		newContainerImageManifests(K8sDistro, ImagePrefixes, []string{`{{ .Version }}`, "latest"}),
-	),
-}
+		archives: newArchives(K8sDistro),
+		containerImages: slices.Concat(
+			newContainerImages(K8sDistro, "linux", []string{"amd64", "arm64", "ppc64le", "s390x"}, ""),
+		),
+		containerImageManifests: slices.Concat(
+			newContainerImageManifests(K8sDistro, ImagePrefixes, []string{`{{ .Version }}`, "latest"}),
+		),
+	}
+)
 
 func BuildDist(dist string, buildOrRest bool) config.Project {
 	switch dist {
@@ -81,7 +86,7 @@ func BuildDist(dist string, buildOrRest bool) config.Project {
 	case K8sDistro:
 		return otelK8sBuildProj.BuildProject(buildOrRest)
 	default:
-		return config.Project{}
+		return panic("Unknown distribution")
 	}
 }
 
