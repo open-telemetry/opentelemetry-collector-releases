@@ -9,7 +9,7 @@ import (
 
 var (
 	// otelcol (core) distro
-	otelColBuildProj = newDistributionBuilder(CoreDistro).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().ConfigFunc(func(d *distribution) {
+	otelColBuildProj = newDistributionBuilder(CoreDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []fullDistBuildConfig{
 			{
 				targetOS:   []string{"darwin", "linux", "windows"},
@@ -26,10 +26,10 @@ var (
 		}
 		d.containerImages = newContainerImages(d.name, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, "7")
 		d.containerImageManifests = newContainerImageManifests(d.name, ImagePrefixes, []string{`{{ .Version }}`, "latest"})
-	}).Build()
+	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
 
 	// otlp distro
-	otelColOTLPBuildProj = newDistributionBuilder(OTLPDistro).WithDefaultNfpms().WithDefaultMSIConfig().WithDefaultArchives().ConfigFunc(func(d *distribution) {
+	otelColOTLPBuildProj = newDistributionBuilder(OTLPDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []fullDistBuildConfig{
 			{
 				targetOS:   []string{"darwin", "linux", "windows"},
@@ -38,10 +38,10 @@ var (
 		}
 		d.containerImages = newContainerImages(d.name, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, "7")
 		d.containerImageManifests = newContainerImageManifests(d.name, ImagePrefixes, []string{`{{ .Version }}`, "latest"})
-	}).Build()
+	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
 
 	// k8s distro
-	otelK8sBuildProj = newDistributionBuilder(K8sDistro).WithDefaultArchives().ConfigFunc(func(d *distribution) {
+	otelK8sBuildProj = newDistributionBuilder(K8sDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []fullDistBuildConfig{
 			{
 				targetOS:   []string{"linux"},
@@ -50,7 +50,7 @@ var (
 		}
 		d.containerImages = newContainerImages(d.name, "linux", []string{"amd64", "arm64", "ppc64le", "s390x"}, "")
 		d.containerImageManifests = newContainerImageManifests(d.name, ImagePrefixes, []string{`{{ .Version }}`, "latest"})
-	}).Build()
+	}).WithDefaultArchives().Build()
 )
 
 func BuildDist(dist string, buildOrRest bool) config.Project {
@@ -90,7 +90,7 @@ func (b *distributionBuilder) WithDefaultMSIConfig() *distributionBuilder {
 	return b
 }
 
-func (b *distributionBuilder) ConfigFunc(configFunc func(*distribution)) *distributionBuilder {
+func (b *distributionBuilder) WithConfigFunc(configFunc func(*distribution)) *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, configFunc)
 	return b
 }
