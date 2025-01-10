@@ -23,8 +23,8 @@ var (
 		}
 		d.containerImages = slices.Concat(
 			newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"}),
-			newContainerImages(d.name, "windows", []string{"amd64", "arm64"}, containerImageOptions{winVersion: "2019"}),
-			newContainerImages(d.name, "windows", []string{"amd64", "arm64"}, containerImageOptions{winVersion: "2022"}),
+			newContainerImages(d.name, "windows", winArchs, containerImageOptions{winVersion: "2019"}),
+			newContainerImages(d.name, "windows", winArchs, containerImageOptions{winVersion: "2022"}),
 		)
 		d.containerImageManifests = slices.Concat(
 			newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{}),
@@ -41,8 +41,16 @@ var (
 				targetArch: []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"},
 			},
 		}
-		d.containerImages = newContainerImages(d.name, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, containerImageOptions{armVersion: "7"})
-		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{})
+		d.containerImages = slices.Concat(
+			newContainerImages(d.name, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, containerImageOptions{armVersion: "7"}),
+			newContainerImages(d.name, "windows", winArchs, containerImageOptions{winVersion: "2019"}),
+			newContainerImages(d.name, "windows", winArchs, containerImageOptions{winVersion: "2022"}),
+		)
+		d.containerImageManifests = slices.Concat(
+			newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{}),
+			newContainerImageManifests(d.name, "windows", winArchs, containerImageOptions{winVersion: "2019"}),
+			newContainerImageManifests(d.name, "windows", winArchs, containerImageOptions{winVersion: "2022"}),
+		)
 	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
 
 	// contrib distro
@@ -57,8 +65,16 @@ var (
 				},
 			},
 		}
-		d.containerImages = newContainerImages(d.name, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, containerImageOptions{armVersion: "7"})
-		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{})
+		d.containerImages = slices.Concat(
+			newContainerImages(d.name, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, containerImageOptions{armVersion: "7"}),
+			newContainerImages(d.name, "windows", winArchs, containerImageOptions{winVersion: "2019"}),
+			newContainerImages(d.name, "windows", winArchs, containerImageOptions{winVersion: "2022"}),
+		)
+		d.containerImageManifests = slices.Concat(
+			newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{}),
+			newContainerImageManifests(d.name, "windows", winArchs, containerImageOptions{winVersion: "2019"}),
+			newContainerImageManifests(d.name, "windows", winArchs, containerImageOptions{winVersion: "2022"}),
+		)
 	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
 
 	// contrib build-only project
@@ -69,8 +85,16 @@ var (
 				targetArch: []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"},
 			},
 		}
-		d.containerImages = newContainerImages(d.name, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, containerImageOptions{armVersion: "7"})
-		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{})
+		d.containerImages = slices.Concat(
+			newContainerImages(d.name, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, containerImageOptions{armVersion: "7"}),
+			newContainerImages(d.name, "windows", winArchs, containerImageOptions{winVersion: "2019"}),
+			newContainerImages(d.name, "windows", winArchs, containerImageOptions{winVersion: "2022"}),
+		)
+		d.containerImageManifests = slices.Concat(
+			newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{}),
+			newContainerImageManifests(d.name, "windows", winArchs, containerImageOptions{winVersion: "2019"}),
+			newContainerImageManifests(d.name, "windows", winArchs, containerImageOptions{winVersion: "2022"}),
+		)
 	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
 
 	// k8s distro
@@ -82,8 +106,17 @@ var (
 				targetArch: k8sArchs,
 			},
 		}
-		d.containerImages = newContainerImages(d.name, "linux", k8sArchs, containerImageOptions{})
-		d.containerImageManifests = newContainerImageManifests(d.name, "linux", k8sArchs, containerImageOptions{})
+		d.containerImages = slices.Concat(
+			newContainerImages(d.name, "linux", k8sArchs, containerImageOptions{}),
+			newContainerImages(d.name, "windows", winArchs, containerImageOptions{winVersion: "2019"}),
+			newContainerImages(d.name, "windows", winArchs, containerImageOptions{winVersion: "2022"}),
+		)
+
+		d.containerImageManifests = slices.Concat(
+			newContainerImageManifests(d.name, "linux", k8sArchs, containerImageOptions{}),
+			newContainerImageManifests(d.name, "windows", winArchs, containerImageOptions{winVersion: "2019"}),
+			newContainerImageManifests(d.name, "windows", winArchs, containerImageOptions{winVersion: "2022"}),
+		)
 	}).WithDefaultArchives().Build()
 )
 
