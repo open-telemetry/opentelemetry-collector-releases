@@ -9,7 +9,7 @@ import (
 
 var (
 	// otelcol (core) distro
-	otelColBuildProj = newDistributionBuilder(CoreDistro).WithConfigFunc(func(d *distribution) {
+	otelColDist = newDistributionBuilder(CoreDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
 			&fullDistBuildConfig{
 				targetOS:   []string{"darwin", "linux", "windows"},
@@ -29,7 +29,7 @@ var (
 	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
 
 	// otlp distro
-	otelColOTLPBuildProj = newDistributionBuilder(OTLPDistro).WithConfigFunc(func(d *distribution) {
+	otlpDist = newDistributionBuilder(OTLPDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
 			&fullDistBuildConfig{
 				targetOS:   []string{"darwin", "linux", "windows"},
@@ -41,7 +41,7 @@ var (
 	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
 
 	// contrib distro
-	otelColContribBuildProj = newDistributionBuilder(ContribDistro).WithConfigFunc(func(d *distribution) {
+	contribDist = newDistributionBuilder(ContribDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
 			&preBuiltBuildConfig{
 				targetOS:   []string{"darwin", "linux", "windows"},
@@ -57,7 +57,7 @@ var (
 	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
 
 	// contrib build-only project
-	otelColContribBuildOnlyProj = newDistributionBuilder(ContribDistro).WithConfigFunc(func(d *distribution) {
+	contribBuildOnlyDist = newDistributionBuilder(ContribDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
 			&fullDistBuildConfig{
 				targetOS:   []string{"darwin", "linux", "windows"},
@@ -69,7 +69,7 @@ var (
 	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
 
 	// k8s distro
-	otelK8sBuildProj = newDistributionBuilder(K8sDistro).WithConfigFunc(func(d *distribution) {
+	k8sDist = newDistributionBuilder(K8sDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
 			&fullDistBuildConfig{
 				targetOS:   []string{"linux"},
@@ -84,16 +84,16 @@ var (
 func BuildDist(dist string, onlyBuild bool) config.Project {
 	switch dist {
 	case CoreDistro:
-		return otelColBuildProj.BuildProject()
+		return otelColDist.BuildProject()
 	case OTLPDistro:
-		return otelColOTLPBuildProj.BuildProject()
+		return otlpDist.BuildProject()
 	case K8sDistro:
-		return otelK8sBuildProj.BuildProject()
+		return k8sDist.BuildProject()
 	case ContribDistro:
 		if onlyBuild {
-			return otelColContribBuildOnlyProj.BuildProject()
+			return contribBuildOnlyDist.BuildProject()
 		}
-		return otelColContribBuildProj.BuildProject()
+		return contribDist.BuildProject()
 	default:
 		panic("Unknown distribution")
 	}
