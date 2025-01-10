@@ -10,8 +10,8 @@ import (
 var (
 	// otelcol (core) distro
 	otelColBuildProj = newDistributionBuilder(CoreDistro).WithConfigFunc(func(d *distribution) {
-		d.buildConfigs = []fullDistBuildConfig{
-			{
+		d.buildConfigs = []buildConfig{
+			&fullDistBuildConfig{
 				targetOS:   []string{"darwin", "linux", "windows"},
 				targetArch: []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"},
 			},
@@ -30,8 +30,8 @@ var (
 
 	// otlp distro
 	otelColOTLPBuildProj = newDistributionBuilder(OTLPDistro).WithConfigFunc(func(d *distribution) {
-		d.buildConfigs = []fullDistBuildConfig{
-			{
+		d.buildConfigs = []buildConfig{
+			&fullDistBuildConfig{
 				targetOS:   []string{"darwin", "linux", "windows"},
 				targetArch: []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"},
 			},
@@ -40,10 +40,26 @@ var (
 		d.containerImageManifests = newContainerImageManifests(d.name, ImagePrefixes, []string{`{{ .Version }}`, "latest"})
 	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
 
+	// contrib distro
+	otelColContribBuildProj = newDistributionBuilder(ContribDistro).WithConfigFunc(func(d *distribution) {
+		d.buildConfigs = []buildConfig{
+			&preBuiltBuildConfig{
+				targetOS:   []string{"darwin", "linux", "windows"},
+				targetArch: []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"},
+				preBuilt: config.PreBuiltOptions{
+					Path: "artifacts/otelcol-contrib_{{ .Target }}" +
+						"/otelcol-contrib{{- if eq .Os \"windows\" }}.exe{{ end }}",
+				},
+			},
+		}
+		d.containerImages = newContainerImages(d.name, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, "7")
+		d.containerImageManifests = newContainerImageManifests(d.name, ImagePrefixes, []string{`{{ .Version }}`, "latest"})
+	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
+
 	// k8s distro
 	otelK8sBuildProj = newDistributionBuilder(K8sDistro).WithConfigFunc(func(d *distribution) {
-		d.buildConfigs = []fullDistBuildConfig{
-			{
+		d.buildConfigs = []buildConfig{
+			&fullDistBuildConfig{
 				targetOS:   []string{"linux"},
 				targetArch: []string{"amd64", "arm64", "ppc64le", "s390x"},
 			},
@@ -61,6 +77,8 @@ func BuildDist(dist string, buildOrRest bool) config.Project {
 		return otelColOTLPBuildProj.BuildProject(buildOrRest)
 	case K8sDistro:
 		return otelK8sBuildProj.BuildProject(buildOrRest)
+	case ContribDistro:
+		return otelColContribBuildProj.BuildProject(buildOrRest)
 	default:
 		panic("Unknown distribution")
 	}
@@ -102,11 +120,15 @@ func (b *distributionBuilder) Build() *distribution {
 	return b.dist
 }
 
+type buildConfig interface {
+	Build(dist string) config.Build
+}
+
 type distribution struct {
 	// Name of the distribution (i.e. otelcol, otelcol-contrib, k8s)
 	name string
 
-	buildConfigs            []fullDistBuildConfig
+	buildConfigs            []buildConfig
 	archives                []config.Archive
 	msiConfig               []config.MSI
 	nfpms                   []config.NFPM
@@ -233,14 +255,12 @@ func (d *distribution) BuildProject(buildOrRest bool) config.Project {
 		Monorepo: config.Monorepo{
 			TagPrefix: "v",
 		},
+		Partial: config.Partial{By: "target"},
 	}
 }
 
 type fullDistBuildConfig struct {
-	// Target OS (i.e. linux, darwin, windows)
-	// targetOS string
-	targetOS []string
-	// Target architecture (i.e. amd64, arm64)
+	targetOS   []string
 	targetArch []string
 }
 
@@ -255,6 +275,28 @@ func (c *fullDistBuildConfig) Build(dist string) config.Build {
 			Flags:   []string{"-trimpath"},
 			Ldflags: []string{"-s", "-w"},
 		},
+		// Goos:   []string{c.targetOS},
+		Goos:   c.targetOS,
+		Goarch: c.targetArch,
+		Goarm:  ArmVersions(dist),
+		Ignore: IgnoreBuildCombinations(dist),
+	}
+}
+
+type preBuiltBuildConfig struct {
+	targetOS   []string
+	targetArch []string
+	preBuilt   config.PreBuiltOptions
+}
+
+func (c *preBuiltBuildConfig) Build(dist string) config.Build {
+	return config.Build{
+		// ID:     dist + "-" + c.targetOS,
+		ID:       dist,
+		Builder:  "prebuilt",
+		PreBuilt: c.preBuilt,
+		Dir:      "_build",
+		Binary:   dist,
 		// Goos:   []string{c.targetOS},
 		Goos:   c.targetOS,
 		Goarch: c.targetArch,
