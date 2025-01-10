@@ -11,6 +11,7 @@ import (
 
 var (
 	baseArchs = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
+	winArchs  = []string{"amd64", "arm64"}
 
 	// otelcol (core) distro
 	otelColDist = newDistributionBuilder(CoreDistro).WithConfigFunc(func(d *distribution) {
@@ -26,9 +27,9 @@ var (
 			newContainerImages(d.name, "windows", []string{"amd64", "arm64"}, containerImageOptions{winVersion: "2022"}),
 		)
 		d.containerImageManifests = slices.Concat(
-			newContainerImageManifests(d.name, "linux", baseArchs, ImagePrefixes),
-			newContainerImageManifests(d.name, "windows-2019", []string{"amd64", "arm64"}, ImagePrefixes),
-			newContainerImageManifests(d.name, "windows-2022", []string{"amd64", "arm64"}, ImagePrefixes),
+			newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{}),
+			newContainerImageManifests(d.name, "windows", winArchs, containerImageOptions{winVersion: "2019"}),
+			newContainerImageManifests(d.name, "windows", winArchs, containerImageOptions{winVersion: "2022"}),
 		)
 	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
 
@@ -41,7 +42,7 @@ var (
 			},
 		}
 		d.containerImages = newContainerImages(d.name, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, containerImageOptions{armVersion: "7"})
-		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs, ImagePrefixes)
+		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{})
 	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
 
 	// contrib distro
@@ -57,7 +58,7 @@ var (
 			},
 		}
 		d.containerImages = newContainerImages(d.name, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, containerImageOptions{armVersion: "7"})
-		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs, ImagePrefixes)
+		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{})
 	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
 
 	// contrib build-only project
@@ -69,7 +70,7 @@ var (
 			},
 		}
 		d.containerImages = newContainerImages(d.name, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, containerImageOptions{armVersion: "7"})
-		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs, ImagePrefixes)
+		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{})
 	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
 
 	// k8s distro
@@ -82,7 +83,7 @@ var (
 			},
 		}
 		d.containerImages = newContainerImages(d.name, "linux", k8sArchs, containerImageOptions{})
-		d.containerImageManifests = newContainerImageManifests(d.name, "linux", k8sArchs, ImagePrefixes)
+		d.containerImageManifests = newContainerImageManifests(d.name, "linux", k8sArchs, containerImageOptions{})
 	}).WithDefaultArchives().Build()
 )
 
@@ -156,11 +157,13 @@ type distribution struct {
 	containerImageManifests []config.DockerManifest
 }
 
-func newContainerImageManifests(dist, os string, archs, imageNames []string) []config.DockerManifest {
+func newContainerImageManifests(dist, os string, archs []string, opts containerImageOptions) []config.DockerManifest {
+	imageNames := []string{DockerHub, GHCR}
 	tags := []string{`{{ .Version }}`, "latest"}
-	if strings.HasPrefix(os, "windows") {
+
+	if os == "windows" {
 		for i, tag := range tags {
-			tags[i] = fmt.Sprintf("%s-%s", tag, os)
+			tags[i] = fmt.Sprintf("%s-%s-%s", tag, os, opts.winVersion)
 		}
 	}
 	var r []config.DockerManifest
