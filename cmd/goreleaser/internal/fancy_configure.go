@@ -56,6 +56,18 @@ var (
 		d.containerImageManifests = newContainerImageManifests(d.name, ImagePrefixes, []string{`{{ .Version }}`, "latest"})
 	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
 
+	// contrib build-only project
+	otelColContribBuildOnlyProj = newDistributionBuilder(ContribDistro).WithConfigFunc(func(d *distribution) {
+		d.buildConfigs = []buildConfig{
+			&fullDistBuildConfig{
+				targetOS:   []string{"darwin", "linux", "windows"},
+				targetArch: []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"},
+			},
+		}
+		d.containerImages = newContainerImages(d.name, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, "7")
+		d.containerImageManifests = newContainerImageManifests(d.name, ImagePrefixes, []string{`{{ .Version }}`, "latest"})
+	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
+
 	// k8s distro
 	otelK8sBuildProj = newDistributionBuilder(K8sDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
@@ -69,16 +81,19 @@ var (
 	}).WithDefaultArchives().Build()
 )
 
-func BuildDist(dist string, buildOrRest bool) config.Project {
+func BuildDist(dist string, onlyBuild bool) config.Project {
 	switch dist {
 	case CoreDistro:
-		return otelColBuildProj.BuildProject(buildOrRest)
+		return otelColBuildProj.BuildProject()
 	case OTLPDistro:
-		return otelColOTLPBuildProj.BuildProject(buildOrRest)
+		return otelColOTLPBuildProj.BuildProject()
 	case K8sDistro:
-		return otelK8sBuildProj.BuildProject(buildOrRest)
+		return otelK8sBuildProj.BuildProject()
 	case ContribDistro:
-		return otelColContribBuildProj.BuildProject(buildOrRest)
+		if onlyBuild {
+			return otelColContribBuildOnlyProj.BuildProject()
+		}
+		return otelColContribBuildProj.BuildProject()
 	default:
 		panic("Unknown distribution")
 	}
@@ -230,7 +245,7 @@ func newArchives(dist string) []config.Archive {
 	}
 }
 
-func (d *distribution) BuildProject(buildOrRest bool) config.Project {
+func (d *distribution) BuildProject() config.Project {
 	builds := make([]config.Build, 0, len(d.buildConfigs))
 	for _, buildConfig := range d.buildConfigs {
 		builds = append(builds, buildConfig.Build(d.name))
