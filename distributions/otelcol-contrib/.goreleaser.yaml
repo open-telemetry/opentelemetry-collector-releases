@@ -10,11 +10,9 @@ msi:
       - opentelemetry.ico
       - config.yaml
 builds:
-  - id: otelcol-contrib
+  - id: otelcol-contrib-linux
     goos:
-      - darwin
       - linux
-      - windows
     goarch:
       - "386"
       - amd64
@@ -41,11 +39,67 @@ builds:
     binary: otelcol-contrib
     builder: prebuilt
     prebuilt:
-      path: artifacts/otelcol-contrib_{{ .Target }}/otelcol-contrib{{- if eq .Os "windows" }}.exe{{ end }}
+      path: artifacts/otelcol-contrib_{{ .Target }}/otelcol-contrib
+  - id: otelcol-contrib-darwin
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    goarm:
+      - "7"
+    ignore:
+      - goos: darwin
+        goarch: "386"
+      - goos: darwin
+        goarch: arm
+      - goos: darwin
+        goarch: s390x
+      - goos: windows
+        goarch: arm
+      - goos: windows
+        goarch: arm64
+      - goos: windows
+        goarch: s390x
+    dir: _build
+    binary: otelcol-contrib
+    builder: prebuilt
+    prebuilt:
+      path: artifacts/otelcol-contrib_{{ .Target }}/otelcol-contrib
+  - id: otelcol-contrib-windows
+    goos:
+      - windows
+    goarch:
+      - "386"
+      - amd64
+      - arm64
+      - ppc64le
+    goarm:
+      - "7"
+    ignore:
+      - goos: darwin
+        goarch: "386"
+      - goos: darwin
+        goarch: arm
+      - goos: darwin
+        goarch: s390x
+      - goos: windows
+        goarch: arm
+      - goos: windows
+        goarch: arm64
+      - goos: windows
+        goarch: s390x
+    dir: _build
+    binary: otelcol-contrib
+    builder: prebuilt
+    prebuilt:
+      path: artifacts/otelcol-contrib_{{ .Target }}/otelcol-contrib.exe
 archives:
   - id: otelcol-contrib
     builds:
-      - otelcol-contrib
+      - otelcol-contrib-linux
+      - otelcol-contrib-darwin
+      - otelcol-contrib-windows
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
   - package_name: otelcol-contrib
@@ -211,7 +265,7 @@ dockers:
       - config.yaml
     build_flag_templates:
       - --pull
-      - --platform=linux/windows-2019-amd64
+      - --platform=windows/amd64
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.name={{.ProjectName}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}
@@ -231,7 +285,7 @@ dockers:
       - config.yaml
     build_flag_templates:
       - --pull
-      - --platform=linux/windows-2019-arm64
+      - --platform=windows/arm64
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.name={{.ProjectName}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}
@@ -251,7 +305,7 @@ dockers:
       - config.yaml
     build_flag_templates:
       - --pull
-      - --platform=linux/windows-2022-amd64
+      - --platform=windows/amd64
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.name={{.ProjectName}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}
@@ -271,7 +325,7 @@ dockers:
       - config.yaml
     build_flag_templates:
       - --pull
-      - --platform=linux/windows-2022-arm64
+      - --platform=windows/arm64
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.name={{.ProjectName}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}

@@ -10,11 +10,9 @@ msi:
       - opentelemetry.ico
       - config.yaml
 builds:
-  - id: otelcol
+  - id: otelcol-linux
     goos:
-      - darwin
       - linux
-      - windows
     goarch:
       - "386"
       - amd64
@@ -24,19 +22,38 @@ builds:
       - s390x
     goarm:
       - "7"
-    ignore:
-      - goos: darwin
-        goarch: "386"
-      - goos: darwin
-        goarch: arm
-      - goos: darwin
-        goarch: s390x
-      - goos: windows
-        goarch: arm
-      - goos: windows
-        goarch: arm64
-      - goos: windows
-        goarch: s390x
+    dir: _build
+    binary: otelcol
+    ldflags:
+      - -s
+      - -w
+    flags:
+      - -trimpath
+    env:
+      - CGO_ENABLED=0
+  - id: otelcol-darwin
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    dir: _build
+    binary: otelcol
+    ldflags:
+      - -s
+      - -w
+    flags:
+      - -trimpath
+    env:
+      - CGO_ENABLED=0
+  - id: otelcol-windows
+    goos:
+      - windows
+    goarch:
+      - "386"
+      - amd64
+      - arm64
+      - ppc64le
     dir: _build
     binary: otelcol
     ldflags:
@@ -49,7 +66,9 @@ builds:
 archives:
   - id: otelcol
     builds:
-      - otelcol
+      - otelcol-linux
+      - otelcol-darwin
+      - otelcol-windows
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
   - package_name: otelcol
@@ -215,7 +234,7 @@ dockers:
       - config.yaml
     build_flag_templates:
       - --pull
-      - --platform=linux/windows-2019-amd64
+      - --platform=windows/amd64
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.name={{.ProjectName}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}
@@ -235,7 +254,7 @@ dockers:
       - config.yaml
     build_flag_templates:
       - --pull
-      - --platform=linux/windows-2019-arm64
+      - --platform=windows/arm64
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.name={{.ProjectName}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}
@@ -255,7 +274,7 @@ dockers:
       - config.yaml
     build_flag_templates:
       - --pull
-      - --platform=linux/windows-2022-amd64
+      - --platform=windows/amd64
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.name={{.ProjectName}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}
@@ -275,7 +294,7 @@ dockers:
       - config.yaml
     build_flag_templates:
       - --pull
-      - --platform=linux/windows-2022-arm64
+      - --platform=windows/arm64
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.name={{.ProjectName}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}

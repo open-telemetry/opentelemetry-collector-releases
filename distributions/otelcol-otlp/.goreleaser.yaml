@@ -9,11 +9,9 @@ msi:
     extra_files:
       - opentelemetry.ico
 builds:
-  - id: otelcol-otlp
+  - id: otelcol-otlp-linux
     goos:
-      - darwin
       - linux
-      - windows
     goarch:
       - "386"
       - amd64
@@ -23,19 +21,38 @@ builds:
       - s390x
     goarm:
       - "7"
-    ignore:
-      - goos: darwin
-        goarch: "386"
-      - goos: darwin
-        goarch: arm
-      - goos: darwin
-        goarch: s390x
-      - goos: windows
-        goarch: arm
-      - goos: windows
-        goarch: arm64
-      - goos: windows
-        goarch: s390x
+    dir: _build
+    binary: otelcol-otlp
+    ldflags:
+      - -s
+      - -w
+    flags:
+      - -trimpath
+    env:
+      - CGO_ENABLED=0
+  - id: otelcol-otlp-darwin
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    dir: _build
+    binary: otelcol-otlp
+    ldflags:
+      - -s
+      - -w
+    flags:
+      - -trimpath
+    env:
+      - CGO_ENABLED=0
+  - id: otelcol-otlp-windows
+    goos:
+      - windows
+    goarch:
+      - "386"
+      - amd64
+      - arm64
+      - ppc64le
     dir: _build
     binary: otelcol-otlp
     ldflags:
@@ -48,7 +65,9 @@ builds:
 archives:
   - id: otelcol-otlp
     builds:
-      - otelcol-otlp
+      - otelcol-otlp-linux
+      - otelcol-otlp-darwin
+      - otelcol-otlp-windows
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
   - package_name: otelcol-otlp
@@ -197,7 +216,7 @@ dockers:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:latest-windows-2019-amd64
     build_flag_templates:
       - --pull
-      - --platform=linux/windows-2019-amd64
+      - --platform=windows/amd64
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.name={{.ProjectName}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}
@@ -215,7 +234,7 @@ dockers:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:latest-windows-2019-arm64
     build_flag_templates:
       - --pull
-      - --platform=linux/windows-2019-arm64
+      - --platform=windows/arm64
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.name={{.ProjectName}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}
@@ -233,7 +252,7 @@ dockers:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:latest-windows-2022-amd64
     build_flag_templates:
       - --pull
-      - --platform=linux/windows-2022-amd64
+      - --platform=windows/amd64
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.name={{.ProjectName}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}
@@ -251,7 +270,7 @@ dockers:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:latest-windows-2022-arm64
     build_flag_templates:
       - --pull
-      - --platform=linux/windows-2022-arm64
+      - --platform=windows/arm64
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.name={{.ProjectName}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}
