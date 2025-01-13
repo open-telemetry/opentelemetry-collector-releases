@@ -226,7 +226,6 @@ dockers:
     goarch: amd64
     dockerfile: Dockerfile
     image_templates:
-      - --build-arg WIN_VERSION=2019
       - otel/opentelemetry-collector:{{ .Version }}-windows-2019-amd64
       - otel/opentelemetry-collector:latest-windows-2019-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-windows-2019-amd64
@@ -234,6 +233,7 @@ dockers:
     extra_files:
       - config.yaml
     build_flag_templates:
+      - --build-arg WIN_VERSION=2019
       - --pull
       - --platform=windows/amd64
       - --label=org.opencontainers.image.created={{.Date}}
@@ -247,7 +247,6 @@ dockers:
     goarch: amd64
     dockerfile: Dockerfile
     image_templates:
-      - --build-arg WIN_VERSION=2022
       - otel/opentelemetry-collector:{{ .Version }}-windows-2022-amd64
       - otel/opentelemetry-collector:latest-windows-2022-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-windows-2022-amd64
@@ -255,6 +254,7 @@ dockers:
     extra_files:
       - config.yaml
     build_flag_templates:
+      - --build-arg WIN_VERSION=2022
       - --pull
       - --platform=windows/amd64
       - --label=org.opencontainers.image.created={{.Date}}
