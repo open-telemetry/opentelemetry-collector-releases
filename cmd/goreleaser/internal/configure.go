@@ -46,14 +46,8 @@ var (
 	winContainerArchs = []string{"amd64", "arm64"}
 	darwinArchs       = []string{"amd64", "arm64"}
 
-	ImagePrefixes      = []string{DockerHub, GHCR}
-	Architectures      = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
-	DefaultConfigDists = map[string]bool{CoreDistro: true, ContribDistro: true}
-	MSIWindowsDists    = map[string]bool{CoreDistro: true, ContribDistro: true, OTLPDistro: true}
-	K8sDockerSkipArchs = map[string]bool{"arm": true, "386": true}
-	K8sGoos            = []string{"linux", "windows"}
-	K8sArchs           = []string{"amd64", "arm64", "ppc64le", "s390x"}
-	Partial            = config.Partial{By: "target"}
+	imageRepos         = []string{DockerHub, GHCR}
+	defaultConfigDists = map[string]bool{CoreDistro: true, ContribDistro: true}
 
 	// otelcol (core) distro
 	otelColDist = newDistributionBuilder(CoreDistro).WithConfigFunc(func(d *distribution) {
@@ -274,7 +268,6 @@ type distribution struct {
 }
 
 func newContainerImageManifests(dist, os string, archs []string, opts containerImageOptions) []config.DockerManifest {
-	imageNames := []string{DockerHub, GHCR}
 	tags := []string{`{{ .Version }}`, "latest"}
 
 	if os == "windows" {
@@ -283,9 +276,9 @@ func newContainerImageManifests(dist, os string, archs []string, opts containerI
 		}
 	}
 	var r []config.DockerManifest
-	for _, imageName := range imageNames {
+	for _, imageRepo := range imageRepos {
 		for _, tag := range tags {
-			r = append(r, osDockerManifest(imageName, tag, dist, os, archs))
+			r = append(r, osDockerManifest(imageRepo, tag, dist, os, archs))
 		}
 	}
 	return r
@@ -323,7 +316,7 @@ func newNfpms(dist string) []config.NFPM {
 			Type:        "config|noreplace",
 		},
 	}
-	if _, ok := DefaultConfigDists[dist]; ok {
+	if _, ok := defaultConfigDists[dist]; ok {
 		nfpmContents = append(nfpmContents, &config.NFPMContent{
 			Source:      "config.yaml",
 			Destination: path.Join("/etc", dist, "config.yaml"),
@@ -358,7 +351,7 @@ func newNfpms(dist string) []config.NFPM {
 
 func newMSIConfig(dist string) []config.MSI {
 	files := []string{"opentelemetry.ico"}
-	if _, ok := DefaultConfigDists[dist]; ok {
+	if _, ok := defaultConfigDists[dist]; ok {
 		files = append(files, "config.yaml")
 	}
 	return []config.MSI{
@@ -463,7 +456,7 @@ func (c *preBuiltBuildConfig) OS() string {
 func dockerImageWithOS(dist, os, arch string, opts containerImageOptions) config.Docker {
 	osArch := osArch{os: os, arch: arch, version: opts.version()}
 	imageTemplates := make([]string, 0)
-	for _, prefix := range ImagePrefixes {
+	for _, prefix := range imageRepos {
 		dockerArchTag := strings.ReplaceAll(osArch.imageTag(), "/", "")
 		imageTemplates = append(
 			imageTemplates,
@@ -476,7 +469,7 @@ func dockerImageWithOS(dist, os, arch string, opts containerImageOptions) config
 		return fmt.Sprintf("--label=org.opencontainers.image.%s={{%s}}", name, template)
 	}
 	files := make([]string, 0)
-	if _, ok := DefaultConfigDists[dist]; ok {
+	if _, ok := defaultConfigDists[dist]; ok {
 		files = append(files, "config.yaml")
 	}
 	imageConfig := config.Docker{
