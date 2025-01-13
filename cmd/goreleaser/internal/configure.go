@@ -186,125 +186,29 @@ func (b *distributionBuilder) WithDefaultArchives() *distributionBuilder {
 		for _, build := range d.buildConfigs {
 			builds = append(builds, fmt.Sprintf("%s-%s", d.name, build.OS()))
 		}
-		d.archives = newArchives(d.name, builds)
+		d.archives = b.newArchives(d.name, builds)
 	})
 	return b
+}
+
+func (b *distributionBuilder) newArchives(dist string, builds []string) []config.Archive {
+	return []config.Archive{
+		{
+			ID:           dist,
+			NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}",
+			Builds:       builds,
+		},
+	}
 }
 
 func (b *distributionBuilder) WithDefaultNfpms() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		d.nfpms = newNfpms(d.name)
+		d.nfpms = b.newNfpms(d.name)
 	})
 	return b
 }
 
-func (b *distributionBuilder) WithDefaultMSIConfig() *distributionBuilder {
-	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		d.msiConfig = newMSIConfig(d.name)
-	})
-	return b
-}
-
-func (b *distributionBuilder) WithDefaultSigns() *distributionBuilder {
-	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		d.signs = Sign()
-	})
-	return b
-}
-
-func (b *distributionBuilder) WithDefaultDockerSigns() *distributionBuilder {
-	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		d.dockerSigns = DockerSigns()
-	})
-	return b
-}
-
-func (b *distributionBuilder) WithDefaultSBOMs() *distributionBuilder {
-	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		d.sboms = SBOM()
-	})
-	return b
-}
-
-func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
-	return b.WithDefaultArchives().
-		WithDefaultNfpms().
-		WithDefaultMSIConfig().
-		WithDefaultSigns().
-		WithDefaultDockerSigns().
-		WithDefaultSBOMs()
-}
-
-func (b *distributionBuilder) WithConfigFunc(configFunc func(*distribution)) *distributionBuilder {
-	b.configFuncs = append(b.configFuncs, configFunc)
-	return b
-}
-
-func (b *distributionBuilder) Build() *distribution {
-	for _, configFunc := range b.configFuncs {
-		configFunc(b.dist)
-	}
-	return b.dist
-}
-
-type buildConfig interface {
-	Build(dist string) config.Build
-	OS() string
-}
-
-type distribution struct {
-	// Name of the distribution (i.e. otelcol, otelcol-contrib, k8s)
-	name string
-
-	buildConfigs            []buildConfig
-	archives                []config.Archive
-	msiConfig               []config.MSI
-	nfpms                   []config.NFPM
-	containerImages         []config.Docker
-	containerImageManifests []config.DockerManifest
-	signs                   []config.Sign
-	dockerSigns             []config.Sign
-	sboms                   []config.SBOM
-}
-
-func newContainerImageManifests(dist, os string, archs []string, opts containerImageOptions) []config.DockerManifest {
-	tags := []string{`{{ .Version }}`, "latest"}
-
-	if os == "windows" {
-		for i, tag := range tags {
-			tags[i] = fmt.Sprintf("%s-%s-%s", tag, os, opts.winVersion)
-		}
-	}
-	var r []config.DockerManifest
-	for _, imageRepo := range imageRepos {
-		for _, tag := range tags {
-			r = append(r, osDockerManifest(imageRepo, tag, dist, os, archs))
-		}
-	}
-	return r
-}
-
-type containerImageOptions struct {
-	armVersion string
-	winVersion string
-}
-
-func (o *containerImageOptions) version() string {
-	if o.armVersion != "" {
-		return o.armVersion
-	}
-	return o.winVersion
-}
-
-func newContainerImages(dist string, targetOS string, targetArchs []string, opts containerImageOptions) []config.Docker {
-	images := []config.Docker{}
-	for _, targetArch := range targetArchs {
-		images = append(images, dockerImageWithOS(dist, targetOS, targetArch, opts))
-	}
-	return images
-}
-
-func newNfpms(dist string) []config.NFPM {
+func (b *distributionBuilder) newNfpms(dist string) []config.NFPM {
 	nfpmContents := config.NFPMContents{
 		{
 			Source:      fmt.Sprintf("%s.service", dist),
@@ -349,7 +253,14 @@ func newNfpms(dist string) []config.NFPM {
 	}
 }
 
-func newMSIConfig(dist string) []config.MSI {
+func (b *distributionBuilder) WithDefaultMSIConfig() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		d.msiConfig = b.newMSIConfig(d.name)
+	})
+	return b
+}
+
+func (b *distributionBuilder) newMSIConfig(dist string) []config.MSI {
 	files := []string{"opentelemetry.ico"}
 	if _, ok := defaultConfigDists[dist]; ok {
 		files = append(files, "config.yaml")
@@ -364,14 +275,110 @@ func newMSIConfig(dist string) []config.MSI {
 	}
 }
 
-func newArchives(dist string, builds []string) []config.Archive {
-	return []config.Archive{
+func (b *distributionBuilder) WithDefaultSigns() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		d.signs = b.signs()
+	})
+	return b
+}
+
+func (b *distributionBuilder) signs() []config.Sign {
+	return []config.Sign{
 		{
-			ID:           dist,
-			NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}",
-			Builds:       builds,
+			Artifacts:   "all",
+			Signature:   "${artifact}.sig",
+			Certificate: "${artifact}.pem",
+			Cmd:         "cosign",
+			Args: []string{
+				"sign-blob",
+				"--output-signature",
+				"${artifact}.sig",
+				"--output-certificate",
+				"${artifact}.pem",
+				"${artifact}",
+			},
 		},
 	}
+}
+
+func (b *distributionBuilder) WithDefaultDockerSigns() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		d.dockerSigns = b.dockerSigns()
+	})
+	return b
+}
+
+func (b *distributionBuilder) dockerSigns() []config.Sign {
+	return []config.Sign{
+		{
+			Artifacts: "all",
+			Args: []string{
+				"sign",
+				"${artifact}",
+			},
+		},
+	}
+}
+
+func (b *distributionBuilder) WithDefaultSBOMs() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		d.sboms = b.sboms()
+	})
+	return b
+}
+
+func (b *distributionBuilder) sboms() []config.SBOM {
+	return []config.SBOM{
+		{
+			ID:        "archive",
+			Artifacts: "archive",
+		},
+		{
+			ID:        "package",
+			Artifacts: "package",
+		},
+	}
+}
+
+func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
+	return b.WithDefaultArchives().
+		WithDefaultNfpms().
+		WithDefaultMSIConfig().
+		WithDefaultSigns().
+		WithDefaultDockerSigns().
+		WithDefaultSBOMs()
+}
+
+func (b *distributionBuilder) WithConfigFunc(configFunc func(*distribution)) *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, configFunc)
+	return b
+}
+
+func (b *distributionBuilder) Build() *distribution {
+	for _, configFunc := range b.configFuncs {
+		configFunc(b.dist)
+	}
+	return b.dist
+}
+
+type buildConfig interface {
+	Build(dist string) config.Build
+	OS() string
+}
+
+type distribution struct {
+	// Name of the distribution (i.e. otelcol, otelcol-contrib, k8s)
+	name string
+
+	buildConfigs            []buildConfig
+	archives                []config.Archive
+	msiConfig               []config.MSI
+	nfpms                   []config.NFPM
+	containerImages         []config.Docker
+	containerImageManifests []config.DockerManifest
+	signs                   []config.Sign
+	dockerSigns             []config.Sign
+	sboms                   []config.SBOM
 }
 
 func (d *distribution) BuildProject() config.Project {
@@ -401,6 +408,43 @@ func (d *distribution) BuildProject() config.Project {
 		},
 		Partial: config.Partial{By: "target"},
 	}
+}
+
+func newContainerImageManifests(dist, os string, archs []string, opts containerImageOptions) []config.DockerManifest {
+	tags := []string{`{{ .Version }}`, "latest"}
+
+	if os == "windows" {
+		for i, tag := range tags {
+			tags[i] = fmt.Sprintf("%s-%s-%s", tag, os, opts.winVersion)
+		}
+	}
+	var r []config.DockerManifest
+	for _, imageRepo := range imageRepos {
+		for _, tag := range tags {
+			r = append(r, osDockerManifest(imageRepo, tag, dist, os, archs))
+		}
+	}
+	return r
+}
+
+type containerImageOptions struct {
+	armVersion string
+	winVersion string
+}
+
+func (o *containerImageOptions) version() string {
+	if o.armVersion != "" {
+		return o.armVersion
+	}
+	return o.winVersion
+}
+
+func newContainerImages(dist string, targetOS string, targetArchs []string, opts containerImageOptions) []config.Docker {
+	images := []config.Docker{}
+	for _, targetArch := range targetArchs {
+		images = append(images, dockerImageWithOS(dist, targetOS, targetArch, opts))
+	}
+	return images
 }
 
 type fullDistBuildConfig struct {
@@ -571,49 +615,5 @@ func archName(arch, armVersion string) string {
 		return fmt.Sprintf("%s/v%s", arch, armVersion)
 	default:
 		return arch
-	}
-}
-
-func Sign() []config.Sign {
-	return []config.Sign{
-		{
-			Artifacts:   "all",
-			Signature:   "${artifact}.sig",
-			Certificate: "${artifact}.pem",
-			Cmd:         "cosign",
-			Args: []string{
-				"sign-blob",
-				"--output-signature",
-				"${artifact}.sig",
-				"--output-certificate",
-				"${artifact}.pem",
-				"${artifact}",
-			},
-		},
-	}
-}
-
-func DockerSigns() []config.Sign {
-	return []config.Sign{
-		{
-			Artifacts: "all",
-			Args: []string{
-				"sign",
-				"${artifact}",
-			},
-		},
-	}
-}
-
-func SBOM() []config.SBOM {
-	return []config.SBOM{
-		{
-			ID:        "archive",
-			Artifacts: "archive",
-		},
-		{
-			ID:        "package",
-			Artifacts: "package",
-		},
 	}
 }
