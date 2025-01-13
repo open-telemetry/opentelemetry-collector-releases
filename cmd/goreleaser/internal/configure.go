@@ -43,7 +43,7 @@ const (
 var (
 	baseArchs         = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
 	winArchs          = []string{"386", "amd64", "arm64", "ppc64le"}
-	winContainerArchs = []string{"amd64", "arm64"}
+	winContainerArchs = []string{"amd64"}
 	darwinArchs       = []string{"amd64", "arm64"}
 
 	imageRepos         = []string{DockerHub, GHCR}
