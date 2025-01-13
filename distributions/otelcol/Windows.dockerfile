@@ -1,6 +1,6 @@
 # escape=`
 ARG WIN_VERSION=2019
-FROM mcr.microsoft.com/windows/servercore:ltsc${WIN_BASE_IMAGE}
+FROM mcr.microsoft.com/windows/servercore:ltsc${WIN_VERSION}
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
