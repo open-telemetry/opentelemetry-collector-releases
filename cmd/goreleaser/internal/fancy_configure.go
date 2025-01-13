@@ -72,7 +72,7 @@ var (
 			newContainerImageManifests(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2019"}),
 			newContainerImageManifests(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2022"}),
 		)
-	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
+	}).WithPackagingDefaults().Build()
 
 	// otlp distro
 	otlpDist = newDistributionBuilder(OTLPDistro).WithConfigFunc(func(d *distribution) {
@@ -91,7 +91,7 @@ var (
 			newContainerImageManifests(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2019"}),
 			newContainerImageManifests(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2022"}),
 		)
-	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
+	}).WithPackagingDefaults().Build()
 
 	// contrib distro
 	contribDist = newDistributionBuilder(ContribDistro).WithConfigFunc(func(d *distribution) {
@@ -128,7 +128,7 @@ var (
 			newContainerImageManifests(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2019"}),
 			newContainerImageManifests(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2022"}),
 		)
-	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
+	}).WithPackagingDefaults().Build()
 
 	// contrib build-only project
 	contribBuildOnlyDist = newDistributionBuilder(ContribDistro).WithConfigFunc(func(d *distribution) {
@@ -137,17 +137,7 @@ var (
 			&fullDistBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
 			&fullDistBuildConfig{targetOS: "windows", targetArch: winArchs},
 		}
-		d.containerImages = slices.Concat(
-			newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"}),
-			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2019"}),
-			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2022"}),
-		)
-		d.containerImageManifests = slices.Concat(
-			newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{}),
-			newContainerImageManifests(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2019"}),
-			newContainerImageManifests(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2022"}),
-		)
-	}).WithDefaultArchives().WithDefaultNfpms().WithDefaultMSIConfig().Build()
+	}).Build()
 
 	// k8s distro
 	k8sArchs = []string{"amd64", "arm64", "ppc64le", "s390x"}
@@ -221,6 +211,36 @@ func (b *distributionBuilder) WithDefaultMSIConfig() *distributionBuilder {
 	return b
 }
 
+func (b *distributionBuilder) WithDefaultSigns() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		d.signs = Sign()
+	})
+	return b
+}
+
+func (b *distributionBuilder) WithDefaultDockerSigns() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		d.dockerSigns = DockerSigns()
+	})
+	return b
+}
+
+func (b *distributionBuilder) WithDefaultSBOMs() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		d.sboms = SBOM()
+	})
+	return b
+}
+
+func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
+	return b.WithDefaultArchives().
+		WithDefaultNfpms().
+		WithDefaultMSIConfig().
+		WithDefaultSigns().
+		WithDefaultDockerSigns().
+		WithDefaultSBOMs()
+}
+
 func (b *distributionBuilder) WithConfigFunc(configFunc func(*distribution)) *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, configFunc)
 	return b
@@ -248,6 +268,9 @@ type distribution struct {
 	nfpms                   []config.NFPM
 	containerImages         []config.Docker
 	containerImageManifests []config.DockerManifest
+	signs                   []config.Sign
+	dockerSigns             []config.Sign
+	sboms                   []config.SBOM
 }
 
 func newContainerImageManifests(dist, os string, archs []string, opts containerImageOptions) []config.DockerManifest {
@@ -376,9 +399,9 @@ func (d *distribution) BuildProject() config.Project {
 		NFPMs:           d.nfpms,
 		Dockers:         d.containerImages,
 		DockerManifests: d.containerImageManifests,
-		Signs:           Sign(),
-		DockerSigns:     DockerSigns(),
-		SBOMs:           SBOM(),
+		Signs:           d.signs,
+		DockerSigns:     d.dockerSigns,
+		SBOMs:           d.sboms,
 		Version:         2,
 		Monorepo: config.Monorepo{
 			TagPrefix: "v",
@@ -474,7 +497,7 @@ func dockerImageWithOS(dist, os, arch string, opts containerImageOptions) config
 		Goos:   os,
 		Goarch: arch,
 	}
-	if arch == "arm" {
+	if arch == ArmArch {
 		imageConfig.Goarm = opts.armVersion
 	}
 	return imageConfig
@@ -516,7 +539,7 @@ func osDockerManifest(prefix, version, dist, os string, archs []string) config.D
 		switch arch {
 		case ArmArch:
 			for _, armVers := range ArmVersions(dist) {
-				dockerArchTag := strings.ReplaceAll(archName(arch, armVers), "/", "")
+				dockerArchTag := (&osArch{os: os, arch: arch, version: armVers}).imageTag()
 				imageTemplates = append(
 					imageTemplates,
 					fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist), version, dockerArchTag),

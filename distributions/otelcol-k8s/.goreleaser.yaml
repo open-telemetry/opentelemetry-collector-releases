@@ -229,28 +229,6 @@ docker_manifests:
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-windows-2022-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-windows-2022-arm64
-signs:
-  - cmd: cosign
-    args:
-      - sign-blob
-      - --output-signature
-      - ${artifact}.sig
-      - --output-certificate
-      - ${artifact}.pem
-      - ${artifact}
-    signature: ${artifact}.sig
-    artifacts: all
-    certificate: ${artifact}.pem
-docker_signs:
-  - args:
-      - sign
-      - ${artifact}
-    artifacts: all
-sboms:
-  - id: archive
-    artifacts: archive
-  - id: package
-    artifacts: package
 monorepo:
   tag_prefix: v
 partial:
