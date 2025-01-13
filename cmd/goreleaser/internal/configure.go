@@ -52,9 +52,9 @@ var (
 	// otelcol (core) distro
 	otelColDist = newDistributionBuilder(CoreDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
-			&distBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}},
-			&distBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
-			&distBuildConfig{targetOS: "windows", targetArch: winArchs},
+			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}},
+			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
+			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
 		}
 		d.containerImages = slices.Concat(
 			newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"}),
@@ -71,9 +71,9 @@ var (
 	// otlp distro
 	otlpDist = newDistributionBuilder(OTLPDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
-			&distBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}},
-			&distBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
-			&distBuildConfig{targetOS: "windows", targetArch: winArchs},
+			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}},
+			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
+			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
 		}
 		d.containerImages = slices.Concat(
 			newContainerImages(d.name, "linux", []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}, containerImageOptions{armVersion: "7"}),
@@ -127,9 +127,9 @@ var (
 	// contrib build-only project
 	contribBuildOnlyDist = newDistributionBuilder(ContribDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
-			&distBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}},
-			&distBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
-			&distBuildConfig{targetOS: "windows", targetArch: winArchs},
+			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}},
+			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
+			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
 		}
 	}).Build()
 
@@ -137,7 +137,7 @@ var (
 	k8sArchs = []string{"amd64", "arm64", "ppc64le", "s390x"}
 	k8sDist  = newDistributionBuilder(K8sDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
-			&distBuildConfig{targetOS: "linux", targetArch: k8sArchs},
+			&fullBuildConfig{targetOS: "linux", targetArch: k8sArchs},
 		}
 		d.containerImages = slices.Concat(
 			newContainerImages(d.name, "linux", k8sArchs, containerImageOptions{}),
@@ -447,13 +447,13 @@ func newContainerImages(dist string, targetOS string, targetArchs []string, opts
 	return images
 }
 
-type distBuildConfig struct {
+type fullBuildConfig struct {
 	targetOS   string
 	targetArch []string
 	armVersion []string
 }
 
-func (c *distBuildConfig) Build(dist string) config.Build {
+func (c *fullBuildConfig) Build(dist string) config.Build {
 	buildConfig := config.Build{
 		ID:     dist + "-" + c.targetOS,
 		Dir:    "_build",
@@ -470,7 +470,7 @@ func (c *distBuildConfig) Build(dist string) config.Build {
 	return buildConfig
 }
 
-func (c *distBuildConfig) OS() string {
+func (c *fullBuildConfig) OS() string {
 	return c.targetOS
 }
 
