@@ -1,4 +1,23 @@
+// Copyright The OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package internal
+
+// This file is a script which generates the .goreleaser.yaml file for all
+// supported OpenTelemetry Collector distributions.
+//
+// Run it with `make generate-goreleaser`.
 
 import (
 	"fmt"
@@ -9,11 +28,32 @@ import (
 	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
 )
 
+const (
+	ArmArch          = "arm"
+	CoreDistro       = "otelcol"
+	ContribDistro    = "otelcol-contrib"
+	K8sDistro        = "otelcol-k8s"
+	OTLPDistro       = "otelcol-otlp"
+	DockerHub        = "otel"
+	GHCR             = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
+	BinaryNamePrefix = "otelcol"
+	ImageNamePrefix  = "opentelemetry-collector"
+)
+
 var (
 	baseArchs         = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
 	winArchs          = []string{"386", "amd64", "arm64", "ppc64le"}
 	winContainerArchs = []string{"amd64", "arm64"}
 	darwinArchs       = []string{"amd64", "arm64"}
+
+	ImagePrefixes      = []string{DockerHub, GHCR}
+	Architectures      = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
+	DefaultConfigDists = map[string]bool{CoreDistro: true, ContribDistro: true}
+	MSIWindowsDists    = map[string]bool{CoreDistro: true, ContribDistro: true, OTLPDistro: true}
+	K8sDockerSkipArchs = map[string]bool{"arm": true, "386": true}
+	K8sGoos            = []string{"linux", "windows"}
+	K8sArchs           = []string{"amd64", "arm64", "ppc64le", "s390x"}
+	Partial            = config.Partial{By: "target"}
 
 	// otelcol (core) distro
 	otelColDist = newDistributionBuilder(CoreDistro).WithConfigFunc(func(d *distribution) {
@@ -390,7 +430,6 @@ func (c *preBuiltBuildConfig) Build(dist string) config.Build {
 		Goos:     []string{c.targetOS},
 		Goarch:   c.targetArch,
 		Goarm:    ArmVersions(dist),
-		Ignore:   IgnoreBuildCombinations(dist),
 	}
 }
 
@@ -494,5 +533,71 @@ func osDockerManifest(prefix, version, dist, os string, archs []string) config.D
 	return config.DockerManifest{
 		NameTemplate:   fmt.Sprintf("%s/%s:%s", prefix, imageName(dist), version),
 		ImageTemplates: imageTemplates,
+	}
+}
+
+func ArmVersions(dist string) []string {
+	if dist == K8sDistro {
+		return nil
+	}
+	return []string{"7"}
+}
+
+// imageName translates a distribution name to a container image name.
+func imageName(dist string) string {
+	return strings.Replace(dist, BinaryNamePrefix, ImageNamePrefix, 1)
+}
+
+// archName translates architecture to docker platform names.
+func archName(arch, armVersion string) string {
+	switch arch {
+	case ArmArch:
+		return fmt.Sprintf("%s/v%s", arch, armVersion)
+	default:
+		return arch
+	}
+}
+
+func Sign() []config.Sign {
+	return []config.Sign{
+		{
+			Artifacts:   "all",
+			Signature:   "${artifact}.sig",
+			Certificate: "${artifact}.pem",
+			Cmd:         "cosign",
+			Args: []string{
+				"sign-blob",
+				"--output-signature",
+				"${artifact}.sig",
+				"--output-certificate",
+				"${artifact}.pem",
+				"${artifact}",
+			},
+		},
+	}
+}
+
+func DockerSigns() []config.Sign {
+	return []config.Sign{
+		{
+			Artifacts: "all",
+			Args: []string{
+				"sign",
+				"${artifact}",
+			},
+		},
+	}
+}
+
+func SBOM() []config.SBOM {
+	return []config.SBOM{
+		{
+			ID:        "archive",
+			Artifacts: "archive",
+		},
+		{
+			ID:        "package",
+			Artifacts: "package",
+		},
 	}
 }
