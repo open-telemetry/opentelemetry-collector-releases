@@ -537,6 +537,11 @@ func dockerImageWithOS(dist, os, arch string, opts containerImageOptions) config
 	if arch == ArmArch {
 		imageConfig.Goarm = opts.armVersion
 	}
+	if os == "windows" {
+		imageConfig.ImageTemplates = slices.Insert(
+			imageConfig.ImageTemplates, 0, fmt.Sprintf("--build-arg WIN_VERSION=%s", opts.winVersion),
+		)
+	}
 	return imageConfig
 }
 
