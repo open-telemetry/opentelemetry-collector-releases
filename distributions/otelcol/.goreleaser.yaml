@@ -224,7 +224,7 @@ dockers:
     use: buildx
   - goos: windows
     goarch: amd64
-    dockerfile: Dockerfile
+    dockerfile: Dockerfile.windows
     image_templates:
       - otel/opentelemetry-collector:{{ .Version }}-windows-2019-amd64
       - otel/opentelemetry-collector:latest-windows-2019-amd64
@@ -245,7 +245,7 @@ dockers:
     use: buildx
   - goos: windows
     goarch: amd64
-    dockerfile: Dockerfile
+    dockerfile: Dockerfile.windows
     image_templates:
       - otel/opentelemetry-collector:{{ .Version }}-windows-2022-amd64
       - otel/opentelemetry-collector:latest-windows-2022-amd64
