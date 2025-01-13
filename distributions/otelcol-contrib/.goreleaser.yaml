@@ -26,7 +26,7 @@ builds:
     binary: otelcol-contrib
     builder: prebuilt
     prebuilt:
-      path: artifacts/otelcol-contrib_{{ .Target }}/otelcol-contrib
+      path: artifacts/otelcol-contrib_linux_{{ .Target }}/otelcol-contrib
   - id: otelcol-contrib-darwin
     goos:
       - darwin
@@ -39,7 +39,7 @@ builds:
     binary: otelcol-contrib
     builder: prebuilt
     prebuilt:
-      path: artifacts/otelcol-contrib_{{ .Target }}/otelcol-contrib
+      path: artifacts/otelcol-contrib_darwin_{{ .Target }}/otelcol-contrib
   - id: otelcol-contrib-windows
     goos:
       - windows
@@ -54,7 +54,7 @@ builds:
     binary: otelcol-contrib
     builder: prebuilt
     prebuilt:
-      path: artifacts/otelcol-contrib_{{ .Target }}/otelcol-contrib.exe
+      path: artifacts/otelcol-contrib_windows_{{ .Target }}/otelcol-contrib.exe
 archives:
   - id: otelcol-contrib
     builds:

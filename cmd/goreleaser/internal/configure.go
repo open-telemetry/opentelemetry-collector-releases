@@ -94,21 +94,21 @@ var (
 				targetOS:   "linux",
 				targetArch: baseArchs,
 				preBuilt: config.PreBuiltOptions{
-					Path: "artifacts/otelcol-contrib_{{ .Target }}/otelcol-contrib",
+					Path: "artifacts/otelcol-contrib_linux_{{ .Target }}/otelcol-contrib",
 				},
 			},
 			&preBuiltBuildConfig{
 				targetOS:   "darwin",
 				targetArch: darwinArchs,
 				preBuilt: config.PreBuiltOptions{
-					Path: "artifacts/otelcol-contrib_{{ .Target }}/otelcol-contrib",
+					Path: "artifacts/otelcol-contrib_darwin_{{ .Target }}/otelcol-contrib",
 				},
 			},
 			&preBuiltBuildConfig{
 				targetOS:   "windows",
 				targetArch: winArchs,
 				preBuilt: config.PreBuiltOptions{
-					Path: "artifacts/otelcol-contrib_{{ .Target }}/otelcol-contrib.exe",
+					Path: "artifacts/otelcol-contrib_windows_{{ .Target }}/otelcol-contrib.exe",
 				},
 			},
 		}
