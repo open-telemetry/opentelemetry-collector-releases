@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/windows/servercore:ltsc${WIN_BASE_IMAGE}
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 
-COPY --chmod=755 otelcol ./otelcol.exe
+COPY --chmod=755 otelcol.exe ./otelcol.exe
 COPY config.yaml ./config.yaml
 
 ENV NO_WINDOWS_SERVICE=1
