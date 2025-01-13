@@ -538,8 +538,8 @@ func dockerImageWithOS(dist, os, arch string, opts containerImageOptions) config
 		imageConfig.Goarm = opts.armVersion
 	}
 	if os == "windows" {
-		imageConfig.BuildFlagTemplates = slices.Insert(
-			imageConfig.BuildFlagTemplates, 0, fmt.Sprintf("--build-arg WIN_VERSION=%s", opts.winVersion),
+		imageConfig.BuildFlagTemplates = append(
+			imageConfig.BuildFlagTemplates, fmt.Sprintf("--build-arg WIN_VERSION=%s", opts.winVersion),
 		)
 	}
 	return imageConfig
