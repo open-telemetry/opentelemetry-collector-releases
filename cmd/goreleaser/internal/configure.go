@@ -195,7 +195,7 @@ func (b *distributionBuilder) newNfpms(dist string) []config.NFPM {
 	return []config.NFPM{
 		{
 			ID:          dist,
-			Builds:      []string{dist},
+			Builds:      []string{dist + "-linux"},
 			Formats:     []string{"deb", "rpm"},
 			License:     "Apache 2.0",
 			Description: fmt.Sprintf("OpenTelemetry Collector - %s", dist),

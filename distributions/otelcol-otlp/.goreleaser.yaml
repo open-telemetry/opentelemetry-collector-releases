@@ -87,7 +87,7 @@ nfpms:
           - /bin/sh
     id: otelcol-otlp
     builds:
-      - otelcol-otlp
+      - otelcol-otlp-linux
     formats:
       - deb
       - rpm

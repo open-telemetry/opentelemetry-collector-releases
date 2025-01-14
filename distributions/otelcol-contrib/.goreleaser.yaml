@@ -83,7 +83,7 @@ nfpms:
           - /bin/sh
     id: otelcol-contrib
     builds:
-      - otelcol-contrib
+      - otelcol-contrib-linux
     formats:
       - deb
       - rpm

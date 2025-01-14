@@ -91,7 +91,7 @@ nfpms:
           - /bin/sh
     id: otelcol
     builds:
-      - otelcol
+      - otelcol-linux
     formats:
       - deb
       - rpm
