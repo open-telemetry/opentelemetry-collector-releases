@@ -9,11 +9,9 @@ msi:
     extra_files:
       - opentelemetry.ico
 builds:
-  - id: otelcol-otlp
+  - id: otelcol-otlp-linux
     goos:
-      - darwin
       - linux
-      - windows
     goarch:
       - "386"
       - amd64
@@ -23,19 +21,38 @@ builds:
       - s390x
     goarm:
       - "7"
-    ignore:
-      - goos: darwin
-        goarch: "386"
-      - goos: darwin
-        goarch: arm
-      - goos: darwin
-        goarch: s390x
-      - goos: windows
-        goarch: arm
-      - goos: windows
-        goarch: arm64
-      - goos: windows
-        goarch: s390x
+    dir: _build
+    binary: otelcol-otlp
+    ldflags:
+      - -s
+      - -w
+    flags:
+      - -trimpath
+    env:
+      - CGO_ENABLED=0
+  - id: otelcol-otlp-darwin
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    dir: _build
+    binary: otelcol-otlp
+    ldflags:
+      - -s
+      - -w
+    flags:
+      - -trimpath
+    env:
+      - CGO_ENABLED=0
+  - id: otelcol-otlp-windows
+    goos:
+      - windows
+    goarch:
+      - "386"
+      - amd64
+      - arm64
+      - ppc64le
     dir: _build
     binary: otelcol-otlp
     ldflags:
@@ -48,7 +65,9 @@ builds:
 archives:
   - id: otelcol-otlp
     builds:
-      - otelcol-otlp
+      - otelcol-otlp-linux
+      - otelcol-otlp-darwin
+      - otelcol-otlp-windows
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
   - package_name: otelcol-otlp
@@ -68,7 +87,7 @@ nfpms:
           - /bin/sh
     id: otelcol-otlp
     builds:
-      - otelcol-otlp
+      - otelcol-otlp-linux
     formats:
       - deb
       - rpm
@@ -192,7 +211,7 @@ docker_manifests:
     image_templates:
       - otel/opentelemetry-collector-otlp:{{ .Version }}-386
       - otel/opentelemetry-collector-otlp:{{ .Version }}-amd64
-      - otel/opentelemetry-collector-otlp:{{ .Version }}-armv7
+      - otel/opentelemetry-collector-otlp:{{ .Version }}-arm/v7
       - otel/opentelemetry-collector-otlp:{{ .Version }}-arm64
       - otel/opentelemetry-collector-otlp:{{ .Version }}-ppc64le
       - otel/opentelemetry-collector-otlp:{{ .Version }}-s390x
@@ -200,7 +219,7 @@ docker_manifests:
     image_templates:
       - otel/opentelemetry-collector-otlp:latest-386
       - otel/opentelemetry-collector-otlp:latest-amd64
-      - otel/opentelemetry-collector-otlp:latest-armv7
+      - otel/opentelemetry-collector-otlp:latest-arm/v7
       - otel/opentelemetry-collector-otlp:latest-arm64
       - otel/opentelemetry-collector-otlp:latest-ppc64le
       - otel/opentelemetry-collector-otlp:latest-s390x
@@ -208,7 +227,7 @@ docker_manifests:
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Version }}-386
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Version }}-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Version }}-armv7
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Version }}-arm/v7
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Version }}-arm64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Version }}-ppc64le
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Version }}-s390x
@@ -216,7 +235,7 @@ docker_manifests:
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:latest-386
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:latest-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:latest-armv7
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:latest-arm/v7
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:latest-arm64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:latest-ppc64le
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:latest-s390x

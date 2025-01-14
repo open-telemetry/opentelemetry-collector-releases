@@ -19,14 +19,15 @@ import (
 	"log"
 	"os"
 
-	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
 	"gopkg.in/yaml.v3"
 
 	"github.com/open-telemetry/opentelemetry-collector-releases/cmd/goreleaser/internal"
 )
 
-var distFlag = flag.String("d", "", "Collector distributions to build")
-var contribBuildOrRestFlag = flag.Bool("generate-build-step", false, "Collector Contrib distribution only - switch between build and package config file - set to true to generate build step, false to generate package step")
+var (
+	distFlag               = flag.String("d", "", "Collector distributions to build")
+	contribBuildOrRestFlag = flag.Bool("generate-build-step", false, "Collector Contrib distribution only - switch between build and package config file - set to true to generate build step, false to generate package step")
+)
 
 func main() {
 	flag.Parse()
@@ -34,14 +35,7 @@ func main() {
 	if len(*distFlag) == 0 {
 		log.Fatal("no distribution to build")
 	}
-	var project config.Project
-
-	if *distFlag == internal.ContribDistro && *contribBuildOrRestFlag {
-		// Special care needs to be taken for otelcol-contrib since it has a split setup
-		project = internal.GenerateContribBuildOnly(*distFlag, *contribBuildOrRestFlag)
-	} else {
-		project = internal.Generate(*distFlag, *contribBuildOrRestFlag)
-	}
+	project := internal.BuildDist(*distFlag, *contribBuildOrRestFlag)
 
 	e := yaml.NewEncoder(os.Stdout)
 	e.SetIndent(2)
