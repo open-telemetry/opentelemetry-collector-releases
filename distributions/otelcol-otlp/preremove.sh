@@ -14,7 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if command -v systemctl >/dev/null 2>&1; then
-    systemctl stop otelcol-otlp.service
-    systemctl disable otelcol-otlp.service
+if [ "$1" != "1" ]; then
+    if command -v systemctl >/dev/null 2>&1; then
+        systemctl stop otelcol-otlp.service
+        systemctl disable otelcol-otlp.service
+    fi
 fi
