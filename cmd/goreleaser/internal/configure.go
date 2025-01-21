@@ -117,22 +117,9 @@ var (
 	}).WithDefaultArchives().WithDefaultChecksum().WithDefaultSigns().WithDefaultDockerSigns().WithDefaultSBOMs().Build()
 )
 
-func BuildDist(dist string, onlyBuild bool) config.Project {
-	switch dist {
-	case CoreDistro:
-		return otelColDist.BuildProject()
-	case OTLPDistro:
-		return otlpDist.BuildProject()
-	case K8sDistro:
-		return k8sDist.BuildProject()
-	case ContribDistro:
-		if onlyBuild {
-			return contribBuildOnlyDist.BuildProject()
-		}
-		return contribDist.BuildProject()
-	default:
-		panic("Unknown distribution")
-	}
+type buildConfig interface {
+	Build(dist string) config.Build
+	OS() string
 }
 
 type distributionBuilder struct {
@@ -348,11 +335,6 @@ func (b *distributionBuilder) Build() *distribution {
 	return b.dist
 }
 
-type buildConfig interface {
-	Build(dist string) config.Build
-	OS() string
-}
-
 type distribution struct {
 	// Name of the distribution (i.e. otelcol, otelcol-contrib, k8s)
 	name string
@@ -542,6 +524,24 @@ func (o *osArch) imageTag() string {
 		}
 	}
 	return o.arch
+}
+
+func BuildDist(dist string, onlyBuild bool) config.Project {
+	switch dist {
+	case CoreDistro:
+		return otelColDist.BuildProject()
+	case OTLPDistro:
+		return otlpDist.BuildProject()
+	case K8sDistro:
+		return k8sDist.BuildProject()
+	case ContribDistro:
+		if onlyBuild {
+			return contribBuildOnlyDist.BuildProject()
+		}
+		return contribDist.BuildProject()
+	default:
+		panic("Unknown distribution")
+	}
 }
 
 func osDockerManifest(prefix, version, dist, os string, archs []string) config.DockerManifest {
