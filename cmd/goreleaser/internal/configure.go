@@ -44,8 +44,7 @@ var (
 	winArchs    = []string{"386", "amd64", "arm64", "ppc64le"}
 	darwinArchs = []string{"amd64", "arm64"}
 
-	imageRepos         = []string{DockerHub, GHCR}
-	defaultConfigDists = map[string]bool{CoreDistro: true, ContribDistro: true}
+	imageRepos = []string{DockerHub, GHCR}
 
 	// otelcol (core) distro
 	otelColDist = newDistributionBuilder(CoreDistro).WithConfigFunc(func(d *distribution) {
@@ -56,7 +55,7 @@ var (
 		}
 		d.containerImages = newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"})
 		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs)
-	}).WithPackagingDefaults().Build()
+	}).WithPackagingDefaults().WithDefaultConfigIncluded().Build()
 
 	// otlp distro
 	otlpDist = newDistributionBuilder(OTLPDistro).WithConfigFunc(func(d *distribution) {
@@ -96,7 +95,7 @@ var (
 		}
 		d.containerImages = newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"})
 		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs)
-	}).WithPackagingDefaults().Build()
+	}).WithPackagingDefaults().WithDefaultConfigIncluded().Build()
 
 	// contrib build-only project
 	contribBuildOnlyDist = newDistributionBuilder(ContribDistro).WithConfigFunc(func(d *distribution) {
@@ -115,7 +114,7 @@ var (
 		}
 		d.containerImages = newContainerImages(d.name, "linux", k8sArchs, containerImageOptions{})
 		d.containerImageManifests = newContainerImageManifests(d.name, "linux", k8sArchs)
-	}).WithDefaultArchives().Build()
+	}).WithDefaultArchives().WithDefaultSigns().WithDefaultDockerSigns().WithDefaultSBOMs().Build()
 )
 
 func BuildDist(dist string, onlyBuild bool) config.Project {
@@ -185,13 +184,6 @@ func (b *distributionBuilder) newNfpms(dist string) []config.NFPM {
 			Type:        "config|noreplace",
 		},
 	}
-	if _, ok := defaultConfigDists[dist]; ok {
-		nfpmContents = append(nfpmContents, &config.NFPMContent{
-			Source:      "config.yaml",
-			Destination: path.Join("/etc", dist, "config.yaml"),
-			Type:        "config|noreplace",
-		})
-	}
 	return []config.NFPM{
 		{
 			ID:          dist,
@@ -227,9 +219,6 @@ func (b *distributionBuilder) WithDefaultMSIConfig() *distributionBuilder {
 
 func (b *distributionBuilder) newMSIConfig(dist string) []config.MSI {
 	files := []string{"opentelemetry.ico"}
-	if _, ok := defaultConfigDists[dist]; ok {
-		files = append(files, "config.yaml")
-	}
 	return []config.MSI{
 		{
 			ID:    dist,
@@ -316,6 +305,29 @@ func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
 
 func (b *distributionBuilder) WithConfigFunc(configFunc func(*distribution)) *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, configFunc)
+	return b
+}
+
+func (b *distributionBuilder) WithDefaultConfigIncluded() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		for i, container := range d.containerImages {
+			container.Files = append(container.Files, "config.yaml")
+			d.containerImages[i] = container
+		}
+
+		for i, nfpm := range d.nfpms {
+			nfpm.Contents = append(nfpm.Contents, &config.NFPMContent{
+				Source:      "config.yaml",
+				Destination: path.Join("/etc", d.name, "config.yaml"),
+				Type:        "config|noreplace",
+			})
+			d.nfpms[i] = nfpm
+		}
+
+		for i := range d.msiConfig {
+			d.msiConfig[i].Files = append(d.msiConfig[i].Files, "config.yaml")
+		}
+	})
 	return b
 }
 
@@ -471,10 +483,6 @@ func dockerImageWithOS(dist, os, arch string, opts containerImageOptions) config
 	label := func(name, template string) string {
 		return fmt.Sprintf("--label=org.opencontainers.image.%s={{%s}}", name, template)
 	}
-	files := make([]string, 0)
-	if _, ok := defaultConfigDists[dist]; ok {
-		files = append(files, "config.yaml")
-	}
 	imageConfig := config.Docker{
 		ImageTemplates: imageTemplates,
 		Dockerfile:     "Dockerfile",
@@ -489,7 +497,6 @@ func dockerImageWithOS(dist, os, arch string, opts containerImageOptions) config
 			label("source", ".GitURL"),
 			"--label=org.opencontainers.image.licenses=Apache-2.0",
 		},
-		Files:  files,
 		Goos:   os,
 		Goarch: arch,
 	}
