@@ -28,15 +28,15 @@ import (
 )
 
 const (
-	ArmArch          = "arm"
-	CoreDistro       = "otelcol"
-	ContribDistro    = "otelcol-contrib"
-	K8sDistro        = "otelcol-k8s"
-	OTLPDistro       = "otelcol-otlp"
-	DockerHub        = "otel"
-	GHCR             = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
-	BinaryNamePrefix = "otelcol"
-	ImageNamePrefix  = "opentelemetry-collector"
+	armArch          = "arm"
+	coreDistro       = "otelcol"
+	contribDistro    = "otelcol-contrib"
+	k8sDistro        = "otelcol-k8s"
+	otlpDistro       = "otelcol-otlp"
+	dockerHub        = "otel"
+	ghcr             = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
+	binaryNamePrefix = "otelcol"
+	imageNamePrefix  = "opentelemetry-collector"
 )
 
 var (
@@ -44,10 +44,10 @@ var (
 	winArchs    = []string{"386", "amd64", "arm64", "ppc64le"}
 	darwinArchs = []string{"amd64", "arm64"}
 
-	imageRepos = []string{DockerHub, GHCR}
+	imageRepos = []string{dockerHub, ghcr}
 
 	// otelcol (core) distro
-	otelColDist = newDistributionBuilder(CoreDistro).WithConfigFunc(func(d *distribution) {
+	otelColDist = newDistributionBuilder(coreDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
 			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}},
 			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
@@ -58,7 +58,7 @@ var (
 	}).WithPackagingDefaults().WithDefaultConfigIncluded().Build()
 
 	// otlp distro
-	otlpDist = newDistributionBuilder(OTLPDistro).WithConfigFunc(func(d *distribution) {
+	otlpDist = newDistributionBuilder(otlpDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
 			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}},
 			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
@@ -69,7 +69,7 @@ var (
 	}).WithPackagingDefaults().Build()
 
 	// contrib distro
-	contribDist = newDistributionBuilder(ContribDistro).WithConfigFunc(func(d *distribution) {
+	contribDist = newDistributionBuilder(contribDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
 			&preBuiltBuildConfig{
 				targetOS:   "linux",
@@ -98,7 +98,7 @@ var (
 	}).WithPackagingDefaults().WithDefaultConfigIncluded().Build()
 
 	// contrib build-only project
-	contribBuildOnlyDist = newDistributionBuilder(ContribDistro).WithConfigFunc(func(d *distribution) {
+	contribBuildOnlyDist = newDistributionBuilder(contribDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
 			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}},
 			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
@@ -108,7 +108,7 @@ var (
 
 	// k8s distro
 	k8sArchs = []string{"amd64", "arm64", "ppc64le", "s390x"}
-	k8sDist  = newDistributionBuilder(K8sDistro).WithConfigFunc(func(d *distribution) {
+	k8sDist  = newDistributionBuilder(k8sDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
 			&fullBuildConfig{targetOS: "linux", targetArch: k8sArchs},
 		}
@@ -455,7 +455,7 @@ func (c *preBuiltBuildConfig) Build(dist string) config.Build {
 		Binary:   dist,
 		Goos:     []string{c.targetOS},
 		Goarch:   c.targetArch,
-		Goarm:    ArmVersions(dist),
+		Goarm:    armVersions(dist),
 	}
 }
 
@@ -494,7 +494,7 @@ func dockerImageWithOS(dist, os, arch string, opts containerImageOptions) config
 		Goos:   os,
 		Goarch: arch,
 	}
-	if arch == ArmArch {
+	if arch == armArch {
 		imageConfig.Goarm = opts.armVersion
 	}
 	return imageConfig
@@ -508,7 +508,7 @@ func (o *osArch) buildPlatform() string {
 	switch o.os {
 	case "linux":
 		switch o.arch {
-		case ArmArch:
+		case armArch:
 			return fmt.Sprintf("linux/arm/v%s", o.version)
 		}
 	}
@@ -519,7 +519,7 @@ func (o *osArch) imageTag() string {
 	switch o.os {
 	case "linux":
 		switch o.arch {
-		case ArmArch:
+		case armArch:
 			return fmt.Sprintf("armv%s", o.version)
 		}
 	}
@@ -528,13 +528,13 @@ func (o *osArch) imageTag() string {
 
 func BuildDist(dist string, onlyBuild bool) config.Project {
 	switch dist {
-	case CoreDistro:
+	case coreDistro:
 		return otelColDist.BuildProject()
-	case OTLPDistro:
+	case otlpDistro:
 		return otlpDist.BuildProject()
-	case K8sDistro:
+	case k8sDistro:
 		return k8sDist.BuildProject()
-	case ContribDistro:
+	case contribDistro:
 		if onlyBuild {
 			return contribBuildOnlyDist.BuildProject()
 		}
@@ -548,8 +548,8 @@ func osDockerManifest(prefix, version, dist, os string, archs []string) config.D
 	var imageTemplates []string
 	for _, arch := range archs {
 		switch arch {
-		case ArmArch:
-			for _, armVers := range ArmVersions(dist) {
+		case armArch:
+			for _, armVers := range armVersions(dist) {
 				dockerArchTag := (&osArch{os: os, arch: arch, version: armVers}).imageTag()
 				imageTemplates = append(
 					imageTemplates,
@@ -570,8 +570,8 @@ func osDockerManifest(prefix, version, dist, os string, archs []string) config.D
 	}
 }
 
-func ArmVersions(dist string) []string {
-	if dist == K8sDistro {
+func armVersions(dist string) []string {
+	if dist == k8sDistro {
 		return nil
 	}
 	return []string{"7"}
@@ -579,13 +579,13 @@ func ArmVersions(dist string) []string {
 
 // imageName translates a distribution name to a container image name.
 func imageName(dist string) string {
-	return strings.Replace(dist, BinaryNamePrefix, ImageNamePrefix, 1)
+	return strings.Replace(dist, binaryNamePrefix, imageNamePrefix, 1)
 }
 
 // archName translates architecture to docker platform names.
 func archName(arch, armVersion string) string {
 	switch arch {
-	case ArmArch:
+	case armArch:
 		return fmt.Sprintf("%s/v%s", arch, armVersion)
 	default:
 		return arch
