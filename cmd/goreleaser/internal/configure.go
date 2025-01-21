@@ -483,13 +483,12 @@ func (c *preBuiltBuildConfig) OS() string {
 
 func dockerImageWithOS(dist, os, arch string, opts containerImageOptions) config.Docker {
 	osArch := osArch{os: os, arch: arch, version: opts.version()}
-	imageTemplates := make([]string, 0)
+	var imageTemplates []string
 	for _, prefix := range imageRepos {
-		dockerArchTag := strings.ReplaceAll(osArch.imageTag(), "/", "")
 		imageTemplates = append(
 			imageTemplates,
-			fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName(dist), dockerArchTag),
-			fmt.Sprintf("%s/%s:latest-%s", prefix, imageName(dist), dockerArchTag),
+			fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName(dist), osArch.imageTag()),
+			fmt.Sprintf("%s/%s:latest-%s", prefix, imageName(dist), osArch.imageTag()),
 		)
 	}
 
@@ -539,7 +538,7 @@ func (o *osArch) imageTag() string {
 	case "linux":
 		switch o.arch {
 		case ArmArch:
-			return fmt.Sprintf("arm/v%s", o.version)
+			return fmt.Sprintf("armv%s", o.version)
 		}
 	}
 	return o.arch
