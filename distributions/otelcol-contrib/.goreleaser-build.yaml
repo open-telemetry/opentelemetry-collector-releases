@@ -2,6 +2,9 @@ version: 2
 project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
+  - LD_FLAGS="-s -w"
+  - CGO_ENABLED=0
+  - BUILD_FLAGS="-trimpath"
 builds:
   - id: otelcol-contrib-linux
     goos:
@@ -18,12 +21,9 @@ builds:
     dir: _build
     binary: otelcol-contrib
     ldflags:
-      - -s
-      - -w
+      - '{{ .Env.LDFLAGS }}'
     flags:
-      - -trimpath
-    env:
-      - CGO_ENABLED=0
+      - '{{ .Env.BUILD_FLAGS }}'
   - id: otelcol-contrib-darwin
     goos:
       - darwin
@@ -33,12 +33,9 @@ builds:
     dir: _build
     binary: otelcol-contrib
     ldflags:
-      - -s
-      - -w
+      - '{{ .Env.LDFLAGS }}'
     flags:
-      - -trimpath
-    env:
-      - CGO_ENABLED=0
+      - '{{ .Env.BUILD_FLAGS }}'
   - id: otelcol-contrib-windows
     goos:
       - windows
@@ -50,12 +47,9 @@ builds:
     dir: _build
     binary: otelcol-contrib
     ldflags:
-      - -s
-      - -w
+      - '{{ .Env.LDFLAGS }}'
     flags:
-      - -trimpath
-    env:
-      - CGO_ENABLED=0
+      - '{{ .Env.BUILD_FLAGS }}'
 checksum:
   name_template: '{{ .ProjectName }}_otelcol-contrib_checksums.txt'
 monorepo:

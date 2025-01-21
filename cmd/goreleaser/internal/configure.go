@@ -369,7 +369,12 @@ func (d *distribution) BuildProject() config.Project {
 		Checksum: config.Checksum{
 			NameTemplate: fmt.Sprintf("{{ .ProjectName }}_%v_checksums.txt", d.name),
 		},
-		Env:             []string{"COSIGN_YES=true"},
+		Env: []string{
+			"COSIGN_YES=true",
+			"LD_FLAGS=\"-s -w\"",
+			"CGO_ENABLED=0",
+			"BUILD_FLAGS=\"-trimpath\"",
+		},
 		Builds:          builds,
 		Archives:        d.archives,
 		MSI:             d.msiConfig,
@@ -430,9 +435,8 @@ func (c *fullBuildConfig) Build(dist string) config.Build {
 		Dir:    "_build",
 		Binary: dist,
 		BuildDetails: config.BuildDetails{
-			Env:     []string{"CGO_ENABLED=0"},
-			Flags:   []string{"-trimpath"},
-			Ldflags: []string{"-s", "-w"},
+			Flags:   []string{"{{ .Env.BUILD_FLAGS }}"},
+			Ldflags: []string{"{{ .Env.LDFLAGS }}"},
 		},
 		Goos:   []string{c.targetOS},
 		Goarch: c.targetArch,

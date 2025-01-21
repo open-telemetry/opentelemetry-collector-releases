@@ -2,6 +2,9 @@ version: 2
 project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
+  - LD_FLAGS="-s -w"
+  - CGO_ENABLED=0
+  - BUILD_FLAGS="-trimpath"
 msi:
   - id: otelcol
     name: otelcol_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}
@@ -25,12 +28,9 @@ builds:
     dir: _build
     binary: otelcol
     ldflags:
-      - -s
-      - -w
+      - '{{ .Env.LDFLAGS }}'
     flags:
-      - -trimpath
-    env:
-      - CGO_ENABLED=0
+      - '{{ .Env.BUILD_FLAGS }}'
   - id: otelcol-darwin
     goos:
       - darwin
@@ -40,12 +40,9 @@ builds:
     dir: _build
     binary: otelcol
     ldflags:
-      - -s
-      - -w
+      - '{{ .Env.LDFLAGS }}'
     flags:
-      - -trimpath
-    env:
-      - CGO_ENABLED=0
+      - '{{ .Env.BUILD_FLAGS }}'
   - id: otelcol-windows
     goos:
       - windows
@@ -57,12 +54,9 @@ builds:
     dir: _build
     binary: otelcol
     ldflags:
-      - -s
-      - -w
+      - '{{ .Env.LDFLAGS }}'
     flags:
-      - -trimpath
-    env:
-      - CGO_ENABLED=0
+      - '{{ .Env.BUILD_FLAGS }}'
 archives:
   - id: otelcol
     builds:
