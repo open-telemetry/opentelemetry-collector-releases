@@ -4,6 +4,12 @@
 
 <!-- next version -->
 
+## v0.118.0
+
+### 🧰 Bug fixes 🧰
+
+- `packaging`: Fix Linux package scripts (#799)
+
 ## v0.117.0
 
 ### 🚀 New components 🚀
