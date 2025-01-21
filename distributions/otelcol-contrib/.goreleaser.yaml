@@ -2,9 +2,9 @@ version: 2
 project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
-  - LD_FLAGS="-s -w"
+  - LD_FLAGS=-s -w
   - CGO_ENABLED=0
-  - BUILD_FLAGS="-trimpath"
+  - BUILD_FLAGS=-trimpath
 msi:
   - id: otelcol-contrib
     name: otelcol-contrib_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}

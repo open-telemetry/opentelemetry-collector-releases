@@ -2,9 +2,9 @@ version: 2
 project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
-  - LD_FLAGS="-s -w"
+  - LD_FLAGS=-s -w
   - CGO_ENABLED=0
-  - BUILD_FLAGS="-trimpath"
+  - BUILD_FLAGS=-trimpath
 builds:
   - id: otelcol-k8s-linux
     goos:

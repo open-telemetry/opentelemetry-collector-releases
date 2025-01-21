@@ -362,9 +362,9 @@ func (d *distribution) BuildProject() config.Project {
 		Checksum:    d.checksum,
 		Env: []string{
 			"COSIGN_YES=true",
-			"LD_FLAGS=\"-s -w\"",
+			"LD_FLAGS=-s -w",
 			"CGO_ENABLED=0",
-			"BUILD_FLAGS=\"-trimpath\"",
+			"BUILD_FLAGS=-trimpath",
 		},
 		Builds:          builds,
 		Archives:        d.archives,
