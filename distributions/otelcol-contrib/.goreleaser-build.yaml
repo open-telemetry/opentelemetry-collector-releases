@@ -50,8 +50,6 @@ builds:
       - '{{ .Env.LDFLAGS }}'
     flags:
       - '{{ .Env.BUILD_FLAGS }}'
-checksum:
-  name_template: '{{ .ProjectName }}_otelcol-contrib_checksums.txt'
 monorepo:
   tag_prefix: v
 partial:

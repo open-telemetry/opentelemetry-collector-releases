@@ -114,7 +114,7 @@ var (
 		}
 		d.containerImages = newContainerImages(d.name, "linux", k8sArchs, containerImageOptions{})
 		d.containerImageManifests = newContainerImageManifests(d.name, "linux", k8sArchs)
-	}).WithDefaultArchives().WithDefaultSigns().WithDefaultDockerSigns().WithDefaultSBOMs().Build()
+	}).WithDefaultArchives().WithDefaultChecksum().WithDefaultSigns().WithDefaultDockerSigns().WithDefaultSBOMs().Build()
 )
 
 func BuildDist(dist string, onlyBuild bool) config.Project {
@@ -294,8 +294,18 @@ func (b *distributionBuilder) sboms() []config.SBOM {
 	}
 }
 
+func (b *distributionBuilder) WithDefaultChecksum() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		b.dist.checksum = config.Checksum{
+			NameTemplate: fmt.Sprintf("{{ .ProjectName }}_%v_checksums.txt", d.name),
+		}
+	})
+	return b
+}
+
 func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
 	return b.WithDefaultArchives().
+		WithDefaultChecksum().
 		WithDefaultNfpms().
 		WithDefaultMSIConfig().
 		WithDefaultSigns().
@@ -356,6 +366,7 @@ type distribution struct {
 	signs                   []config.Sign
 	dockerSigns             []config.Sign
 	sboms                   []config.SBOM
+	checksum                config.Checksum
 }
 
 func (d *distribution) BuildProject() config.Project {
@@ -366,9 +377,7 @@ func (d *distribution) BuildProject() config.Project {
 
 	return config.Project{
 		ProjectName: "opentelemetry-collector-releases",
-		Checksum: config.Checksum{
-			NameTemplate: fmt.Sprintf("{{ .ProjectName }}_%v_checksums.txt", d.name),
-		},
+		Checksum:    d.checksum,
 		Env: []string{
 			"COSIGN_YES=true",
 			"LD_FLAGS=\"-s -w\"",
