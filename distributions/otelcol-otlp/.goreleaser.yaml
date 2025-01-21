@@ -27,7 +27,7 @@ builds:
     dir: _build
     binary: otelcol-otlp
     ldflags:
-      - '{{ .Env.LDFLAGS }}'
+      - '{{ .Env.LD_FLAGS }}'
     flags:
       - '{{ .Env.BUILD_FLAGS }}'
   - id: otelcol-otlp-darwin
@@ -39,7 +39,7 @@ builds:
     dir: _build
     binary: otelcol-otlp
     ldflags:
-      - '{{ .Env.LDFLAGS }}'
+      - '{{ .Env.LD_FLAGS }}'
     flags:
       - '{{ .Env.BUILD_FLAGS }}'
   - id: otelcol-otlp-windows
@@ -53,7 +53,7 @@ builds:
     dir: _build
     binary: otelcol-otlp
     ldflags:
-      - '{{ .Env.LDFLAGS }}'
+      - '{{ .Env.LD_FLAGS }}'
     flags:
       - '{{ .Env.BUILD_FLAGS }}'
 archives:

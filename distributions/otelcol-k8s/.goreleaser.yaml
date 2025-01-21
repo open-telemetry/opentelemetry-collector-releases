@@ -17,7 +17,7 @@ builds:
     dir: _build
     binary: otelcol-k8s
     ldflags:
-      - '{{ .Env.LDFLAGS }}'
+      - '{{ .Env.LD_FLAGS }}'
     flags:
       - '{{ .Env.BUILD_FLAGS }}'
 archives:

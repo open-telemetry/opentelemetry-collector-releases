@@ -427,7 +427,7 @@ func (c *fullBuildConfig) Build(dist string) config.Build {
 		Binary: dist,
 		BuildDetails: config.BuildDetails{
 			Flags:   []string{"{{ .Env.BUILD_FLAGS }}"},
-			Ldflags: []string{"{{ .Env.LDFLAGS }}"},
+			Ldflags: []string{"{{ .Env.LD_FLAGS }}"},
 		},
 		Goos:   []string{c.targetOS},
 		Goarch: c.targetArch,
