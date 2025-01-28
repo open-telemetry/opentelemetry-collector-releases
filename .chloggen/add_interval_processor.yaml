@@ -10,8 +10,7 @@ component: intervalprocessor
 note: Interval processor is now alpha and is included in the contrib and k8s distributions
 
 # One or more tracking issues or pull requests related to the change
-issues:
-  - https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/37501
+issues: 804
 
 # (Optional) One or more lines of additional information to render under the primary note.
 # These lines will be padded with 2 spaces and then inserted directly into the document.
