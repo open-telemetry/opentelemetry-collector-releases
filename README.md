@@ -34,6 +34,7 @@ Approvers ([@open-telemetry/collector-releases-approvers](https://github.com/org
 - [Curtis Robert](https://github.com/crobert-1), Splunk
 - [David Ashpole](https://github.com/dashpole), Google
 - [Matt Wear](https://github.com/mwear), Lightstep
+- [Moritz Wiesinger](https://github.com/mowies), Dynatrace
 - [Ziqi Zhao](https://github.com/fatsheep9146), Alibaba
 
 Emeritus Approvers:
