@@ -35,6 +35,7 @@ Approvers ([@open-telemetry/collector-releases-approvers](https://github.com/org
 - [David Ashpole](https://github.com/dashpole), Google
 - [John L. Peterson (Jack)](https://github.com/jackgopack4), Datadog
 - [Matt Wear](https://github.com/mwear), Lightstep
+- [Moritz Wiesinger](https://github.com/mowies), Dynatrace
 - [Ziqi Zhao](https://github.com/fatsheep9146), Alibaba
 
 Emeritus Approvers:
