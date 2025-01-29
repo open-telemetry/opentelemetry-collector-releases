@@ -4,7 +4,7 @@ go 1.23
 
 toolchain go1.23.2
 
-require go.opentelemetry.io/build-tools/chloggen v0.15.0
+require go.opentelemetry.io/build-tools/chloggen v0.17.0
 
 require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
@@ -14,7 +14,6 @@ require (
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
 	github.com/spf13/cobra v1.8.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/stretchr/testify v1.10.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

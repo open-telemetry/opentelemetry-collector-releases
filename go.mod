@@ -3,7 +3,7 @@ module github.com/open-telemetry/opentelemetry-collector-releases
 go 1.23
 
 require (
-	github.com/goreleaser/goreleaser-pro/v2 v2.6.1-pro
+	github.com/goreleaser/goreleaser-pro/v2 v2.6.1-pro.0.20250124221731-55793ed06c38
 	gopkg.in/yaml.v3 v3.0.1
 )
 

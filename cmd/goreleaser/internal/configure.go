@@ -59,6 +59,13 @@ func GenerateContribBuildOnly(dist string, buildOrRest bool) config.Project {
 			TagPrefix: "v",
 		},
 		Partial: Partial,
+		Archives: []config.Archive{
+			{
+				Formats: []string{
+					"binary",
+				},
+			},
+		},
 	}
 }
 
@@ -107,12 +114,13 @@ func Build(dist string, buildOrRest bool) config.Build {
 				Path: "artifacts/otelcol-contrib_{{ .Target }}" +
 					"/otelcol-contrib{{- if eq .Os \"windows\" }}.exe{{ end }}",
 			},
-			Goos:   goos,
-			Goarch: archs,
-			Goarm:  ArmVersions(dist),
-			Dir:    "_build",
-			Binary: dist,
-			Ignore: IgnoreBuildCombinations(dist),
+			Goos:    goos,
+			Goarch:  archs,
+			Goarm:   ArmVersions(dist),
+			Goppc64: Ppc64Versions(dist),
+			Dir:     "_build",
+			Binary:  dist,
+			Ignore:  IgnoreBuildCombinations(dist),
 		}
 	}
 
@@ -130,10 +138,11 @@ func Build(dist string, buildOrRest bool) config.Build {
 			Flags:   []string{"-trimpath"},
 			Ldflags: []string{"-s", "-w"},
 		},
-		Goos:   goos,
-		Goarch: archs,
-		Goarm:  ArmVersions(dist),
-		Ignore: IgnoreBuildCombinations(dist),
+		Goos:    goos,
+		Goarch:  archs,
+		Goarm:   ArmVersions(dist),
+		Goppc64: Ppc64Versions(dist),
+		Ignore:  IgnoreBuildCombinations(dist),
 	}
 }
 
@@ -156,6 +165,10 @@ func ArmVersions(dist string) []string {
 		return nil
 	}
 	return []string{"7"}
+}
+
+func Ppc64Versions(dist string) []string {
+	return []string{"power8"}
 }
 
 func Archives(dist string) []config.Archive {
@@ -210,7 +223,7 @@ func Packages(dist string) []config.NFPM {
 // Package configures goreleaser to build a system package.
 // https://goreleaser.com/customization/nfpm/
 func Package(dist string) config.NFPM {
-	nfpmContents := config.NFPMContents{
+	nfpmContents := []config.NFPMContent{
 		{
 			Source:      fmt.Sprintf("%s.service", dist),
 			Destination: path.Join("/lib", "systemd", "system", fmt.Sprintf("%s.service", dist)),
@@ -222,7 +235,7 @@ func Package(dist string) config.NFPM {
 		},
 	}
 	if _, ok := DefaultConfigDists[dist]; ok {
-		nfpmContents = append(nfpmContents, &config.NFPMContent{
+		nfpmContents = append(nfpmContents, config.NFPMContent{
 			Source:      "config.yaml",
 			Destination: path.Join("/etc", dist, "config.yaml"),
 			Type:        "config|noreplace",
