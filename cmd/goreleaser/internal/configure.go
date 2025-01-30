@@ -43,6 +43,7 @@ var (
 	baseArchs   = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
 	winArchs    = []string{"386", "amd64", "arm64", "ppc64le"}
 	darwinArchs = []string{"amd64", "arm64"}
+	k8sArchs    = []string{"amd64", "arm64", "ppc64le", "s390x"}
 
 	imageRepos = []string{dockerHub, ghcr}
 
@@ -107,8 +108,7 @@ var (
 	}).Build()
 
 	// k8s distro
-	k8sArchs = []string{"amd64", "arm64", "ppc64le", "s390x"}
-	k8sDist  = newDistributionBuilder(k8sDistro).WithConfigFunc(func(d *distribution) {
+	k8sDist = newDistributionBuilder(k8sDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
 			&fullBuildConfig{targetOS: "linux", targetArch: k8sArchs},
 		}
