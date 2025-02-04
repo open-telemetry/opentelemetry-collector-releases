@@ -86,6 +86,10 @@ push-tags:
 	@git tag -a ${TAG} -s -m "Version ${TAG}"
 	@echo "Pushing tag ${TAG}"
 	@git push ${REMOTE} ${TAG}
+	@echo "Adding tag cmd/builder/${TAG}"
+	@git tag -a cmd/builder/${TAG} -s -m "Version ${TAG}"
+	@echo "Pushing tag cmd/builder/${TAG}"
+	@git push ${REMOTE} cmd/builder/${TAG}
 
 # Used for debug only
 REMOTE?=git@github.com:open-telemetry/opentelemetry-collector-releases.git
