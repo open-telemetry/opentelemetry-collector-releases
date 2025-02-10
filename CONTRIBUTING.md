@@ -41,8 +41,6 @@ Understanding the repository's structure will help you navigate and contribute e
     - `Dockerfile`: Defines how to build the container image for the distribution.
     - `manifest.yaml`: Used with the OpenTelemetry Collector Builder (`ocb`) to generate the sources for the distribution.
 
-- **`configs/`**: Due to an incompatibility between `goreleaser` and the repository structure, default configuration files to be included in the container images are placed here instead of within the distribution's main directory.
-
 - **`scripts/`**: Contains scripts used by the main `Makefile` to automate various tasks.
 
 ---
