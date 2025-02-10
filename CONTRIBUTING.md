@@ -36,7 +36,7 @@ Additional Notes:
 
 Understanding the repository's structure will help you navigate and contribute effectively:
 
-- **`distributions/`**: Contains directories for each distribution (e.g., `otelcol`, `contrib`).
+- **`distributions/`**: Contains directories for each distribution (e.g., `otelcol`, `otelcol-contrib`).
   - Each distribution directory includes:
     - `Dockerfile`: Defines how to build the container image for the distribution.
     - `manifest.yaml`: Used with the OpenTelemetry Collector Builder (`ocb`) to generate the sources for the distribution.
