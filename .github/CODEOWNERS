@@ -14,4 +14,9 @@
 
 * @open-telemetry/collector-contrib-approvers
 
+# Files owned by collector-releases-approvers
+.github/workflows/base-release.yaml    @open-telemetry/collector-contrib-approvers @open-telemetry/collector-releases-approvers
+.github/workflows/builder-release.yaml @open-telemetry/collector-contrib-approvers @open-telemetry/collector-releases-approvers
+.github/workflows/release-*.yaml       @open-telemetry/collector-contrib-approvers @open-telemetry/collector-releases-approvers
+
 distributions/otelcol-k8s/ @open-telemetry/collector-contrib-approvers @open-telemetry/helm-approvers @open-telemetry/operator-approvers
