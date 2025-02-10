@@ -10,7 +10,7 @@ This repository assembles various OpenTelemetry Collector distributions, such as
 
 - Binaries for multiple platforms and architectures.
 - Multi-architecture container images.
-- Packages for Linux distributions (RPM, deb) and macOS (brew).
+- Packages for Linux distributions (RPM, deb), Windows (msi) and macOS (brew).
 
 For more details about each distribution, please refer to their respective directories within the repository.
 
