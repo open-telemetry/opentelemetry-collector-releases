@@ -11,6 +11,8 @@ builds:
       - arm64
       - ppc64le
       - s390x
+    goppc64:
+      - power8
     dir: _build
     binary: otelcol-k8s
     ldflags:

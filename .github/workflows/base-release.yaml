@@ -15,7 +15,7 @@ on:
 
 env:
   # renovate: datasource=github-tags depName=goreleaser-pro packageName=goreleaser/goreleaser-pro
-  GORELEASER_PRO_VERSION: v2.4.8
+  GORELEASER_PRO_VERSION: v2.7.0
 
 jobs:
   prepare:
@@ -100,8 +100,9 @@ jobs:
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
-          GOARM: 7 # Default is 6
+          GOARM: "7" # Default is 6
           GOAMD64: v1
+          GOPPC64: power8
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           COSIGN_YES: true

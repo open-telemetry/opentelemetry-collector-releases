@@ -20,7 +20,7 @@ on:
 
 env:
   # renovate: datasource=github-tags depName=goreleaser-pro packageName=goreleaser/goreleaser-pro
-  GORELEASER_PRO_VERSION: v2.4.8
+  GORELEASER_PRO_VERSION: v2.7.0
 
 jobs:
   check-goreleaser:
@@ -126,8 +126,9 @@ jobs:
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
-          GOARM: 7 # Default is 6
+          GOARM: "7" # Default is 6
           GOAMD64: v1
+          GOPPC64: power8
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
       - name: Move built artifacts
@@ -148,11 +149,20 @@ jobs:
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
-          GOARM: 7 # Default is 6
+          GOARM: "7" # Default is 6
+          GOAMD64: v1
+          GOPPC64: power8
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
+      - name: Print built artifacts
+        run: cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json
+
+      - name: Print dist folder contents
+        if: always()
+        run: ls -laR ./distributions/${{ inputs.distribution }}/dist
+
       - name: Upload linux service packages
-        if: ${{ matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' }}
+        if: ${{ matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' && (inputs.distribution == 'otelcol-contrib' || inputs.distribution == 'otelcol') }}
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
           name: linux-packages
@@ -160,7 +170,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload MSI packages
-        if: matrix.GOOS == 'windows' && matrix.GOARCH == 'amd64'
+        if: matrix.GOOS == 'windows' && matrix.GOARCH == 'amd64' && (inputs.distribution == 'otelcol-contrib' || inputs.distribution == 'otelcol')
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
           name: msi-packages
