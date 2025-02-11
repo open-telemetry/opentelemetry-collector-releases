@@ -4,6 +4,13 @@
 
 <!-- next version -->
 
+## v0.119.0
+
+### 🚀 New components 🚀
+
+- `intervalprocessor`: Interval processor is now alpha and is included in the contrib and k8s distributions (#804)
+- `signaltometricsconnector`: Signal to metrics connector is now alpha and is included in the contrib distribution (#808)
+
 ## v0.118.0
 
 ### 🧰 Bug fixes 🧰
