@@ -50,9 +50,9 @@ var (
 	// otelcol (core) distro
 	otelColDist = newDistributionBuilder(coreDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
-			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}},
+			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}, ppc64Version: []string{"power8"}},
 			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
-			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
+			&fullBuildConfig{targetOS: "windows", targetArch: winArchs, ppc64Version: []string{"power8"}},
 		}
 		d.containerImages = newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"})
 		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs)
@@ -61,9 +61,9 @@ var (
 	// otlp distro
 	otlpDist = newDistributionBuilder(otlpDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
-			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}},
+			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}, ppc64Version: []string{"power8"}},
 			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
-			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
+			&fullBuildConfig{targetOS: "windows", targetArch: winArchs, ppc64Version: []string{"power8"}},
 		}
 		d.containerImages = newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"})
 		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs)
@@ -105,7 +105,7 @@ var (
 			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
 			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
 		}
-	}).Build()
+	}).WithBinArchive().Build()
 
 	// k8s distro
 	k8sDist = newDistributionBuilder(k8sDistro).WithConfigFunc(func(d *distribution) {
@@ -142,6 +142,15 @@ func (b *distributionBuilder) WithDefaultArchives() *distributionBuilder {
 	return b
 }
 
+func (b *distributionBuilder) WithBinArchive() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		d.archives = append(d.archives, config.Archive{
+			Formats: []string{"binary"},
+		})
+	})
+	return b
+}
+
 func (b *distributionBuilder) newArchives(dist string, builds []string) []config.Archive {
 	return []config.Archive{
 		{
@@ -160,7 +169,7 @@ func (b *distributionBuilder) WithDefaultNfpms() *distributionBuilder {
 }
 
 func (b *distributionBuilder) newNfpms(dist string) []config.NFPM {
-	nfpmContents := config.NFPMContents{
+	nfpmContents := []config.NFPMContent{
 		{
 			Source:      fmt.Sprintf("%s.service", dist),
 			Destination: path.Join("/lib", "systemd", "system", fmt.Sprintf("%s.service", dist)),
@@ -290,6 +299,16 @@ func (b *distributionBuilder) WithDefaultChecksum() *distributionBuilder {
 	return b
 }
 
+// func (b *distributionBuilder) WithBuildOnlyPackaging() *distributionBuilder {
+// 	return b.WithOnlyBinArchive().
+// 		WithDefaultChecksum().
+// 		WithDefaultNfpms().
+// 		WithDefaultMSIConfig().
+// 		WithDefaultSigns().
+// 		WithDefaultDockerSigns().
+// 		WithDefaultSBOMs()
+// }
+
 func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
 	return b.WithDefaultArchives().
 		WithDefaultChecksum().
@@ -313,7 +332,7 @@ func (b *distributionBuilder) WithDefaultConfigIncluded() *distributionBuilder {
 		}
 
 		for i, nfpm := range d.nfpms {
-			nfpm.Contents = append(nfpm.Contents, &config.NFPMContent{
+			nfpm.Contents = append(nfpm.Contents, config.NFPMContent{
 				Source:      "config.yaml",
 				Destination: path.Join("/etc", d.name, "config.yaml"),
 				Type:        "config|noreplace",
@@ -415,9 +434,10 @@ func newContainerImages(dist string, targetOS string, targetArchs []string, opts
 }
 
 type fullBuildConfig struct {
-	targetOS   string
-	targetArch []string
-	armVersion []string
+	targetOS     string
+	targetArch   []string
+	armVersion   []string
+	ppc64Version []string
 }
 
 func (c *fullBuildConfig) Build(dist string) config.Build {
@@ -429,9 +449,10 @@ func (c *fullBuildConfig) Build(dist string) config.Build {
 			Flags:   []string{"{{ .Env.BUILD_FLAGS }}"},
 			Ldflags: []string{"{{ .Env.LD_FLAGS }}"},
 		},
-		Goos:   []string{c.targetOS},
-		Goarch: c.targetArch,
-		Goarm:  c.armVersion,
+		Goos:    []string{c.targetOS},
+		Goarch:  c.targetArch,
+		Goarm:   c.armVersion,
+		Goppc64: c.ppc64Version,
 	}
 	return buildConfig
 }
@@ -456,6 +477,7 @@ func (c *preBuiltBuildConfig) Build(dist string) config.Build {
 		Goos:     []string{c.targetOS},
 		Goarch:   c.targetArch,
 		Goarm:    armVersions(dist),
+		Goppc64:  []string{"power8"},
 	}
 }
 

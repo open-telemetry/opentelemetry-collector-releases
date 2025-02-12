@@ -50,6 +50,9 @@ builds:
       - '{{ .Env.LD_FLAGS }}'
     flags:
       - '{{ .Env.BUILD_FLAGS }}'
+archives:
+  - formats:
+      - binary
 monorepo:
   tag_prefix: v
 partial:

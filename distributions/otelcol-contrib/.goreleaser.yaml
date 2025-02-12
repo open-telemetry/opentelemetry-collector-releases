@@ -25,6 +25,8 @@ builds:
       - s390x
     goarm:
       - "7"
+    goppc64:
+      - power8
     dir: _build
     binary: otelcol-contrib
     builder: prebuilt
@@ -38,6 +40,8 @@ builds:
       - arm64
     goarm:
       - "7"
+    goppc64:
+      - power8
     dir: _build
     binary: otelcol-contrib
     builder: prebuilt
@@ -53,6 +57,8 @@ builds:
       - ppc64le
     goarm:
       - "7"
+    goppc64:
+      - power8
     dir: _build
     binary: otelcol-contrib
     builder: prebuilt

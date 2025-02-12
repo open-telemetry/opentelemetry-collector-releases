@@ -25,6 +25,8 @@ builds:
       - s390x
     goarm:
       - "7"
+    goppc64:
+      - power8
     dir: _build
     binary: otelcol
     ldflags:
@@ -51,6 +53,8 @@ builds:
       - amd64
       - arm64
       - ppc64le
+    goppc64:
+      - power8
     dir: _build
     binary: otelcol
     ldflags:
