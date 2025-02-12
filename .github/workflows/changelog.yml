@@ -28,6 +28,9 @@ jobs:
     if: ${{ github.actor != 'dependabot[bot]' }}
     env:
       PR_HEAD: ${{ github.event.pull_request.head.sha }}
+      RUN_MD_LINK_CHECK: ${{ (!contains(github.event.pull_request.labels.*.name, 'dependencies') && !contains(github.event.pull_request.labels.*.name, 'Skip Changelog') && !contains(github.event.pull_request.title, '[chore]')) }}
+      TEST_MD_LINK_CHECK: ${{ contains(github.event.pull_request.title, 'md link check') }}
+#      TEST_MD_LINK_CHECK: ${{ contains(github.event.pull_request.title, 'update dependency tcort/markdown-link-check') }}
 
     steps:
       - uses: actions/checkout@v4
@@ -48,7 +51,7 @@ jobs:
           key: changelog-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
       - name: Ensure no changes to the CHANGELOG.md or CHANGELOG-API.md
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependencies') && !contains(github.event.pull_request.labels.*.name, 'Skip Changelog') && !contains(github.event.pull_request.title, '[chore]')}}
+        if: env.RUN_MD_LINK_CHECK == 'true'
         run: |
           if [[ $(git diff --name-only $(git merge-base origin/main $PR_HEAD) $PR_HEAD ./CHANGELOG*.md) ]]
           then
@@ -62,7 +65,7 @@ jobs:
           fi
 
       - name: Ensure ./.chloggen/*.yaml addition(s)
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependencies') && !contains(github.event.pull_request.labels.*.name, 'Skip Changelog') && !contains(github.event.pull_request.title, '[chore]')}}
+        if: env.RUN_MD_LINK_CHECK == 'true'
         run: |
           if [[ 1 -gt $(git diff --diff-filter=A --name-only $(git merge-base origin/main $PR_HEAD) $PR_HEAD ./.chloggen | grep -c \\.yaml) ]]
           then
@@ -82,13 +85,13 @@ jobs:
 
       # In order to validate any links in the yaml file, render the config to markdown
       - name: Render .chloggen changelog entries
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependencies') && !contains(github.event.pull_request.labels.*.name, 'Skip Changelog') && !contains(github.event.pull_request.title, '[chore]')}}
+        if: env.RUN_MD_LINK_CHECK == 'true' || env.TEST_MD_LINK_CHECK == 'true'
         run: make chlog-preview > changelog_preview.md
       - name: Install markdown-link-check
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependencies') && !contains(github.event.pull_request.labels.*.name, 'Skip Changelog') && !contains(github.event.pull_request.title, '[chore]')}}
+        if: env.RUN_MD_LINK_CHECK == 'true' || env.TEST_MD_LINK_CHECK == 'true'
         run: npm install -g markdown-link-check@${{ env.MD_LINK_CHECK_VERSION }}
       - name: Run markdown-link-check
-        if: ${{ !contains(github.event.pull_request.labels.*.name, 'dependencies') && !contains(github.event.pull_request.labels.*.name, 'Skip Changelog') && !contains(github.event.pull_request.title, '[chore]')}}
+        if: env.RUN_MD_LINK_CHECK == 'true' || env.TEST_MD_LINK_CHECK == 'true'
         run: |
           markdown-link-check \
             --verbose \
