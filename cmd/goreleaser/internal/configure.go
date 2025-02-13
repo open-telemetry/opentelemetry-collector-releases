@@ -419,6 +419,7 @@ func SBOM() []config.SBOM {
 		{
 			ID:        "archive",
 			Artifacts: "archive",
+			Env:       []string{"SYFT_FILE_METADATA_SELECTION=all", "SYFT_FILE_METADATA_DIGESTS=sha256"},
 		},
 		{
 			ID:        "package",
