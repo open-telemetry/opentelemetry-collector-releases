@@ -12,11 +12,10 @@
 #  https://help.github.com/en/articles/about-code-owners
 #
 
-* @open-telemetry/collector-contrib-approvers
+* @open-telemetry/collector-releases-approvers
 
-# Files owned by collector-releases-approvers
-.github/workflows/base-release.yaml    @open-telemetry/collector-contrib-approvers @open-telemetry/collector-releases-approvers
-.github/workflows/builder-release.yaml @open-telemetry/collector-contrib-approvers @open-telemetry/collector-releases-approvers
-.github/workflows/release-*.yaml       @open-telemetry/collector-contrib-approvers @open-telemetry/collector-releases-approvers
+/distributions/otelcol/manifest.yaml         @open-telemetry/collector-releases-approvers @open-telemetry/collector-approvers
+/distributions/otelcol-otlp/manifest.yaml    @open-telemetry/collector-releases-approvers @open-telemetry/collector-approvers
+/distributions/otelcol-contrib/manifest.yaml @open-telemetry/collector-releases-approvers @open-telemetry/collector-contrib-approvers
+/distributions/otelcol-k8s/manifest.yaml     @open-telemetry/collector-releases-approvers @open-telemetry/helm-approvers @open-telemetry/operator-approvers
 
-distributions/otelcol-k8s/ @open-telemetry/collector-contrib-approvers @open-telemetry/helm-approvers @open-telemetry/operator-approvers
