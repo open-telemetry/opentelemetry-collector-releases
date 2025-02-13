@@ -110,7 +110,7 @@ var (
 	// k8s distro
 	k8sDist = newDistributionBuilder(k8sDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
-			&fullBuildConfig{targetOS: "linux", targetArch: k8sArchs},
+			&fullBuildConfig{targetOS: "linux", targetArch: k8sArchs, ppc64Version: []string{"power8"}},
 		}
 		d.containerImages = newContainerImages(d.name, "linux", k8sArchs, containerImageOptions{})
 		d.containerImageManifests = newContainerImageManifests(d.name, "linux", k8sArchs)
