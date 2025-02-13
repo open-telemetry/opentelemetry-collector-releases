@@ -299,16 +299,6 @@ func (b *distributionBuilder) WithDefaultChecksum() *distributionBuilder {
 	return b
 }
 
-// func (b *distributionBuilder) WithBuildOnlyPackaging() *distributionBuilder {
-// 	return b.WithOnlyBinArchive().
-// 		WithDefaultChecksum().
-// 		WithDefaultNfpms().
-// 		WithDefaultMSIConfig().
-// 		WithDefaultSigns().
-// 		WithDefaultDockerSigns().
-// 		WithDefaultSBOMs()
-// }
-
 func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
 	return b.WithDefaultArchives().
 		WithDefaultChecksum().
