@@ -2,6 +2,9 @@ version: 2
 project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
+  - LD_FLAGS=-s -w
+  - CGO_ENABLED=0
+  - BUILD_FLAGS=-trimpath
 msi:
   - id: otelcol
     name: otelcol_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}
@@ -10,11 +13,9 @@ msi:
       - opentelemetry.ico
       - config.yaml
 builds:
-  - id: otelcol
+  - id: otelcol-linux
     goos:
-      - darwin
       - linux
-      - windows
     goarch:
       - "386"
       - amd64
@@ -26,32 +27,46 @@ builds:
       - "7"
     goppc64:
       - power8
-    ignore:
-      - goos: darwin
-        goarch: "386"
-      - goos: darwin
-        goarch: arm
-      - goos: darwin
-        goarch: s390x
-      - goos: windows
-        goarch: arm
-      - goos: windows
-        goarch: arm64
-      - goos: windows
-        goarch: s390x
     dir: _build
     binary: otelcol
     ldflags:
-      - -s
-      - -w
+      - '{{ .Env.LD_FLAGS }}'
     flags:
-      - -trimpath
-    env:
-      - CGO_ENABLED=0
+      - '{{ .Env.BUILD_FLAGS }}'
+  - id: otelcol-darwin
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    dir: _build
+    binary: otelcol
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
+  - id: otelcol-windows
+    goos:
+      - windows
+    goarch:
+      - "386"
+      - amd64
+      - arm64
+      - ppc64le
+    goppc64:
+      - power8
+    dir: _build
+    binary: otelcol
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
 archives:
   - id: otelcol
     builds:
-      - otelcol
+      - otelcol-linux
+      - otelcol-darwin
+      - otelcol-windows
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
   - package_name: otelcol
@@ -74,7 +89,7 @@ nfpms:
           - /bin/sh
     id: otelcol
     builds:
-      - otelcol
+      - otelcol-linux
     formats:
       - deb
       - rpm

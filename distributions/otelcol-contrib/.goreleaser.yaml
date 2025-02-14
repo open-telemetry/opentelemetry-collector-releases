@@ -2,6 +2,9 @@ version: 2
 project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
+  - LD_FLAGS=-s -w
+  - CGO_ENABLED=0
+  - BUILD_FLAGS=-trimpath
 msi:
   - id: otelcol-contrib
     name: otelcol-contrib_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}
@@ -10,11 +13,9 @@ msi:
       - opentelemetry.ico
       - config.yaml
 builds:
-  - id: otelcol-contrib
+  - id: otelcol-contrib-linux
     goos:
-      - darwin
       - linux
-      - windows
     goarch:
       - "386"
       - amd64
@@ -26,28 +27,49 @@ builds:
       - "7"
     goppc64:
       - power8
-    ignore:
-      - goos: darwin
-        goarch: "386"
-      - goos: darwin
-        goarch: arm
-      - goos: darwin
-        goarch: s390x
-      - goos: windows
-        goarch: arm
-      - goos: windows
-        goarch: arm64
-      - goos: windows
-        goarch: s390x
     dir: _build
     binary: otelcol-contrib
     builder: prebuilt
     prebuilt:
-      path: artifacts/otelcol-contrib_{{ .Target }}/otelcol-contrib{{- if eq .Os "windows" }}.exe{{ end }}
+      path: artifacts/otelcol-contrib-linux_{{ .Target }}/otelcol-contrib
+  - id: otelcol-contrib-darwin
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    goarm:
+      - "7"
+    goppc64:
+      - power8
+    dir: _build
+    binary: otelcol-contrib
+    builder: prebuilt
+    prebuilt:
+      path: artifacts/otelcol-contrib-darwin_{{ .Target }}/otelcol-contrib
+  - id: otelcol-contrib-windows
+    goos:
+      - windows
+    goarch:
+      - "386"
+      - amd64
+      - arm64
+      - ppc64le
+    goarm:
+      - "7"
+    goppc64:
+      - power8
+    dir: _build
+    binary: otelcol-contrib
+    builder: prebuilt
+    prebuilt:
+      path: artifacts/otelcol-contrib-windows_{{ .Target }}/otelcol-contrib.exe
 archives:
   - id: otelcol-contrib
     builds:
-      - otelcol-contrib
+      - otelcol-contrib-linux
+      - otelcol-contrib-darwin
+      - otelcol-contrib-windows
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
   - package_name: otelcol-contrib
@@ -70,7 +92,7 @@ nfpms:
           - /bin/sh
     id: otelcol-contrib
     builds:
-      - otelcol-contrib
+      - otelcol-contrib-linux
     formats:
       - deb
       - rpm
