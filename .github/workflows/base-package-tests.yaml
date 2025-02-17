@@ -1,0 +1,61 @@
+name: Package Tests
+
+on:
+  workflow_call:
+    inputs:
+      type:
+        required: true
+        type: string
+      distribution:
+        required: true
+        type: string
+      issue-on-failure:
+        required: false
+        type: boolean
+        default: false
+        description: "Set to true if a GH issue should be generated upon failure"
+
+jobs:
+  package-tests:
+    name: Package Tests
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        type: ${{ fromJSON(inputs.type) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Download built artifacts
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          name: linux-packages
+
+      - name: Test ${{ matrix.type }} package
+        run: ./scripts/package-tests/package-tests.sh ./otelcol*-SNAPSHOT-*_linux_amd64.${{ matrix.type }} ${{ inputs.distribution }}
+
+  create-issue:
+    name: Create GitHub Issue
+    runs-on: ubuntu-22.04
+    needs: [package-tests]
+    if: failure() && inputs.issue-on-failure == 'true'
+    steps:
+      - name: Formulate issue
+        id: formulate_issue
+        run: |
+          # create a markdown file that contains details about the failure
+          echo "The nightly linux package tests failed in the following GitHub actions run." > nightly-test-failure.md
+          echo "* Link to run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> nightly-test-failure.md
+          echo "* Triggered by: Nightly scheduled build" >> nightly-test-failure.md
+          echo "" >> nightly-test-failure.md
+          echo "Note: This issue was auto-generated from [base-package-tests.yaml](https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/.github/workflows/base-package-tests.yaml)" >> nightly-test-failure.md
+
+      - name: Create issue on failure
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          gh issue create \
+            --repo open-telemetry/opentelemetry-collector-contrib \
+            --title "Nightly Linux Package Tests Failed" \
+            --body-file nightly-test-failure.md \
+            --label "release:blocker"

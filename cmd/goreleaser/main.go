@@ -24,7 +24,10 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-releases/cmd/goreleaser/internal"
 )
 
-var distFlag = flag.String("d", "", "Collector distributions to build")
+var (
+	distFlag               = flag.String("d", "", "Collector distributions to build")
+	contribBuildOrRestFlag = flag.Bool("generate-build-step", false, "Collector Contrib distribution only - switch between build and package config file - set to true to generate build step, false to generate package step")
+)
 
 func main() {
 	flag.Parse()
@@ -32,21 +35,9 @@ func main() {
 	if len(*distFlag) == 0 {
 		log.Fatal("no distribution to build")
 	}
+	project := internal.BuildDist(*distFlag, *contribBuildOrRestFlag)
 
-	project := internal.Generate(*distFlag)
-
-	partial := map[string]any{
-		"partial": map[string]any{
-			"by": "target",
-		},
-	}
 	e := yaml.NewEncoder(os.Stdout)
-	e.SetIndent(2)
-	if err := e.Encode(partial); err != nil {
-		log.Fatal(err)
-	}
-
-	e = yaml.NewEncoder(os.Stdout)
 	e.SetIndent(2)
 	if err := e.Encode(&project); err != nil {
 		log.Fatal(err)
