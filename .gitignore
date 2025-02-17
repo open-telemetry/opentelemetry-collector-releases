@@ -5,3 +5,4 @@ dist/
 .generated-yaml/
 .vscode
 .core
+.tools

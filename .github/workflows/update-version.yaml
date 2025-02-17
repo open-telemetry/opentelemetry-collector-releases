@@ -1,0 +1,42 @@
+name: Update Version in Distributions and Prepare PR
+on:
+  workflow_dispatch:
+    inputs:
+      next_beta_core:
+        description: 'Next collector core beta version (optional)'
+        required: false
+        default: ''
+      next_beta_contrib:
+        description: 'Next collector contrib beta version (optional)'
+        required: false
+        default: ''
+      next_stable:
+        description: 'Next stable version (optional)'
+        required: false
+        default: ''
+      create_pr:
+        description: 'Create a draft pull request with the changes'
+        required: true
+        type: boolean
+        default: true
+
+jobs:
+  update-version:
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Run bump-versions.sh
+        run: |
+          args=""
+          if [ "${{ github.event.inputs.create_pr }}" = "true" ]; then
+            args="--commit --pull-request"
+          fi
+          .github/workflows/scripts/bump-versions.sh $args
+        env:
+          next_beta_core: ${{ github.event.inputs.next_beta_core }}
+          next_beta_contrib: ${{ github.event.inputs.next_beta_contrib }}
+          next_stable: ${{ github.event.inputs.next_stable }}

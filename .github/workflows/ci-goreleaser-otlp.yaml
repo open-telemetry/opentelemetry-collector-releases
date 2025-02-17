@@ -1,6 +1,7 @@
 name: Continuous Integration - OTLP - GoReleaser
 
 on:
+  merge_group: 
   push:
     branches: [main]
     paths:
