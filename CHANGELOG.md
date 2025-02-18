@@ -4,6 +4,20 @@
 
 <!-- next version -->
 
+## v0.120.0
+
+### 🛑 Breaking changes 🛑
+
+- `contrib`: Remove deprecated routingprocessor from the contrib distribution (#819)
+
+### 🚀 New components 🚀
+
+- `bmchelixexporter`: Add bmchelix exporter to otelcol-contrib releases (#822)
+
+### 💡 Enhancements 💡
+
+- `all`: Update minimum go version used in CI (#827)
+
 ## v0.119.0
 
 ### 🚀 New components 🚀
