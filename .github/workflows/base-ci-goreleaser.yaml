@@ -189,12 +189,13 @@ jobs:
           if-no-files-found: error
 
       - name: Prepare variables
+        id: prep
         run: |
-          echo "VERSION=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq '.version')" >> "$GITHUB_OUTPUT"
+          echo "version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq '.version')" >> "$GITHUB_OUTPUT"
 
       - name: Debugging
         run: |
-          echo '${{ env.VERSION }}'
+          echo '${{ steps.prep.outputs.version }}'
 
 #      - name: Build container images locally
 #        if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, 'Docker Image') == 'true'
