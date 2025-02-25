@@ -184,7 +184,7 @@ jobs:
           if-no-files-found: error
 
       - name: Debugging
-        run: echo "${{ fromJSON(steps.build-snapshot.outputs.artifacts).*.type }}"
+        run: echo "${{ fromJSON(steps.build-snapshot.outputs.artifacts) }}"
 
       - name: Build container images locally
         if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, 'Docker Image') == 'true'
