@@ -33,6 +33,8 @@ jobs:
             GOARCH: "386"
           - GOOS: darwin
             GOARCH: s390x
+          - GOOS: darwin
+            GOARCH: ppc64le
           - GOOS: windows
             GOARCH: arm64
           - GOOS: darwin
