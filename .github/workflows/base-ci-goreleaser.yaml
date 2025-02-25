@@ -42,6 +42,8 @@ jobs:
           - GOOS: windows
             GOARCH: s390x
     runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.prep.outputs.version }}
 
     steps:
       - name: Checkout
@@ -157,6 +159,9 @@ jobs:
       - name: Print built artifacts
         run: cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json
 
+      - name: Print metadata
+        run: cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json
+
       - name: Print dist folder contents
         if: always()
         run: ls -laR ./distributions/${{ inputs.distribution }}/dist
@@ -176,3 +181,106 @@ jobs:
           name: msi-packages
           path: distributions/${{ inputs.distribution }}/dist/windows_amd64_v1/**/*.msi
           if-no-files-found: error
+
+      - name: Prepare variables
+        id: prep
+        run: |
+          # Find version number and types of built artifacts
+          echo "version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')" >> "$GITHUB_OUTPUT"
+          echo "types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )" >> "$GITHUB_OUTPUT"
+          
+          # Find GOOS and GOARCH
+          os=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r '.[] | select(.name | contains(".tar.gz")) | .goos')
+          arch=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r '.[] | select(.name | contains(".tar.gz")) | .goarch')
+          echo "arch=$os-$arch" >> "$GITHUB_OUTPUT"
+          
+          # Find binary path
+          echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path' )" >> "$GITHUB_OUTPUT"
+
+      - name: Print version and target
+        run: |
+          echo 'Version: ${{ steps.prep.outputs.version }}'
+          echo 'Types: ${{ steps.prep.outputs.types }}'
+          echo 'Arch: ${{ steps.prep.outputs.arch }}'
+          echo 'Images?: ${{ steps.prep.outputs.container-images }}'
+
+      - name: Copy binary to distro root folder
+        run: cp ./distributions/${{ inputs.distribution }}/${{ steps.prep.outputs.binary-path }} ./distributions/${{ inputs.distribution }}
+
+      - name: Build container images locally
+        if: contains(steps.prep.outputs.types, 'Docker Image')
+        uses: docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497 # v6.14.0
+        with:
+          context: ./distributions/${{ inputs.distribution }}
+          push: false
+          load: true
+          tags: ${{ inputs.distribution }}:${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
+
+      - name: Export container image to tarball
+        if: contains(steps.prep.outputs.types, 'Docker Image')
+        run: |
+          docker save ${{ inputs.distribution }}:${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }} > /tmp/${{ inputs.distribution }}.tar
+
+      - name: Upload container image artifact
+        if: contains(steps.prep.outputs.types, 'Docker Image')
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+        with:
+          name: ${{ inputs.distribution }}-image-${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
+          path: /tmp/${{ inputs.distribution }}.tar
+          retention-days: 7
+
+  docker-tests:
+    needs:
+      - check-goreleaser
+    strategy:
+      matrix:
+        GOOS: ${{ fromJSON( inputs.goos) }}
+        GOARCH: ${{ fromJSON( inputs.goarch) }}
+        exclude:
+          - GOOS: darwin
+          - GOOS: windows
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@4574d27a4764455b42196d70a065bc6853246a25 # v3.4.0
+        with:
+          platforms: arm64,ppc64le,linux/arm/v7,s390x
+
+      - name: Download container image artifact
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 #v4.1.9
+        with:
+          name: ${{ inputs.distribution }}-image-${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
+
+      - name: Load image into docker
+        run: |
+          docker image load --input ./${{ inputs.distribution }}.tar
+          docker image ls
+          docker image inspect ${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
+
+      - name: Run container image
+        run: |
+          echo "Running container..."
+          docker run --name ${{ inputs.distribution }} \
+            -d \
+            -v ${PWD}/tests/docker-tests/default-config.yaml:/config.yaml \
+            ${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }} \
+            --config /config.yaml
+          echo "docker ps:"
+          echo ""
+          docker ps
+          echo "Sleeping for a bit..."
+          sleep 10
+          echo "Checking logs for correct startup..."
+          docker logs ${{ inputs.distribution }} >& docker-logs-${{ inputs.distribution }}.log
+          if cat docker-logs-${{ inputs.distribution }}.log | grep "Everything is ready."; then
+            echo "${{ inputs.distribution }} started up correctly"
+          else
+            echo "${{ inputs.distribution }} failed to start"
+            echo "Printing container logs below..."
+            echo ""
+            cat docker-logs-${{ inputs.distribution }}.log
+            exit 1
+          fi
