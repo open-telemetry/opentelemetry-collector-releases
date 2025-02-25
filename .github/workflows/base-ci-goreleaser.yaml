@@ -190,15 +190,15 @@ jobs:
 
       - name: Debugging1
         run: |
-          echo '${{ toJSON(steps.build-snapshot.outputs).* }}'
-
-      - name: Debugging
-        run: |
-          echo '${{ steps.build-snapshot.outputs.metadata }}'
+          echo '${{ toJSON(steps.build-snapshot.outputs) }}'
 
       - name: Debugging
         run: |
           echo '${{ toJSON(steps.build-snapshot.outputs.metadata) }}'
+
+      - name: Debugging
+        run: |
+          echo '${{ toJSON(steps.build-snapshot.outputs.artifacts) }}'
 
       - name: Debugging
         run: |
@@ -242,15 +242,3 @@ jobs:
 #          name: ${{ inputs.distribution }}-image-${{ env.VERSION }}-${{ env.ARCH }}
 #          path: /tmp/${{ inputs.distribution }}.tar
 #          retention-days: 7
-
-  debug:
-    runs-on: ubuntu-22.04
-    needs: [check-goreleaser]
-    steps:
-      - name: more debugging
-        run: |
-          echo '${{ needs.check-goreleaser.outputs.metadata }}'
-
-      - name: more debugging
-        run: |
-          echo '${{ needs.check-goreleaser.outputs.artifacts }}'
