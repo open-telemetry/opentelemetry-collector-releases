@@ -157,6 +157,9 @@ jobs:
       - name: Print built artifacts
         run: cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json
 
+      - name: Print metadata
+        run: cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json
+
       - name: Print dist folder contents
         if: always()
         run: ls -laR ./distributions/${{ inputs.distribution }}/dist
@@ -176,3 +179,21 @@ jobs:
           name: msi-packages
           path: distributions/${{ inputs.distribution }}/dist/windows_amd64_v1/**/*.msi
           if-no-files-found: error
+
+#      - name: Build container images locally
+#        uses: docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497 # v6.14.0
+#        with:
+#          context: ./distributions/${{ inputs.distribution }}
+#          push: false
+#          load: true
+#          tags: ${{ inputs.distribution }}:SNAPSHOT-
+#
+#      - name: export image to tar
+#        run: |
+#          docker save dynatrace-otel-collector:e2e-test > /tmp/dynatrace-otel-collector.tar
+#
+#      - name: Upload container image artifact
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: dynatrace-otel-collector-image
+#          path: /tmp/dynatrace-otel-collector.tar
