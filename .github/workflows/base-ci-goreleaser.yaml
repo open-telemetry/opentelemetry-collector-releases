@@ -140,6 +140,7 @@ jobs:
         run: ls -laR distributions/otelcol-contrib/artifacts
 
       - name: Run GoReleaser for ${{ inputs.distribution }}
+        id: build-snapshot
         uses: goreleaser/goreleaser-action@90a3faa9d0182683851fbfa97ca1a2cb983bfca3 # v6.2.1
         with:
           distribution: goreleaser-pro
@@ -180,20 +181,30 @@ jobs:
           path: distributions/${{ inputs.distribution }}/dist/windows_amd64_v1/**/*.msi
           if-no-files-found: error
 
-#      - name: Build container images locally
-#        uses: docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497 # v6.14.0
-#        with:
-#          context: ./distributions/${{ inputs.distribution }}
-#          push: false
-#          load: true
-#          tags: ${{ inputs.distribution }}:SNAPSHOT-
-#
-#      - name: export image to tar
-#        run: |
-#          docker save dynatrace-otel-collector:e2e-test > /tmp/dynatrace-otel-collector.tar
-#
-#      - name: Upload container image artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: dynatrace-otel-collector-image
-#          path: /tmp/dynatrace-otel-collector.tar
+      - name: Build container images locally
+        uses: docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497 # v6.14.0
+        env:
+          VERSION: ${{ fromJSON(steps.build-snapshot.outputs.metadata).version }}
+          ARCH: ${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goos }}-${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goarch }}
+        with:
+          context: ./distributions/${{ inputs.distribution }}
+          push: false
+          load: true
+          tags: ${{ inputs.distribution }}:${{ env.VERSION }}-${{ env.ARCH }}
+
+      - name: Export container image to tarball
+        env:
+          VERSION: ${{ fromJSON(steps.build-snapshot.outputs.metadata).version }}
+          ARCH: ${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goos }}-${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goarch }}
+        run: |
+          docker save ${{ inputs.distribution }}:${{ env.VERSION }}-${{ env.ARCH }} > /tmp/${{ inputs.distribution }}.tar
+
+      - name: Upload container image artifact
+        uses: actions/upload-artifact@v4
+        env:
+          VERSION: ${{ fromJSON(steps.build-snapshot.outputs.metadata).version }}
+          ARCH: ${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goos }}-${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goarch }}
+        with:
+          name: ${{ inputs.distribution }}-image-${{ env.VERSION }}-${{ env.ARCH }}
+          path: /tmp/${{ inputs.distribution }}.tar
+          retention-days: 7
