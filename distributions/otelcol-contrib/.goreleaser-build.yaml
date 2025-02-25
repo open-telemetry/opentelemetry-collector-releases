@@ -43,7 +43,6 @@ builds:
       - "386"
       - amd64
       - arm64
-      - ppc64le
     dir: _build
     binary: otelcol-contrib
     ldflags:
