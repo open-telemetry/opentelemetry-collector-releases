@@ -187,7 +187,7 @@ jobs:
 
       - name: Debugging
         run: |
-          echo '${{ toJSON(steps.build-snapshot.outputs.metadata) }}'
+          echo '${{ toJSON(steps.build-snapshot.outputs) }}'
 
       - name: Debugging
         run: |
