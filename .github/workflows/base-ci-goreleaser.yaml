@@ -163,7 +163,7 @@ jobs:
 
       - name: Upload linux service packages
         if: ${{ matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' && (inputs.distribution == 'otelcol-contrib' || inputs.distribution == 'otelcol') }}
-        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
           name: linux-packages
           path: distributions/${{ inputs.distribution }}/dist/linux_amd64_v1/*
@@ -171,7 +171,7 @@ jobs:
 
       - name: Upload MSI packages
         if: matrix.GOOS == 'windows' && matrix.GOARCH == 'amd64' && (inputs.distribution == 'otelcol-contrib' || inputs.distribution == 'otelcol')
-        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
           name: msi-packages
           path: distributions/${{ inputs.distribution }}/dist/windows_amd64_v1/**/*.msi
