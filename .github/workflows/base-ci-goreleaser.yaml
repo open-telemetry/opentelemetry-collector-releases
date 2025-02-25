@@ -184,6 +184,9 @@ jobs:
           if-no-files-found: error
 
       - name: Debugging
+        run: echo "${{ fromJSON(steps.build-snapshot.outputs.metadata) }}"
+
+      - name: Debugging
         run: echo "${{ fromJSON(steps.build-snapshot.outputs.artifacts) }}"
 
       - name: Build container images locally
