@@ -187,7 +187,7 @@ jobs:
 
       - name: Debugging
         run: |
-          echo '${{ steps.build-snapshot.outputs.metadata }}'
+          echo '${{ fromJSON(steps.build-snapshot.outputs.metadata).version }}'
 
       - name: Debugging
         run: |
