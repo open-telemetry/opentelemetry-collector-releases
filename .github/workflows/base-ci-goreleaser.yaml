@@ -188,30 +188,14 @@ jobs:
           path: distributions/${{ inputs.distribution }}/dist/windows_amd64_v1/**/*.msi
           if-no-files-found: error
 
-      - name: Debugging1
+      - name: Prepare variables
         run: |
-          echo '${{ toJSON(steps.build-snapshot.outputs) }}'
+          echo "VERSION=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq '.version')" >> "$GITHUB_OUTPUT"
 
       - name: Debugging
         run: |
-          echo '${{ toJSON(steps.build-snapshot.outputs.metadata) }}'
+          echo '${{ env.VERSION }}'
 
-      - name: Debugging
-        run: |
-          echo '${{ toJSON(steps.build-snapshot.outputs.artifacts) }}'
-
-      - name: Debugging
-        run: |
-          echo '${{ toJSON(steps.build-snapshot.outputs.metadata).version }}'
-
-      - name: Debugging
-        run: |
-          echo '${{ toJSON(steps.build-snapshot.outputs.metadata).runtime.goos }}-${{ toJSON(steps.build-snapshot.outputs.metadata).runtime.goarch }}'
-
-#      - name: Debugging
-#        run: |
-#          echo '${{ steps.build-snapshot.outputs.artifacts }}'
-#
 #      - name: Build container images locally
 #        if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, 'Docker Image') == 'true'
 #        uses: docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497 # v6.14.0
