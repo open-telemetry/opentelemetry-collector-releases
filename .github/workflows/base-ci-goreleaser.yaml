@@ -187,11 +187,11 @@ jobs:
 
       - name: Debugging
         run: |
-          echo '${{ fromJSON(steps.build-snapshot.outputs.metadata) }}'
+          echo '${{ steps.build-snapshot.outputs.metadata }}'
 
       - name: Debugging
         run: |
-          echo '${{ fromJSON(steps.build-snapshot.outputs.artifacts) }}'
+          echo '${{ steps.build-snapshot.outputs.artifacts }}'
 
       - name: Build container images locally
         if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, 'Docker Image') == 'true'
