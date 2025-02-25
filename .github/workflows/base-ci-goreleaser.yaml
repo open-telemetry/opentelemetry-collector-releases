@@ -184,7 +184,7 @@ jobs:
           if-no-files-found: error
 
       - name: Build container images locally
-        if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, "Docker Image")
+        if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, "Docker Image") == 'true'
         uses: docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497 # v6.14.0
         env:
           VERSION: ${{ fromJSON(steps.build-snapshot.outputs.metadata).version }}
@@ -196,7 +196,7 @@ jobs:
           tags: ${{ inputs.distribution }}:${{ env.VERSION }}-${{ env.ARCH }}
 
       - name: Export container image to tarball
-        if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, "Docker Image")
+        if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, "Docker Image") == 'true'
         env:
           VERSION: ${{ fromJSON(steps.build-snapshot.outputs.metadata).version }}
           ARCH: ${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goos }}-${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goarch }}
@@ -204,7 +204,7 @@ jobs:
           docker save ${{ inputs.distribution }}:${{ env.VERSION }}-${{ env.ARCH }} > /tmp/${{ inputs.distribution }}.tar
 
       - name: Upload container image artifact
-        if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, "Docker Image")
+        if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, "Docker Image") == 'true'
         uses: actions/upload-artifact@v4
         env:
           VERSION: ${{ fromJSON(steps.build-snapshot.outputs.metadata).version }}
