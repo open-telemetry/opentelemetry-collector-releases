@@ -192,10 +192,12 @@ jobs:
         id: prep
         run: |
           echo "version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq '.version')" >> "$GITHUB_OUTPUT"
+          echo "types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '.*.type')" >> "$GITHUB_OUTPUT"
 
       - name: Debugging
         run: |
           echo '${{ steps.prep.outputs.version }}'
+          echo '${{ steps.prep.outputs.types }}'
 
 #      - name: Build container images locally
 #        if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, 'Docker Image') == 'true'
