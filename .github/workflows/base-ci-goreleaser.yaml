@@ -187,7 +187,7 @@ jobs:
 
       - name: Debugging1
         run: |
-          echo '${{ steps.build-snapshot.outputs }}'
+          echo '${{ fromJSON(steps.build-snapshot.outputs) }}'
 
       - name: Debugging
         run: |
