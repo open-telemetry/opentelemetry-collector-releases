@@ -35,10 +35,10 @@ jobs:
             GOARCH: s390x
           - GOOS: darwin
             GOARCH: ppc64le
-          - GOOS: windows
-            GOARCH: arm64
           - GOOS: darwin
             GOARCH: arm
+          - GOOS: windows
+            GOARCH: arm64
           - GOOS: windows
             GOARCH: arm
           - GOOS: windows
@@ -184,6 +184,7 @@ jobs:
           if-no-files-found: error
 
       - name: Build container images locally
+        if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, "Docker Image")
         uses: docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497 # v6.14.0
         env:
           VERSION: ${{ fromJSON(steps.build-snapshot.outputs.metadata).version }}
@@ -195,6 +196,7 @@ jobs:
           tags: ${{ inputs.distribution }}:${{ env.VERSION }}-${{ env.ARCH }}
 
       - name: Export container image to tarball
+        if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, "Docker Image")
         env:
           VERSION: ${{ fromJSON(steps.build-snapshot.outputs.metadata).version }}
           ARCH: ${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goos }}-${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goarch }}
@@ -202,6 +204,7 @@ jobs:
           docker save ${{ inputs.distribution }}:${{ env.VERSION }}-${{ env.ARCH }} > /tmp/${{ inputs.distribution }}.tar
 
       - name: Upload container image artifact
+        if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, "Docker Image")
         uses: actions/upload-artifact@v4
         env:
           VERSION: ${{ fromJSON(steps.build-snapshot.outputs.metadata).version }}
