@@ -193,39 +193,35 @@ jobs:
         run: |
           echo "version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq '.version')" >> "$GITHUB_OUTPUT"
           echo "types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]')" >> "$GITHUB_OUTPUT"
+          
+          os="$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq '.runtime.goos')"
+          arch="$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq '.runtime.goarch')"
+          echo "arch=$os-$arch" >> "$GITHUB_OUTPUT"
 
       - name: Debugging
         run: |
-          echo '${{ steps.prep.outputs.version }}'
-          echo '${{ steps.prep.outputs.types }}'
+          echo 'Version: ${{ steps.prep.outputs.version }}'
+          echo 'Types: ${{ steps.prep.outputs.types }}'
+          echo 'Arch: ${{ steps.prep.outputs.arch }}'
 
-#      - name: Build container images locally
-#        if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, 'Docker Image') == 'true'
-#        uses: docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497 # v6.14.0
-#        env:
-#          VERSION: ${{ fromJSON(steps.build-snapshot.outputs.metadata).version }}
-#          ARCH: ${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goos }}-${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goarch }}
-#        with:
-#          context: ./distributions/${{ inputs.distribution }}
-#          push: false
-#          load: true
-#          tags: ${{ inputs.distribution }}:${{ env.VERSION }}-${{ env.ARCH }}
-#
-#      - name: Export container image to tarball
-#        if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, 'Docker Image') == 'true'
-#        env:
-#          VERSION: ${{ fromJSON(steps.build-snapshot.outputs.metadata).version }}
-#          ARCH: ${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goos }}-${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goarch }}
-#        run: |
-#          docker save ${{ inputs.distribution }}:${{ env.VERSION }}-${{ env.ARCH }} > /tmp/${{ inputs.distribution }}.tar
-#
-#      - name: Upload container image artifact
-#        if: contains(fromJSON(steps.build-snapshot.outputs.artifacts).*.type, 'Docker Image') == 'true'
-#        uses: actions/upload-artifact@v4
-#        env:
-#          VERSION: ${{ fromJSON(steps.build-snapshot.outputs.metadata).version }}
-#          ARCH: ${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goos }}-${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goarch }}
-#        with:
-#          name: ${{ inputs.distribution }}-image-${{ env.VERSION }}-${{ env.ARCH }}
-#          path: /tmp/${{ inputs.distribution }}.tar
-#          retention-days: 7
+      - name: Build container images locally
+        if: contains(steps.prep.outputs.types, 'Docker Image') == 'true'
+        uses: docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497 # v6.14.0
+        with:
+          context: ./distributions/${{ inputs.distribution }}
+          push: false
+          load: true
+          tags: ${{ inputs.distribution }}:${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
+
+      - name: Export container image to tarball
+        if: contains(steps.prep.outputs.types, 'Docker Image') == 'true'
+        run: |
+          docker save ${{ inputs.distribution }}:${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }} > /tmp/${{ inputs.distribution }}.tar
+
+      - name: Upload container image artifact
+        if: contains(steps.prep.outputs.types, 'Docker Image') == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.distribution }}-image-${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
+          path: /tmp/${{ inputs.distribution }}.tar
+          retention-days: 7
