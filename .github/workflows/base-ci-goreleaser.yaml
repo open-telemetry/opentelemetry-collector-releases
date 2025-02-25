@@ -185,13 +185,25 @@ jobs:
           path: distributions/${{ inputs.distribution }}/dist/windows_amd64_v1/**/*.msi
           if-no-files-found: error
 
-      - name: Debugging
-        env:
-          VERSION: ${{ fromJSON(steps.build-snapshot.outputs.metadata).version }}
-          ARCH: ${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goos }}-${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goarch }}
+      - name: Debugging1
         run: |
-          echo '${{ env.VERSION }}'
-          echo '${{ env.ARCH }}'
+          echo '${{ steps.build-snapshot.outputs }}'
+
+      - name: Debugging
+        run: |
+          echo '${{ steps.build-snapshot.outputs.metadata }}'
+
+      - name: Debugging
+        run: |
+          echo '${{ fromJSON(steps.build-snapshot.outputs.metadata) }}'
+
+      - name: Debugging
+        run: |
+          echo '${{ fromJSON(steps.build-snapshot.outputs.metadata).version }}'
+
+      - name: Debugging
+        run: |
+          echo '${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goos }}-${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goarch }}'
 
 #      - name: Debugging
 #        run: |
