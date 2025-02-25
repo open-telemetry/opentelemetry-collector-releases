@@ -186,8 +186,12 @@ jobs:
           if-no-files-found: error
 
       - name: Debugging
+        env:
+          VERSION: ${{ fromJSON(steps.build-snapshot.outputs.metadata).version }}
+          ARCH: ${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goos }}-${{ fromJSON(steps.build-snapshot.outputs.metadata).runtime.goarch }}
         run: |
-          echo '${{ toJSON(steps.build-snapshot.outputs) }}'
+          echo '${{ env.VERSION }}'
+          echo '${{ env.ARCH }}'
 
 #      - name: Debugging
 #        run: |
