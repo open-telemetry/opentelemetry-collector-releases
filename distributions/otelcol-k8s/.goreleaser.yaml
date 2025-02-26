@@ -1,13 +1,12 @@
-partial:
-  by: target
 version: 2
-monorepo:
-  tag_prefix: v
 project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
+  - LD_FLAGS=-s -w
+  - CGO_ENABLED=0
+  - BUILD_FLAGS=-trimpath
 builds:
-  - id: otelcol-k8s
+  - id: otelcol-k8s-linux
     goos:
       - linux
     goarch:
@@ -15,19 +14,18 @@ builds:
       - arm64
       - ppc64le
       - s390x
+    goppc64:
+      - power8
     dir: _build
     binary: otelcol-k8s
     ldflags:
-      - -s
-      - -w
+      - '{{ .Env.LD_FLAGS }}'
     flags:
-      - -trimpath
-    env:
-      - CGO_ENABLED=0
+      - '{{ .Env.BUILD_FLAGS }}'
 archives:
   - id: otelcol-k8s
     builds:
-      - otelcol-k8s
+      - otelcol-k8s-linux
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 checksum:
   name_template: '{{ .ProjectName }}_otelcol-k8s_checksums.txt'
@@ -151,3 +149,7 @@ sboms:
     artifacts: archive
   - id: package
     artifacts: package
+monorepo:
+  tag_prefix: v
+partial:
+  by: target

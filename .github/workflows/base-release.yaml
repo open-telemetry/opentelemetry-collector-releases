@@ -13,6 +13,10 @@ on:
         required: true
         type: string
 
+env:
+  # renovate: datasource=github-tags depName=goreleaser-pro packageName=goreleaser/goreleaser-pro
+  GORELEASER_PRO_VERSION: v2.7.0
+
 jobs:
   prepare:
     strategy:
@@ -32,26 +36,26 @@ jobs:
             GOARCH: arm
           - GOOS: windows
             GOARCH: s390x
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
 
-      - uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382 # v3.6.0
+      - uses: sigstore/cosign-installer@d7d6bc7722e3daa8354c50bcb52f4837da5e9b6a # v3.8.1
 
-      - uses: anchore/sbom-action/download-syft@ab9d16d4b419c9d1a02df5213fa0ebe965ca5a57 # v0.17.1
+      - uses: anchore/sbom-action/download-syft@f325610c9f50a54015d37c8d16cb3b0e2c8f4de0 # v0.18.0
 
-      - uses: docker/setup-qemu-action@49b3bc8e6bdd4a60e6116a5414239cba5943d3cf # v3.2.0
+      - uses: docker/setup-qemu-action@4574d27a4764455b42196d70a065bc6853246a25 # v3.4.0
         with:
           platforms: arm64,ppc64le,linux/arm/v7,s390x
 
-      - uses: docker/setup-buildx-action@988b5a0280414f521da01fcc63a27aeeb4b104db # v3.6.1
+      - uses: docker/setup-buildx-action@f7ce87c1d6bead3e36075b2ce75da1f6cc28aaca # v3.9.0
 
-      - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
+      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
         with:
-          go-version: '1.23'
+          go-version: "~1.24"
           check-latest: true
 
       - name: Setup wixl # Required to build MSI packages for Windows
@@ -80,20 +84,52 @@ jobs:
         run: |
           echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6.0.0
+      - name: Create artifacts directory to store build artifacts
+        if: inputs.distribution == 'otelcol-contrib'
+        run: mkdir -p distributions/otelcol-contrib/artifacts
+
+        # otelcol-contrib is built in a separate stage
+      - name: Build ${{ inputs.distribution }}
+        if: inputs.distribution == 'otelcol-contrib'
+        uses: goreleaser/goreleaser-action@90a3faa9d0182683851fbfa97ca1a2cb983bfca3 # v6.2.1
         with:
           distribution: goreleaser-pro
-          version: latest
+          version: ${{ env.GORELEASER_PRO_VERSION }}
+          workdir: distributions/${{ inputs.distribution }}
+          args: release --clean --split --timeout 2h --config .goreleaser-build.yaml --release-header-tmpl=../../.github/release-template.md
+        env:
+          GOOS: ${{ matrix.GOOS }}
+          GOARCH: ${{ matrix.GOARCH }}
+          GOARM: "7" # Default is 6
+          GOAMD64: v1
+          GOPPC64: power8
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          COSIGN_YES: true
+
+      - name: Move built artifacts
+        if: inputs.distribution == 'otelcol-contrib'
+        run: mv distributions/otelcol-contrib/dist/**/* distributions/otelcol-contrib/artifacts/
+
+      - name: Show built or downloaded content
+        if: inputs.distribution == 'otelcol-contrib'
+        run: ls -laR distributions/otelcol-contrib/artifacts
+
+      - uses: goreleaser/goreleaser-action@90a3faa9d0182683851fbfa97ca1a2cb983bfca3 # v6.2.1
+        with:
+          distribution: goreleaser-pro
+          version: ${{ env.GORELEASER_PRO_VERSION }}
           workdir: distributions/${{ inputs.distribution }}
           args: release --clean --split --timeout 2h --release-header-tmpl=../../.github/release-template.md
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
+          GOARM: 7 # Default is 6
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           COSIGN_YES: true
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
-      - uses: actions/upload-artifact@834a144ee995460fba8ed112a2fc961b36a5ec5a # v4.3.6
+      - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
           name: artifacts-${{ inputs.distribution }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
           path: distributions/${{ inputs.distribution }}/dist/**/*
@@ -101,7 +137,7 @@ jobs:
 
   release:
     name: ${{ inputs.distribution }} Release
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: prepare
 
     permissions:
@@ -110,26 +146,26 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
 
-      - uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382 # v3.6.0
+      - uses: sigstore/cosign-installer@d7d6bc7722e3daa8354c50bcb52f4837da5e9b6a # v3.8.1
 
-      - uses: anchore/sbom-action/download-syft@ab9d16d4b419c9d1a02df5213fa0ebe965ca5a57 # v0.17.1
+      - uses: anchore/sbom-action/download-syft@f325610c9f50a54015d37c8d16cb3b0e2c8f4de0 # v0.18.0
 
-      - uses: docker/setup-qemu-action@49b3bc8e6bdd4a60e6116a5414239cba5943d3cf # v3.2.0
+      - uses: docker/setup-qemu-action@4574d27a4764455b42196d70a065bc6853246a25 # v3.4.0
         with:
           platforms: arm64,ppc64le,s390x
 
-      - uses: docker/setup-buildx-action@988b5a0280414f521da01fcc63a27aeeb4b104db # v3.6.1
+      - uses: docker/setup-buildx-action@f7ce87c1d6bead3e36075b2ce75da1f6cc28aaca # v3.9.0
 
-      - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
+      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
         with:
-          go-version: '1.23'
+          go-version: "~1.24"
           check-latest: true
 
-      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+      - uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           pattern: artifacts-${{ inputs.distribution }}-*
           path: distributions/${{ inputs.distribution }}/dist
@@ -151,10 +187,10 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6.0.0
+      - uses: goreleaser/goreleaser-action@90a3faa9d0182683851fbfa97ca1a2cb983bfca3 # v6.2.1
         with:
           distribution: goreleaser-pro
-          version: latest
+          version: ${{ env.GORELEASER_PRO_VERSION }}
           workdir: distributions/${{ inputs.distribution }}
           args: continue --merge --timeout 2h
         env:

@@ -1,0 +1,43 @@
+name: MSI Tests
+
+on:
+  workflow_call:
+    inputs:
+      type:
+        required: true
+        type: string
+      distribution:
+        required: true
+        type: string
+
+jobs:
+  msi-tests:
+    name: MSI Tests
+    runs-on: otel-windows-latest-8-cores
+    strategy:
+      matrix:
+        type: ${{ fromJSON(inputs.type) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Download built artifacts
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
+        with:
+          name: msi-packages
+
+      - name: Set required environment variables for MSI tests
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $alt_config_path = Resolve-Path .\distributions\${{ inputs.distribution }}\config.yaml
+          Test-Path $alt_config_path
+          $msi_path = Resolve-Path .\msi\*\*.msi
+          Test-Path $msi_path
+          "MSI_TEST_ALTERNATE_CONFIG_FILE=$alt_config_path" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "MSI_TEST_COLLECTOR_PATH=$msi_path" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "MSI_TEST_COLLECTOR_SERVICE_NAME=${{ inputs.distribution }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Run the MSI tests
+        working-directory: tests/msi
+        run: |
+          go test -timeout 15m -v ./...

@@ -4,12 +4,22 @@ on:
     tags:
       - "v*"
 
+env:
+  # renovate: datasource=github-tags depName=goreleaser-pro packageName=goreleaser/goreleaser-pro
+  GORELEASER_PRO_VERSION: v2.7.0
+
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    
+    permissions:
+      id-token: write
+      packages: write
+      contents: write
+
     steps:
       - name: Checkout Releases Repo
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
       - name: Push cmd/builder Tag
@@ -21,22 +31,46 @@ jobs:
           git tag -a "${tag}" -m "${message}"
           git push origin "${tag}"
       - name: Checkout Core Repo
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
           repository: "open-telemetry/opentelemetry-collector"
           ref: ${{ github.ref_name }}
           path: ".core"
-      - name: Setup Go
-        uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
+      - name: Copy Dockerfile to Core Repo directory
+        run:  cp cmd/builder/Dockerfile .core/cmd/builder/Dockerfile
+      - uses: sigstore/cosign-installer@d7d6bc7722e3daa8354c50bcb52f4837da5e9b6a # v3.8.1
+      - uses: anchore/sbom-action/download-syft@f325610c9f50a54015d37c8d16cb3b0e2c8f4de0 # v0.18.0
+      - uses: docker/setup-qemu-action@4574d27a4764455b42196d70a065bc6853246a25 # v3.4.0
         with:
-          go-version: ~1.23
+          platforms: amd64, arm64,ppc64le
+      - uses: docker/setup-buildx-action@f7ce87c1d6bead3e36075b2ce75da1f6cc28aaca # v3.9.0
+      - name: Setup Go
+        uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
+        with:
+          go-version: "~1.24"
+      - name: Log into Docker.io
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to GitHub Package Registry
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - shell: bash
+        run: |
+          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV          
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6.0.0
+        uses: goreleaser/goreleaser-action@90a3faa9d0182683851fbfa97ca1a2cb983bfca3 # v6.2.1
         with:
           distribution: goreleaser-pro
-          version: latest
+          version: ${{ env.GORELEASER_PRO_VERSION }}
           args: release --clean -f cmd/builder/.goreleaser.yml
         env:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COSIGN_YES: true
+          SKIP_SIGNS: false

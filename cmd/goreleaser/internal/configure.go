@@ -27,198 +27,475 @@ import (
 	"github.com/goreleaser/goreleaser-pro/v2/pkg/config"
 )
 
-const ArmArch = "arm"
-
-var (
-	ImagePrefixes = []string{"otel", "ghcr.io/open-telemetry/opentelemetry-collector-releases"}
-	Architectures = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
-	ArmVersions   = []string{"7"}
+const (
+	armArch          = "arm"
+	coreDistro       = "otelcol"
+	contribDistro    = "otelcol-contrib"
+	k8sDistro        = "otelcol-k8s"
+	otlpDistro       = "otelcol-otlp"
+	dockerHub        = "otel"
+	ghcr             = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
+	binaryNamePrefix = "otelcol"
+	imageNamePrefix  = "opentelemetry-collector"
 )
 
-func Generate(dist string) config.Project {
+var (
+	baseArchs   = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
+	winArchs    = []string{"386", "amd64", "arm64", "ppc64le"}
+	darwinArchs = []string{"amd64", "arm64"}
+	k8sArchs    = []string{"amd64", "arm64", "ppc64le", "s390x"}
+
+	imageRepos = []string{dockerHub, ghcr}
+
+	// otelcol (core) distro
+	otelColDist = newDistributionBuilder(coreDistro).WithConfigFunc(func(d *distribution) {
+		d.buildConfigs = []buildConfig{
+			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}, ppc64Version: []string{"power8"}},
+			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
+			&fullBuildConfig{targetOS: "windows", targetArch: winArchs, ppc64Version: []string{"power8"}},
+		}
+		d.containerImages = newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"})
+		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs)
+	}).WithPackagingDefaults().WithDefaultConfigIncluded().Build()
+
+	// otlp distro
+	otlpDist = newDistributionBuilder(otlpDistro).WithConfigFunc(func(d *distribution) {
+		d.buildConfigs = []buildConfig{
+			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}, ppc64Version: []string{"power8"}},
+			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
+			&fullBuildConfig{targetOS: "windows", targetArch: winArchs, ppc64Version: []string{"power8"}},
+		}
+		d.containerImages = newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"})
+		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs)
+	}).WithPackagingDefaults().Build()
+
+	// contrib distro
+	contribDist = newDistributionBuilder(contribDistro).WithConfigFunc(func(d *distribution) {
+		d.buildConfigs = []buildConfig{
+			&preBuiltBuildConfig{
+				targetOS:   "linux",
+				targetArch: baseArchs,
+				preBuilt: config.PreBuiltOptions{
+					Path: "artifacts/otelcol-contrib-linux_{{ .Target }}/otelcol-contrib",
+				},
+			},
+			&preBuiltBuildConfig{
+				targetOS:   "darwin",
+				targetArch: darwinArchs,
+				preBuilt: config.PreBuiltOptions{
+					Path: "artifacts/otelcol-contrib-darwin_{{ .Target }}/otelcol-contrib",
+				},
+			},
+			&preBuiltBuildConfig{
+				targetOS:   "windows",
+				targetArch: winArchs,
+				preBuilt: config.PreBuiltOptions{
+					Path: "artifacts/otelcol-contrib-windows_{{ .Target }}/otelcol-contrib.exe",
+				},
+			},
+		}
+		d.containerImages = newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"})
+		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs)
+	}).WithPackagingDefaults().WithDefaultConfigIncluded().Build()
+
+	// contrib build-only project
+	contribBuildOnlyDist = newDistributionBuilder(contribDistro).WithConfigFunc(func(d *distribution) {
+		d.buildConfigs = []buildConfig{
+			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}},
+			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
+			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
+		}
+	}).WithBinArchive().Build()
+
+	// k8s distro
+	k8sDist = newDistributionBuilder(k8sDistro).WithConfigFunc(func(d *distribution) {
+		d.buildConfigs = []buildConfig{
+			&fullBuildConfig{targetOS: "linux", targetArch: k8sArchs, ppc64Version: []string{"power8"}},
+		}
+		d.containerImages = newContainerImages(d.name, "linux", k8sArchs, containerImageOptions{})
+		d.containerImageManifests = newContainerImageManifests(d.name, "linux", k8sArchs)
+	}).WithDefaultArchives().WithDefaultChecksum().WithDefaultSigns().WithDefaultDockerSigns().WithDefaultSBOMs().Build()
+)
+
+type buildConfig interface {
+	Build(dist string) config.Build
+	OS() string
+}
+
+type distributionBuilder struct {
+	dist        *distribution
+	configFuncs []func(*distribution)
+}
+
+func newDistributionBuilder(name string) *distributionBuilder {
+	return &distributionBuilder{dist: &distribution{name: name}}
+}
+
+func (b *distributionBuilder) WithDefaultArchives() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		builds := make([]string, 0, len(d.buildConfigs))
+		for _, build := range d.buildConfigs {
+			builds = append(builds, fmt.Sprintf("%s-%s", d.name, build.OS()))
+		}
+		d.archives = b.newArchives(d.name, builds)
+	})
+	return b
+}
+
+func (b *distributionBuilder) WithBinArchive() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		d.archives = append(d.archives, config.Archive{
+			Formats: []string{"binary"},
+		})
+	})
+	return b
+}
+
+func (b *distributionBuilder) newArchives(dist string, builds []string) []config.Archive {
+	return []config.Archive{
+		{
+			ID:           dist,
+			NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}",
+			Builds:       builds,
+		},
+	}
+}
+
+func (b *distributionBuilder) WithDefaultNfpms() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		d.nfpms = b.newNfpms(d.name)
+	})
+	return b
+}
+
+func (b *distributionBuilder) newNfpms(dist string) []config.NFPM {
+	nfpmContents := []config.NFPMContent{
+		{
+			Source:      fmt.Sprintf("%s.service", dist),
+			Destination: path.Join("/lib", "systemd", "system", fmt.Sprintf("%s.service", dist)),
+		},
+		{
+			Source:      fmt.Sprintf("%s.conf", dist),
+			Destination: path.Join("/etc", dist, fmt.Sprintf("%s.conf", dist)),
+			Type:        "config|noreplace",
+		},
+	}
+	return []config.NFPM{
+		{
+			ID:          dist,
+			Builds:      []string{dist + "-linux"},
+			Formats:     []string{"deb", "rpm"},
+			License:     "Apache 2.0",
+			Description: fmt.Sprintf("OpenTelemetry Collector - %s", dist),
+			Maintainer:  "The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>",
+			Overrides: map[string]config.NFPMOverridables{
+				"rpm": {
+					Dependencies: []string{"/bin/sh"},
+				},
+			},
+			NFPMOverridables: config.NFPMOverridables{
+				PackageName: dist,
+				Scripts: config.NFPMScripts{
+					PreInstall:  "preinstall.sh",
+					PostInstall: "postinstall.sh",
+					PreRemove:   "preremove.sh",
+				},
+				Contents: nfpmContents,
+			},
+		},
+	}
+}
+
+func (b *distributionBuilder) WithDefaultMSIConfig() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		d.msiConfig = b.newMSIConfig(d.name)
+	})
+	return b
+}
+
+func (b *distributionBuilder) newMSIConfig(dist string) []config.MSI {
+	files := []string{"opentelemetry.ico"}
+	return []config.MSI{
+		{
+			ID:    dist,
+			Name:  fmt.Sprintf("%s_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}", dist),
+			WXS:   "windows-installer.wxs",
+			Files: files,
+		},
+	}
+}
+
+func (b *distributionBuilder) WithDefaultSigns() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		d.signs = b.signs()
+	})
+	return b
+}
+
+func (b *distributionBuilder) signs() []config.Sign {
+	return []config.Sign{
+		{
+			Artifacts:   "all",
+			Signature:   "${artifact}.sig",
+			Certificate: "${artifact}.pem",
+			Cmd:         "cosign",
+			Args: []string{
+				"sign-blob",
+				"--output-signature",
+				"${artifact}.sig",
+				"--output-certificate",
+				"${artifact}.pem",
+				"${artifact}",
+			},
+		},
+	}
+}
+
+func (b *distributionBuilder) WithDefaultDockerSigns() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		d.dockerSigns = b.dockerSigns()
+	})
+	return b
+}
+
+func (b *distributionBuilder) dockerSigns() []config.Sign {
+	return []config.Sign{
+		{
+			Artifacts: "all",
+			Args: []string{
+				"sign",
+				"${artifact}",
+			},
+		},
+	}
+}
+
+func (b *distributionBuilder) WithDefaultSBOMs() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		d.sboms = b.sboms()
+	})
+	return b
+}
+
+func (b *distributionBuilder) sboms() []config.SBOM {
+	return []config.SBOM{
+		{
+			ID:        "archive",
+			Artifacts: "archive",
+		},
+		{
+			ID:        "package",
+			Artifacts: "package",
+		},
+	}
+}
+
+func (b *distributionBuilder) WithDefaultChecksum() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		b.dist.checksum = config.Checksum{
+			NameTemplate: fmt.Sprintf("{{ .ProjectName }}_%v_checksums.txt", d.name),
+		}
+	})
+	return b
+}
+
+func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
+	return b.WithDefaultArchives().
+		WithDefaultChecksum().
+		WithDefaultNfpms().
+		WithDefaultMSIConfig().
+		WithDefaultSigns().
+		WithDefaultDockerSigns().
+		WithDefaultSBOMs()
+}
+
+func (b *distributionBuilder) WithConfigFunc(configFunc func(*distribution)) *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, configFunc)
+	return b
+}
+
+func (b *distributionBuilder) WithDefaultConfigIncluded() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		for i, container := range d.containerImages {
+			container.Files = append(container.Files, "config.yaml")
+			d.containerImages[i] = container
+		}
+
+		for i, nfpm := range d.nfpms {
+			nfpm.Contents = append(nfpm.Contents, config.NFPMContent{
+				Source:      "config.yaml",
+				Destination: path.Join("/etc", d.name, "config.yaml"),
+				Type:        "config|noreplace",
+			})
+			d.nfpms[i] = nfpm
+		}
+
+		for i := range d.msiConfig {
+			d.msiConfig[i].Files = append(d.msiConfig[i].Files, "config.yaml")
+		}
+	})
+	return b
+}
+
+func (b *distributionBuilder) Build() *distribution {
+	for _, configFunc := range b.configFuncs {
+		configFunc(b.dist)
+	}
+	return b.dist
+}
+
+type distribution struct {
+	// Name of the distribution (i.e. otelcol, otelcol-contrib, k8s)
+	name string
+
+	buildConfigs            []buildConfig
+	archives                []config.Archive
+	msiConfig               []config.MSI
+	nfpms                   []config.NFPM
+	containerImages         []config.Docker
+	containerImageManifests []config.DockerManifest
+	signs                   []config.Sign
+	dockerSigns             []config.Sign
+	sboms                   []config.SBOM
+	checksum                config.Checksum
+}
+
+func (d *distribution) BuildProject() config.Project {
+	builds := make([]config.Build, 0, len(d.buildConfigs))
+	for _, buildConfig := range d.buildConfigs {
+		builds = append(builds, buildConfig.Build(d.name))
+	}
+
 	return config.Project{
 		ProjectName: "opentelemetry-collector-releases",
-		Checksum: config.Checksum{
-			NameTemplate: fmt.Sprintf("{{ .ProjectName }}_%v_checksums.txt", dist),
+		Checksum:    d.checksum,
+		Env: []string{
+			"COSIGN_YES=true",
+			"LD_FLAGS=-s -w",
+			"CGO_ENABLED=0",
+			"BUILD_FLAGS=-trimpath",
 		},
-		Env:             []string{"COSIGN_YES=true"},
-		Builds:          Builds(dist),
-		Archives:        Archives(dist),
-		MSI:             WinPackages(dist),
-		NFPMs:           Packages(dist),
-		Dockers:         DockerImages(dist),
-		DockerManifests: DockerManifests(dist),
-		Signs:           Sign(),
-		DockerSigns:     DockerSigns(),
-		SBOMs:           SBOM(),
+		Builds:          builds,
+		Archives:        d.archives,
+		MSI:             d.msiConfig,
+		NFPMs:           d.nfpms,
+		Dockers:         d.containerImages,
+		DockerManifests: d.containerImageManifests,
+		Signs:           d.signs,
+		DockerSigns:     d.dockerSigns,
+		SBOMs:           d.sboms,
 		Version:         2,
-		Monorepo:				 config.Monorepo{
+		Monorepo: config.Monorepo{
 			TagPrefix: "v",
 		},
+		Partial: config.Partial{By: "target"},
 	}
 }
 
-func Builds(dist string) []config.Build {
-	return []config.Build{
-		Build(dist),
-	}
-}
-
-// Build configures a goreleaser build.
-// https://goreleaser.com/customization/build/
-func Build(dist string) config.Build {
-	return config.Build{
-		ID:     dist,
-		Dir:    "_build",
-		Binary: dist,
-		BuildDetails: config.BuildDetails{
-			Env:     []string{"CGO_ENABLED=0"},
-			Flags:   []string{"-trimpath"},
-			Ldflags: []string{"-s", "-w"},
-		},
-		Goos:   []string{"darwin", "linux", "windows"},
-		Goarch: Architectures,
-		Goarm:  ArmVersions,
-		Ignore: []config.IgnoredBuild{
-			{Goos: "darwin", Goarch: "386"},
-			{Goos: "darwin", Goarch: "arm"},
-			{Goos: "darwin", Goarch: "s390x"},
-			{Goos: "windows", Goarch: "arm"},
-			{Goos: "windows", Goarch: "arm64"},
-			{Goos: "windows", Goarch: "s390x"},
-		},
-	}
-}
-
-func Archives(dist string) (r []config.Archive) {
-	return []config.Archive{
-		Archive(dist),
-	}
-}
-
-// Archive configures a goreleaser archive (tarball).
-// https://goreleaser.com/customization/archive/
-func Archive(dist string) config.Archive {
-	return config.Archive{
-		ID:           dist,
-		NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}",
-		Builds:       []string{dist},
-	}
-}
-
-func WinPackages(dist string) []config.MSI {
-	return []config.MSI{
-		WinPackage(dist),
-	}
-}
-
-// Package configures goreleaser to build a Windows MSI package.
-// https://goreleaser.com/customization/msi/
-func WinPackage(dist string) config.MSI {
-	return config.MSI{
-		ID:   dist,
-		Name: fmt.Sprintf("%s_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}", dist),
-		WXS:  "windows-installer.wxs",
-		Files: []string{
-			"config.yaml",
-			"opentelemetry.ico",
-		},
-	}
-}
-
-func Packages(dist string) (r []config.NFPM) {
-	return []config.NFPM{
-		Package(dist),
-	}
-}
-
-// Package configures goreleaser to build a system package.
-// https://goreleaser.com/customization/nfpm/
-func Package(dist string) config.NFPM {
-	return config.NFPM{
-		ID:      dist,
-		Builds:  []string{dist},
-		Formats: []string{"apk", "deb", "rpm"},
-
-		License:     "Apache 2.0",
-		Description: fmt.Sprintf("OpenTelemetry Collector - %s", dist),
-		Maintainer:  "The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>",
-		Overrides: map[string]config.NFPMOverridables{
-			"rpm": {
-				Dependencies: []string{
-					"/bin/sh",
-				},
-			},
-		},
-
-		NFPMOverridables: config.NFPMOverridables{
-			PackageName: dist,
-			Scripts: config.NFPMScripts{
-				PreInstall:  "preinstall.sh",
-				PostInstall: "postinstall.sh",
-				PreRemove:   "preremove.sh",
-			},
-			Contents: config.NFPMContents{
-				{
-					Source:      fmt.Sprintf("%s.service", dist),
-					Destination: path.Join("/lib", "systemd", "system", fmt.Sprintf("%s.service", dist)),
-				},
-				{
-					Source:      fmt.Sprintf("%s.conf", dist),
-					Destination: path.Join("/etc", dist, fmt.Sprintf("%s.conf", dist)),
-					Type:        "config|noreplace",
-				},
-				{
-					Source:      "config.yaml",
-					Destination: path.Join("/etc", dist, "config.yaml"),
-					Type:        "config|noreplace",
-				},
-			},
-		},
-	}
-}
-
-func DockerImages(dist string) []config.Docker {
-	r := make([]config.Docker, 0)
-	for _, arch := range Architectures {
-		switch arch {
-		case ArmArch:
-			for _, vers := range ArmVersions {
-				r = append(r, DockerImage(dist, arch, vers))
-			}
-		default:
-			r = append(r, DockerImage(dist, arch, ""))
+func newContainerImageManifests(dist, os string, archs []string) []config.DockerManifest {
+	tags := []string{`{{ .Version }}`, "latest"}
+	var r []config.DockerManifest
+	for _, imageRepo := range imageRepos {
+		for _, tag := range tags {
+			r = append(r, osDockerManifest(imageRepo, tag, dist, os, archs))
 		}
 	}
 	return r
 }
 
-// DockerImage configures goreleaser to build a container image.
-// https://goreleaser.com/customization/docker/
-func DockerImage(dist, arch, armVersion string) config.Docker {
-	dockerArchName := archName(arch, armVersion)
+type containerImageOptions struct {
+	armVersion string
+	winVersion string
+}
+
+func (o *containerImageOptions) version() string {
+	if o.armVersion != "" {
+		return o.armVersion
+	}
+	return o.winVersion
+}
+
+func newContainerImages(dist string, targetOS string, targetArchs []string, opts containerImageOptions) []config.Docker {
+	images := []config.Docker{}
+	for _, targetArch := range targetArchs {
+		images = append(images, dockerImageWithOS(dist, targetOS, targetArch, opts))
+	}
+	return images
+}
+
+type fullBuildConfig struct {
+	targetOS     string
+	targetArch   []string
+	armVersion   []string
+	ppc64Version []string
+}
+
+func (c *fullBuildConfig) Build(dist string) config.Build {
+	buildConfig := config.Build{
+		ID:     dist + "-" + c.targetOS,
+		Dir:    "_build",
+		Binary: dist,
+		BuildDetails: config.BuildDetails{
+			Flags:   []string{"{{ .Env.BUILD_FLAGS }}"},
+			Ldflags: []string{"{{ .Env.LD_FLAGS }}"},
+		},
+		Goos:    []string{c.targetOS},
+		Goarch:  c.targetArch,
+		Goarm:   c.armVersion,
+		Goppc64: c.ppc64Version,
+	}
+	return buildConfig
+}
+
+func (c *fullBuildConfig) OS() string {
+	return c.targetOS
+}
+
+type preBuiltBuildConfig struct {
+	targetOS   string
+	targetArch []string
+	preBuilt   config.PreBuiltOptions
+}
+
+func (c *preBuiltBuildConfig) Build(dist string) config.Build {
+	return config.Build{
+		ID:       dist + "-" + c.targetOS,
+		Builder:  "prebuilt",
+		PreBuilt: c.preBuilt,
+		Dir:      "_build",
+		Binary:   dist,
+		Goos:     []string{c.targetOS},
+		Goarch:   c.targetArch,
+		Goarm:    armVersions(dist),
+		Goppc64:  []string{"power8"},
+	}
+}
+
+func (c *preBuiltBuildConfig) OS() string {
+	return c.targetOS
+}
+
+func dockerImageWithOS(dist, os, arch string, opts containerImageOptions) config.Docker {
+	osArch := osArch{os: os, arch: arch, version: opts.version()}
 	var imageTemplates []string
-	for _, prefix := range ImagePrefixes {
-		dockerArchTag := strings.ReplaceAll(dockerArchName, "/", "")
+	for _, prefix := range imageRepos {
 		imageTemplates = append(
 			imageTemplates,
-			fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName(dist), dockerArchTag),
-			fmt.Sprintf("%s/%s:latest-%s", prefix, imageName(dist), dockerArchTag),
+			fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName(dist), osArch.imageTag()),
+			fmt.Sprintf("%s/%s:latest-%s", prefix, imageName(dist), osArch.imageTag()),
 		)
 	}
 
 	label := func(name, template string) string {
 		return fmt.Sprintf("--label=org.opencontainers.image.%s={{%s}}", name, template)
 	}
-
-	return config.Docker{
+	imageConfig := config.Docker{
 		ImageTemplates: imageTemplates,
 		Dockerfile:     "Dockerfile",
-
-		Use: "buildx",
+		Use:            "buildx",
 		BuildFlagTemplates: []string{
 			"--pull",
-			fmt.Sprintf("--platform=linux/%s", dockerArchName),
+			fmt.Sprintf("--platform=%s", osArch.buildPlatform()),
 			label("created", ".Date"),
 			label("name", ".ProjectName"),
 			label("revision", ".FullCommit"),
@@ -226,31 +503,66 @@ func DockerImage(dist, arch, armVersion string) config.Docker {
 			label("source", ".GitURL"),
 			"--label=org.opencontainers.image.licenses=Apache-2.0",
 		},
-		Files:  []string{"config.yaml"},
-		Goos:   "linux",
+		Goos:   os,
 		Goarch: arch,
-		Goarm:  armVersion,
+	}
+	if arch == armArch {
+		imageConfig.Goarm = opts.armVersion
+	}
+	return imageConfig
+}
+
+type osArch struct {
+	os, arch, version string
+}
+
+func (o *osArch) buildPlatform() string {
+	switch o.os {
+	case "linux":
+		switch o.arch {
+		case armArch:
+			return fmt.Sprintf("linux/arm/v%s", o.version)
+		}
+	}
+	return fmt.Sprintf("linux/%s", o.arch)
+}
+
+func (o *osArch) imageTag() string {
+	switch o.os {
+	case "linux":
+		switch o.arch {
+		case armArch:
+			return fmt.Sprintf("armv%s", o.version)
+		}
+	}
+	return o.arch
+}
+
+func BuildDist(dist string, onlyBuild bool) config.Project {
+	switch dist {
+	case coreDistro:
+		return otelColDist.BuildProject()
+	case otlpDistro:
+		return otlpDist.BuildProject()
+	case k8sDistro:
+		return k8sDist.BuildProject()
+	case contribDistro:
+		if onlyBuild {
+			return contribBuildOnlyDist.BuildProject()
+		}
+		return contribDist.BuildProject()
+	default:
+		panic("Unknown distribution")
 	}
 }
 
-func DockerManifests(dist string) []config.DockerManifest {
-	r := make([]config.DockerManifest, 0)
-	for _, prefix := range ImagePrefixes {
-		r = append(r, DockerManifest(prefix, `{{ .Version }}`, dist))
-		r = append(r, DockerManifest(prefix, "latest", dist))
-	}
-	return r
-}
-
-// DockerManifest configures goreleaser to build a multi-arch container image manifest.
-// https://goreleaser.com/customization/docker_manifest/
-func DockerManifest(prefix, version, dist string) config.DockerManifest {
+func osDockerManifest(prefix, version, dist, os string, archs []string) config.DockerManifest {
 	var imageTemplates []string
-	for _, arch := range Architectures {
+	for _, arch := range archs {
 		switch arch {
-		case ArmArch:
-			for _, armVers := range ArmVersions {
-				dockerArchTag := strings.ReplaceAll(archName(arch, armVers), "/", "")
+		case armArch:
+			for _, armVers := range armVersions(dist) {
+				dockerArchTag := (&osArch{os: os, arch: arch, version: armVers}).imageTag()
 				imageTemplates = append(
 					imageTemplates,
 					fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist), version, dockerArchTag),
@@ -270,61 +582,24 @@ func DockerManifest(prefix, version, dist string) config.DockerManifest {
 	}
 }
 
+func armVersions(dist string) []string {
+	if dist == k8sDistro {
+		return nil
+	}
+	return []string{"7"}
+}
+
 // imageName translates a distribution name to a container image name.
 func imageName(dist string) string {
-	return strings.Replace(dist, "otelcol", "opentelemetry-collector", 1)
+	return strings.Replace(dist, binaryNamePrefix, imageNamePrefix, 1)
 }
 
 // archName translates architecture to docker platform names.
 func archName(arch, armVersion string) string {
 	switch arch {
-	case ArmArch:
+	case armArch:
 		return fmt.Sprintf("%s/v%s", arch, armVersion)
 	default:
 		return arch
-	}
-}
-
-func Sign() []config.Sign {
-	return []config.Sign{
-		{
-			Artifacts:   "all",
-			Signature:   "${artifact}.sig",
-			Certificate: "${artifact}.pem",
-			Cmd:         "cosign",
-			Args: []string{
-				"sign-blob",
-				"--output-signature",
-				"${artifact}.sig",
-				"--output-certificate",
-				"${artifact}.pem",
-				"${artifact}",
-			},
-		},
-	}
-}
-
-func DockerSigns() []config.Sign {
-	return []config.Sign{
-		{
-			Artifacts: "all",
-			Args: []string{
-				"sign",
-				"${artifact}",
-			},
-		},
-	}
-}
-
-func SBOM() []config.SBOM {
-	return []config.SBOM{
-		{
-			ID:        "archive",
-			Artifacts: "archive",
-		},
-		{
-			ID:        "package",
-			Artifacts: "package",
-		},
 	}
 }
