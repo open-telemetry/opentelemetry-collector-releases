@@ -230,14 +230,7 @@ providers:
   - gomod: go.opentelemetry.io/collector/confmap/provider/httpprovider v1.26.0
   - gomod: go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.26.0
   - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.26.0
-
-providers:
-  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v0.100.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v0.100.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/httpprovider v0.100.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/httpsprovider v0.100.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v0.100.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/s3provider v0.100.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/s3provider v0.120.1
 
 # When adding a replace, add a comment before it to document why it's needed and when it can be removed
 replaces:
