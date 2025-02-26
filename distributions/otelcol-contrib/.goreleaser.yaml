@@ -54,7 +54,6 @@ builds:
       - "386"
       - amd64
       - arm64
-      - ppc64le
     goarm:
       - "7"
     goppc64:

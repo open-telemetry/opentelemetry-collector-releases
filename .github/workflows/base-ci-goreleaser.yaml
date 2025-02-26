@@ -33,15 +33,22 @@ jobs:
             GOARCH: "386"
           - GOOS: darwin
             GOARCH: s390x
-          - GOOS: windows
-            GOARCH: arm64
+          - GOOS: darwin
+            GOARCH: ppc64le
           - GOOS: darwin
             GOARCH: arm
+          - GOOS: windows
+            GOARCH: arm64
           - GOOS: windows
             GOARCH: arm
           - GOOS: windows
             GOARCH: s390x
+          - GOOS: windows
+            GOARCH: ppc64le
     runs-on: ubuntu-24.04
+    outputs:
+      artifacts: ${{ steps.build-snapshot.outputs.artifacts }}
+      metadata: ${{ steps.build-snapshot.outputs.metadata }}
 
     steps:
       - name: Checkout
@@ -140,6 +147,7 @@ jobs:
         run: ls -laR distributions/otelcol-contrib/artifacts
 
       - name: Run GoReleaser for ${{ inputs.distribution }}
+        id: build-snapshot
         uses: goreleaser/goreleaser-action@90a3faa9d0182683851fbfa97ca1a2cb983bfca3 # v6.2.1
         with:
           distribution: goreleaser-pro
@@ -156,6 +164,9 @@ jobs:
 
       - name: Print built artifacts
         run: cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json
+
+      - name: Print metadata
+        run: cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json
 
       - name: Print dist folder contents
         if: always()
@@ -176,3 +187,41 @@ jobs:
           name: msi-packages
           path: distributions/${{ inputs.distribution }}/dist/windows_amd64_v1/**/*.msi
           if-no-files-found: error
+
+      - name: Prepare variables
+        id: prep
+        run: |
+          echo "version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq '.version')" >> "$GITHUB_OUTPUT"
+          echo "types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )" >> "$GITHUB_OUTPUT"
+          
+          os=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.runtime.goos')
+          arch=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.runtime.goarch')
+          echo "arch=$os-$arch" >> "$GITHUB_OUTPUT"
+
+      - name: Debugging
+        run: |
+          echo 'Version: ${{ steps.prep.outputs.version }}'
+          echo 'Types: ${{ steps.prep.outputs.types }}'
+          echo 'Arch: ${{ steps.prep.outputs.arch }}'
+
+      - name: Build container images locally
+        if: contains(steps.prep.outputs.types, 'Docker Image') == 'true'
+        uses: docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497 # v6.14.0
+        with:
+          context: ./distributions/${{ inputs.distribution }}
+          push: false
+          load: true
+          tags: ${{ inputs.distribution }}:${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
+
+      - name: Export container image to tarball
+        if: contains(steps.prep.outputs.types, 'Docker Image') == 'true'
+        run: |
+          docker save ${{ inputs.distribution }}:${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }} > /tmp/${{ inputs.distribution }}.tar
+
+      - name: Upload container image artifact
+        if: contains(steps.prep.outputs.types, 'Docker Image') == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.distribution }}-image-${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
+          path: /tmp/${{ inputs.distribution }}.tar
+          retention-days: 7
