@@ -1,0 +1,25 @@
+dist:
+  module: github.com/open-telemetry/opentelemetry-collector-releases/paas
+  name: otelcol-paas
+  description: OpenTelemetry Collector PaaS
+  version: 0.120.1
+  output_path: ./_build
+  otelcol_version: 0.120.1
+
+receivers:
+  - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.120.1
+
+exporters:
+  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.120.1
+  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.120.1
+  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.120.1
+
+extensions:
+  - gomod: go.opentelemetry.io/collector/extension/zpagesextension v0.120.1
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.120.1
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.120.1
+
+processors:
+  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.120.1
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.120.1
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.120.1

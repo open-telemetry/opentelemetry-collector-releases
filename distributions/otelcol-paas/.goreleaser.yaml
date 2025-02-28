@@ -1,0 +1,36 @@
+version: 2
+project_name: opentelemetry-collector-releases
+env:
+  - COSIGN_YES=true
+  - LD_FLAGS=-s -w
+  - CGO_ENABLED=0
+  - BUILD_FLAGS=-trimpath
+builds:
+  - id: otelcol-paas-linux
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    dir: _build
+    binary: otelcol-paas
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
+archives:
+  - id: otelcol-paas
+    builds:
+      - otelcol-paas-linux
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
+checksum:
+  name_template: '{{ .ProjectName }}_otelcol-paas_checksums.txt'
+sboms:
+  - id: archive
+    artifacts: archive
+  - id: package
+    artifacts: package
+monorepo:
+  tag_prefix: v
+partial:
+  by: target
