@@ -1,0 +1,59 @@
+version: 2
+project_name: opentelemetry-collector-releases
+env:
+  - COSIGN_YES=true
+  - LD_FLAGS=-s -w
+  - CGO_ENABLED=0
+  - BUILD_FLAGS=-trimpath
+builds:
+  - id: otelcol-gateway-linux
+    goos:
+      - linux
+    goarch:
+      - "386"
+      - amd64
+      - arm
+      - arm64
+      - ppc64le
+      - s390x
+    goarm:
+      - "7"
+    dir: _build
+    binary: otelcol-gateway
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
+  - id: otelcol-gateway-darwin
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    dir: _build
+    binary: otelcol-gateway
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
+  - id: otelcol-gateway-windows
+    goos:
+      - windows
+    goarch:
+      - "386"
+      - amd64
+      - arm64
+      - ppc64le
+    dir: _build
+    binary: otelcol-gateway
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
+archives:
+  - formats:
+      - binary
+monorepo:
+  tag_prefix: v
+partial:
+  by: target
