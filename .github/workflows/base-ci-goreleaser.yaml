@@ -106,7 +106,7 @@ jobs:
 
       - name: "[Nightly] Move downloaded artifact"
         if: inputs.distribution == 'otelcol-contrib' && inputs.nightly == true && matrix.GOARCH == 'amd64' && matrix.GOOS == 'linux'
-        run: mv otelcontribcol_linux_amd64 distributions/otelcol-contrib/artifacts/otelcol-contrib_linux_amd64_v1/otelcol-contrib
+        run: mv otelcontribcol_linux_amd64 distributions/otelcol-contrib/artifacts/otelcol-contrib-linux_linux_amd64_v1/otelcol-contrib
 
       - name: Generate the sources for ${{ inputs.distribution }}
         if: inputs.nightly != true
