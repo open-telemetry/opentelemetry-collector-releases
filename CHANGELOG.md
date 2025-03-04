@@ -4,6 +4,20 @@
 
 <!-- next version -->
 
+## v0.121.0
+
+### 🚀 New components 🚀
+
+- `aesprovider`: Add the AES provider to the contrib distribution (#843)
+- `envoyalsreceiver`: Add the Envoy ALS receiver to the contrib distribution (#842)
+- `netflowreceiver`: Add the NetFlow receiver to the contrib distribution (#847)
+- `s3provider`: Add the s3 provider to the contrib distribution (#546)
+- `secretsmanagerprovider`: Add the Secrets Manager provider to the contrib distribution (#844)
+
+### 💡 Enhancements 💡
+
+- `images`: set USER_GID alongside USER_UID (#662)
+
 ## v0.120.1
 
 ### 🛑 Breaking changes 🛑
