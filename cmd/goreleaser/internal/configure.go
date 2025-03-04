@@ -41,7 +41,7 @@ const (
 
 var (
 	baseArchs   = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
-	winArchs    = []string{"386", "amd64", "arm64", "ppc64le"}
+	winArchs    = []string{"386", "amd64", "arm64"}
 	darwinArchs = []string{"amd64", "arm64"}
 	k8sArchs    = []string{"amd64", "arm64", "ppc64le", "s390x"}
 
@@ -52,7 +52,7 @@ var (
 		d.buildConfigs = []buildConfig{
 			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}, ppc64Version: []string{"power8"}},
 			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
-			&fullBuildConfig{targetOS: "windows", targetArch: winArchs, ppc64Version: []string{"power8"}},
+			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
 		}
 		d.containerImages = newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"})
 		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs)
@@ -63,7 +63,7 @@ var (
 		d.buildConfigs = []buildConfig{
 			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}, ppc64Version: []string{"power8"}},
 			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
-			&fullBuildConfig{targetOS: "windows", targetArch: winArchs, ppc64Version: []string{"power8"}},
+			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
 		}
 		d.containerImages = newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"})
 		d.containerImageManifests = newContainerImageManifests(d.name, "linux", baseArchs)
