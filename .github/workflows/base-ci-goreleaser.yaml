@@ -41,8 +41,6 @@ jobs:
             GOARCH: arm
           - GOOS: windows
             GOARCH: s390x
-          - GOOS: darwin
-            GOARCH: ppc64le
     runs-on: ubuntu-24.04
     outputs:
       version: ${{ steps.prep.outputs.version }}
@@ -185,6 +183,7 @@ jobs:
           if-no-files-found: error
 
       - name: Prepare variables
+        if: matrix.GOOS == 'linux'
         id: prep
         run: |
           # Find version number and types of built artifacts
@@ -200,6 +199,7 @@ jobs:
           echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path' )" >> "$GITHUB_OUTPUT"
 
       - name: Print version and target
+        if: matrix.GOOS == 'linux'
         run: |
           echo 'Version: ${{ steps.prep.outputs.version }}'
           echo 'Types: ${{ steps.prep.outputs.types }}'
@@ -207,10 +207,11 @@ jobs:
           echo 'Images?: ${{ steps.prep.outputs.container-images }}'
 
       - name: Copy binary to distro root folder
+        if: matrix.GOOS == 'linux'
         run: cp ./distributions/${{ inputs.distribution }}/${{ steps.prep.outputs.binary-path }} ./distributions/${{ inputs.distribution }}
 
       - name: Build container images locally
-        if: contains(steps.prep.outputs.types, 'Docker Image')
+        if: matrix.GOOS == 'linux' && contains(steps.prep.outputs.types, 'Docker Image')
         uses: docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497 # v6.14.0
         with:
           context: ./distributions/${{ inputs.distribution }}
@@ -219,12 +220,12 @@ jobs:
           tags: ${{ inputs.distribution }}:${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
 
       - name: Export container image to tarball
-        if: contains(steps.prep.outputs.types, 'Docker Image')
+        if: matrix.GOOS == 'linux' && contains(steps.prep.outputs.types, 'Docker Image')
         run: |
           docker save ${{ inputs.distribution }}:${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }} > /tmp/${{ inputs.distribution }}.tar
 
       - name: Upload container image artifact
-        if: contains(steps.prep.outputs.types, 'Docker Image')
+        if: matrix.GOOS == 'linux' && contains(steps.prep.outputs.types, 'Docker Image')
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
           name: ${{ inputs.distribution }}-image-${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
