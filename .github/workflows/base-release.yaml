@@ -33,9 +33,9 @@ jobs:
           - GOOS: darwin
             GOARCH: arm
           - GOOS: windows
-            GOARCH: s390x
-          - GOOS: windows
             GOARCH: arm
+          - GOOS: windows
+            GOARCH: s390x
           - GOOS: darwin
             GOARCH: ppc64le
           - GOOS: windows
