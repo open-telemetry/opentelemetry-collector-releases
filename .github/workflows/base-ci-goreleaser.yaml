@@ -41,6 +41,10 @@ jobs:
             GOARCH: arm
           - GOOS: windows
             GOARCH: s390x
+          - GOOS: darwin
+            GOARCH: ppc64le
+          - GOOS: windows
+            GOARCH: ppc64le
     runs-on: ubuntu-24.04
 
     steps:

@@ -28,14 +28,18 @@ jobs:
             GOARCH: "386"
           - GOOS: darwin
             GOARCH: s390x
-          - GOOS: windows
-            GOARCH: arm64
           - GOOS: darwin
             GOARCH: arm
+          - GOOS: darwin
+            GOARCH: ppc64le
+          - GOOS: windows
+            GOARCH: arm64
+          - GOOS: windows
+            GOARCH: s390x
           - GOOS: windows
             GOARCH: arm
           - GOOS: windows
-            GOARCH: s390x
+            GOARCH: ppc64le
     runs-on: ubuntu-24.04
 
     steps:
