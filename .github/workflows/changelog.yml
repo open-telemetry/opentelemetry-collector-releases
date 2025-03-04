@@ -3,7 +3,7 @@
 # or if performing maintance on the Changelog, add either \"[chore]\" to the title of
 # the pull request or add the \"Skip Changelog\" label to disable this action.
 
-name: changelog
+name: Changelog
 
 on:
   pull_request:

@@ -52,9 +52,6 @@ builds:
       - "386"
       - amd64
       - arm64
-      - ppc64le
-    goppc64:
-      - power8
     dir: _build
     binary: otelcol
     ldflags:
