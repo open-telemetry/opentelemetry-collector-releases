@@ -1,4 +1,4 @@
-name: Builder - Release
+name: Release Builder
 on:
   push:
     tags:

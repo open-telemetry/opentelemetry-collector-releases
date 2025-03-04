@@ -1,4 +1,4 @@
-name: Continuous Integration - OTLP - GoReleaser
+name: CI - OTLP - GoReleaser
 
 on:
   merge_group: 
@@ -25,7 +25,7 @@ on:
 
 jobs:
   check-goreleaser:
-    name: Continuous Integration - OTLP - GoReleaser
+    name: CI - OTLP - GoReleaser
     uses: ./.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-otlp

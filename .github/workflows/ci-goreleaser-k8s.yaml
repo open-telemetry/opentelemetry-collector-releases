@@ -1,4 +1,4 @@
-name: Continuous Integration - k8s - GoReleaser
+name: CI - k8s - GoReleaser
 
 on:
   merge_group: 
@@ -25,7 +25,7 @@ on:
 
 jobs:
   check-goreleaser:
-    name: Continuous Integration - k8s - GoReleaser
+    name: CI - k8s - GoReleaser
     uses: ./.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-k8s

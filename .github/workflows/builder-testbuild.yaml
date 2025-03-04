@@ -1,4 +1,4 @@
-name: Builder - Check and Test Build
+name: CI - Builder
 
 on:
   merge_group: 
