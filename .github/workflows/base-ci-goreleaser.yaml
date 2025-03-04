@@ -41,6 +41,8 @@ jobs:
             GOARCH: arm
           - GOOS: windows
             GOARCH: s390x
+          - GOOS: darwin
+            GOARCH: ppc64le
     runs-on: ubuntu-24.04
     outputs:
       version: ${{ steps.prep.outputs.version }}
