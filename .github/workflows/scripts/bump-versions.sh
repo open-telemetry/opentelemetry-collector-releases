@@ -15,10 +15,10 @@ manifest_files=(
 
 # Function to display usage
 usage() {
-  echo "Usage: $0 [--commit] [--pull-request] [--next-beta-core <next-beta-core>] [--next-beta-contrib <next-beta-contrib>] [--next-stable <next-stable>]"
+  echo "Usage: $0 [--commit] [--pull-request] [--next-beta-core <next-beta-core>] [--next-beta-contrib <next-beta-contrib>] [--next-stable-core <next-stable-core>]"
   echo "  --next-beta-core: Next beta version of the core component (e.g., v0.111.0)"
   echo "  --next-beta-contrib: Next beta version of the contrib component (e.g., v0.111.0)"
-  echo "  --next-stable: Next stable version of the core component (e.g., v1.17.0)"
+  echo "  --next-stable-core: Next stable version of the core component (e.g., v1.17.0)"
   echo
   echo "  --commit: Commit the changes to a new branch"
   echo "  --pull-request: Push the changes to the repo and create a draft PR (requires --commit)"
@@ -47,7 +47,7 @@ while [[ "$#" -gt 0 ]]; do
   case $1 in
     --next-beta-core) next_beta_core="$2"; shift ;;
     --next-beta-contrib) next_beta_contrib="$2"; shift ;;
-    --next-stable) next_stable="$2"; shift ;;
+    --next-stable-core) next_stable_core="$2"; shift ;;
     --commit) commit_changes=true ;;
     --pull-request) create_pr=true ;;
     *) echo "Unknown parameter passed: $1"; usage ;;
@@ -77,8 +77,8 @@ fi
 if [ -n "$next_beta_contrib" ]; then
   validate_and_strip_version next_beta_contrib
 fi
-if [ -n "$next_stable" ]; then
-  validate_and_strip_version next_stable
+if [ -n "$next_stable_core" ]; then
+  validate_and_strip_version next_stable_core
 fi
 
 # Function to compare two semantic versions and return the maximum
@@ -134,8 +134,8 @@ next_distribution_version=$(max_version "$next_beta_core" "$next_beta_contrib")
 validate_and_strip_version next_distribution_version
 
 # Infer the next stable version if current_stable provided and next version not supplied
-if [ -n "$current_stable" ] && [ -z "$next_stable" ]; then
-  next_stable=$(bump_version "$current_stable")
+if [ -n "$current_stable" ] && [ -z "$next_stable_core" ]; then
+  next_stable_core=$(bump_version "$current_stable")
 fi
 
 # add escape characters to the current versions to work with sed
@@ -153,15 +153,16 @@ else
 fi
 
 # Update versions in each manifest file
-echo "Updating core beta version from $current_beta_core to $next_beta_core,"
-echo "core stable version from $current_stable to $next_stable,"
-echo "contrib beta version from $current_beta_contrib to $next_beta_contrib,"
-echo "and distribution version to $next_distribution_version"
+echo "Making the following updates:"
+echo "  - core beta module set from $current_beta_core to $next_beta_core"
+echo "  - core stable module set from $current_stable to $next_stable_core"
+echo "  - contrib beta module set from $current_beta_contrib to $next_beta_contrib"
+echo "  - distribution version to $next_distribution_version"
 for file in "${manifest_files[@]}"; do
   if [ -f "$file" ]; then
     $sed_command "s/\(^.*go\.opentelemetry\.io\/collector\/.*\) v$escaped_current_beta_core/\1 v$next_beta_core/" "$file"
     $sed_command "s/\(^.*github\.com\/open-telemetry\/opentelemetry-collector-contrib\/.*\) v$escaped_current_beta_contrib/\1 v$next_beta_contrib/" "$file"
-    $sed_command "s/\(^.*go\.opentelemetry\.io\/collector\/.*\) v$escaped_current_stable/\1 v$next_stable/" "$file"
+    $sed_command "s/\(^.*go\.opentelemetry\.io\/collector\/.*\) v$escaped_current_stable/\1 v$next_stable_core/" "$file"
     $sed_command "s/version: .*/version: $next_distribution_version/" "$file"
   else
     echo "File $file does not exist"
@@ -226,10 +227,10 @@ elif [ -n "$current_beta_contrib" ]; then
   fi
 else
   if [ "$commit_changes" = true ]; then
-    commit_changes "$current_stable" "$next_stable"
+    commit_changes "$current_stable" "$next_stable_core"
   fi
   if [ "$create_pr" = true ]; then
-    create_pr "$current_stable" "$next_stable"
+    create_pr "$current_stable" "$next_stable_core"
   fi
 fi
 
