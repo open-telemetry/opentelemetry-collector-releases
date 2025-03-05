@@ -7,7 +7,7 @@ change_type: new_component
 component: opampsupervisor
 
 # A brief description of the change.  Surround your text with quotes ("") if it needs to start with a backtick (`).
-note: publish a container for the opampsupervisor binary
+note: publish binaries and container images for the OpAMP Supervisor
 
 # One or more tracking issues or pull requests related to the change
 issues: [858]
