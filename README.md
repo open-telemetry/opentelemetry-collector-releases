@@ -64,3 +64,4 @@ Emeritus Maintainers
 - [Tigran Najaryan](https://github.com/tigrannajaryan)
 
 Learn more about roles in the [community repository](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md).
+ 
