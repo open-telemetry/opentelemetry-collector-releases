@@ -12,4 +12,4 @@ The full list of components is available in the [manifest](manifest.yaml)
 
 ### Rules for Component Inclusion
 
-- Include all extensions at [Alpha stability](https://github.com/open-telemetry/opentelemetry-collector#alpha) or higher and pipeline components that have at least 1 signal at [Alpha stability](https://github.com/open-telemetry/opentelemetry-collector#alpha) or higher.
+- Include all extensions, processors and connectors at [Alpha stability](https://github.com/open-telemetry/opentelemetry-collector#alpha) or higher.
