@@ -1,4 +1,4 @@
-FROM golang:1.24-alpine3.20
+FROM alpine:3.20
 RUN apk --update add ca-certificates
 
 ARG SERVICE_NAME=opampsupervisor
