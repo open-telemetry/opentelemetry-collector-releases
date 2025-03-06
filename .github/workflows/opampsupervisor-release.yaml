@@ -25,7 +25,7 @@ jobs:
       - name: Push cmd/opampsupervisor Tag
         run: |
           tag="cmd/opampsupervisor/${{ github.ref_name }}"
-          message="Releasing ocb binaries for ${{ github.ref_name }}"
+          message="Releasing OpAMP supervisor binaries for ${{ github.ref_name }}"
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git tag -a "${tag}" -m "${message}"
