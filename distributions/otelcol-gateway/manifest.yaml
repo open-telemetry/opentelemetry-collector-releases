@@ -1,6 +1,6 @@
 dist:
-  module: github.com/open-telemetry/opentelemetry-collector-releases/contrib
-  name: otelcol-contrib
+  module: github.com/open-telemetry/opentelemetry-collector-releases/gateway
+  name: otelcol-gateway
   description: OpenTelemetry Collector Gateway
   version: 0.120.1
   output_path: ./_build
