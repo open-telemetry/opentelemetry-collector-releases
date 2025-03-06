@@ -23,6 +23,10 @@ builds:
     ignore:
       - goos: windows
         goarch: arm64
+      - goos: windows
+        goarch: ppc64le
+      - goos: darwin
+        goarch: ppc64le
     binary: ocb
 dockers:
   - goos: linux

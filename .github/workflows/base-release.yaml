@@ -84,10 +84,6 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - shell: bash
-        run: |
-          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
       - name: Create artifacts directory to store build artifacts
         if: inputs.distribution == 'otelcol-contrib'
         run: mkdir -p distributions/otelcol-contrib/artifacts
