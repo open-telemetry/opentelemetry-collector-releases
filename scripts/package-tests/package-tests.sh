@@ -50,6 +50,12 @@ podman run --name "$container_name" -d "$image_name"
 $container_exec systemctl is-system-running --quiet --wait
 install_pkg "$container_name" "$PKG_PATH"
 
+# If we got to this point, we might need to check the logs of the systemd service
+# when it's not properly active. This is added as a trap because the check
+# for service status below will return an error exitcode if the service is 
+# not active, triggering the end of this script because of the shell option `-e`
+trap '$container_exec journalctl -u "$SERVICE_NAME" || true' EXIT
+
 # ensure service has started and still running after 5 seconds
 sleep 5
 echo "Checking $SERVICE_NAME service status ..."
