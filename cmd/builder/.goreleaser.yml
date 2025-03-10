@@ -103,6 +103,7 @@ docker_manifests:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:latest-arm64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:latest-ppc64le
 release:
+  make_latest: false
   github:
     owner: open-telemetry
     name: opentelemetry-collector-releases
