@@ -220,7 +220,7 @@ jobs:
 
       - name: Build container images locally
         if: matrix.GOOS == 'linux' && contains(steps.prep.outputs.types, 'Docker Image')
-        uses: docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497 # v6.14.0
+        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
         with:
           context: ./distributions/${{ inputs.distribution }}
           push: false
@@ -234,7 +234,7 @@ jobs:
 
       - name: Upload container image artifact
         if: matrix.GOOS == 'linux' && contains(steps.prep.outputs.types, 'Docker Image')
-        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
           name: ${{ inputs.distribution }}-image-${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
           path: /tmp/${{ inputs.distribution }}.tar
@@ -256,7 +256,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Setup QEMU
-        uses: docker/setup-qemu-action@4574d27a4764455b42196d70a065bc6853246a25 # v3.4.0
+        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
         with:
           platforms: arm64,ppc64le,linux/arm/v7,s390x
 
