@@ -292,3 +292,10 @@ monorepo:
   tag_prefix: v
 partial:
   by: target
+dockerhub:
+  - images:
+      - otel/opentelemetry-collector
+    description: OpenTelemetry Collector
+    full_description:
+      from_url:
+        url: https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector/refs/heads/main/README.md

@@ -185,3 +185,10 @@ monorepo:
   tag_prefix: v
 partial:
   by: target
+dockerhub:
+  - images:
+      - otel/opentelemetry-collector-k8s
+    description: OpenTelemetry Collector
+    full_description:
+      from_url:
+        url: https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-releases/refs/heads/main/distributions/otelcol-k8s/README.md
