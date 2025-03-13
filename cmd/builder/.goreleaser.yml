@@ -1,15 +1,13 @@
-before:
-  hooks:
-    - cmd: pwd
-      output: true
-    - cmd: go mod download
-      output: true
 monorepo:
   tag_prefix: cmd/builder/
   dir: .core/cmd/builder
 version: 2
 builds:
-  - flags:
+  - hooks:
+      pre:
+        - cmd: pwd
+          output: true
+    flags:
       - -trimpath
     ldflags:
       - -s -w -X go.opentelemetry.io/collector/cmd/builder/internal.version={{ .Version }}
