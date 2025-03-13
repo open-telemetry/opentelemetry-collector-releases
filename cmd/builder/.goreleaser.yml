@@ -1,7 +1,9 @@
 before:
   hooks:
-    - pwd
-    - go mod download
+    - cmd: pwd
+      output: true
+    - cmd: go mod download
+      output: true
 monorepo:
   tag_prefix: cmd/builder/
   dir: .core/cmd/builder
