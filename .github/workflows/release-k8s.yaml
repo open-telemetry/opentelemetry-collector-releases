@@ -14,3 +14,13 @@ jobs:
       goarch: '[ "amd64", "arm64", "ppc64le", "s390x" ]'
     secrets: inherit
     permissions: write-all
+  release-windows:
+    name: Release k8s (Windows)
+    uses: ./.github/workflows/base-release.yaml
+    with:
+      distribution: otelcol-k8s
+      goos: '[ "windows" ]'
+      goarch: '[ "386", "amd64" ]'
+      runner_os: windows-2022
+    secrets: inherit
+    permissions: write-all

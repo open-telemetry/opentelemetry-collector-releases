@@ -10,7 +10,17 @@ jobs:
     uses: ./.github/workflows/base-release.yaml
     with:
       distribution: otelcol-otlp
-      goos: '[ "linux", "windows", "darwin" ]'
+      goos: '[ "linux", "darwin" ]'
       goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x" ]'
+    secrets: inherit
+    permissions: write-all
+  release-windows:
+    name: Release OTLP (Windows)
+    uses: ./.github/workflows/base-release.yaml
+    with:
+      distribution: otelcol-otlp
+      goos: '[ "windows" ]'
+      goarch: '[ "386", "amd64" ]'
+      runner_os: windows-2022
     secrets: inherit
     permissions: write-all

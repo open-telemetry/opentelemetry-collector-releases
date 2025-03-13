@@ -43,7 +43,7 @@
                <Component Id="ApplicationComponent" Guid="1207C3C4-1830-4DC8-8A7B-2BD7DBE45BC3">
                   <!-- Files to include -->
                   <File
-                     Id="{{ .Binary }}.exe"
+                     Id="{{ replace .Binary "-"  "_"}}.exe"
                      Name="{{ .Binary }}.exe"
                      Source="{{ .Binary }}.exe"
                      KeyPath="yes"/>
