@@ -3,11 +3,7 @@ monorepo:
   dir: .core/cmd/builder
 version: 2
 builds:
-  - hooks:
-      pre:
-        - cmd: pwd
-          output: true
-    flags:
+  - flags:
       - -trimpath
     ldflags:
       - -s -w -X go.opentelemetry.io/collector/cmd/builder/internal.version={{ .Version }}
