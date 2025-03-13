@@ -7,7 +7,7 @@ change_type: bug_fix
 component: packaging
 
 # A brief description of the change.  Surround your text with quotes ("") if it needs to start with a backtick (`).
-note: Fix Linux package scripts
+note: Ensure Linux package scripts work in environments without systemd such as chrooted environments
 
 # One or more tracking issues or pull requests related to the change
 issues: [767]
