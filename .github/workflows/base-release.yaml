@@ -92,6 +92,7 @@ jobs:
 
       - name: Create artifacts directory to store build artifacts
         if: inputs.distribution == 'otelcol-contrib'
+        shell: bash
         run: mkdir -p distributions/otelcol-contrib/artifacts
 
         # otelcol-contrib is built in a separate stage
@@ -115,15 +116,13 @@ jobs:
 
       - name: Move built artifacts
         if: inputs.distribution == 'otelcol-contrib'
+        shell: bash
         run: mv distributions/otelcol-contrib/dist/**/* distributions/otelcol-contrib/artifacts/
 
-      - name: Show built or downloaded content (Linux)
-        if: inputs.distribution == 'otelcol-contrib' && runner.os != 'Windows'
+      - name: Show built or downloaded content
+        if: inputs.distribution == 'otelcol-contrib'
+        shell: bash
         run: ls -laR distributions/otelcol-contrib/artifacts
-
-      - name: Show built or downloaded content (Windows)
-        if: inputs.distribution == 'otelcol-contrib' && runner.os == 'Windows'
-        run: ls -Path distributions/otelcol-contrib/artifacts -Force -Recurse | Format-List
 
       - uses: goreleaser/goreleaser-action@90a3faa9d0182683851fbfa97ca1a2cb983bfca3 # v6.2.1
         with:
@@ -209,12 +208,8 @@ jobs:
           merge-multiple: true
 
       - name: Display structure of downloaded files
-        if: runner.os != 'Windows'
+        shell: bash
         run: ls -R distributions/${{ inputs.distribution }}/dist
-
-      - name: Display structure of downloaded files (Windows)
-        if: runner.os == 'Windows'
-        run: ls -Path distributions/${{ inputs.distribution }}/dist -Force -Recurse | Format-List
 
       - name: Log into Docker.io
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
