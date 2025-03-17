@@ -7,7 +7,7 @@ change_type: enhancement
 component: packaging
 
 # A brief description of the change.  Surround your text with quotes ("") if it needs to start with a backtick (`).
-note: Start producing images for Windows 2019 and 2022 on amd64
+note: Start producing container images for Windows 2019 and 2022 on amd64
 
 # One or more tracking issues or pull requests related to the change
 issues: [339]
