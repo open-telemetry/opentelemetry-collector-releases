@@ -4,8 +4,6 @@ FROM mcr.microsoft.com/windows/nanoserver:ltsc${WIN_VERSION}
 
 COPY otelcol-k8s.exe ./otelcol-k8s.exe
 
-ENV NO_WINDOWS_SERVICE=1
-
 ENTRYPOINT ["otelcol-k8s.exe"]
 # `4137` and `4318`: OTLP
 # `55678`: OpenCensus
