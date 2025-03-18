@@ -5,6 +5,8 @@ env:
   - LD_FLAGS=-s -w
   - CGO_ENABLED=0
   - BUILD_FLAGS=-trimpath
+release:
+  replace_existing_artifacts: true
 builds:
   - id: otelcol-k8s-linux
     goos:
@@ -22,10 +24,22 @@ builds:
       - '{{ .Env.LD_FLAGS }}'
     flags:
       - '{{ .Env.BUILD_FLAGS }}'
+  - id: otelcol-k8s-windows
+    goos:
+      - windows
+    goarch:
+      - amd64
+    dir: _build
+    binary: otelcol-k8s
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
 archives:
   - id: otelcol-k8s
     builds:
       - otelcol-k8s-linux
+      - otelcol-k8s-windows
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 checksum:
   name_template: '{{ .ProjectName }}_otelcol-k8s_checksums.txt'
@@ -102,6 +116,48 @@ dockers:
       - --label=org.opencontainers.image.source={{.GitURL}}
       - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
+  - goos: windows
+    goarch: amd64
+    dockerfile: Windows.dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-k8s:{{ .Version }}-windows-2019-amd64
+      - otel/opentelemetry-collector-k8s:latest-windows-2019-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-windows-2019-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-windows-2019-amd64
+    skip_build: '{{ not (eq .Runtime.Goos "windows") }}'
+    skip_push: '{{ not (eq .Runtime.Goos "windows") }}'
+    build_flag_templates:
+      - --pull
+      - --build-arg=WIN_VERSION=2019
+      - --platform=windows/amd64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: docker
+  - goos: windows
+    goarch: amd64
+    dockerfile: Windows.dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-k8s:{{ .Version }}-windows-2022-amd64
+      - otel/opentelemetry-collector-k8s:latest-windows-2022-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-windows-2022-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-windows-2022-amd64
+    skip_build: '{{ not (eq .Runtime.Goos "windows") }}'
+    skip_push: '{{ not (eq .Runtime.Goos "windows") }}'
+    build_flag_templates:
+      - --pull
+      - --build-arg=WIN_VERSION=2022
+      - --platform=windows/amd64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: docker
 docker_manifests:
   - name_template: otel/opentelemetry-collector-k8s:{{ .Version }}
     image_templates:
