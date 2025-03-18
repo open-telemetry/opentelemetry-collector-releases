@@ -4,6 +4,20 @@
 
 <!-- next version -->
 
+## v0.122.0
+
+### 🛑 Breaking changes 🛑
+
+- `contrib`: Remove the component loki exporter from the distribution, as it has reached EOL (#854)
+
+### 🚀 New components 🚀
+
+- `opampsupervisor`: publish binaries and container images for the OpAMP Supervisor (#858)
+
+### 🧰 Bug fixes 🧰
+
+- `packaging`: Ensure Linux package scripts work in environments without systemd such as chrooted environments (#767)
+
 ## v0.121.0
 
 ### 🚀 New components 🚀
