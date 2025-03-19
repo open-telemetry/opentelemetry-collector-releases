@@ -42,7 +42,7 @@ const (
 var (
 	baseArchs                 = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
 	winArchs                  = []string{"386", "amd64", "arm64"}
-	winContainerArchs 		  = []string{"amd64"}
+	winContainerArchs         = []string{"amd64"}
 	darwinArchs               = []string{"amd64", "arm64"}
 	k8sArchs                  = []string{"amd64", "arm64", "ppc64le", "s390x"}
 	dockerHubFullDescriptions = map[string]string{
@@ -315,7 +315,7 @@ func (b *distributionBuilder) dockerHubs() []config.DockerHub {
 			Images: []string{
 				fmt.Sprintf("%s/%s", dockerHub, imageName(b.dist.name)),
 			},
-			Description: "OpenTelemetry Collector",
+			Description: fmt.Sprintf("OpenTelemetry Collector - %s", b.dist.name),
 			FullDescription: config.IncludedMarkdown{
 				FromURL: config.IncludeFromURL{
 					URL: dockerHubFullDescriptions[b.dist.name],

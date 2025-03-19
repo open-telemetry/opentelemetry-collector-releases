@@ -300,7 +300,7 @@ partial:
 dockerhub:
   - images:
       - otel/opentelemetry-collector-contrib
-    description: OpenTelemetry Collector
+    description: OpenTelemetry Collector - otelcol-contrib
     full_description:
       from_url:
         url: https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/refs/heads/main/README.md
