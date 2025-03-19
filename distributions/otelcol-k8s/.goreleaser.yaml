@@ -212,7 +212,7 @@ partial:
 dockerhub:
   - images:
       - otel/opentelemetry-collector-k8s
-    description: OpenTelemetry Collector
+    description: OpenTelemetry Collector - otelcol-k8s
     full_description:
       from_url:
         url: https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-releases/refs/heads/main/distributions/otelcol-k8s/README.md
