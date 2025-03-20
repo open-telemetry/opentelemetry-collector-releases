@@ -70,7 +70,7 @@ jobs:
         uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
 
       - name: Setup Go
-        uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
+        uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
         with:
           go-version: "~1.24"
           check-latest: true
@@ -103,7 +103,7 @@ jobs:
 
       - name: "[Nightly] Download built otelcol-contrib artifact from contrib repo"
         if: inputs.distribution == 'otelcol-contrib' && inputs.nightly == true && matrix.GOARCH == 'amd64' && matrix.GOOS == 'linux'
-        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
         with:
           name: collector-binaries-linux-amd64
           repository: open-telemetry/opentelemetry-collector-contrib
@@ -176,7 +176,7 @@ jobs:
 
       - name: Upload linux service packages
         if: ${{ matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' && (inputs.distribution == 'otelcol-contrib' || inputs.distribution == 'otelcol') }}
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: linux-packages
           path: distributions/${{ inputs.distribution }}/dist/linux_amd64_v1/*
@@ -184,7 +184,7 @@ jobs:
 
       - name: Upload MSI packages
         if: matrix.GOOS == 'windows' && matrix.GOARCH == 'amd64' && (inputs.distribution == 'otelcol-contrib' || inputs.distribution == 'otelcol')
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: msi-packages
           path: distributions/${{ inputs.distribution }}/dist/windows_amd64_v1/**/*.msi
@@ -234,7 +234,7 @@ jobs:
 
       - name: Upload container image artifact
         if: matrix.GOOS == 'linux' && contains(steps.prep.outputs.types, 'Docker Image')
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ${{ inputs.distribution }}-image-${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
           path: /tmp/${{ inputs.distribution }}.tar
@@ -261,7 +261,7 @@ jobs:
           platforms: arm64,ppc64le,linux/arm/v7,s390x
 
       - name: Download container image artifact
-        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 #v4.1.9
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
         with:
           name: ${{ inputs.distribution }}-image-${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
 
