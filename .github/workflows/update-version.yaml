@@ -128,16 +128,10 @@ jobs:
             exit 1
           fi
 
-      - name: Debugging
+      - name: Run bump-versions.sh
         run: |
-          echo "next_beta_core: ${{ steps.next-versions.outputs.next_beta_core }}"
-          echo "next_beta_contrib: ${{ steps.next-versions.outputs.next_beta_contrib }}"
-          echo "next_stable_core: ${{ steps.next-versions.outputs.next_stable_core }}"
-
-#      - name: Run bump-versions.sh
-#        run: |
-#          .github/workflows/scripts/bump-versions.sh --commit --pull-request
-#        env:
-#          next_beta_core: ${{ steps.next-versions.outputs.next_beta_core }}
-#          next_beta_contrib: ${{ steps.next-versions.outputs.next_beta_contrib }}
-#          next_stable_core: ${{ steps.next-versions.outputs.next_stable_core }}
+          .github/workflows/scripts/bump-versions.sh --commit --pull-request
+        env:
+          next_beta_core: ${{ steps.next-versions.outputs.next_beta_core }}
+          next_beta_contrib: ${{ steps.next-versions.outputs.next_beta_contrib }}
+          next_stable_core: ${{ steps.next-versions.outputs.next_stable_core }}
