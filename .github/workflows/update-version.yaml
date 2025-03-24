@@ -75,7 +75,7 @@ jobs:
         id: previous-version-core-stable-trimmed
         run: |
           monorepo_tag=${{ steps.previous-version-core-stable.outputs.tag }}
-          echo "tag="${monorepo_tag#component/}" >> $GITHUB_OUTPUT
+          echo "tag=${monorepo_tag#component/}" >> $GITHUB_OUTPUT
 
       - name: Get next versions - contrib
         id: semvers-contrib
