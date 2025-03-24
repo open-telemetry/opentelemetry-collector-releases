@@ -2,18 +2,30 @@ name: Update Version in Distributions and Prepare PR
 on:
   workflow_dispatch:
     inputs:
-      next_beta_core:
-        description: 'Collector core beta module set version to update to. Leave empty to bump to next minor version (e.g. 0.120.1 -> 0.121.0)'
-        required: false
-        default: ''
-      next_beta_contrib:
-        description: 'Collector contrib beta module set version to update to. Leave empty to bump to next minor version (e.g. 0.120.1 -> 0.121.0)'
-        required: false
-        default: ''
-      next_stable_core:
-        description: 'Collector core stable module set version to update to. Leave empty to bump to next minor version (e.g. 1.26.0 -> 1.27.0)'
-        required: false
-        default: ''
+      next_beta_core_text:
+        description: 'Collector core beta module set version to update to (e.g. 0.120.1 -> 0.121.0)'
+        required: true
+        type: choice
+        options:
+          - minor
+          - patch
+        default: minor
+      next_beta_contrib_text:
+        description: 'Collector contrib beta module set version to update to (e.g. 0.120.1 -> 0.121.0)'
+        required: true
+        type: choice
+        options:
+          - minor
+          - patch
+        default: minor
+      next_stable_core_text:
+        description: 'Collector core stable module set version to update to (e.g. 1.26.0 -> 1.27.0)'
+        required: true
+        type: choice
+        options:
+          - minor
+          - patch
+        default: minor
 
 jobs:
   update-version:
@@ -24,10 +36,102 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
+      - name: Checkout Collector Core
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          repository: "open-telemetry/opentelemetry-collector"
+          path: opentelemetry-collector
+
+      - name: Checkout Collector Contrib
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          repository: "open-telemetry/opentelemetry-collector-contrib"
+          path: opentelemetry-collector-contrib
+
+      - name: Get Previous tag for contrib
+        id: previous-version-contrib
+        uses: WyriHaximus/github-action-get-previous-tag@04e8485ecb6487243907e330d522ff60f02283ce # v1.4.0
+        with:
+          prefix: v0
+          workingDirectory: opentelemetry-collector-contrib
+
+      - name: Get Previous tag for core beta
+        id: previous-version-core-beta
+        uses: WyriHaximus/github-action-get-previous-tag@04e8485ecb6487243907e330d522ff60f02283ce # v1.4.0
+        with:
+          prefix: v0
+          workingDirectory: opentelemetry-collector
+
+      - name: Get Previous tag for core stable
+        id: previous-version-core-stable
+        uses: WyriHaximus/github-action-get-previous-tag@04e8485ecb6487243907e330d522ff60f02283ce # v1.4.0
+        with:
+          prefix: component/v1 # needs to be a tag of a stable component because major tags are not published
+          workingDirectory: opentelemetry-collector
+
+      - name: Clean up core tag
+        id: previous-version-core-stable-trimmed
+        run: |
+          monorepo_tag=${{ steps.previous-version-core-stable.outputs.tag }}
+          echo "tag=${monorepo_tag#component/}" >> $GITHUB_OUTPUT
+
+      - name: Get next versions - contrib
+        id: semvers-contrib
+        uses: WyriHaximus/github-action-next-semvers@18aa9ed4152808ab99b88d71f5481e41f8d89930 # v1.2.1
+        with:
+          version: ${{ steps.previous-version-contrib.outputs.tag }}
+
+      - name: Get next versions - core beta
+        id: semvers-core-beta
+        uses: WyriHaximus/github-action-next-semvers@18aa9ed4152808ab99b88d71f5481e41f8d89930 # v1.2.1
+        with:
+          version: ${{ steps.previous-version-core-beta.outputs.tag }}
+
+      - name: Get next versions - core stable
+        id: semvers-core-stable
+        uses: WyriHaximus/github-action-next-semvers@18aa9ed4152808ab99b88d71f5481e41f8d89930 # v1.2.1
+        with:
+          version: ${{ steps.previous-version-core-stable-trimmed.outputs.tag }}
+
+      - name: Select next versions
+        id: next-versions
+        run: |
+          # Contrib
+          if [[ '${{ inputs.next_beta_contrib_text }}' == 'minor' ]]; then
+            echo "next_beta_contrib=${{ steps.semvers-contrib.outputs.minor }}" >> $GITHUB_OUTPUT
+          elif [[ '${{ inputs.next_beta_contrib_text }}' == 'patch' ]]; then
+            echo "next_beta_contrib=${{ steps.semvers-contrib.outputs.patch }}" >> $GITHUB_OUTPUT
+          else
+            echo "Error: unsupported semver type for Collector Contrib"
+            exit 1
+          fi
+
+          # Core Beta
+          if [[ '${{ inputs.next_beta_core_text }}' == 'minor' ]]; then
+            echo "next_beta_core=${{ steps.semvers-core-beta.outputs.minor }}" >> $GITHUB_OUTPUT
+          elif [[ '${{ inputs.next_beta_core_text }}' == 'patch' ]]; then
+            echo "next_beta_core=${{ steps.semvers-core-beta.outputs.patch }}" >> $GITHUB_OUTPUT
+          else
+            echo "Error: unsupported semver type for Collector Core Beta"
+            exit 1
+          fi
+
+          # Core Stable
+          if [[ '${{ inputs.next_stable_core_text }}' == 'minor' ]]; then
+            echo "next_stable_core=${{ steps.semvers-core-stable.outputs.minor }}" >> $GITHUB_OUTPUT
+          elif [[ '${{ inputs.next_stable_core_text }}' == 'patch' ]]; then
+            echo "next_stable_core=${{ steps.semvers-core-stable.outputs.patch }}" >> $GITHUB_OUTPUT
+          else
+            echo "Error: unsupported semver type Collector Core Stable"
+            exit 1
+          fi
+
       - name: Run bump-versions.sh
         run: |
           .github/workflows/scripts/bump-versions.sh --commit --pull-request
         env:
-          next_beta_core: ${{ github.event.inputs.next_beta_core }}
-          next_beta_contrib: ${{ github.event.inputs.next_beta_contrib }}
-          next_stable_core: ${{ github.event.inputs.next_stable_core }}
+          next_beta_core: ${{ steps.next-versions.outputs.next_beta_core }}
+          next_beta_contrib: ${{ steps.next-versions.outputs.next_beta_contrib }}
+          next_stable_core: ${{ steps.next-versions.outputs.next_stable_core }}
