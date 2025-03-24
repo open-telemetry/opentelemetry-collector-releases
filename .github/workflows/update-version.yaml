@@ -71,6 +71,12 @@ jobs:
           prefix: component/v1 # needs to be a tag of a stable component because major tags are not published
           workingDirectory: opentelemetry-collector
 
+      - name: Clean up core tag
+        id: previous-version-core-stable-trimmed
+        run: |
+          monorepo_tag="${{ steps.previous-version-core-stable.outputs.tag }}"
+          echo "tag="${monorepo_tag#component/}" >> $GITHUB_OUTPUT
+
       - name: Get next versions - contrib
         id: semvers-contrib
         uses: WyriHaximus/github-action-next-semvers@18aa9ed4152808ab99b88d71f5481e41f8d89930 # v1.2.1
@@ -87,7 +93,7 @@ jobs:
         id: semvers-core-stable
         uses: WyriHaximus/github-action-next-semvers@18aa9ed4152808ab99b88d71f5481e41f8d89930 # v1.2.1
         with:
-          version: ${{ steps.previous-version-core-stable.outputs.tag }}
+          version: ${{ steps.previous-version-core-stable-trimmed.outputs.tag }}
 
       - name: Select next versions
         id: next-versions
