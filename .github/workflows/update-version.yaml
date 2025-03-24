@@ -39,14 +39,14 @@ jobs:
       - name: Checkout Collector Core
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          fetch-depth: 0
+          fetch-tags: true
           repository: "open-telemetry/opentelemetry-collector"
           path: opentelemetry-collector
 
       - name: Checkout Collector Contrib
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          fetch-depth: 0
+          fetch-tags: true
           repository: "open-telemetry/opentelemetry-collector-contrib"
           path: opentelemetry-collector-contrib
 
