@@ -3,17 +3,29 @@ on:
   workflow_dispatch:
     inputs:
       next_beta_core:
-        description: 'Collector core beta module set version to update to. Leave empty to bump to next minor version (e.g. 0.120.1 -> 0.121.0)'
-        required: false
-        default: ''
+        description: 'Collector core beta module set version to update to (e.g. 0.120.1 -> 0.121.0)'
+        required: true
+        type: choice
+        options:
+          - minor
+          - patch
+        default: minor
       next_beta_contrib:
-        description: 'Collector contrib beta module set version to update to. Leave empty to bump to next minor version (e.g. 0.120.1 -> 0.121.0)'
-        required: false
-        default: ''
+        description: 'Collector contrib beta module set version to update to (e.g. 0.120.1 -> 0.121.0)'
+        required: true
+        type: choice
+        options:
+          - minor
+          - patch
+        default: minor
       next_stable_core:
-        description: 'Collector core stable module set version to update to. Leave empty to bump to next minor version (e.g. 1.26.0 -> 1.27.0)'
-        required: false
-        default: ''
+        description: 'Collector core stable module set version to update to (e.g. 1.26.0 -> 1.27.0)'
+        required: true
+        type: choice
+        options:
+          - minor
+          - patch
+        default: minor
 
 jobs:
   update-version:
