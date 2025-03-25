@@ -14,6 +14,25 @@ DISTRO="${2:-}"
 SERVICE_NAME=$DISTRO
 PROCESS_NAME=$DISTRO
 
+# Global array for trap functions
+TRAP_FUNCS=()
+
+# Helper to add functions to the trap list
+add_trap_func() {
+	TRAP_FUNCS+=("$1")
+}
+
+# Wrapper that calls each trap'ed function.
+# It uses LIFO order, like Go's `defer`.
+run_traps() {
+	if [ "${#TRAP_FUNCS[@]}" -gt 0 ]; then
+		for ((i = ${#TRAP_FUNCS[@]} - 1; i >= 0; i--)); do
+			"${TRAP_FUNCS[i]}"
+		done
+	fi
+}
+trap 'run_traps' EXIT
+
 # shellcheck source=scripts/package-tests/common.sh
 source "$SCRIPT_DIR"/common.sh
 
@@ -38,7 +57,10 @@ image_name="otelcontribcol-$pkg_type-test"
 container_name="$image_name"
 container_exec="podman exec $container_name"
 
-trap 'podman rm -fv $container_name >/dev/null 2>&1 || true' EXIT
+podman_cleanup() {
+	podman rm -fv "$container_name" >/dev/null 2>&1 || true
+}
+add_trap_func podman_cleanup
 
 podman build -t "$image_name" -f "$SCRIPT_DIR/Dockerfile.test.$pkg_type" "$SCRIPT_DIR"
 podman rm -fv "$container_name" >/dev/null 2>&1 || true
@@ -49,6 +71,15 @@ podman run --name "$container_name" -d "$image_name"
 # ensure that the system is up and running by checking if systemctl is running
 $container_exec systemctl is-system-running --quiet --wait
 install_pkg "$container_name" "$PKG_PATH"
+
+# If we got to this point, we might need to check the logs of the systemd service
+# when it's not properly active. This is added as a trap because the check
+# for service status below will return an error exitcode if the service is 
+# not active, triggering the end of this script because of the shell option `-e`
+journalctl_logs() {
+	$container_exec journalctl -u "$SERVICE_NAME" || true
+}
+add_trap_func journalctl_logs
 
 # ensure service has started and still running after 5 seconds
 sleep 5
