@@ -3,8 +3,6 @@
 # Changelog
 
 <!-- next version -->
-### 💡 Enhancements 💡
-- `contrib`: Add the component loki exporter to the distribution (#892)
 
 ## v0.122.0
 
