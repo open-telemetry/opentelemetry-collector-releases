@@ -13,5 +13,5 @@ receivers:
   - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.123.0
 
 providers:
-  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.30.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.30.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.29.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.29.0
