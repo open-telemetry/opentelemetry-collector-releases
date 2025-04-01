@@ -4,6 +4,13 @@
 
 <!-- next version -->
 
+## v0.123.1
+
+### 🛑 Breaking changes 🛑
+
+- `image repository`: Due to the new Dockerhub rate limits we are no longer publishing images to dockerhub. (#902)
+  If we can solve the rate limiting issue we'll undo this change
+
 ## v0.123.0
 
 ### 🚀 New components 🚀
