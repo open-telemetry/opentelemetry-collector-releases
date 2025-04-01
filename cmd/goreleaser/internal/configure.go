@@ -41,17 +41,11 @@ const (
 )
 
 var (
-	baseArchs                 = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
-	winArchs                  = []string{"386", "amd64", "arm64"}
-	winContainerArchs         = []string{"amd64"}
-	darwinArchs               = []string{"amd64", "arm64"}
-	k8sArchs                  = []string{"amd64", "arm64", "ppc64le", "s390x"}
-	dockerHubFullDescriptions = map[string]string{
-		coreDistro:    "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector/refs/heads/main/README.md",
-		contribDistro: "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/refs/heads/main/README.md",
-		otlpDistro:    "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-releases/refs/heads/main/distributions/otelcol-otlp/README.md",
-		k8sDistro:     "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-releases/refs/heads/main/distributions/otelcol-k8s/README.md",
-	}
+	baseArchs         = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
+	winArchs          = []string{"386", "amd64", "arm64"}
+	winContainerArchs = []string{"amd64"}
+	darwinArchs       = []string{"amd64", "arm64"}
+	k8sArchs          = []string{"amd64", "arm64", "ppc64le", "s390x"}
 
 	imageRepos = []string{dockerHub, ghcr}
 
@@ -147,7 +141,7 @@ var (
 		d.containerImageManifests = slices.Concat(
 			newContainerImageManifests(d.name, "linux", k8sArchs, containerImageOptions{}),
 		)
-	}).WithDefaultArchives().WithDefaultChecksum().WithDefaultSigns().WithDefaultDockerSigns().WithDefaultDockerHubs().WithDefaultSBOMs().Build()
+	}).WithDefaultArchives().WithDefaultChecksum().WithDefaultSigns().WithDefaultDockerSigns().WithDefaultSBOMs().Build()
 )
 
 type buildConfig interface {
@@ -291,13 +285,6 @@ func (b *distributionBuilder) WithDefaultDockerSigns() *distributionBuilder {
 	return b
 }
 
-func (b *distributionBuilder) WithDefaultDockerHubs() *distributionBuilder {
-	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		d.dockerhubs = b.dockerHubs()
-	})
-	return b
-}
-
 func (b *distributionBuilder) dockerSigns() []config.Sign {
 	return []config.Sign{
 		{
@@ -305,22 +292,6 @@ func (b *distributionBuilder) dockerSigns() []config.Sign {
 			Args: []string{
 				"sign",
 				"${artifact}",
-			},
-		},
-	}
-}
-
-func (b *distributionBuilder) dockerHubs() []config.DockerHub {
-	return []config.DockerHub{
-		{
-			Images: []string{
-				fmt.Sprintf("%s/%s", dockerHub, imageName(b.dist.name)),
-			},
-			Description: fmt.Sprintf("OpenTelemetry Collector - %s", b.dist.name),
-			FullDescription: config.IncludedMarkdown{
-				FromURL: config.IncludeFromURL{
-					URL: dockerHubFullDescriptions[b.dist.name],
-				},
 			},
 		},
 	}
@@ -361,7 +332,6 @@ func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
 		WithDefaultNfpms().
 		WithDefaultMSIConfig().
 		WithDefaultSigns().
-		WithDefaultDockerHubs().
 		WithDefaultDockerSigns().
 		WithDefaultSBOMs()
 }
@@ -413,7 +383,6 @@ type distribution struct {
 	containerImageManifests []config.DockerManifest
 	signs                   []config.Sign
 	dockerSigns             []config.Sign
-	dockerhubs              []config.DockerHub
 	sboms                   []config.SBOM
 	checksum                config.Checksum
 }
@@ -444,7 +413,6 @@ func (d *distribution) BuildProject() config.Project {
 		DockerManifests: d.containerImageManifests,
 		Signs:           d.signs,
 		DockerSigns:     d.dockerSigns,
-		DockerHubs:      d.dockerhubs,
 		SBOMs:           d.sboms,
 		Version:         2,
 		Monorepo: config.Monorepo{
