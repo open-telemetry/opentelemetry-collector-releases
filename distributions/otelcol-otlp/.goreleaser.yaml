@@ -304,10 +304,3 @@ monorepo:
   tag_prefix: v
 partial:
   by: target
-dockerhub:
-  - images:
-      - otel/opentelemetry-collector-otlp
-    description: OpenTelemetry Collector - otelcol-otlp
-    full_description:
-      from_url:
-        url: https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-releases/refs/heads/main/distributions/otelcol-otlp/README.md
