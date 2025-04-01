@@ -34,7 +34,6 @@ const (
 	contribDistro    = "otelcol-contrib"
 	k8sDistro        = "otelcol-k8s"
 	otlpDistro       = "otelcol-otlp"
-	dockerHub        = "otel"
 	ghcr             = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
 	binaryNamePrefix = "otelcol"
 	imageNamePrefix  = "opentelemetry-collector"
@@ -47,7 +46,7 @@ var (
 	darwinArchs       = []string{"amd64", "arm64"}
 	k8sArchs          = []string{"amd64", "arm64", "ppc64le", "s390x"}
 
-	imageRepos = []string{dockerHub, ghcr}
+	imageRepos = []string{ghcr}
 
 	// otelcol (core) distro
 	otelColDist = newDistributionBuilder(coreDistro).WithConfigFunc(func(d *distribution) {
