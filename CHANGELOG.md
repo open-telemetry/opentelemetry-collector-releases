@@ -4,6 +4,30 @@
 
 <!-- next version -->
 
+## v0.123.1
+
+### 🛑 Breaking changes 🛑
+
+- `image repository`: Due to the new Dockerhub rate limits we are no longer publishing images to dockerhub. (#902)
+  If we can solve the rate limiting issue we'll undo this change
+
+## v0.123.0
+
+### 🚀 New components 🚀
+
+- `lokiexporter`: Add the component loki exporter to the distribution (#892)
+- `contrib`: Add tcpcheckreceiver receiver to the contrib distribution (#865)
+- `contrib`: Add saphana receiver (#876)
+- `awscloudwatchmetricstreamsencodingextension`: Add the AWS CloudWatch Metric Streams encoding extension to the contrib distribution (#883)
+- `schemaprocessor`: Add Schema Processor to contrib
+ (#891)
+- `kafkatopicsobserver`: Add kafkatopicsobserver extension (#894)
+- `tlscheckreceiver`: Adding tcpcheckreceiver to otelcol-contrib (#880)
+
+### 💡 Enhancements 💡
+
+- `packaging`: Start producing container images for Windows 2019 and 2022 on amd64 (#339)
+
 ## v0.122.0
 
 ### 🛑 Breaking changes 🛑
