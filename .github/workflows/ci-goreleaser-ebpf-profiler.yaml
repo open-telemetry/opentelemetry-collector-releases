@@ -29,6 +29,7 @@ jobs:
     uses: ./.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-ebpf-profiler
+      config_file: ebpf-profiler-config
       goos: '[ "linux" ]'
       goarch: '[ "amd64" ]'
     secrets: inherit
