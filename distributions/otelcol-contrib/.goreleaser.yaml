@@ -3,8 +3,8 @@ project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
   - LD_FLAGS=-s -w
-  - CGO_ENABLED=0
   - BUILD_FLAGS=-trimpath
+  - CGO_ENABLED=0
 release:
   replace_existing_artifacts: true
 msi:

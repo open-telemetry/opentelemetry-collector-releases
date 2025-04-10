@@ -155,6 +155,7 @@ var (
 		d.containerImageManifests = slices.Concat(
 			newContainerImageManifests(d.name, "linux", ebpfProfilerArchs, containerImageOptions{}),
 		)
+		d.enableCgo = true
 	}).WithDefaultArchives().WithDefaultChecksum().WithDefaultSigns().WithDefaultDockerSigns().WithDefaultSBOMs().Build()
 )
 
@@ -399,6 +400,7 @@ type distribution struct {
 	dockerSigns             []config.Sign
 	sboms                   []config.SBOM
 	checksum                config.Checksum
+	enableCgo               bool
 }
 
 func (d *distribution) BuildProject() config.Project {
@@ -407,18 +409,22 @@ func (d *distribution) BuildProject() config.Project {
 		builds = append(builds, buildConfig.Build(d.name))
 	}
 
+	env := []string{
+		"COSIGN_YES=true",
+		"LD_FLAGS=-s -w",
+		"BUILD_FLAGS=-trimpath",
+	}
+	if !d.enableCgo {
+		env = append(env, "CGO_ENABLED=0")
+	}
+
 	return config.Project{
 		ProjectName: "opentelemetry-collector-releases",
 		Release: config.Release{
 			ReplaceExistingArtifacts: true,
 		},
-		Checksum: d.checksum,
-		Env: []string{
-			"COSIGN_YES=true",
-			"LD_FLAGS=-s -w",
-			"CGO_ENABLED=0",
-			"BUILD_FLAGS=-trimpath",
-		},
+		Checksum:        d.checksum,
+		Env:             env,
 		Builds:          builds,
 		Archives:        d.archives,
 		MSI:             d.msiConfig,
