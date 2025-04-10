@@ -30,6 +30,7 @@ jobs:
     with:
       distribution: otelcol-ebpf-profiler
       config_file: ebpf-profiler-config
+      otelcol_run_options: '--feature-gates=service.profilesSupport'
       goos: '[ "linux" ]'
       goarch: '[ "amd64" ]'
     secrets: inherit

@@ -21,6 +21,9 @@ on:
         required: false
         type: string
         default: default-config
+      otelcol_run_options:
+        required:  false
+        type: string
 
 env:
   # renovate: datasource=github-tags depName=goreleaser-pro packageName=goreleaser/goreleaser-pro
@@ -282,7 +285,7 @@ jobs:
             -d \
             -v ${PWD}/tests/docker-tests/${{ inputs.config_file }}.yaml:/config.yaml \
             ${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }} \
-            --config /config.yaml
+            --config /config.yaml ${{ inputs.otelcol_run_options }}
           echo "docker ps:"
           echo ""
           docker ps
