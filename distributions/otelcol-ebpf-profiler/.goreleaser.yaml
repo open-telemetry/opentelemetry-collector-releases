@@ -13,9 +13,6 @@ builds:
       - linux
     goarch:
       - amd64
-      - arm64
-      - ppc64le
-      - s390x
     goppc64:
       - power8
     dir: _build
@@ -48,67 +45,13 @@ dockers:
       - --label=org.opencontainers.image.source={{.GitURL}}
       - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
-  - goos: linux
-    goarch: arm64
-    dockerfile: Dockerfile
-    image_templates:
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-arm64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest-arm64
-    build_flag_templates:
-      - --pull
-      - --platform=linux/arm64
-      - --label=org.opencontainers.image.created={{.Date}}
-      - --label=org.opencontainers.image.name={{.ProjectName}}
-      - --label=org.opencontainers.image.revision={{.FullCommit}}
-      - --label=org.opencontainers.image.version={{.Version}}
-      - --label=org.opencontainers.image.source={{.GitURL}}
-      - --label=org.opencontainers.image.licenses=Apache-2.0
-    use: buildx
-  - goos: linux
-    goarch: ppc64le
-    dockerfile: Dockerfile
-    image_templates:
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-ppc64le
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest-ppc64le
-    build_flag_templates:
-      - --pull
-      - --platform=linux/ppc64le
-      - --label=org.opencontainers.image.created={{.Date}}
-      - --label=org.opencontainers.image.name={{.ProjectName}}
-      - --label=org.opencontainers.image.revision={{.FullCommit}}
-      - --label=org.opencontainers.image.version={{.Version}}
-      - --label=org.opencontainers.image.source={{.GitURL}}
-      - --label=org.opencontainers.image.licenses=Apache-2.0
-    use: buildx
-  - goos: linux
-    goarch: s390x
-    dockerfile: Dockerfile
-    image_templates:
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-s390x
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest-s390x
-    build_flag_templates:
-      - --pull
-      - --platform=linux/s390x
-      - --label=org.opencontainers.image.created={{.Date}}
-      - --label=org.opencontainers.image.name={{.ProjectName}}
-      - --label=org.opencontainers.image.revision={{.FullCommit}}
-      - --label=org.opencontainers.image.version={{.Version}}
-      - --label=org.opencontainers.image.source={{.GitURL}}
-      - --label=org.opencontainers.image.licenses=Apache-2.0
-    use: buildx
 docker_manifests:
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-arm64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-ppc64le
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-s390x
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest-arm64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest-ppc64le
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest-s390x
 signs:
   - cmd: cosign
     args:
