@@ -29,14 +29,15 @@ import (
 )
 
 const (
-	armArch          = "arm"
-	coreDistro       = "otelcol"
-	contribDistro    = "otelcol-contrib"
-	k8sDistro        = "otelcol-k8s"
-	otlpDistro       = "otelcol-otlp"
-	ghcr             = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
-	binaryNamePrefix = "otelcol"
-	imageNamePrefix  = "opentelemetry-collector"
+	armArch            = "arm"
+	coreDistro         = "otelcol"
+	contribDistro      = "otelcol-contrib"
+	k8sDistro          = "otelcol-k8s"
+	otlpDistro         = "otelcol-otlp"
+	ebpfProfilerDistro = "otelcol-ebpf-profiler"
+	ghcr               = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
+	binaryNamePrefix   = "otelcol"
+	imageNamePrefix    = "opentelemetry-collector"
 )
 
 var (
@@ -45,6 +46,7 @@ var (
 	winContainerArchs = []string{"amd64"}
 	darwinArchs       = []string{"amd64", "arm64"}
 	k8sArchs          = []string{"amd64", "arm64", "ppc64le", "s390x"}
+	ebpfProfilerArchs = []string{"amd64", "arm64", "ppc64le", "s390x"}
 
 	imageRepos = []string{ghcr}
 
@@ -139,6 +141,19 @@ var (
 		)
 		d.containerImageManifests = slices.Concat(
 			newContainerImageManifests(d.name, "linux", k8sArchs, containerImageOptions{}),
+		)
+	}).WithDefaultArchives().WithDefaultChecksum().WithDefaultSigns().WithDefaultDockerSigns().WithDefaultSBOMs().Build()
+
+	// ebpf-profiler distro
+	ebpfProfilerDist = newDistributionBuilder(ebpfProfilerDistro).WithConfigFunc(func(d *distribution) {
+		d.buildConfigs = []buildConfig{
+			&fullBuildConfig{targetOS: "linux", targetArch: ebpfProfilerArchs, ppc64Version: []string{"power8"}},
+		}
+		d.containerImages = slices.Concat(
+			newContainerImages(d.name, "linux", ebpfProfilerArchs, containerImageOptions{armVersion: "7"}),
+		)
+		d.containerImageManifests = slices.Concat(
+			newContainerImageManifests(d.name, "linux", ebpfProfilerArchs, containerImageOptions{}),
 		)
 	}).WithDefaultArchives().WithDefaultChecksum().WithDefaultSigns().WithDefaultDockerSigns().WithDefaultSBOMs().Build()
 )
@@ -595,6 +610,8 @@ func BuildDist(dist string, onlyBuild bool) config.Project {
 		return otlpDist.BuildProject()
 	case k8sDistro:
 		return k8sDist.BuildProject()
+	case ebpfProfilerDistro:
+		return ebpfProfilerDist.BuildProject()
 	case contribDistro:
 		if onlyBuild {
 			return contribBuildOnlyDist.BuildProject()

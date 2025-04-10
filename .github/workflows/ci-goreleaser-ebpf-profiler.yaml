@@ -1,0 +1,34 @@
+name: CI - eBPF Profiler - GoReleaser
+
+on:
+  merge_group:
+  push:
+    branches: [main]
+    paths:
+      - "distributions/otelcol-ebpf-profiler/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
+  pull_request:
+    branches: [main]
+    paths:
+      - "distributions/otelcol-ebpf-profiler/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
+
+jobs:
+  check-goreleaser:
+    name: CI - eBPF Profiler - GoReleaser
+    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    with:
+      distribution: otelcol-ebpf-profiler
+      goos: '[ "linux" ]'
+      goarch: '[ "amd64", "arm64", "ppc64le", "s390x" ]'
+    secrets: inherit
