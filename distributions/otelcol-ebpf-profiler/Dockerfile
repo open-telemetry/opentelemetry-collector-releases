@@ -1,12 +1,8 @@
-FROM alpine:3.21 as certs
-RUN apk --update add ca-certificates
-
-FROM scratch
+FROM golang:1.23.8
 
 ARG USER_UID=10001
 ARG USER_GID=10001
 USER ${USER_UID}:${USER_GID}
 
-COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --chmod=755 otelcol-ebpf-profiler /otelcol-ebpf-profiler
 ENTRYPOINT ["/otelcol-ebpf-profiler"]
