@@ -21,6 +21,9 @@ on:
         required: false
         type: string
         default: default-config
+      docker_run_options:
+        required:  false
+        type: string
       otelcol_run_options:
         required:  false
         type: string
@@ -283,6 +286,7 @@ jobs:
           echo "Running container..."
           docker run --name ${{ inputs.distribution }} \
             -d \
+            ${{ inputs.docker_run_options }} \
             -v ${PWD}/tests/docker-tests/${{ inputs.config_file }}.yaml:/config.yaml \
             ${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }} \
             --config /config.yaml ${{ inputs.otelcol_run_options }}
