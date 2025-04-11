@@ -1,0 +1,14 @@
+receivers:
+  profiling:
+    SamplesPerSecond: 19
+
+exporters:
+  otlphttp:
+    endpoint: "http://0.0.0.0:4317"
+
+service:
+  pipelines:
+    profiles:
+      receivers: [profiling]
+      processors: []
+      exporters: [otlphttp]
