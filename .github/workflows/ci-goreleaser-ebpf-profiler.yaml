@@ -33,5 +33,5 @@ jobs:
       docker_run_options: '--privileged -v /sys/kernel/debug/:/sys/kernel/debug/'
       otelcol_run_options: '--feature-gates=service.profilesSupport'
       goos: '[ "linux" ]'
-      goarch: '[ "amd64" ]'
+      goarch: '[ "amd64", "arm64" ]'
     secrets: inherit

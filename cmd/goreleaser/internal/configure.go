@@ -46,7 +46,7 @@ var (
 	winContainerArchs = []string{"amd64"}
 	darwinArchs       = []string{"amd64", "arm64"}
 	k8sArchs          = []string{"amd64", "arm64", "ppc64le", "s390x"}
-	ebpfProfilerArchs = []string{"amd64"}
+	ebpfProfilerArchs = []string{"amd64", "arm64"}
 
 	imageRepos = []string{ghcr}
 
@@ -147,7 +147,7 @@ var (
 	// ebpf-profiler distro
 	ebpfProfilerDist = newDistributionBuilder(ebpfProfilerDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
-			&fullBuildConfig{targetOS: "linux", targetArch: ebpfProfilerArchs, ppc64Version: []string{"power8"}},
+			&fullBuildConfig{targetOS: "linux", targetArch: ebpfProfilerArchs},
 		}
 		d.containerImages = slices.Concat(
 			newContainerImages(d.name, "linux", ebpfProfilerArchs, containerImageOptions{armVersion: "7"}),
