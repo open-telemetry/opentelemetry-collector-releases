@@ -22,7 +22,6 @@ processors:
 receivers:
   - gomod: go.opentelemetry.io/ebpf-profiler v0.0.0-20250408174414-ead430a15d49
     import: go.opentelemetry.io/ebpf-profiler/collector
-    name: profilesreceiver
 
 providers:
   - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.29.0
