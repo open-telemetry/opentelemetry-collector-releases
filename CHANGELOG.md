@@ -4,6 +4,12 @@
 
 <!-- next version -->
 
+## v0.125.0
+
+### 🚀 New components 🚀
+
+- `azureblobexporter`: add azureblobexporter (#909)
+
 ## v0.123.1
 
 ### 🛑 Breaking changes 🛑
