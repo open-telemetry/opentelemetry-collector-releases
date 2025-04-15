@@ -1,12 +1,12 @@
 monorepo:
-  tag_prefix: cmd/builder/
-  dir: .core/cmd/builder
+  tag_prefix: cmd/opampsupervisor/
+  dir: .contrib/cmd/opampsupervisor
 version: 2
 builds:
   - flags:
       - -trimpath
     ldflags:
-      - -s -w -X go.opentelemetry.io/collector/cmd/builder/internal.version={{ .Version }}
+      - -s -w -X github.com/open-telemetry/opentelemetry-collector-contrib/cmd/opampsupervisor/internal.version={{ .Version }}
     env:
       - CGO_ENABLED=0
     goos:
@@ -24,14 +24,14 @@ builds:
         goarch: ppc64le
       - goos: darwin
         goarch: ppc64le
-    binary: ocb
+    binary: opampsupervisor
 dockers:
   - goos: linux
     goarch: amd64
     dockerfile: Dockerfile
     image_templates:
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Version }}-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:latest-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:{{ .Version }}-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:latest-amd64
     build_flag_templates:
       - --pull
       - --platform=linux/amd64
@@ -45,8 +45,8 @@ dockers:
     goarch: arm64
     dockerfile: Dockerfile
     image_templates:
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Version }}-arm64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:latest-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:{{ .Version }}-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:latest-arm64
     build_flag_templates:
       - --pull
       - --platform=linux/arm64
@@ -60,8 +60,8 @@ dockers:
     goarch: ppc64le
     dockerfile: Dockerfile
     image_templates:
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Version }}-ppc64le
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:latest-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:{{ .Version }}-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:latest-ppc64le
     build_flag_templates:
       - --pull
       - --platform=linux/ppc64le
@@ -73,23 +73,23 @@ dockers:
       - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
 docker_manifests:
-  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Version }}
+  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:{{ .Version }}
     image_templates:
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Version }}-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Version }}-arm64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Version }}-ppc64le
-  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:latest
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:{{ .Version }}-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:{{ .Version }}-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:{{ .Version }}-ppc64le
+  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:latest
     image_templates:
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:latest-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:latest-arm64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:latest-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:latest-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:latest-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:latest-ppc64le
 release:
   make_latest: false
   github:
     owner: open-telemetry
     name: opentelemetry-collector-releases
   header: |
-    ### Images and binaries for collector distributions here: https://github.com/open-telemetry/opentelemetry-collector-releases/releases/tag/{{ .Tag }}
+    ### Release of OpAMP supervisor artifacts
 archives:
   - formats:
     - binary

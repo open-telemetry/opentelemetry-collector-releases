@@ -1,4 +1,4 @@
-name: Release Builder
+name: Release OpAMP supervisor
 on:
   push:
     tags:
@@ -22,23 +22,23 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
-      - name: Push cmd/builder Tag
+      - name: Push cmd/opampsupervisor Tag
         run: |
-          tag="cmd/builder/${{ github.ref_name }}"
-          message="Releasing ocb binaries for ${{ github.ref_name }}"
+          tag="cmd/opampsupervisor/${{ github.ref_name }}"
+          message="Releasing OpAMP supervisor binaries for ${{ github.ref_name }}"
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git tag -a "${tag}" -m "${message}"
           git push origin "${tag}"
-      - name: Checkout Core Repo
+      - name: Checkout Contrib Repo
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
-          repository: "open-telemetry/opentelemetry-collector"
+          repository: "open-telemetry/opentelemetry-collector-contrib"
           ref: ${{ github.ref_name }}
-          path: ".core"
-      - name: Copy Dockerfile to Core Repo directory
-        run:  cp cmd/builder/Dockerfile .core/cmd/builder/Dockerfile
+          path: ".contrib"
+      - name: Copy Dockerfile to Contrib Repo directory
+        run:  cp cmd/opampsupervisor/Dockerfile .contrib/cmd/opampsupervisor/Dockerfile
       - uses: sigstore/cosign-installer@d7d6bc7722e3daa8354c50bcb52f4837da5e9b6a # v3.8.1
       - uses: anchore/sbom-action/download-syft@f325610c9f50a54015d37c8d16cb3b0e2c8f4de0 # v0.18.0
       - uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
@@ -65,7 +65,7 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
-          args: release --clean -f cmd/builder/.goreleaser.yml
+          args: release --clean -f cmd/opampsupervisor/.goreleaser.yml
         env:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

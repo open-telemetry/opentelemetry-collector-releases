@@ -15,9 +15,13 @@
 # limitations under the License.
 
 if command -v systemctl >/dev/null 2>&1; then
-    systemctl daemon-reload
+    if [ -d /run/systemd/system ]; then
+        systemctl daemon-reload
+    fi
     systemctl enable otelcol.service
     if [ -f /etc/otelcol/config.yaml ]; then
-        systemctl restart otelcol.service
+        if [ -d /run/systemd/system ]; then
+            systemctl restart otelcol.service
+        fi
     fi
 fi

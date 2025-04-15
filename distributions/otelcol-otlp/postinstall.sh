@@ -15,10 +15,14 @@
 # limitations under the License.
 
 if command -v systemctl >/dev/null 2>&1; then
-    systemctl daemon-reload
+    if [ -d /run/systemd/system ]; then
+        systemctl daemon-reload
+    fi
     systemctl enable otelcol-otlp.service
     if [ -f /etc/otelcol-otlp/config.yaml ]; then
-        systemctl restart otelcol-otlp.service
+        if [ -d /run/systemd/system ]; then
+            systemctl restart otelcol-otlp.service
+        fi
     else
         echo "Make sure to configure otelcol-otlp by creating /etc/otelcol-otlp/config.yaml"
     fi
