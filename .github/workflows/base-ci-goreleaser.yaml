@@ -20,7 +20,7 @@ on:
       config_file:
         required: false
         type: string
-        default: default-config
+        default: default-config.yaml
       docker_run_options:
         required:  false
         type: string
@@ -287,7 +287,7 @@ jobs:
           docker run --name ${{ inputs.distribution }} \
             -d \
             ${{ inputs.docker_run_options }} \
-            -v ${PWD}/tests/docker-tests/${{ inputs.config_file }}.yaml:/config.yaml \
+            -v ${PWD}/tests/docker-tests/${{ inputs.config_file }}:/config.yaml \
             ${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }} \
             --config /config.yaml ${{ inputs.otelcol_run_options }}
           echo "docker ps:"

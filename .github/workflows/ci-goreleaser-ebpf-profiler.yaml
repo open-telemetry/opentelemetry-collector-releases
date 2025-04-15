@@ -29,7 +29,7 @@ jobs:
     uses: ./.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-ebpf-profiler
-      config_file: ebpf-profiler-config
+      config_file: ebpf-profiler-config.yaml
       docker_run_options: '--privileged --pid=host -v /sys/kernel/debug/:/sys/kernel/debug/:ro'
       otelcol_run_options: '--feature-gates=service.profilesSupport'
       goos: '[ "linux" ]'
