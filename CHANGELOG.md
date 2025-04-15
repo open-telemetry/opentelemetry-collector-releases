@@ -50,6 +50,10 @@
 
 ## v0.121.0
 
+### 🛑 Breaking changes 🛑
+
+- container group ID: Set user's primary group (USER_GID) to prevent container user 10001 being root group. (#738)
+
 ### 🚀 New components 🚀
 
 - `aesprovider`: Add the AES provider to the contrib distribution (#843)
