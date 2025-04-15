@@ -289,7 +289,7 @@ jobs:
             ${{ inputs.docker_run_options }} \
             -v ${PWD}/tests/docker-tests/${{ inputs.config_file }}:/config.yaml \
             ${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }} \
-            --config /config.yaml ${{ inputs.otelcol_run_options }}
+            ${{ inputs.otelcol_run_options }} --config /config.yaml
           echo "docker ps:"
           echo ""
           docker ps
