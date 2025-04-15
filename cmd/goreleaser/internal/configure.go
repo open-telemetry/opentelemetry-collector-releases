@@ -401,6 +401,8 @@ type distribution struct {
 	sboms                   []config.SBOM
 	checksum                config.Checksum
 	enableCgo               bool
+	ldFlags                 string
+	goTags                  string
 }
 
 func (d *distribution) BuildProject() config.Project {
@@ -409,10 +411,18 @@ func (d *distribution) BuildProject() config.Project {
 		builds = append(builds, buildConfig.Build(d.name))
 	}
 
+	ldFlags := "-s -w"
+	if d.ldFlags != "" {
+		ldFlags = d.ldFlags
+	}
+
 	env := []string{
 		"COSIGN_YES=true",
-		"LD_FLAGS=-s -w",
+		"LD_FLAGS=" + ldFlags,
 		"BUILD_FLAGS=-trimpath",
+	}
+	if d.goTags != "" {
+		env = append(env, "GO_TAGS="+d.goTags)
 	}
 	if !d.enableCgo {
 		env = append(env, "CGO_ENABLED=0")
