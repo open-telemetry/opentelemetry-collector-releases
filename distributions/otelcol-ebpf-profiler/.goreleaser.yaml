@@ -4,6 +4,7 @@ env:
   - COSIGN_YES=true
   - LD_FLAGS=-X go.opentelemetry.io/ebpf-profiler/vc.version={{ .Version }} -X go.opentelemetry.io/ebpf-profiler/vc.revision={{ .Commit }} -X go.opentelemetry.io/ebpf-profiler/vc.buildTimestamp={{ .Date }} -extldflags=-static
   - BUILD_FLAGS=-trimpath
+  - GO_TAGS=osusergo,netgo
 release:
   replace_existing_artifacts: true
 builds:

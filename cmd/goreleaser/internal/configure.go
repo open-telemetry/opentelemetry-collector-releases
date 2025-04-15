@@ -162,6 +162,7 @@ var (
 			"-X go.opentelemetry.io/ebpf-profiler/vc.buildTimestamp={{ .Date }}",
 			"-extldflags=-static",
 		}, " ")
+		d.goTags = "osusergo,netgo"
 	}).WithDefaultArchives().WithDefaultChecksum().WithDefaultSigns().WithDefaultDockerSigns().WithDefaultSBOMs().Build()
 )
 
