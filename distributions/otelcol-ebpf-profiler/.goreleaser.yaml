@@ -2,7 +2,7 @@ version: 2
 project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
-  - LD_FLAGS=-s -w
+  - LD_FLAGS=-X go.opentelemetry.io/ebpf-profiler/vc.version={{ .Version }} -X go.opentelemetry.io/ebpf-profiler/vc.revision={{ .Commit }} -X go.opentelemetry.io/ebpf-profiler/vc.buildTimestamp={{ .Date }} -extldflags=-static
   - BUILD_FLAGS=-trimpath
 release:
   replace_existing_artifacts: true

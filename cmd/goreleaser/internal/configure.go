@@ -156,6 +156,12 @@ var (
 			newContainerImageManifests(d.name, "linux", ebpfProfilerArchs, containerImageOptions{}),
 		)
 		d.enableCgo = true
+		d.ldFlags = strings.Join([]string{
+			"-X go.opentelemetry.io/ebpf-profiler/vc.version={{ .Version }}",
+			"-X go.opentelemetry.io/ebpf-profiler/vc.revision={{ .Commit }}",
+			"-X go.opentelemetry.io/ebpf-profiler/vc.buildTimestamp={{ .Date }}",
+			"-extldflags=-static",
+		}, " ")
 	}).WithDefaultArchives().WithDefaultChecksum().WithDefaultSigns().WithDefaultDockerSigns().WithDefaultSBOMs().Build()
 )
 
