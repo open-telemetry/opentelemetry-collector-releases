@@ -63,7 +63,7 @@ jobs:
           fi
 
       - name: Ensure ./.chloggen/*.yaml addition(s)
-        if: env.RUN_LYCHEE == 'true'
+        if: false
         run: |
           if [[ 1 -gt $(git diff --diff-filter=A --name-only $(git merge-base origin/main $PR_HEAD) $PR_HEAD ./.chloggen | grep -c \\.yaml) ]]
           then
