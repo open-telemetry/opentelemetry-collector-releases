@@ -5,6 +5,7 @@ After=network.target
 [Service]
 EnvironmentFile=/etc/otelcol/otelcol.conf
 ExecStart=/usr/bin/otelcol $OTELCOL_OPTIONS
+ExecReload=/bin/kill -HUP $MAINPID
 KillMode=mixed
 Restart=on-failure
 Type=simple
