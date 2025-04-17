@@ -26,9 +26,9 @@ jobs:
     if: ${{ github.actor != 'dependabot[bot]' }}
     env:
       PR_HEAD: ${{ github.event.pull_request.head.sha }}
-      RUN_LYCHEE: ${{ (!contains(github.event.pull_request.labels.*.name, 'dependencies') && !contains(github.event.pull_request.labels.*.name, 'Skip Changelog') && !contains(github.event.pull_request.title, '[chore]')) }}
-      TEST_LYCHEE: ${{ contains(github.event.pull_request.title, 'md link check') }}
-#      TEST_LYCHEE: ${{ contains(github.event.pull_request.title, 'update dependency tcort/markdown-link-check') }}
+      RUN_LYCHEE: ${{ (!contains(github.event.pull_request.labels.*.name, 'dependencies') && !contains(github.event.pull_request.labels.*.name, 'Skip Changelog') && !contains(github.event.pull_request.title, '[chore]')) || contains(github.event.pull_request.body, 'lycheeverse/lychee-action') }}
+      TEST_LYCHEE: ${{ contains(github.event.pull_request.body, 'lycheeverse/lychee-action') }}
+#      TEST_LYCHEE: ${{ contains(github.event.pull_request.body, 'update dependency tcort/markdown-link-check') }}
 
     steps:
       - uses: actions/checkout@v4
