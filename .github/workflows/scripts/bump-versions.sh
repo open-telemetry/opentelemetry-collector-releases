@@ -143,15 +143,6 @@ escaped_current_beta_core=${current_beta_core//./\\.}
 escaped_current_beta_contrib=${current_beta_contrib//./\\.}
 escaped_current_stable=${current_stable//./\\.}
 
-# Determine the OS and set the sed command accordingly
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  # macOS
-  sed_command="sed -i ''"
-else
-  # Linux
-  sed_command="sed -i"
-fi
-
 # Update versions in each manifest file
 echo "Making the following updates:"
 echo "  - core beta module set from $current_beta_core to $next_beta_core"
@@ -160,17 +151,22 @@ echo "  - contrib beta module set from $current_beta_contrib to $next_beta_contr
 echo "  - distribution version to $next_distribution_version"
 for file in "${manifest_files[@]}"; do
   if [ -f "$file" ]; then
-    $sed_command "s/\(^.*go\.opentelemetry\.io\/collector\/.*\) v$escaped_current_beta_core/\1 v$next_beta_core/" "$file"
-    $sed_command "s/\(^.*github\.com\/open-telemetry\/opentelemetry-collector-contrib\/.*\) v$escaped_current_beta_contrib/\1 v$next_beta_contrib/" "$file"
-    $sed_command "s/\(^.*go\.opentelemetry\.io\/collector\/.*\) v$escaped_current_stable/\1 v$next_stable_core/" "$file"
-    $sed_command "s/version: .*/version: $next_distribution_version/" "$file"
+    sed "s/\(^.*go\.opentelemetry\.io\/collector\/.*\) v$escaped_current_beta_core/\1 v$next_beta_core/" "$file" > "$file.tmp"
+    mv "$file.tmp" "$file"
+    sed "s/\(^.*github\.com\/open-telemetry\/opentelemetry-collector-contrib\/.*\) v$escaped_current_beta_contrib/\1 v$next_beta_contrib/" "$file" > "$file.tmp"
+    mv "$file.tmp" "$file"
+    sed "s/\(^.*go\.opentelemetry\.io\/collector\/.*\) v$escaped_current_stable/\1 v$next_stable_core/" "$file" > "$file.tmp"
+    mv "$file.tmp" "$file"
+    sed "s/version: .*/version: $next_distribution_version/" "$file" > "$file.tmp"
+    mv "$file.tmp" "$file"
   else
     echo "File $file does not exist"
   fi
 done
 
 # Update Makefile OCB version
-$sed_command "s/OTELCOL_BUILDER_VERSION ?= $escaped_current_beta_core/OTELCOL_BUILDER_VERSION ?= $next_beta_core/" Makefile
+sed "s/OTELCOL_BUILDER_VERSION ?= $escaped_current_beta_core/OTELCOL_BUILDER_VERSION ?= $next_beta_core/" Makefile > Makefile.tmp
+mv Makefile.tmp Makefile
 
 echo "Version update completed."
 
