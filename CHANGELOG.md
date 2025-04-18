@@ -4,6 +4,8 @@
 
 <!-- next version -->
 
+## v0.124.1
+
 ## v0.124.0
 
 ### 🚀 New components 🚀
@@ -49,6 +51,10 @@
 - `packaging`: Ensure Linux package scripts work in environments without systemd such as chrooted environments (#767)
 
 ## v0.121.0
+
+### 🛑 Breaking changes 🛑
+
+- container group ID: Set user's primary group (USER_GID) to prevent container user 10001 being root group. (#738)
 
 ### 🚀 New components 🚀
 

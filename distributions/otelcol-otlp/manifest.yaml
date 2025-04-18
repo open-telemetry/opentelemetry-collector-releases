@@ -2,7 +2,7 @@ dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/otlp
   name: otelcol-otlp
   description: OpenTelemetry Collector OTLP
-  version: 0.124.0
+  version: 0.124.1
   output_path: ./_build
 
 exporters:
