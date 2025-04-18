@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 # This script reads current versions and takes optional next versions, and updates the
-# version in the specified files. If next version is not provided, it will infer the 
-# next semantic version (e.g. v0.110.0 -> v0.111.0 or v1.16.0 -> v1.17.0) based on the 
+# version in the specified files. If next version is not provided, it will infer the
+# next semantic version (e.g. v0.110.0 -> v0.111.0 or v1.16.0 -> v1.17.0) based on the
 # current version(s) read in.
 
 # List of files to update
@@ -11,6 +11,7 @@ manifest_files=(
   "distributions/otelcol/manifest.yaml"
   "distributions/otelcol-k8s/manifest.yaml"
   "distributions/otelcol-otlp/manifest.yaml"
+  "distributions/otelcol-ebpf-profiler/manifest.yaml"
 )
 
 # Function to display usage
@@ -206,7 +207,7 @@ create_pr() {
 
   gh pr create --title "[chore] Prepare release $next_version" \
     --body "This PR updates the version from $current_version to $next_version" \
-    --base main --head "$branch_name" --draft  
+    --base main --head "$branch_name" --draft
 }
 
 # TODO: Once Collector 1.0 is released, we can consider removing the
