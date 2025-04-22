@@ -10,6 +10,13 @@ Core](https://github.com/open-telemetry/opentelemetry-collector) and
 [OpenTelemetry Collector
 Contrib](https://github.com/open-telemetry/opentelemetry-collector-contrib).
 
+## Requirements
+
+### CGO
+
+In order to setup the eBPF hooks, the receiver needs to use CGO, as setting up
+the hooks needs the C bindings.
+
 ## Components
 
 The full list of components is available in the [manifest](manifest.yaml).
