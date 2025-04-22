@@ -22,10 +22,10 @@ on:
         type: string
         default: default-config.yaml
       docker_run_options:
-        required:  false
+        required: false
         type: string
       otelcol_run_options:
-        required:  false
+        required: false
         type: string
 
 env:
