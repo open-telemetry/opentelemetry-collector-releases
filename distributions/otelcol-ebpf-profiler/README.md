@@ -14,8 +14,10 @@ Contrib](https://github.com/open-telemetry/opentelemetry-collector-contrib).
 
 ### CGO
 
-In order to setup the eBPF hooks, the receiver needs to use CGO, as setting up
-the hooks needs the C bindings.
+The use of the foreign language interface to bring in dependencies requires to
+set CGO for the eBPF profiler.
+To utilize a foreign language interface for incorporating dependencies into the
+eBPF profiler, it is essential to configure and enable CGO.
 
 ## Components
 
