@@ -150,7 +150,7 @@ var (
 			&fullBuildConfig{targetOS: "linux", targetArch: ebpfProfilerArchs},
 		}
 		d.containerImages = slices.Concat(
-			newContainerImages(d.name, "linux", ebpfProfilerArchs, containerImageOptions{armVersion: "7"}),
+			newContainerImages(d.name, "linux", ebpfProfilerArchs, containerImageOptions{}),
 		)
 		d.containerImageManifests = slices.Concat(
 			newContainerImageManifests(d.name, "linux", ebpfProfilerArchs, containerImageOptions{}),
