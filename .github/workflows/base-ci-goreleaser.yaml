@@ -17,6 +17,16 @@ on:
         type: boolean
         default: false
         description: "Set to true to fetch latest otelcol-contrib main branch version instead of building the version in this repo"
+      config_file:
+        required: false
+        type: string
+        default: default-config.yaml
+      docker_run_options:
+        required: false
+        type: string
+      otelcol_run_options:
+        required: false
+        type: string
 
 env:
   # renovate: datasource=github-tags depName=goreleaser-pro packageName=goreleaser/goreleaser-pro
@@ -197,12 +207,12 @@ jobs:
           # Find version number and types of built artifacts
           echo "version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')" >> "$GITHUB_OUTPUT"
           echo "types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )" >> "$GITHUB_OUTPUT"
-          
+
           # Find GOOS and GOARCH
           os=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r '.[] | select(.name | contains(".tar.gz")) | .goos')
           arch=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r '.[] | select(.name | contains(".tar.gz")) | .goarch')
           echo "arch=$os-$arch" >> "$GITHUB_OUTPUT"
-          
+
           # Find binary path
           echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path' )" >> "$GITHUB_OUTPUT"
 
@@ -276,9 +286,10 @@ jobs:
           echo "Running container..."
           docker run --name ${{ inputs.distribution }} \
             -d \
-            -v ${PWD}/tests/docker-tests/default-config.yaml:/config.yaml \
+            ${{ inputs.docker_run_options }} \
+            -v ${PWD}/tests/docker-tests/${{ inputs.config_file }}:/config.yaml \
             ${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }} \
-            --config /config.yaml
+            ${{ inputs.otelcol_run_options }} --config /config.yaml
           echo "docker ps:"
           echo ""
           docker ps
