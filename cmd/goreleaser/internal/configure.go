@@ -46,7 +46,7 @@ var (
 	winContainerArchs = []string{"amd64"}
 	darwinArchs       = []string{"amd64", "arm64"}
 	k8sArchs          = []string{"amd64", "arm64", "ppc64le", "s390x"}
-	ebpfProfilerArchs = []string{"amd64", "arm64"}
+	ebpfProfilerArchs = []string{"amd64"}
 
 	imageRepos = []string{ghcr}
 
