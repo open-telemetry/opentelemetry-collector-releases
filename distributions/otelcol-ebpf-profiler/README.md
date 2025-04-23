@@ -19,6 +19,9 @@ set CGO for the eBPF profiler.
 To utilize a foreign language interface for incorporating dependencies into the
 eBPF profiler, it is essential to configure and enable CGO.
 
+In order to enable CGO, we need a libc on the container.
+We use glibc, and the distribution is tested against v2.39.
+
 ## Components
 
 The full list of components is available in the [manifest](manifest.yaml).
