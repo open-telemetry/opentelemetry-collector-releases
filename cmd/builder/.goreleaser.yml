@@ -123,4 +123,10 @@ sboms:
     artifacts: archive
   - id: package
     artifacts: package
-    
+dockerhub:
+  - images:
+      - otel/opentelemetry-collector-builder
+    description: OpenTelemetry Collector Builder
+    full_description:
+      from_url:
+        url: https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector/refs/heads/main/cmd/builder/README.md
