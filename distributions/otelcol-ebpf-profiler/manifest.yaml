@@ -2,7 +2,7 @@ dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/ebpf-profiler
   name: otelcol-ebpf-profiler
   description: OpenTelemetry Collector for eBPF Profiling
-  version: 0.123.1
+  version: 0.125.0
   output_path: ./_build
 
 exporters:

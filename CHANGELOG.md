@@ -4,6 +4,17 @@
 
 <!-- next version -->
 
+## v0.125.0
+
+### 🚀 New components 🚀
+
+- `azureauthextension`: Add azureauthextension to contrib distribution. (#931)
+- `otelcol-ebpf-profiler`: Introduce eBPF Profiler Distribution (#908)
+
+### 💡 Enhancements 💡
+
+- `service`: Add service reload signal to systemd unit (#887)
+
 ## v0.124.1
 
 ## v0.124.0
