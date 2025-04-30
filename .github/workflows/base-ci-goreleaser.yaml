@@ -113,7 +113,7 @@ jobs:
 
       - name: "[Nightly] Download built otelcol-contrib artifact from contrib repo"
         if: inputs.distribution == 'otelcol-contrib' && inputs.nightly == true && matrix.GOARCH == 'amd64' && matrix.GOOS == 'linux'
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: collector-binaries-linux-amd64
           repository: open-telemetry/opentelemetry-collector-contrib
@@ -230,7 +230,7 @@ jobs:
 
       - name: Build container images locally
         if: matrix.GOOS == 'linux' && contains(steps.prep.outputs.types, 'Docker Image')
-        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
+        uses: docker/build-push-action@14487ce63c7a62a4a324b0bfb37086795e31c6c1 # v6.16.0
         with:
           context: ./distributions/${{ inputs.distribution }}
           push: false
@@ -271,7 +271,7 @@ jobs:
           platforms: arm64,ppc64le,linux/arm/v7,s390x
 
       - name: Download container image artifact
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: ${{ inputs.distribution }}-image-${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
 
