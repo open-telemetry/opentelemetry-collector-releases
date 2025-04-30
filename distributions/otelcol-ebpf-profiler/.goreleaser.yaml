@@ -31,6 +31,8 @@ dockers:
     goarch: amd64
     dockerfile: Dockerfile
     image_templates:
+      - otel/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
+      - otel/opentelemetry-collector-ebpf-profiler:latest-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest-amd64
     build_flag_templates:
@@ -44,6 +46,12 @@ dockers:
       - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
 docker_manifests:
+  - name_template: otel/opentelemetry-collector-ebpf-profiler:{{ .Version }}
+    image_templates:
+      - otel/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
+  - name_template: otel/opentelemetry-collector-ebpf-profiler:latest
+    image_templates:
+      - otel/opentelemetry-collector-ebpf-profiler:latest-amd64
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
