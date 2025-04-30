@@ -35,9 +35,10 @@ const (
 	k8sDistro          = "otelcol-k8s"
 	otlpDistro         = "otelcol-otlp"
 	ebpfProfilerDistro = "otelcol-ebpf-profiler"
-	ghcr               = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
-	binaryNamePrefix   = "otelcol"
-	imageNamePrefix    = "opentelemetry-collector"
+	dockerHub        = "otel"
+	ghcr             = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
+	binaryNamePrefix = "otelcol"
+	imageNamePrefix  = "opentelemetry-collector"
 )
 
 var (
@@ -48,7 +49,7 @@ var (
 	k8sArchs          = []string{"amd64", "arm64", "ppc64le", "s390x"}
 	ebpfProfilerArchs = []string{"amd64"}
 
-	imageRepos = []string{ghcr}
+	imageRepos = []string{dockerHub, ghcr}
 
 	// otelcol (core) distro
 	otelColDist = newDistributionBuilder(coreDistro).WithConfigFunc(func(d *distribution) {
