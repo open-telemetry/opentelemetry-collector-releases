@@ -1,0 +1,35 @@
+#!/bin/sh
+
+// Copyright The OpenTelemetry Authors
+// SPDX-License-Identifier: Apache-2.0
+
+BUILD_DIR=$1
+CACHE_DIR=$2
+ENV_DIR=$3
+BUILDPACK_DIR=$(cd "$(dirname "$0")"; cd ..; pwd)
+
+# Use the latest version of the Collector PaaS distribution if none is specified
+OTEL_VERSION=$(curl -s https://api.github.com/repos/open-telemetry/opentelemetry-collector-releases/releases/latest | grep tarball_url | cut -d'"' -f4 | cut -d'/' -f8 | cut -d'v' -f2)
+# Get OpenTelemetry Collector version from the environment if available
+if [ -f "$ENV_DIR/OTEL_VERSION" ]; then
+  OTEL_VERSION=$(cat "$ENV_DIR/OTEL_VERSION")
+fi
+otel_collector="otelcol-paas-linux"
+
+CONFIG_DIR="$BUILD_DIR/.otel"
+cp "$BUILDPACK_DIR/setup/config.yaml" "$CONFIG_DIR"
+
+echo "-----> Downloading OpenTelemetry Collector $OTEL_VERSION ($otel_collector)"
+wget -P "$CONFIG_DIR/" "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v$OTEL_VERSION/$otel_collector" -o $otel_collector > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "Downloading OpenTelemetry Collector tarball failed"
+    echo "$OTEL_VERSION may not be a valid version of the OpenTelemetry Collector."
+    echo "Find valid versions here: https://github.com/open-telemetry/opentelemetry-collector-releases/tags"
+    exit 1;
+fi
+
+mkdir -p "$BUILD_DIR/.profile.d"
+cp "$BUILDPACK_DIR/setup/otel-collector.sh" "$BUILD_DIR/.profile.d/"
+
+chmod a+x $CONFIG_DIR/$otel_collector
+chmod +x "$BUILD_DIR/.profile.d/otel-collector.sh"
