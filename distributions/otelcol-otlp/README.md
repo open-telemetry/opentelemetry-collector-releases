@@ -1,6 +1,6 @@
 # OpenTelemetry Collector OTLP Distro
 
-This distribution only contains the receiver and exporters for the OpenTelemetry Protocol (OTLP), including both gRPC and HTTP transport.
+This distribution only contains the receiver and exporters for the OpenTelemetry Protocol (OTLP), including both gRPC and HTTP transport and some handy essential tools.
 
 ## Configuration
 
@@ -20,4 +20,7 @@ The full list of components is available in the [manifest](manifest.yaml)
 
 ### Rules for Component Inclusion
 
-- Only `otlpreceiver`, `otlpexporter`, and `otlphttpexporter` are allowed.
+- `otlpreceiver`, `otlpexporter`, and `otlphttpexporter` are allowed.
+- Some essential components to make it more handy. Those are `debugexporter`, 
+`basicauthextension`, `bearertokenauthextension`, `healthcheckextension`, 
+`pprofextension`, `batchprocessor`, `memorylimiterprocessor`,  `envprovider`, and `fileprovider`.
