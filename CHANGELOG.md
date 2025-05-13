@@ -4,6 +4,16 @@
 
 <!-- next version -->
 
+## v0.126.0
+
+### 🚀 New components 🚀
+
+- `k8sleaderelectorextension`: add k8sleaderelector extension to otelcol-contrib and otelcol-k8s distributions (#943)
+
+### 🧰 Bug fixes 🧰
+
+- `image repository`: Re-enable publishing images to dockerhub (#938)
+
 ## v0.125.0
 
 ### 🚀 New components 🚀
