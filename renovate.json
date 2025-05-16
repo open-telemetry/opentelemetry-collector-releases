@@ -70,6 +70,13 @@
     },
     {
       "matchManagers": ["gomod"],
+      "matchPackagePrefixes": ["go.opentelemetry.io/ebpf-profiler"],
+      "matchUpdateTypes": ["digest"],
+      "groupName": "eBPF Profiler",
+      "enabled": true
+    },
+    {
+      "matchManagers": ["gomod"],
       "matchDepTypes": ["toolchain"],
       "enabled": false
     },

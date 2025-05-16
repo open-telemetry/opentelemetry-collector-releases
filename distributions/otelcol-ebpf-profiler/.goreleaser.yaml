@@ -1,0 +1,86 @@
+version: 2
+project_name: opentelemetry-collector-releases
+env:
+  - COSIGN_YES=true
+  - LD_FLAGS=-extldflags=-static
+  - BUILD_FLAGS=-trimpath
+  - GO_TAGS=osusergo,netgo
+release:
+  replace_existing_artifacts: true
+builds:
+  - id: otelcol-ebpf-profiler-linux
+    goos:
+      - linux
+    goarch:
+      - amd64
+    dir: _build
+    binary: otelcol-ebpf-profiler
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
+archives:
+  - id: otelcol-ebpf-profiler
+    builds:
+      - otelcol-ebpf-profiler-linux
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
+checksum:
+  name_template: '{{ .ProjectName }}_otelcol-ebpf-profiler_checksums.txt'
+dockers:
+  - goos: linux
+    goarch: amd64
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
+      - otel/opentelemetry-collector-ebpf-profiler:latest-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest-amd64
+    build_flag_templates:
+      - --pull
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+docker_manifests:
+  - name_template: otel/opentelemetry-collector-ebpf-profiler:{{ .Version }}
+    image_templates:
+      - otel/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
+  - name_template: otel/opentelemetry-collector-ebpf-profiler:latest
+    image_templates:
+      - otel/opentelemetry-collector-ebpf-profiler:latest-amd64
+  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}
+    image_templates:
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
+  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest
+    image_templates:
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest-amd64
+signs:
+  - cmd: cosign
+    args:
+      - sign-blob
+      - --output-signature
+      - ${artifact}.sig
+      - --output-certificate
+      - ${artifact}.pem
+      - ${artifact}
+    signature: ${artifact}.sig
+    artifacts: all
+    certificate: ${artifact}.pem
+docker_signs:
+  - args:
+      - sign
+      - ${artifact}
+    artifacts: all
+sboms:
+  - id: archive
+    artifacts: archive
+  - id: package
+    artifacts: package
+monorepo:
+  tag_prefix: v
+partial:
+  by: target

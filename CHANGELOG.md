@@ -4,6 +4,29 @@
 
 <!-- next version -->
 
+## v0.126.0
+
+### 🚀 New components 🚀
+
+- `k8sleaderelectorextension`: add k8sleaderelector extension to otelcol-contrib and otelcol-k8s distributions (#943)
+
+### 🧰 Bug fixes 🧰
+
+- `image repository`: Re-enable publishing images to dockerhub (#938)
+
+## v0.125.0
+
+### 🚀 New components 🚀
+
+- `azureauthextension`: Add azureauthextension to contrib distribution. (#931)
+- `otelcol-ebpf-profiler`: Introduce eBPF Profiler Distribution (#908)
+
+### 💡 Enhancements 💡
+
+- `service`: Add service reload signal to systemd unit (#887)
+
+## v0.124.1
+
 ## v0.124.0
 
 ### 🚀 New components 🚀
