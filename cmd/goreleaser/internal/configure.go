@@ -35,10 +35,10 @@ const (
 	k8sDistro          = "otelcol-k8s"
 	otlpDistro         = "otelcol-otlp"
 	ebpfProfilerDistro = "otelcol-ebpf-profiler"
-	dockerHub        = "otel"
-	ghcr             = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
-	binaryNamePrefix = "otelcol"
-	imageNamePrefix  = "opentelemetry-collector"
+	dockerHub          = "otel"
+	ghcr               = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
+	binaryNamePrefix   = "otelcol"
+	imageNamePrefix    = "opentelemetry-collector"
 )
 
 var (
@@ -48,6 +48,7 @@ var (
 	darwinArchs       = []string{"amd64", "arm64"}
 	k8sArchs          = []string{"amd64", "arm64", "ppc64le", "s390x"}
 	ebpfProfilerArchs = []string{"amd64"}
+	supervisorArchs   = []string{"amd64", "arm64", "ppc64le"}
 
 	imageRepos = []string{dockerHub, ghcr}
 
@@ -112,6 +113,7 @@ var (
 		}
 		d.containerImages = slices.Concat(
 			newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"}),
+			newContainerImages(d.name, "linux", supervisorArchs, containerImageOptions{armVersion: "7", includeSupervisor: true}),
 			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2019"}),
 			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2022"}),
 		)
@@ -473,8 +475,9 @@ func newContainerImageManifests(dist, os string, archs []string, opts containerI
 }
 
 type containerImageOptions struct {
-	armVersion string
-	winVersion string
+	armVersion        string
+	winVersion        string
+	includeSupervisor bool
 }
 
 func (o *containerImageOptions) version() string {
@@ -548,11 +551,19 @@ func dockerImageWithOS(dist, os, arch string, opts containerImageOptions) config
 	osArch := osArch{os: os, arch: arch, version: opts.version()}
 	var imageTemplates []string
 	for _, prefix := range imageRepos {
-		imageTemplates = append(
-			imageTemplates,
-			fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName(dist), osArch.imageTag()),
-			fmt.Sprintf("%s/%s:latest-%s", prefix, imageName(dist), osArch.imageTag()),
-		)
+		if opts.includeSupervisor {
+			imageTemplates = append(
+				imageTemplates,
+				fmt.Sprintf("%s/%s-supervisor:{{ .Version }}-%s", prefix, imageName(dist), osArch.imageTag()),
+				fmt.Sprintf("%s/%s-supervisor:latest-%s", prefix, imageName(dist), osArch.imageTag()),
+			)
+		} else {
+			imageTemplates = append(
+				imageTemplates,
+				fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName(dist), osArch.imageTag()),
+				fmt.Sprintf("%s/%s:latest-%s", prefix, imageName(dist), osArch.imageTag()),
+			)
+		}
 	}
 
 	label := func(name, template string) string {

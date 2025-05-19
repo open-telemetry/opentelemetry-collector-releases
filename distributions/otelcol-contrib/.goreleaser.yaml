@@ -224,6 +224,66 @@ dockers:
       - --label=org.opencontainers.image.source={{.GitURL}}
       - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
+  - goos: linux
+    goarch: amd64
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-contrib-supervisor:{{ .Version }}-amd64
+      - otel/opentelemetry-collector-contrib-supervisor:latest-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib-supervisor:{{ .Version }}-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib-supervisor:latest-amd64
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+  - goos: linux
+    goarch: arm64
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-contrib-supervisor:{{ .Version }}-arm64
+      - otel/opentelemetry-collector-contrib-supervisor:latest-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib-supervisor:{{ .Version }}-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib-supervisor:latest-arm64
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/arm64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+  - goos: linux
+    goarch: ppc64le
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-contrib-supervisor:{{ .Version }}-ppc64le
+      - otel/opentelemetry-collector-contrib-supervisor:latest-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib-supervisor:{{ .Version }}-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib-supervisor:latest-ppc64le
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/ppc64le
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
   - goos: windows
     goarch: amd64
     dockerfile: Windows.dockerfile
