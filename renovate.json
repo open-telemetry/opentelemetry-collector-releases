@@ -9,8 +9,8 @@
   },
   "schedule": ["every tuesday"],
   "extends": [
-    "config:recommended",
-    "customManagers:githubActionsVersions"
+    "config:best-practices",
+    "helpers:pinGitHubActionDigestsToSemver"
   ],
   "packageRules": [
     {
