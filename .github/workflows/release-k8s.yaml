@@ -1,5 +1,8 @@
 name: Release k8s
 
+permissions:
+  contents: read
+
 on:
   push:
     tags: ["v*"]

@@ -1,4 +1,8 @@
 name: "Close stale issues and pull requests"
+
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
   schedule:
