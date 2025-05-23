@@ -1,5 +1,8 @@
 name: CI - eBPF Profiler - GoReleaser
 
+permissions:
+  contents: read
+
 on:
   merge_group:
   push:
