@@ -4,6 +4,19 @@
 
 <!-- next version -->
 
+## v0.127.0
+
+### 🚀 New components 🚀
+
+- `faroreceiver, faroexporter`: Add faro receiver and faro exporter to the otelcol-contrib distribution (#955)
+- `googlesecretmanager`: Add googlesecretmanagerprovider to the contrib distribution (#949)
+- `metricstarttimeprocessor`: Add metricstarttimeprocessor to the contrib distribution (#940)
+- `stefreceiver, stefexporter`: Add stefexporter and stefreceiver to otelcol-contrib distribution (#956)
+
+### 💡 Enhancements 💡
+
+- `ebpf-profiler`: Build releases of the eBPF profiler distribution (#958)
+
 ## v0.126.0
 
 ### 🚀 New components 🚀
