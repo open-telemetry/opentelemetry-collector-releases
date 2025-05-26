@@ -1,5 +1,8 @@
 name: Release Contrib
 
+permissions:
+  contents: read
+
 on:
   push:
     tags: ["v*"]
