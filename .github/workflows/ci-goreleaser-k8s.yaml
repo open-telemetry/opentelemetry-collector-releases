@@ -1,8 +1,5 @@
 name: CI - k8s - GoReleaser
 
-permissions:
-  contents: read
-
 on:
   merge_group: 
   push:

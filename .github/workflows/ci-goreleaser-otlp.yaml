@@ -1,8 +1,5 @@
 name: CI - OTLP - GoReleaser
 
-permissions:
-  contents: read
-
 on:
   merge_group: 
   push:

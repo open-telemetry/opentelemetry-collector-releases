@@ -1,8 +1,4 @@
 name: Release OpAMP supervisor
-
-permissions:
-  contents: read
-
 on:
   push:
     tags:
@@ -26,7 +22,6 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
-          persist-credentials: false
       - name: Push cmd/opampsupervisor Tag
         run: |
           tag="cmd/opampsupervisor/${{ github.ref_name }}"
@@ -42,7 +37,6 @@ jobs:
           repository: "open-telemetry/opentelemetry-collector-contrib"
           ref: ${{ github.ref_name }}
           path: ".contrib"
-          persist-credentials: false
       - name: Copy Dockerfile to Contrib Repo directory
         run:  cp cmd/opampsupervisor/Dockerfile .contrib/cmd/opampsupervisor/Dockerfile
       - uses: sigstore/cosign-installer@3454372f43399081ed03b604cb2d021dabca52bb # v3.8.2

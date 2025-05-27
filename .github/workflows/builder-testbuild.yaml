@@ -1,8 +1,5 @@
 name: CI - Builder
 
-permissions:
-  contents: read
-
 on:
   merge_group: 
   push:
@@ -38,14 +35,12 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
-          persist-credentials: false
       - name: Checkout Core Repo
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
           repository: "open-telemetry/opentelemetry-collector"
           path: ".core"
-          persist-credentials: false
       - name: Copy Dockerfile to Core Repo directory
         run:  cp cmd/builder/Dockerfile .core/cmd/builder/Dockerfile
       - uses: sigstore/cosign-installer@3454372f43399081ed03b604cb2d021dabca52bb # v3.8.2

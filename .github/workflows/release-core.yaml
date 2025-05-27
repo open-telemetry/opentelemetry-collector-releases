@@ -1,8 +1,5 @@
 name: Release Core
 
-permissions:
-  contents: read
-
 on:
   push:
     tags: ["v*"]
