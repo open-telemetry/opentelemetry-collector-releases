@@ -1,8 +1,5 @@
 name: Release eBPF Profiler
 
-permissions:
-  contents: read
-
 on:
   push:
     tags: ["v*"]

@@ -1,8 +1,4 @@
 name: Update Version in Distributions and Prepare PR
-
-permissions:
-  contents: read
-
 on:
   workflow_dispatch:
     inputs:
@@ -27,8 +23,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          persist-credentials: false
 
       - name: Run bump-versions.sh
         run: |
