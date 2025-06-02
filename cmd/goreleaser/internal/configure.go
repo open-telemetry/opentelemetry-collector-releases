@@ -42,11 +42,11 @@ const (
 )
 
 var (
-	baseArchs         = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
+	baseArchs         = []string{"386", "amd64", "arm", "arm64", "ppc64le", "riscv64", "s390x"}
 	winArchs          = []string{"386", "amd64", "arm64"}
 	winContainerArchs = []string{"amd64"}
 	darwinArchs       = []string{"amd64", "arm64"}
-	k8sArchs          = []string{"amd64", "arm64", "ppc64le", "s390x"}
+	k8sArchs          = []string{"amd64", "arm64", "ppc64le", "riscv64", "s390x"}
 	ebpfProfilerArchs = []string{"amd64"}
 
 	imageRepos = []string{dockerHub, ghcr}
