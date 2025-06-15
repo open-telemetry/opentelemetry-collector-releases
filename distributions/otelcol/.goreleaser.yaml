@@ -24,6 +24,7 @@ builds:
       - arm
       - arm64
       - ppc64le
+      - riscv64
       - s390x
     goarm:
       - "7"
@@ -200,6 +201,26 @@ dockers:
       - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
   - goos: linux
+    goarch: riscv64
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector:{{ .Version }}-riscv64
+      - otel/opentelemetry-collector:latest-riscv64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-riscv64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-riscv64
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/riscv64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+  - goos: linux
     goarch: s390x
     dockerfile: Dockerfile
     image_templates:
@@ -273,6 +294,7 @@ docker_manifests:
       - otel/opentelemetry-collector:{{ .Version }}-armv7
       - otel/opentelemetry-collector:{{ .Version }}-arm64
       - otel/opentelemetry-collector:{{ .Version }}-ppc64le
+      - otel/opentelemetry-collector:{{ .Version }}-riscv64
       - otel/opentelemetry-collector:{{ .Version }}-s390x
   - name_template: otel/opentelemetry-collector:latest
     image_templates:
@@ -281,6 +303,7 @@ docker_manifests:
       - otel/opentelemetry-collector:latest-armv7
       - otel/opentelemetry-collector:latest-arm64
       - otel/opentelemetry-collector:latest-ppc64le
+      - otel/opentelemetry-collector:latest-riscv64
       - otel/opentelemetry-collector:latest-s390x
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}
     image_templates:
@@ -289,6 +312,7 @@ docker_manifests:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-armv7
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-arm64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-riscv64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-s390x
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest
     image_templates:
@@ -297,6 +321,7 @@ docker_manifests:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-armv7
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-arm64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-riscv64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:latest-s390x
 signs:
   - cmd: cosign

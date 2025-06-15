@@ -17,6 +17,7 @@ builds:
       - amd64
       - arm64
       - ppc64le
+      - riscv64
     ignore:
       - goos: windows
         goarch: arm64
@@ -24,6 +25,10 @@ builds:
         goarch: ppc64le
       - goos: darwin
         goarch: ppc64le
+      - goos: windows
+        goarch: riscv64
+      - goos: darwin
+        goarch: riscv64
     binary: ocb
 dockers:
   - goos: linux
@@ -139,4 +144,4 @@ sboms:
     artifacts: archive
   - id: package
     artifacts: package
-    
+

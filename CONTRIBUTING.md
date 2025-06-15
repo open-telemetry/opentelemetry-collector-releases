@@ -99,7 +99,7 @@ make goreleaser-verify
 
 ## Building Multi-Architecture Docker Images
 
-`goreleaser` will build Docker images for various architectures, including `x86_64`, `386`, `arm`, `arm64`, and `ppc64le`. The build process involves executing `RUN` steps on the target architecture, which means the system you run it on needs support for emulating foreign architectures.
+`goreleaser` will build Docker images for various architectures, including `x86_64`, `386`, `arm`, `arm64`, `ppc64le`, and `riscv64`. The build process involves executing `RUN` steps on the target architecture, which means the system you run it on needs support for emulating foreign architectures.
 
 To set up the environment for building multi-architecture images:
 
