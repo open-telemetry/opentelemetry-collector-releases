@@ -42,6 +42,8 @@ jobs:
             GOARCH: ppc64le
           - GOOS: darwin
             GOARCH: arm
+          - GOOS: darwin
+            GOARCH: riscv64
     runs-on: ${{ inputs.runner_os }}
     permissions:
       packages: write
