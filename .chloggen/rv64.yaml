@@ -7,7 +7,7 @@ change_type: 'enhancement'
 component: platforms
 
 # A brief description of the change.  Surround your text with quotes ("") if it needs to start with a backtick (`).
-note: New platform support - riscv64
+note: New Tier 3 - riscv64
 
 
 # One or more tracking issues or pull requests related to the change
@@ -17,7 +17,7 @@ issues: [968, 969]
 # These lines will be padded with 2 spaces and then inserted directly into the document.
 # Use pipe (|) for multiline entries.
 subtext: |
-  New platform support: riscv64 architecture is now included,
+  New Tier 3 platform: riscv64 architecture is now included,
   allowing the collector to be built and distributed for this platform.
 
 # Optional: The change log or logs in which this entry should be included.

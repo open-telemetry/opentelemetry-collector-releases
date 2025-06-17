@@ -211,9 +211,9 @@ dockers:
     dockerfile: Dockerfile
     image_templates:
       - otel/opentelemetry-collector-contrib:{{ .Version }}-riscv64
-      - otel/opentelemetry-collector-contrib:latest-riscv64
+      - otel/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-riscv64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-riscv64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest-riscv64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-riscv64
     extra_files:
       - config.yaml
     build_flag_templates:
