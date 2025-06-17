@@ -7,7 +7,7 @@ change_type: new_component
 component: datadog/extension
 
 # A brief description of the change.  Surround your text with quotes ("") if it needs to start with a backtick (`).
-note: "Release datadog extension. See README for details: https://github.com/DataDog/opentelemetry-collector-contrib/blob/main/extension/datadogextension/README.md"
+note: "Release datadog extension. See README for details: https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/extension/datadogextension/README.md"
 
 # One or more tracking issues or pull requests related to the change
 issues: []
