@@ -10,7 +10,7 @@ component: datadog/extension
 note: "Release datadog extension. See README for details: https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/extension/datadogextension/README.md"
 
 # One or more tracking issues or pull requests related to the change
-issues: []
+issues: [983]
 
 # (Optional) One or more lines of additional information to render under the primary note.
 # These lines will be padded with 2 spaces and then inserted directly into the document.
