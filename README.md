@@ -28,25 +28,7 @@ This repository is part of the Collector SIG. Check out the [Community section](
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Approvers ([@open-telemetry/collector-releases-approvers](https://github.com/orgs/open-telemetry/teams/collector-releases-approvers)):
-
-- [Antoine Toulme](https://github.com/atoulme), Splunk
-- [Christos Markou](https://github.com/ChrsMark), Elastic
-- [Curtis Robert](https://github.com/crobert-1), Splunk
-- [David Ashpole](https://github.com/dashpole), Google
-- [John L. Peterson (Jack)](https://github.com/jackgopack4), Datadog
-- [Matt Wear](https://github.com/mwear), Lightstep
-- [Moritz Wiesinger](https://github.com/mowies), Dynatrace
-- [Ziqi Zhao](https://github.com/fatsheep9146), Alibaba
-
-Emeritus Approvers:
-
-- [Anthony Mirabella](https://github.com/Aneurysm9)
-- [Bryan Aguilar](https://github.com/bryan-aguilar)
-- [Przemek Maciolek](https://github.com/pmm-sumo)
-- [Ruslan Kovalov](https://github.com/kovrus)
-
-Maintainers ([@open-telemetry/collector-contrib-maintainers](https://github.com/orgs/open-telemetry/teams/collector-contrib-maintainers)):
+### Maintainers
 
 - [Alex Boten](https://github.com/codeboten), Honeycomb
 - [Andrzej Stencel](https://github.com/andrzej-stencel), Elastic
@@ -60,8 +42,32 @@ Maintainers ([@open-telemetry/collector-contrib-maintainers](https://github.com/
 - [Tyler Helmuth](https://github.com/TylerHelmuth), Honeycomb
 - [Yang Song](https://github.com/songy23), DataDog
 
-Emeritus Maintainers
+For more information about the maintainer role, see the [community repository](https://github.com/open-telemetry/community/blob/main/community-membership.md#maintainer).
+
+### Approvers
+
+- [Antoine Toulme](https://github.com/atoulme), Splunk
+- [Christos Markou](https://github.com/ChrsMark), Elastic
+- [Curtis Robert](https://github.com/crobert-1), Splunk
+- [David Ashpole](https://github.com/dashpole), Google
+- [John L. Peterson (Jack)](https://github.com/jackgopack4), Datadog
+- [Matt Wear](https://github.com/mwear), Lightstep
+- [Moritz Wiesinger](https://github.com/mowies), Dynatrace
+- [Ziqi Zhao](https://github.com/fatsheep9146), Alibaba
+
+For more information about the approver role, see the [community repository](https://github.com/open-telemetry/community/blob/main/community-membership.md#approver).
+
+### Emeritus Maintainers
 
 - [Tigran Najaryan](https://github.com/tigrannajaryan)
 
-Learn more about roles in the [community repository](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md).
+For more information about the emeritus role, see the [community repository](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#emeritus-maintainerapprovertriager).
+
+### Emeritus Approvers
+
+- [Anthony Mirabella](https://github.com/Aneurysm9)
+- [Bryan Aguilar](https://github.com/bryan-aguilar)
+- [Przemek Maciolek](https://github.com/pmm-sumo)
+- [Ruslan Kovalov](https://github.com/kovrus)
+
+For more information about the emeritus role, see the [community repository](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#emeritus-maintainerapprovertriager).
