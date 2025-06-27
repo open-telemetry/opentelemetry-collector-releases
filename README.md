@@ -48,7 +48,7 @@ For more information about the maintainer role, see the [community repository](h
 - [Christos Markou](https://github.com/ChrsMark), Elastic
 - [Curtis Robert](https://github.com/crobert-1), Splunk
 - [David Ashpole](https://github.com/dashpole), Google
-- [Dehaan Smith](https://github.com/dehaansa)
+- [Sam DeHaan](https://github.com/dehaansa)
 - [John L. Peterson (Jack)](https://github.com/jackgopack4), Datadog
 - [Matt Wear](https://github.com/mwear), Lightstep
 - [Moritz Wiesinger](https://github.com/mowies), Dynatrace
