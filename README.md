@@ -48,10 +48,10 @@ For more information about the maintainer role, see the [community repository](h
 - [Christos Markou](https://github.com/ChrsMark), Elastic
 - [Curtis Robert](https://github.com/crobert-1), Splunk
 - [David Ashpole](https://github.com/dashpole), Google
-- [Sam DeHaan](https://github.com/dehaansa), Grafana Labs
 - [John L. Peterson (Jack)](https://github.com/jackgopack4), Datadog
 - [Matt Wear](https://github.com/mwear), Lightstep
 - [Moritz Wiesinger](https://github.com/mowies), Dynatrace
+- [Sam DeHaan](https://github.com/dehaansa), Grafana Labs
 - [Ziqi Zhao](https://github.com/fatsheep9146), Alibaba
 
 For more information about the approver role, see the [community repository](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#approver).
