@@ -32,11 +32,10 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 - [Alex Boten](https://github.com/codeboten), Honeycomb
 - [Andrzej Stencel](https://github.com/andrzej-stencel), Elastic
+- [Antoine Toulme](https://github.com/atoulme), Splunk
 - [Bogdan Drutu](https://github.com/bogdandrutu), Snowflake
-- [Daniel Jaglowski](https://github.com/djaglowski), observIQ
 - [Dmitrii Anoshin](https://github.com/dmitryax), Splunk
 - [Evan Bradley](https://github.com/evan-bradley), Dynatrace
-- [Juraci Paixão Kröhling](https://github.com/jpkrohling), Grafana Labs
 - [Pablo Baeyens](https://github.com/mx-psi), DataDog
 - [Sean Marciniak](https://github.com/MovieStoreGuy), Splunk
 - [Tyler Helmuth](https://github.com/TylerHelmuth), Honeycomb
@@ -46,10 +45,10 @@ For more information about the maintainer role, see the [community repository](h
 
 ### Approvers
 
-- [Antoine Toulme](https://github.com/atoulme), Splunk
 - [Christos Markou](https://github.com/ChrsMark), Elastic
 - [Curtis Robert](https://github.com/crobert-1), Splunk
 - [David Ashpole](https://github.com/dashpole), Google
+- [Dehaan Smith](https://github.com/dehaansa)
 - [John L. Peterson (Jack)](https://github.com/jackgopack4), Datadog
 - [Matt Wear](https://github.com/mwear), Lightstep
 - [Moritz Wiesinger](https://github.com/mowies), Dynatrace
@@ -59,6 +58,8 @@ For more information about the approver role, see the [community repository](htt
 
 ### Emeritus Maintainers
 
+- [Daniel Jaglowski](https://github.com/djaglowski)
+- [Juraci Paixão Kröhling](https://github.com/jpkrohling)
 - [Tigran Najaryan](https://github.com/tigrannajaryan)
 
 For more information about the emeritus role, see the [community repository](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#emeritus-maintainerapprovertriager).
