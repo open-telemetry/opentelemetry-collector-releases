@@ -4,6 +4,13 @@
 
 <!-- next version -->
 
+## v0.129.0
+
+### 🚀 New components 🚀
+
+- `datadog/extension`: Release datadog extension. See README for details: https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/extension/datadogextension/README.md (#983)
+- `googlecloudlogentryencodingextension`: Release Google Cloud Log Entry encoding extension, see https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/extension/encoding/googlecloudlogentryencodingextension/README.md (#985)
+
 ## v0.128.0
 
 ## v0.127.0
