@@ -23,6 +23,10 @@ on:
       - "go.mod"
       - "go.sum"
 
+
+permissions:
+  contents: read
+
 jobs:
   check-goreleaser:
     name: CI - Contrib - GoReleaser
@@ -33,6 +37,10 @@ jobs:
       goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x" ]'
     secrets: inherit
 
+
+permissions:
+  contents: read
+
   package-tests:
      name: Package tests
      needs: check-goreleaser
@@ -40,6 +48,10 @@ jobs:
      with:
        distribution: otelcol-contrib
        type: '[ "deb", "rpm" ]'
+
+
+permissions:
+  contents: read
 
   msi-tests:
     name: MSI tests
