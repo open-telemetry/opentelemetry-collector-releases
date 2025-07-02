@@ -4,9 +4,6 @@ on:
     tags:
       - "v*"
 
-permissions:
-  contents: read
-
 env:
   # renovate: datasource=github-tags depName=goreleaser-pro packageName=goreleaser/goreleaser-pro
   GORELEASER_PRO_VERSION: v2.7.0
