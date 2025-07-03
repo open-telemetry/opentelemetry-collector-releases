@@ -35,10 +35,10 @@ const (
 	k8sDistro          = "otelcol-k8s"
 	otlpDistro         = "otelcol-otlp"
 	ebpfProfilerDistro = "otelcol-ebpf-profiler"
-	dockerHub        = "otel"
-	ghcr             = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
-	binaryNamePrefix = "otelcol"
-	imageNamePrefix  = "opentelemetry-collector"
+	dockerHub          = "otel"
+	ghcr               = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
+	binaryNamePrefix   = "otelcol"
+	imageNamePrefix    = "opentelemetry-collector"
 )
 
 var (
@@ -58,14 +58,8 @@ var (
 			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
 			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
 		}
-		d.containerImages = slices.Concat(
-			newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"}),
-			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2019"}),
-			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2022"}),
-		)
-		d.containerImageManifests = slices.Concat(
-			newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{}),
-		)
+		d.containerImages = nil
+		d.containerImageManifests = nil
 	}).WithPackagingDefaults().WithDefaultConfigIncluded().Build()
 
 	// otlp distro
@@ -143,7 +137,7 @@ var (
 		d.containerImageManifests = slices.Concat(
 			newContainerImageManifests(d.name, "linux", k8sArchs, containerImageOptions{}),
 		)
-	}).WithDefaultArchives().WithDefaultChecksum().WithDefaultSigns().WithDefaultDockerSigns().WithDefaultSBOMs().Build()
+	}).WithDefaultArchives().WithDefaultChecksum().WithDefaultSigns().WithDefaultDockerSigns().WithDefaultSBOMs().WithNightlyConfig().Build()
 
 	// ebpf-profiler distro
 	ebpfProfilerDist = newDistributionBuilder(ebpfProfilerDistro).WithConfigFunc(func(d *distribution) {
@@ -315,6 +309,22 @@ func (b *distributionBuilder) dockerSigns() []config.Sign {
 	}
 }
 
+func (b *distributionBuilder) WithNightlyConfig() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		b.dist.nightly = b.nightly()
+	})
+	return b
+}
+
+func (b *distributionBuilder) nightly() config.Nightly {
+	return config.Nightly{
+		VersionTemplate:   "{{ incpatch .Version}}-nightly.{{ .Now.Format \"200601021504\" }}",
+		TagName:           "nightly",
+		PublishRelease:    true,
+		KeepSingleRelease: false,
+	}
+}
+
 func (b *distributionBuilder) WithDefaultSBOMs() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
 		d.sboms = b.sboms()
@@ -351,7 +361,8 @@ func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
 		WithDefaultMSIConfig().
 		WithDefaultSigns().
 		WithDefaultDockerSigns().
-		WithDefaultSBOMs()
+		WithDefaultSBOMs().
+		WithNightlyConfig()
 }
 
 func (b *distributionBuilder) WithConfigFunc(configFunc func(*distribution)) *distributionBuilder {
@@ -402,6 +413,7 @@ type distribution struct {
 	signs                   []config.Sign
 	dockerSigns             []config.Sign
 	sboms                   []config.SBOM
+	nightly                 config.Nightly
 	checksum                config.Checksum
 	enableCgo               bool
 	ldFlags                 string
@@ -447,6 +459,7 @@ func (d *distribution) BuildProject() config.Project {
 		Signs:           d.signs,
 		DockerSigns:     d.dockerSigns,
 		SBOMs:           d.sboms,
+		Nightly:         d.nightly,
 		Version:         2,
 		Monorepo: config.Monorepo{
 			TagPrefix: "v",

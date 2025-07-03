@@ -14,13 +14,13 @@ jobs:
       goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x" ]'
     secrets: inherit
     permissions: write-all
-  release-windows:
-    name: Release Core (Windows)
-    uses: ./.github/workflows/base-release.yaml
-    with:
-      distribution: otelcol
-      goos: '[ "windows" ]'
-      goarch: '[ "386", "amd64" ]'
-      runner_os: windows-2022
-    secrets: inherit
-    permissions: write-all
+#  release-windows:
+#    name: Release Core (Windows)
+#    uses: ./.github/workflows/base-release.yaml
+#    with:
+#      distribution: otelcol
+#      goos: '[ "windows" ]'
+#      goarch: '[ "386", "amd64" ]'
+#      runner_os: windows-2022
+#    secrets: inherit
+#    permissions: write-all
