@@ -15,14 +15,8 @@ on:
         required: false
         default: ''
 
-permissions:
-  contents: read
-
 jobs:
   update-version:
-    permissions:
-      contents: write # required for pushing changes
-      pull-requests: write # required for creating PRs
     runs-on: ubuntu-24.04
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
