@@ -4,6 +4,7 @@ env:
   - COSIGN_YES=true
   - LD_FLAGS=-extldflags=-static
   - BUILD_FLAGS=-trimpath
+  - CONTAINER_IMAGE_EPHEMERAL_TAG={{ if .IsNightly }}nightly{{ else }}latest{{ end }}
   - GO_TAGS=osusergo,netgo
 release:
   replace_existing_artifacts: true
@@ -31,10 +32,10 @@ dockers:
     goarch: amd64
     dockerfile: Dockerfile
     image_templates:
-      - otel/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
-      - otel/opentelemetry-collector-ebpf-profiler:latest-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest-amd64
+      - mowies/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
+      - mowies/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
     build_flag_templates:
       - --pull
       - --platform=linux/amd64
@@ -46,18 +47,18 @@ dockers:
       - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
 docker_manifests:
-  - name_template: otel/opentelemetry-collector-ebpf-profiler:{{ .Version }}
+  - name_template: mowies/opentelemetry-collector-ebpf-profiler:{{ .Version }}
     image_templates:
-      - otel/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
-  - name_template: otel/opentelemetry-collector-ebpf-profiler:latest
+      - mowies/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
+  - name_template: mowies/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
     image_templates:
-      - otel/opentelemetry-collector-ebpf-profiler:latest-amd64
-  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}
+      - mowies/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
+  - name_template: ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}
     image_templates:
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
-  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
+  - name_template: ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
     image_templates:
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest-amd64
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
 signs:
   - cmd: cosign
     args:

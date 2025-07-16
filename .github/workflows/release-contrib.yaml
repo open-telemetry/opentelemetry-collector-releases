@@ -5,17 +5,32 @@ on:
     tags: ["v*"]
 
 jobs:
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-latest
+    outputs:
+      NIGHTLY: ${{ steps.nightly-check.outputs.NIGHTLY }}
+    steps:
+      - name: Set nightly enabled
+        id: nightly-check
+        if: contains(github.ref, '-nightly')
+        run: |
+          echo "NIGHTLY=true" >> "$GITHUB_OUTPUT"
   release:
     name: Release Contrib
+    needs: [prepare]
     uses: ./.github/workflows/base-release.yaml
     with:
       distribution: otelcol-contrib
       goos: '[ "linux", "darwin" ]'
       goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x" ]'
+      nightly: ${{ needs.prepare.outputs.NIGHTLY }}
     secrets: inherit
     permissions: write-all
   release-windows:
     name: Release Contrib (Windows)
+    needs: [prepare]
+    if: needs.prepare.outputs.NIGHTLY != 'true'
     uses: ./.github/workflows/base-release.yaml
     with:
       distribution: otelcol-contrib

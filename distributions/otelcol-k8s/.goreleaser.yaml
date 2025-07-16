@@ -4,6 +4,7 @@ env:
   - COSIGN_YES=true
   - LD_FLAGS=-s -w
   - BUILD_FLAGS=-trimpath
+  - CONTAINER_IMAGE_EPHEMERAL_TAG={{ if .IsNightly }}nightly{{ else }}latest{{ end }}
   - CGO_ENABLED=0
 release:
   replace_existing_artifacts: true
@@ -48,10 +49,10 @@ dockers:
     goarch: amd64
     dockerfile: Dockerfile
     image_templates:
-      - otel/opentelemetry-collector-k8s:{{ .Version }}-amd64
-      - otel/opentelemetry-collector-k8s:latest-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-amd64
+      - mowies/opentelemetry-collector-k8s:{{ .Version }}-amd64
+      - mowies/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-amd64
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
     build_flag_templates:
       - --pull
       - --platform=linux/amd64
@@ -66,10 +67,10 @@ dockers:
     goarch: arm64
     dockerfile: Dockerfile
     image_templates:
-      - otel/opentelemetry-collector-k8s:{{ .Version }}-arm64
-      - otel/opentelemetry-collector-k8s:latest-arm64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-arm64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-arm64
+      - mowies/opentelemetry-collector-k8s:{{ .Version }}-arm64
+      - mowies/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-arm64
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
     build_flag_templates:
       - --pull
       - --platform=linux/arm64
@@ -84,10 +85,10 @@ dockers:
     goarch: ppc64le
     dockerfile: Dockerfile
     image_templates:
-      - otel/opentelemetry-collector-k8s:{{ .Version }}-ppc64le
-      - otel/opentelemetry-collector-k8s:latest-ppc64le
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-ppc64le
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-ppc64le
+      - mowies/opentelemetry-collector-k8s:{{ .Version }}-ppc64le
+      - mowies/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64le
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-ppc64le
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64le
     build_flag_templates:
       - --pull
       - --platform=linux/ppc64le
@@ -102,10 +103,10 @@ dockers:
     goarch: s390x
     dockerfile: Dockerfile
     image_templates:
-      - otel/opentelemetry-collector-k8s:{{ .Version }}-s390x
-      - otel/opentelemetry-collector-k8s:latest-s390x
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-s390x
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-s390x
+      - mowies/opentelemetry-collector-k8s:{{ .Version }}-s390x
+      - mowies/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-s390x
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-s390x
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-s390x
     build_flag_templates:
       - --pull
       - --platform=linux/s390x
@@ -120,10 +121,10 @@ dockers:
     goarch: amd64
     dockerfile: Windows.dockerfile
     image_templates:
-      - otel/opentelemetry-collector-k8s:{{ .Version }}-windows-2019-amd64
-      - otel/opentelemetry-collector-k8s:latest-windows-2019-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-windows-2019-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-windows-2019-amd64
+      - mowies/opentelemetry-collector-k8s:{{ .Version }}-windows-2019-amd64
+      - mowies/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-windows-2019-amd64
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-windows-2019-amd64
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-windows-2019-amd64
     skip_build: '{{ not (eq .Runtime.Goos "windows") }}'
     skip_push: '{{ not (eq .Runtime.Goos "windows") }}'
     build_flag_templates:
@@ -141,10 +142,10 @@ dockers:
     goarch: amd64
     dockerfile: Windows.dockerfile
     image_templates:
-      - otel/opentelemetry-collector-k8s:{{ .Version }}-windows-2022-amd64
-      - otel/opentelemetry-collector-k8s:latest-windows-2022-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-windows-2022-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-windows-2022-amd64
+      - mowies/opentelemetry-collector-k8s:{{ .Version }}-windows-2022-amd64
+      - mowies/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-windows-2022-amd64
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-windows-2022-amd64
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-windows-2022-amd64
     skip_build: '{{ not (eq .Runtime.Goos "windows") }}'
     skip_push: '{{ not (eq .Runtime.Goos "windows") }}'
     build_flag_templates:
@@ -159,30 +160,30 @@ dockers:
       - --label=org.opencontainers.image.licenses=Apache-2.0
     use: docker
 docker_manifests:
-  - name_template: otel/opentelemetry-collector-k8s:{{ .Version }}
+  - name_template: mowies/opentelemetry-collector-k8s:{{ .Version }}
     image_templates:
-      - otel/opentelemetry-collector-k8s:{{ .Version }}-amd64
-      - otel/opentelemetry-collector-k8s:{{ .Version }}-arm64
-      - otel/opentelemetry-collector-k8s:{{ .Version }}-ppc64le
-      - otel/opentelemetry-collector-k8s:{{ .Version }}-s390x
-  - name_template: otel/opentelemetry-collector-k8s:latest
+      - mowies/opentelemetry-collector-k8s:{{ .Version }}-amd64
+      - mowies/opentelemetry-collector-k8s:{{ .Version }}-arm64
+      - mowies/opentelemetry-collector-k8s:{{ .Version }}-ppc64le
+      - mowies/opentelemetry-collector-k8s:{{ .Version }}-s390x
+  - name_template: mowies/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
     image_templates:
-      - otel/opentelemetry-collector-k8s:latest-amd64
-      - otel/opentelemetry-collector-k8s:latest-arm64
-      - otel/opentelemetry-collector-k8s:latest-ppc64le
-      - otel/opentelemetry-collector-k8s:latest-s390x
-  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}
+      - mowies/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
+      - mowies/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
+      - mowies/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64le
+      - mowies/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-s390x
+  - name_template: ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}
     image_templates:
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-arm64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-ppc64le
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-s390x
-  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-amd64
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-arm64
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-ppc64le
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-s390x
+  - name_template: ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
     image_templates:
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-arm64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-ppc64le
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:latest-s390x
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64le
+      - ghcr.io/mowies/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-s390x
 signs:
   - cmd: cosign
     args:
@@ -213,3 +214,4 @@ nightly:
   version_template: '{{ incpatch .Version}}-nightly.{{ .Now.Format "200601021504" }}'
   tag_name: nightly
   publish_release: true
+  keep_single_release: true
