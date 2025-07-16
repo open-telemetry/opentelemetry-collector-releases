@@ -4,6 +4,7 @@ env:
   - COSIGN_YES=true
   - LD_FLAGS=-s -w
   - BUILD_FLAGS=-trimpath
+  - CONTAINER_IMAGE_EPHEMERAL_TAG={{ if .IsNightly }}nightly{{ else }}latest{{ end }}
   - CGO_ENABLED=0
 release:
   replace_existing_artifacts: true
@@ -58,3 +59,8 @@ monorepo:
   tag_prefix: v
 partial:
   by: target
+nightly:
+  version_template: '{{ incpatch .Version}}-nightly.{{ .Now.Format "200601021504" }}'
+  tag_name: nightly
+  publish_release: true
+  keep_single_release: true

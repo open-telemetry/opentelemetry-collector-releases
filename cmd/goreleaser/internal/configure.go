@@ -35,8 +35,8 @@ const (
 	k8sDistro          = "otelcol-k8s"
 	otlpDistro         = "otelcol-otlp"
 	ebpfProfilerDistro = "otelcol-ebpf-profiler"
-	dockerHub          = "otel"
-	ghcr               = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
+	dockerHub          = "mowies"
+	ghcr               = "ghcr.io/mowies/opentelemetry-collector-releases"
 	binaryNamePrefix   = "otelcol"
 	imageNamePrefix    = "opentelemetry-collector"
 )
@@ -127,7 +127,7 @@ var (
 			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
 			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
 		}
-	}).WithBinArchive().Build()
+	}).WithBinArchive().WithNightlyConfig().Build()
 
 	// k8s distro
 	k8sDist = newDistributionBuilder(k8sDistro).WithConfigFunc(func(d *distribution) {
@@ -327,7 +327,7 @@ func (b *distributionBuilder) nightly() config.Nightly {
 		VersionTemplate:   "{{ incpatch .Version}}-nightly.{{ .Now.Format \"200601021504\" }}",
 		TagName:           "nightly",
 		PublishRelease:    true,
-		KeepSingleRelease: false,
+		KeepSingleRelease: true,
 	}
 }
 
@@ -441,6 +441,7 @@ func (d *distribution) BuildProject() config.Project {
 		"COSIGN_YES=true",
 		"LD_FLAGS=" + ldFlags,
 		"BUILD_FLAGS=-trimpath",
+		"CONTAINER_IMAGE_EPHEMERAL_TAG={{ if .IsNightly }}nightly{{ else }}latest{{ end }}",
 	}
 	if d.goTags != "" {
 		env = append(env, "GO_TAGS="+d.goTags)
@@ -475,7 +476,7 @@ func (d *distribution) BuildProject() config.Project {
 }
 
 func newContainerImageManifests(dist, os string, archs []string, opts containerImageOptions) []config.DockerManifest {
-	tags := []string{`{{ .Version }}`, "latest"}
+	tags := []string{`{{ .Version }}`, "{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}"}
 	if os == "windows" {
 		for i, tag := range tags {
 			tags[i] = fmt.Sprintf("%s-%s-%s", tag, os, opts.winVersion)
@@ -570,7 +571,7 @@ func dockerImageWithOS(dist, os, arch string, opts containerImageOptions) config
 		imageTemplates = append(
 			imageTemplates,
 			fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName(dist), osArch.imageTag()),
-			fmt.Sprintf("%s/%s:latest-%s", prefix, imageName(dist), osArch.imageTag()),
+			fmt.Sprintf("%s/%s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-%s", prefix, imageName(dist), osArch.imageTag()),
 		)
 	}
 
