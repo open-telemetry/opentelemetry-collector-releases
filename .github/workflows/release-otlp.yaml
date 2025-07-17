@@ -12,10 +12,12 @@ jobs:
       distribution: otelcol-otlp
       goos: '[ "linux", "darwin" ]'
       goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x" ]'
+      nightly: ${{ contains(github.ref, '-nightly') }}
     secrets: inherit
     permissions: write-all
   release-windows:
     name: Release OTLP (Windows)
+    if: ${{ !contains(github.ref, '-nightly') }}
     uses: ./.github/workflows/base-release.yaml
     with:
       distribution: otelcol-otlp

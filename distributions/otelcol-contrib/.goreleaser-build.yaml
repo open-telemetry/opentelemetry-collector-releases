@@ -61,6 +61,6 @@ partial:
   by: target
 nightly:
   version_template: '{{ incpatch .Version}}-nightly.{{ .Now.Format "200601021504" }}'
-  tag_name: nightly
+  tag_name: nightly-otelcol-contrib
   publish_release: true
   keep_single_release: true

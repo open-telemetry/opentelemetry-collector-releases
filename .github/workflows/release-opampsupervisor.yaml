@@ -22,23 +22,52 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
+
+      - name: Set GORELEASER_PREVIOUS_TAG in actual release
+        id: prev-tag
+        if: ${{ !contains(github.ref, '-nightly') }}
+        # find previous tag by filtering out nightly tags and choosing the
+        # second to last tag (last one is the current release)
+        # TODO fix this filter to only filter builder tags
+        run: |
+          prev_tag=$(git tag | grep -v "nightly" | sort -r --version-sort | head -n 2 | tail -n 1)
+          echo "GORELEASER_PREVIOUS_TAG=$prev_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Set nightly enabled
+        id: nightly-check
+        if: ${{ contains(github.ref, '-nightly') }}
+        run: |
+          echo "NIGHTLY_FLAG=--nightly" >> "$GITHUB_OUTPUT"
+
+      - name: Set COLLECTOR_REF
+        id: collector-ref
+        run: |
+          if [ '${{ contains(github.ref, '-nightly') }}' == 'true' ]; then
+            echo "COLLECTOR_REF=main" >> "$GITHUB_OUTPUT"
+          else
+            echo "COLLECTOR_TAG=${{ github.ref }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Push cmd/opampsupervisor Tag
         run: |
           tag="cmd/opampsupervisor/${{ github.ref_name }}"
-          message="Releasing OpAMP supervisor binaries for ${{ github.ref_name }}"
+          message="Releasing OpAMP supervisor binaries for ${{ steps.collector-ref.outputs.COLLECTOR_REF }}"
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git tag -a "${tag}" -m "${message}"
-          git push origin "${tag}"
+          git push origin "${tag}" --force-with-lease
+
       - name: Checkout Contrib Repo
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
           repository: "open-telemetry/opentelemetry-collector-contrib"
-          ref: ${{ github.ref_name }}
+          ref: ${{ steps.collector-ref.outputs.COLLECTOR_REF }}
           path: ".contrib"
+
       - name: Copy Dockerfile to Contrib Repo directory
         run:  cp cmd/opampsupervisor/Dockerfile .contrib/cmd/opampsupervisor/Dockerfile
+
       - uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
       - uses: anchore/sbom-action/download-syft@cee1b8e05ae5b2593a75e197229729eabaa9f8ec # v0.20.2
       - uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
@@ -49,25 +78,30 @@ jobs:
         uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
         with:
           go-version: "~1.24"
+
       - name: Log into Docker.io
         uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Login to GitHub Package Registry
         uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
-          args: release --clean -f cmd/opampsupervisor/.goreleaser.yml
+          args: release --clean -f cmd/opampsupervisor/.goreleaser.yml ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }}
         env:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_YES: true
           SKIP_SIGNS: false
+          GORELEASER_PREVIOUS_TAG: ${{ steps.prev-tag.outputs.GORELEASER_PREVIOUS_TAG }}
+          GORELEASER_CURRENT_TAG: ${{ github.ref_name }}

@@ -2,7 +2,8 @@ name: Nightly Release
 
 on:
   workflow_dispatch:
-  # schedule
+  schedule:
+    - cron: "0 2 * * *" # release nightly at 2AM
 
 permissions:
   contents: read

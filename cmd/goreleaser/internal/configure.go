@@ -49,7 +49,8 @@ var (
 	k8sArchs          = []string{"amd64", "arm64", "ppc64le", "s390x"}
 	ebpfProfilerArchs = []string{"amd64"}
 
-	imageRepos = []string{dockerHub, ghcr}
+	// imageRepos = []string{dockerHub, ghcr}
+	imageRepos = []string{ghcr}
 
 	// otelcol (core) distro
 	otelColDist = newDistributionBuilder(coreDistro).WithConfigFunc(func(d *distribution) {
@@ -325,7 +326,7 @@ func (b *distributionBuilder) WithNightlyConfig() *distributionBuilder {
 func (b *distributionBuilder) nightly() config.Nightly {
 	return config.Nightly{
 		VersionTemplate:   "{{ incpatch .Version}}-nightly.{{ .Now.Format \"200601021504\" }}",
-		TagName:           "nightly",
+		TagName:           fmt.Sprintf("nightly-%s", b.dist.name),
 		PublishRelease:    true,
 		KeepSingleRelease: true,
 	}
@@ -455,19 +456,19 @@ func (d *distribution) BuildProject() config.Project {
 		Release: config.Release{
 			ReplaceExistingArtifacts: true,
 		},
-		Checksum:        d.checksum,
-		Env:             env,
-		Builds:          builds,
-		Archives:        d.archives,
-		MSI:             d.msiConfig,
-		NFPMs:           d.nfpms,
-		Dockers:         d.containerImages,
-		DockerManifests: d.containerImageManifests,
-		Signs:           d.signs,
-		DockerSigns:     d.dockerSigns,
-		SBOMs:           d.sboms,
-		Nightly:         d.nightly,
-		Version:         2,
+		Checksum: d.checksum,
+		Env:      env,
+		Builds:   builds,
+		Archives: d.archives,
+		MSI:      d.msiConfig,
+		NFPMs:    d.nfpms,
+		Dockers:  d.containerImages,
+		// DockerManifests: d.containerImageManifests,
+		Signs:       d.signs,
+		DockerSigns: d.dockerSigns,
+		SBOMs:       d.sboms,
+		Nightly:     d.nightly,
+		Version:     2,
 		Monorepo: config.Monorepo{
 			TagPrefix: "v",
 		},
