@@ -35,8 +35,8 @@ const (
 	k8sDistro          = "otelcol-k8s"
 	otlpDistro         = "otelcol-otlp"
 	ebpfProfilerDistro = "otelcol-ebpf-profiler"
-	dockerHub          = "mowies"
-	ghcr               = "ghcr.io/mowies/opentelemetry-collector-releases"
+	dockerHub          = "otel"
+	ghcr               = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
 	binaryNamePrefix   = "otelcol"
 	imageNamePrefix    = "opentelemetry-collector"
 )
