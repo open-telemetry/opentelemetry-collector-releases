@@ -4,6 +4,17 @@
 
 <!-- next version -->
 
+## v0.130.0
+
+### 🚀 New components 🚀
+
+- `coralogixprocessor`: Add Coralogix processor to the OpenTelemetry Collector Contrib. (#1008)
+- `awslogsencodingextension`: Add the awslogsencodingextension component to the contrib collector (#996)
+
+### 🧰 Bug fixes 🧰
+
+- `release`: Revert to old docker token (#995)
+
 ## v0.129.0
 
 ### 🚀 New components 🚀
