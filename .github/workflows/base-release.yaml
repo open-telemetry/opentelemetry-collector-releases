@@ -16,6 +16,10 @@ on:
         required: false
         type: string
         default: ubuntu-24.04
+      nightly:
+        required: false
+        type: string
+        default: false
 
 env:
   # renovate: datasource=github-tags depName=goreleaser-pro packageName=goreleaser/goreleaser-pro
@@ -23,6 +27,8 @@ env:
 
 jobs:
   prepare:
+    outputs:
+      GORELEASER_PREVIOUS_TAG: ${{ steps.prev-tag.outputs.GORELEASER_PREVIOUS_TAG }}
     strategy:
       matrix:
         GOOS: ${{ fromJSON(inputs.goos) }}
@@ -70,8 +76,25 @@ jobs:
           go-version: "~1.24"
           check-latest: true
 
+      - name: Set GORELEASER_PREVIOUS_TAG in actual release
+        id: prev-tag
+        if: inputs.nightly != 'true'
+        # find previous tag by filtering out nightly tags and choosing the
+        # second to last tag (last one is the current release)
+        run: |
+          prev_tag=$(git tag | grep -v "nightly" | sort -r --version-sort | head -n 2 | tail -n 1)
+          echo "GORELEASER_PREVIOUS_TAG=$prev_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Set nightly enabled
+        id: nightly-check
+        if: inputs.nightly == 'true'
+        run: |
+          echo "NIGHTLY_FLAG=--nightly" >> "$GITHUB_OUTPUT"
+
       - name: Generate distribution sources
         run: make generate-sources
+        env:
+          DISTRIBUTIONS: ${{ inputs.distribution }}
 
       - name: Log into Docker.io
         uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
@@ -99,7 +122,7 @@ jobs:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
           workdir: distributions/${{ inputs.distribution }}
-          args: release --clean --split --timeout 2h --config .goreleaser-build.yaml --release-header-tmpl=../../.github/release-template.md
+          args: release --clean --split --timeout 2h --config .goreleaser-build.yaml --release-header-tmpl=../../.github/release-template.md ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }}
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
@@ -107,8 +130,9 @@ jobs:
           GOAMD64: v1
           GOPPC64: power8
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_YES: true
+          GORELEASER_CURRENT_TAG: ${{ github.ref_name }}
 
       - name: Move built artifacts
         if: inputs.distribution == 'otelcol-contrib'
@@ -125,12 +149,12 @@ jobs:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
           workdir: distributions/${{ inputs.distribution }}
-          args: release --clean --split --timeout 2h --release-header-tmpl=../../.github/release-template.md
+          args: release --clean --split --timeout 2h --release-header-tmpl=../../.github/release-template.md ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }}
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
           GOARM: 7 # Default is 6
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_YES: true
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
@@ -141,7 +165,7 @@ jobs:
           if-no-files-found: error
 
   release:
-    name: ${{ inputs.distribution }} Release
+    name: Release
     runs-on: ${{ inputs.runner_os }}
     needs: prepare
 
@@ -230,3 +254,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_YES: true
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+          GORELEASER_PREVIOUS_TAG: ${{ needs.prepare.outputs.GORELEASER_PREVIOUS_TAG }}
+          GORELEASER_CURRENT_TAG: ${{ github.ref_name }}
