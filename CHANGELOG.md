@@ -4,6 +4,13 @@
 
 <!-- next version -->
 
+## v0.130.1
+
+### 🧰 Bug fixes 🧰
+
+- `service`: Fixes bug where internal metrics are emitted with an unexpected suffix in their names when users configure `service::telemetry::metrics::readers` with Prometheus. (#13449)
+  See more details on https://github.com/open-telemetry/opentelemetry-go/issues/7039
+
 ## v0.130.0
 
 ### 🚀 New components 🚀
