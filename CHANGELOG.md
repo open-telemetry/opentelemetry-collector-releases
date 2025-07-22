@@ -4,6 +4,16 @@
 
 <!-- next version -->
 
+## v0.130.1
+
+### 🚀 New components 🚀
+
+- `prometheusremotewritereceiver`: Add the prometheusremotewritereceiver component to the contrib collector (#1020)
+
+### 💡 Enhancements 💡
+
+- `all`: Removes usages of golang.org/x/net/trace which uses html/template and text/template in gRPC. These usages disable golang DCE. (#1018)
+
 ## v0.130.0
 
 ### 🚀 New components 🚀
