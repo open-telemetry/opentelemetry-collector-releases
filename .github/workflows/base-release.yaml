@@ -81,6 +81,7 @@ jobs:
         if: inputs.nightly != 'true'
         # find previous tag by filtering out nightly tags and choosing the
         # second to last tag (last one is the current release)
+        # TODO fix this filter to only filter builder tags
         run: |
           prev_tag=$(git tag | grep -v "nightly" | sort -r --version-sort | head -n 2 | tail -n 1)
           echo "GORELEASER_PREVIOUS_TAG=$prev_tag" >> "$GITHUB_OUTPUT"
@@ -122,7 +123,7 @@ jobs:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
           workdir: distributions/${{ inputs.distribution }}
-          args: release --clean --split --timeout 2h --verbose --config .goreleaser-build.yaml --release-header-tmpl=../../.github/release-template.md ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }}
+          args: release --clean --split --timeout 2h --config .goreleaser-build.yaml --release-header-tmpl=../../.github/release-template.md ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }}
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
@@ -249,7 +250,7 @@ jobs:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
           workdir: distributions/${{ inputs.distribution }}
-          args: continue --merge --timeout 2h --verbose
+          args: continue --merge --timeout 2h
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_YES: true
