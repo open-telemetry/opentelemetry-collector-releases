@@ -40,7 +40,7 @@ jobs:
           path: ${{ inputs.dependency-target-folder }}
 
       - name: Copy Dockerfile to Core Repo directory
-        run: cp cmd/${{ inputs.binary }}/Dockerfile .core/cmd/${{ inputs.binary }}/Dockerfile
+        run: cp cmd/${{ inputs.binary }}/Dockerfile ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}/Dockerfile
 
       - uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
 
