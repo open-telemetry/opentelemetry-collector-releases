@@ -4,6 +4,7 @@ env:
   - COSIGN_YES=true
   - LD_FLAGS=-s -w
   - BUILD_FLAGS=-trimpath
+  - CONTAINER_IMAGE_EPHEMERAL_TAG=latest
   - CGO_ENABLED=0
 release:
   replace_existing_artifacts: true
