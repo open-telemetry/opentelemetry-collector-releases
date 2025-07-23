@@ -4,6 +4,7 @@ env:
   - COSIGN_YES=true
   - LD_FLAGS=-extldflags=-static
   - BUILD_FLAGS=-trimpath
+  - CONTAINER_IMAGE_EPHEMERAL_TAG=latest
   - GO_TAGS=osusergo,netgo
 release:
   replace_existing_artifacts: true
@@ -32,9 +33,9 @@ dockers:
     dockerfile: Dockerfile
     image_templates:
       - otel/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
-      - otel/opentelemetry-collector-ebpf-profiler:latest-amd64
+      - otel/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
     build_flag_templates:
       - --pull
       - --platform=linux/amd64
@@ -49,15 +50,15 @@ docker_manifests:
   - name_template: otel/opentelemetry-collector-ebpf-profiler:{{ .Version }}
     image_templates:
       - otel/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
-  - name_template: otel/opentelemetry-collector-ebpf-profiler:latest
+  - name_template: otel/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
     image_templates:
-      - otel/opentelemetry-collector-ebpf-profiler:latest-amd64
+      - otel/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
-  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest
+  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
     image_templates:
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:latest-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
 signs:
   - cmd: cosign
     args:
