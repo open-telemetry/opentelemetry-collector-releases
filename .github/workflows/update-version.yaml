@@ -24,6 +24,11 @@ jobs:
       contents: write # required for pushing changes
       pull-requests: write # required for creating PRs
     runs-on: ubuntu-24.04
+    
+    permissions:
+      contents: write # required for pushing changes
+      pull-requests: write # required for creating PR
+    
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
