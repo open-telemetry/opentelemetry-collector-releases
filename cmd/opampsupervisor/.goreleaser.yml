@@ -103,9 +103,6 @@ docker_manifests:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64le
 release:
   make_latest: false
-  github:
-    owner: open-telemetry
-    name: opentelemetry-collector-releases
   header: |
     ### Release of OpAMP supervisor artifacts
 archives:
