@@ -438,12 +438,24 @@ func (b *distributionBuilder) WithDefaultMonorepo() *distributionBuilder {
 
 func (b *distributionBuilder) WithDefaultBinaryMonorepo() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		b.dist.monorepo = config.Monorepo{
-			TagPrefix: fmt.Sprintf("cmd/%s/", b.dist.name),
-			Dir:       ".core/cmd/builder",
-		}
+		b.dist.monorepo = b.binaryMonorepo()
 	})
 	return b
+}
+
+func (b *distributionBuilder) binaryMonorepo() config.Monorepo {
+	dir := ""
+	switch b.dist.name {
+	case ocbBinary:
+		dir = ".core/cmd/builder"
+	case opampBinary:
+		dir = ".contrib/cmd/opampsupervisor"
+	}
+
+	return config.Monorepo{
+		TagPrefix: fmt.Sprintf("cmd/%s/", b.dist.name),
+		Dir:       dir,
+	}
 }
 
 func (b *distributionBuilder) WithDefaultEnv() *distributionBuilder {

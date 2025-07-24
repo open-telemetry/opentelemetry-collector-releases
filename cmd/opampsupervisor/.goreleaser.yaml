@@ -157,4 +157,4 @@ sboms:
     artifacts: package
 monorepo:
   tag_prefix: cmd/opampsupervisor/
-  dir: .core/cmd/builder
+  dir: .contrib/cmd/opampsupervisor
