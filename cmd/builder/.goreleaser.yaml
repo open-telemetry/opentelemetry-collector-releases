@@ -1,32 +1,58 @@
-monorepo:
-  tag_prefix: cmd/builder/
-  dir: .core/cmd/builder
 version: 2
+project_name: opentelemetry-collector-releases
 env:
+  - COSIGN_YES=true
+  - LD_FLAGS=-s -w -X go.opentelemetry.io/collector/cmd/builder/internal.version={{ .Version }}
+  - BUILD_FLAGS=-trimpath
   - CONTAINER_IMAGE_EPHEMERAL_TAG=latest
+  - CGO_ENABLED=0
+release:
+  github:
+    owner: open-telemetry
+    name: opentelemetry-collector-releases
+  make_latest: "false"
+  header: '### Images and binaries for collector distributions here: https://github.com/open-telemetry/opentelemetry-collector-releases/releases/tag/{{ .Tag }}'
 builds:
-  - flags:
-      - -trimpath
-    ldflags:
-      - -s -w -X go.opentelemetry.io/collector/cmd/builder/internal.version={{ .Version }}
-    env:
-      - CGO_ENABLED=0
+  - id: builder-linux
     goos:
       - linux
-      - windows
-      - darwin
     goarch:
       - amd64
       - arm64
       - ppc64le
-    ignore:
-      - goos: windows
-        goarch: arm64
-      - goos: windows
-        goarch: ppc64le
-      - goos: darwin
-        goarch: ppc64le
     binary: ocb
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
+  - id: builder-darwin
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    binary: ocb
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
+  - id: builder-windows
+    goos:
+      - windows
+    goarch:
+      - amd64
+    binary: ocb
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
+archives:
+  - formats:
+      - binary
+snapshot:
+  version_template: '{{ .Tag }}-next'
+checksum:
+  name_template: checksums.txt
 dockers:
   - goos: linux
     goarch: amd64
@@ -45,6 +71,7 @@ dockers:
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
       - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
   - goos: linux
     goarch: arm64
     dockerfile: Dockerfile
@@ -62,6 +89,7 @@ dockers:
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
       - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
   - goos: linux
     goarch: ppc64le
     dockerfile: Dockerfile
@@ -101,25 +129,10 @@ docker_manifests:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-builder:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64le
-release:
-  make_latest: false
-  github:
-    owner: open-telemetry
-    name: opentelemetry-collector-releases
-  header: |
-    ### Images and binaries for collector distributions here: https://github.com/open-telemetry/opentelemetry-collector-releases/releases/tag/{{ .Tag }}
-archives:
-  - formats:
-    - binary
-checksum:
-  name_template: "checksums.txt"
-snapshot:
-  version_template: "{{ .Tag }}-next"
 changelog:
-  disable: true
+  disable: "true"
 signs:
-  - if: $SKIP_SIGNS != "true"
-    cmd: cosign
+  - cmd: cosign
     args:
       - sign-blob
       - --output-signature
@@ -129,16 +142,19 @@ signs:
       - ${artifact}
     signature: ${artifact}.sig
     artifacts: all
+    if: $SKIP_SIGNS != 'true'
     certificate: ${artifact}.pem
 docker_signs:
-  - if: $SKIP_SIGNS != "true"
-    args:
+  - args:
       - sign
       - ${artifact}
     artifacts: all
+    if: $SKIP_SIGNS != 'true'
 sboms:
   - id: archive
     artifacts: archive
   - id: package
     artifacts: package
-    
+monorepo:
+  tag_prefix: cmd/builder/
+  dir: .core/cmd/builder

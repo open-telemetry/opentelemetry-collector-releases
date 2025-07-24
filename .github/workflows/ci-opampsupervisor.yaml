@@ -56,7 +56,7 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
-          args: check --verbose -f cmd/opampsupervisor/.goreleaser.yml
+          args: check --verbose -f cmd/opampsupervisor/.goreleaser.yaml
         env:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -65,7 +65,7 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
-          args: --snapshot --clean -f cmd/opampsupervisor/.goreleaser.yml
+          args: --snapshot --clean -f cmd/opampsupervisor/.goreleaser.yaml
         env:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
