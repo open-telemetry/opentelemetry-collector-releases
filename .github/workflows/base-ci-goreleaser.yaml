@@ -30,7 +30,7 @@ on:
 
 env:
   # renovate: datasource=github-releases depName=goreleaser/goreleaser-pro
-  GORELEASER_PRO_VERSION: v2.7.0
+  GORELEASER_PRO_VERSION: v2.11.0
 
 jobs:
   check-goreleaser:
