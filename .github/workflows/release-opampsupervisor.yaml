@@ -26,7 +26,7 @@ jobs:
       - name: Set goreleaser last tag reference in case of non-nightly release
         id: prev-tag
         if: ${{ !contains(github.ref, '-nightly') }}
-        # find previous tag by filtering out nightly tags and choosing the
+        # find previous tag by taking only OpAMP supervisor tags, filtering out nightly tags and then choosing the
         # second to last tag (last one is the current release)
         run: |
           prev_tag=$(git tag | grep "cmd/opampsupervisor" | grep -v "nightly" | sort -r --version-sort | head -n 2 | tail -n 1)
