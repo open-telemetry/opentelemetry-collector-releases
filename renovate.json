@@ -147,6 +147,21 @@
       "groupName": "GoReleaser Pro"
     }
   ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|\\/)Makefile$/",
+        "/(^|\\/)Dockerfile/",
+        "/(^|\\/).*\\.ya?ml$/",
+        "/(^|\\/).*\\.toml$/",
+        "/(^|\\/).*\\.sh$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>.+?) depName=(?<depName>.+?)\\s.*(:|=|\\?=|:=|\\+=) ?\\\"?(?<currentValue>.+?)?\\\"?\\s"
+      ]
+    }
+  ],
   "prConcurrentLimit": 200,
   "suppressNotifications": [
     "prEditedNotification"
