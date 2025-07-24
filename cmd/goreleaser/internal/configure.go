@@ -43,6 +43,7 @@ const (
 	opampBinary           = "opampsupervisor"
 	containerEphemeralTag = "CONTAINER_IMAGE_EPHEMERAL_TAG=latest"
 	projectName           = "opentelemetry-collector-releases"
+	defaultBuildDir       = "_build"
 )
 
 var (
@@ -59,9 +60,9 @@ var (
 	// otelcol (core) distro
 	otelColDist = newDistributionBuilder(coreDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
-			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}, ppc64Version: []string{"power8"}},
-			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
-			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
+			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, buildDir: defaultBuildDir, armVersion: []string{"7"}, ppc64Version: []string{"power8"}},
+			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs, buildDir: defaultBuildDir},
+			&fullBuildConfig{targetOS: "windows", targetArch: winArchs, buildDir: defaultBuildDir},
 		}
 		d.containerImages = slices.Concat(
 			newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"}),
@@ -76,9 +77,9 @@ var (
 	// otlp distro
 	otlpDist = newDistributionBuilder(otlpDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
-			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}, ppc64Version: []string{"power8"}},
-			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
-			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
+			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, buildDir: defaultBuildDir, armVersion: []string{"7"}, ppc64Version: []string{"power8"}},
+			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs, buildDir: defaultBuildDir},
+			&fullBuildConfig{targetOS: "windows", targetArch: winArchs, buildDir: defaultBuildDir},
 		}
 		d.containerImages = slices.Concat(
 			newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"}),
@@ -128,9 +129,9 @@ var (
 	// contrib build-only project
 	contribBuildOnlyDist = newDistributionBuilder(contribDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
-			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}},
-			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
-			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
+			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, buildDir: defaultBuildDir, armVersion: []string{"7"}},
+			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs, buildDir: defaultBuildDir},
+			&fullBuildConfig{targetOS: "windows", targetArch: winArchs, buildDir: defaultBuildDir},
 		}
 	}).WithBinArchive().
 		WithDefaultMonorepo().
@@ -142,8 +143,8 @@ var (
 	// k8s distro
 	k8sDist = newDistributionBuilder(k8sDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
-			&fullBuildConfig{targetOS: "linux", targetArch: k8sArchs, ppc64Version: []string{"power8"}},
-			&fullBuildConfig{targetOS: "windows", targetArch: winContainerArchs},
+			&fullBuildConfig{targetOS: "linux", targetArch: k8sArchs, buildDir: defaultBuildDir, ppc64Version: []string{"power8"}},
+			&fullBuildConfig{targetOS: "windows", targetArch: winContainerArchs, buildDir: defaultBuildDir},
 		}
 		d.containerImages = slices.Concat(
 			newContainerImages(d.name, "linux", k8sArchs, containerImageOptions{armVersion: "7"}),
@@ -167,7 +168,7 @@ var (
 	// ebpf-profiler distro
 	ebpfProfilerDist = newDistributionBuilder(ebpfProfilerDistro).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
-			&fullBuildConfig{targetOS: "linux", targetArch: ebpfProfilerArchs},
+			&fullBuildConfig{targetOS: "linux", targetArch: ebpfProfilerArchs, buildDir: defaultBuildDir},
 		}
 		d.containerImages = slices.Concat(
 			newContainerImages(d.name, "linux", ebpfProfilerArchs, containerImageOptions{}),
@@ -192,9 +193,9 @@ var (
 	// OCB binary
 	ocbDist = newDistributionBuilder(ocbBinary).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
-			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}, ppc64Version: []string{"power8"}},
-			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
-			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
+			&fullBuildConfig{targetOS: "linux", targetArch: ocbArchs, binaryName: "ocb"},
+			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs, binaryName: "ocb"},
+			&fullBuildConfig{targetOS: "windows", targetArch: []string{"amd64"}, binaryName: "ocb"},
 		}
 		d.containerImages = slices.Concat(
 			newContainerImages(d.name, "linux", ocbArchs, containerImageOptions{binaryRelease: true}),
@@ -202,6 +203,7 @@ var (
 		d.containerImageManifests = slices.Concat(
 			newContainerImageManifests(d.name, "linux", ocbArchs, containerImageOptions{binaryRelease: true}),
 		)
+		d.ldFlags = "-s -w -X go.opentelemetry.io/collector/cmd/builder/internal.version={{ .Version }}"
 	}).WithBinaryPackagingDefaults().Build()
 
 	// OpAMP Supervisor binary
@@ -436,17 +438,6 @@ func (b *distributionBuilder) WithDefaultEnv() *distributionBuilder {
 	return b
 }
 
-func (b *distributionBuilder) WithDefaultBinaryEnv() *distributionBuilder {
-	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		env := []string{
-			containerEphemeralTag,
-		}
-
-		b.dist.env = env
-	})
-	return b
-}
-
 func (b *distributionBuilder) WithDefaultPartial() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
 		b.dist.partial = config.Partial{
@@ -502,7 +493,7 @@ func (b *distributionBuilder) WithBinaryPackagingDefaults() *distributionBuilder
 	return b.WithDefaultArchives().
 		WithDefaultChecksum().
 		WithDefaultBinaryMonorepo().
-		WithDefaultBinaryEnv().
+		WithDefaultEnv().
 		WithDefaultSigns().
 		WithDefaultDockerSigns().
 		WithDefaultSBOMs().
@@ -636,12 +627,13 @@ type fullBuildConfig struct {
 	targetArch   []string
 	armVersion   []string
 	ppc64Version []string
+	binaryName   string
+	buildDir     string
 }
 
 func (c *fullBuildConfig) Build(dist string) config.Build {
-	buildConfig := config.Build{
+	buildConfiguration := config.Build{
 		ID:     dist + "-" + c.targetOS,
-		Dir:    "_build",
 		Binary: dist,
 		BuildDetails: config.BuildDetails{
 			Flags:   []string{"{{ .Env.BUILD_FLAGS }}"},
@@ -652,7 +644,16 @@ func (c *fullBuildConfig) Build(dist string) config.Build {
 		Goarm:   c.armVersion,
 		Goppc64: c.ppc64Version,
 	}
-	return buildConfig
+
+	if c.binaryName != "" {
+		buildConfiguration.Binary = c.binaryName
+	}
+
+	if c.buildDir != "" {
+		buildConfiguration.Dir = c.buildDir
+	}
+
+	return buildConfiguration
 }
 
 func (c *fullBuildConfig) OS() string {
