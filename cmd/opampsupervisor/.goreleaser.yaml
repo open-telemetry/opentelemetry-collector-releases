@@ -20,7 +20,7 @@ builds:
       - amd64
       - arm64
       - ppc64le
-    binary: ocb
+    binary: opampsupervisor
     ldflags:
       - '{{ .Env.LD_FLAGS }}'
     flags:
@@ -31,7 +31,7 @@ builds:
     goarch:
       - amd64
       - arm64
-    binary: ocb
+    binary: opampsupervisor
     ldflags:
       - '{{ .Env.LD_FLAGS }}'
     flags:
@@ -41,7 +41,7 @@ builds:
       - windows
     goarch:
       - amd64
-    binary: ocb
+    binary: opampsupervisor
     ldflags:
       - '{{ .Env.LD_FLAGS }}'
     flags:

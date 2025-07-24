@@ -209,9 +209,9 @@ var (
 	// OpAMP Supervisor binary
 	opampDist = newDistributionBuilder(opampBinary).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
-			&fullBuildConfig{targetOS: "linux", targetArch: ocbArchs, binaryName: "ocb"},
-			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs, binaryName: "ocb"},
-			&fullBuildConfig{targetOS: "windows", targetArch: []string{"amd64"}, binaryName: "ocb"},
+			&fullBuildConfig{targetOS: "linux", targetArch: ocbArchs, binaryName: "opampsupervisor"},
+			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs, binaryName: "opampsupervisor"},
+			&fullBuildConfig{targetOS: "windows", targetArch: []string{"amd64"}, binaryName: "opampsupervisor"},
 		}
 		d.containerImages = slices.Concat(
 			newContainerImages(d.name, "linux", ocbArchs, containerImageOptions{binaryRelease: true}),
