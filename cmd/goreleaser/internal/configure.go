@@ -394,6 +394,15 @@ func (b *distributionBuilder) WithDefaultChecksum() *distributionBuilder {
 	return b
 }
 
+func (b *distributionBuilder) WithDefaultBinaryChecksum() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		b.dist.checksum = config.Checksum{
+			NameTemplate: "checksums.txt",
+		}
+	})
+	return b
+}
+
 func (b *distributionBuilder) WithDefaultMonorepo() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
 		b.dist.monorepo = config.Monorepo{
@@ -490,6 +499,13 @@ func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
 }
 
 func (b *distributionBuilder) WithBinaryPackagingDefaults() *distributionBuilder {
+	b.dist.changelog = config.Changelog{
+		Disable: "true",
+	}
+	b.dist.snapshot = config.Snapshot{
+		VersionTemplate: "{{ .Tag }}-next",
+	}
+
 	return b.WithBinArchive().
 		WithDefaultChecksum().
 		WithDefaultBinaryMonorepo().
@@ -497,7 +513,8 @@ func (b *distributionBuilder) WithBinaryPackagingDefaults() *distributionBuilder
 		WithDefaultSigns().
 		WithDefaultDockerSigns().
 		WithDefaultSBOMs().
-		WithDefaultBinaryRelease()
+		WithDefaultBinaryRelease().
+		WithDefaultBinaryChecksum()
 }
 
 func (b *distributionBuilder) WithConfigFunc(configFunc func(*distribution)) *distributionBuilder {
@@ -552,6 +569,8 @@ type distribution struct {
 	partial                 config.Partial
 	monorepo                config.Monorepo
 	release                 config.Release
+	snapshot                config.Snapshot
+	changelog               config.Changelog
 	env                     []string
 	enableCgo               bool
 	ldFlags                 string
@@ -581,6 +600,8 @@ func (d *distribution) BuildProject() config.Project {
 		Version:         2,
 		Monorepo:        d.monorepo,
 		Partial:         d.partial,
+		Snapshot:        d.snapshot,
+		Changelog:       d.changelog,
 	}
 }
 
