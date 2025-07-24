@@ -68,11 +68,11 @@ builds:
       path: artifacts/otelcol-contrib-windows_{{ .Target }}/otelcol-contrib.exe
 archives:
   - id: otelcol-contrib
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
     builds:
       - otelcol-contrib-linux
       - otelcol-contrib-darwin
       - otelcol-contrib-windows
-    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
   - package_name: otelcol-contrib
     contents:
@@ -93,14 +93,14 @@ nfpms:
         dependencies:
           - /bin/sh
     id: otelcol-contrib
-    builds:
-      - otelcol-contrib-linux
     formats:
       - deb
       - rpm
     maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
     description: OpenTelemetry Collector - otelcol-contrib
     license: Apache 2.0
+    builds:
+      - otelcol-contrib-linux
 checksum:
   name_template: '{{ .ProjectName }}_otelcol-contrib_checksums.txt'
 dockers:

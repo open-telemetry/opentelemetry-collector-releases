@@ -63,11 +63,11 @@ builds:
       - '{{ .Env.BUILD_FLAGS }}'
 archives:
   - id: otelcol
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
     builds:
       - otelcol-linux
       - otelcol-darwin
       - otelcol-windows
-    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
   - package_name: otelcol
     contents:
@@ -88,14 +88,14 @@ nfpms:
         dependencies:
           - /bin/sh
     id: otelcol
-    builds:
-      - otelcol-linux
     formats:
       - deb
       - rpm
     maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
     description: OpenTelemetry Collector - otelcol
     license: Apache 2.0
+    builds:
+      - otelcol-linux
 checksum:
   name_template: '{{ .ProjectName }}_otelcol_checksums.txt'
 dockers:
