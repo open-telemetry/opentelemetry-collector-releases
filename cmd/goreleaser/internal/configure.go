@@ -29,16 +29,19 @@ import (
 )
 
 const (
-	armArch            = "arm"
-	coreDistro         = "otelcol"
-	contribDistro      = "otelcol-contrib"
-	k8sDistro          = "otelcol-k8s"
-	otlpDistro         = "otelcol-otlp"
-	ebpfProfilerDistro = "otelcol-ebpf-profiler"
-	dockerHub          = "otel"
-	ghcr               = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
-	binaryNamePrefix   = "otelcol"
-	imageNamePrefix    = "opentelemetry-collector"
+	armArch               = "arm"
+	coreDistro            = "otelcol"
+	contribDistro         = "otelcol-contrib"
+	k8sDistro             = "otelcol-k8s"
+	otlpDistro            = "otelcol-otlp"
+	ebpfProfilerDistro    = "otelcol-ebpf-profiler"
+	dockerHub             = "otel"
+	ghcr                  = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
+	binaryNamePrefix      = "otelcol"
+	imageNamePrefix       = "opentelemetry-collector"
+	ocbBinary             = "builder"
+	opampBinary           = "opampsupervisor"
+	containerEphemeralTag = "CONTAINER_IMAGE_EPHEMERAL_TAG=latest"
 )
 
 var (
@@ -48,6 +51,7 @@ var (
 	darwinArchs       = []string{"amd64", "arm64"}
 	k8sArchs          = []string{"amd64", "arm64", "ppc64le", "s390x"}
 	ebpfProfilerArchs = []string{"amd64"}
+	ocbArchs          = []string{"amd64", "arm64", "ppc64le"}
 
 	imageRepos = []string{dockerHub, ghcr}
 
@@ -127,7 +131,10 @@ var (
 			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
 			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
 		}
-	}).WithBinArchive().Build()
+	}).WithBinArchive().
+		WithDefaultMonorepo().
+		WithDefaultEnv().
+		Build()
 
 	// k8s distro
 	k8sDist = newDistributionBuilder(k8sDistro).WithConfigFunc(func(d *distribution) {
@@ -143,7 +150,14 @@ var (
 		d.containerImageManifests = slices.Concat(
 			newContainerImageManifests(d.name, "linux", k8sArchs, containerImageOptions{}),
 		)
-	}).WithDefaultArchives().WithDefaultChecksum().WithDefaultSigns().WithDefaultDockerSigns().WithDefaultSBOMs().Build()
+	}).WithDefaultArchives().
+		WithDefaultChecksum().
+		WithDefaultSigns().
+		WithDefaultDockerSigns().
+		WithDefaultSBOMs().
+		WithDefaultMonorepo().
+		WithDefaultEnv().
+		Build()
 
 	// ebpf-profiler distro
 	ebpfProfilerDist = newDistributionBuilder(ebpfProfilerDistro).WithConfigFunc(func(d *distribution) {
@@ -159,7 +173,34 @@ var (
 		d.enableCgo = true
 		d.ldFlags = "-extldflags=-static"
 		d.goTags = "osusergo,netgo"
-	}).WithDefaultArchives().WithDefaultChecksum().WithDefaultSigns().WithDefaultDockerSigns().WithDefaultSBOMs().Build()
+	}).WithDefaultArchives().
+		WithDefaultChecksum().
+		WithDefaultSigns().
+		WithDefaultDockerSigns().
+		WithDefaultSBOMs().
+		WithDefaultMonorepo().
+		WithDefaultEnv().
+		Build()
+
+	// OCB binary
+	ocbDist = newDistributionBuilder(ocbBinary).WithConfigFunc(func(d *distribution) {
+		d.buildConfigs = []buildConfig{
+			&fullBuildConfig{targetOS: "linux", targetArch: baseArchs, armVersion: []string{"7"}, ppc64Version: []string{"power8"}},
+			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs},
+			&fullBuildConfig{targetOS: "windows", targetArch: winArchs},
+		}
+		d.containerImages = slices.Concat(
+			newContainerImages(d.name, "linux", ocbArchs, containerImageOptions{binaryRelease: true}),
+		)
+		d.containerImageManifests = slices.Concat(
+			newContainerImageManifests(d.name, "linux", ocbArchs, containerImageOptions{binaryRelease: true}),
+		)
+	}).WithBinaryPackagingDefaults().Build()
+
+	// OpAMP Supervisor binary
+	opampDist = newDistributionBuilder(opampBinary).WithConfigFunc(func(d *distribution) {
+		// stub
+	}).Build()
 )
 
 type buildConfig interface {
@@ -344,11 +385,76 @@ func (b *distributionBuilder) WithDefaultChecksum() *distributionBuilder {
 	return b
 }
 
+func (b *distributionBuilder) WithDefaultMonorepo() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		b.dist.monorepo = config.Monorepo{
+			TagPrefix: "v",
+		}
+	})
+	return b
+}
+
+func (b *distributionBuilder) WithDefaultBinaryMonorepo() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		b.dist.monorepo = config.Monorepo{
+			TagPrefix: fmt.Sprintf("cmd/%s/", b.dist.name),
+			Dir:       ".core/cmd/builder",
+		}
+	})
+	return b
+}
+
+func (b *distributionBuilder) WithDefaultEnv() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		ldFlags := "-s -w"
+		if b.dist.ldFlags != "" {
+			ldFlags = b.dist.ldFlags
+		}
+
+		env := []string{
+			"COSIGN_YES=true",
+			"LD_FLAGS=" + ldFlags,
+			"BUILD_FLAGS=-trimpath",
+			containerEphemeralTag,
+		}
+		if b.dist.goTags != "" {
+			env = append(env, "GO_TAGS="+b.dist.goTags)
+		}
+		if !b.dist.enableCgo {
+			env = append(env, "CGO_ENABLED=0")
+		}
+
+		b.dist.env = env
+	})
+	return b
+}
+
+func (b *distributionBuilder) WithDefaultBinaryEnv() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		b.dist.env = []string{
+			containerEphemeralTag,
+		}
+	})
+	return b
+}
+
 func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
 	return b.WithDefaultArchives().
 		WithDefaultChecksum().
+		WithDefaultMonorepo().
+		WithDefaultEnv().
 		WithDefaultNfpms().
 		WithDefaultMSIConfig().
+		WithDefaultSigns().
+		WithDefaultDockerSigns().
+		WithDefaultSBOMs()
+}
+
+func (b *distributionBuilder) WithBinaryPackagingDefaults() *distributionBuilder {
+	return b.WithDefaultArchives().
+		WithDefaultChecksum().
+		WithDefaultBinaryMonorepo().
+		WithDefaultBinaryEnv().
 		WithDefaultSigns().
 		WithDefaultDockerSigns().
 		WithDefaultSBOMs()
@@ -403,6 +509,8 @@ type distribution struct {
 	dockerSigns             []config.Sign
 	sboms                   []config.SBOM
 	checksum                config.Checksum
+	env                     []string
+	monorepo                config.Monorepo
 	enableCgo               bool
 	ldFlags                 string
 	goTags                  string
@@ -414,31 +522,13 @@ func (d *distribution) BuildProject() config.Project {
 		builds = append(builds, buildConfig.Build(d.name))
 	}
 
-	ldFlags := "-s -w"
-	if d.ldFlags != "" {
-		ldFlags = d.ldFlags
-	}
-
-	env := []string{
-		"COSIGN_YES=true",
-		"LD_FLAGS=" + ldFlags,
-		"BUILD_FLAGS=-trimpath",
-		"CONTAINER_IMAGE_EPHEMERAL_TAG=latest",
-	}
-	if d.goTags != "" {
-		env = append(env, "GO_TAGS="+d.goTags)
-	}
-	if !d.enableCgo {
-		env = append(env, "CGO_ENABLED=0")
-	}
-
 	return config.Project{
 		ProjectName: "opentelemetry-collector-releases",
 		Release: config.Release{
 			ReplaceExistingArtifacts: true,
 		},
 		Checksum:        d.checksum,
-		Env:             env,
+		Env:             d.env,
 		Builds:          builds,
 		Archives:        d.archives,
 		MSI:             d.msiConfig,
@@ -449,10 +539,8 @@ func (d *distribution) BuildProject() config.Project {
 		DockerSigns:     d.dockerSigns,
 		SBOMs:           d.sboms,
 		Version:         2,
-		Monorepo: config.Monorepo{
-			TagPrefix: "v",
-		},
-		Partial: config.Partial{By: "target"},
+		Monorepo:        d.monorepo,
+		Partial:         config.Partial{By: "target"},
 	}
 }
 
@@ -467,15 +555,16 @@ func newContainerImageManifests(dist, os string, archs []string, opts containerI
 	var r []config.DockerManifest
 	for _, imageRepo := range imageRepos {
 		for _, tag := range tags {
-			r = append(r, osDockerManifest(imageRepo, tag, dist, os, archs))
+			r = append(r, osDockerManifest(imageRepo, tag, dist, os, archs, opts))
 		}
 	}
 	return r
 }
 
 type containerImageOptions struct {
-	armVersion string
-	winVersion string
+	armVersion    string
+	winVersion    string
+	binaryRelease bool
 }
 
 func (o *containerImageOptions) version() string {
@@ -551,8 +640,8 @@ func dockerImageWithOS(dist, os, arch string, opts containerImageOptions) config
 	for _, prefix := range imageRepos {
 		imageTemplates = append(
 			imageTemplates,
-			fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName(dist), osArch.imageTag()),
-			fmt.Sprintf("%s/%s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-%s", prefix, imageName(dist), osArch.imageTag()),
+			fmt.Sprintf("%s/%s:{{ .Version }}-%s", prefix, imageName(dist, opts), osArch.imageTag()),
+			fmt.Sprintf("%s/%s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-%s", prefix, imageName(dist, opts), osArch.imageTag()),
 		)
 	}
 
@@ -637,12 +726,16 @@ func BuildDist(dist string, onlyBuild bool) config.Project {
 			return contribBuildOnlyDist.BuildProject()
 		}
 		return contribDist.BuildProject()
+	case ocbBinary:
+		return ocbDist.BuildProject()
+	case opampBinary:
+		return opampDist.BuildProject()
 	default:
 		panic("Unknown distribution")
 	}
 }
 
-func osDockerManifest(prefix, version, dist, os string, archs []string) config.DockerManifest {
+func osDockerManifest(prefix, version, dist, os string, archs []string, opts containerImageOptions) config.DockerManifest {
 	var imageTemplates []string
 	for _, arch := range archs {
 		switch arch {
@@ -651,19 +744,19 @@ func osDockerManifest(prefix, version, dist, os string, archs []string) config.D
 				dockerArchTag := (&osArch{os: os, arch: arch, version: armVers}).imageTag()
 				imageTemplates = append(
 					imageTemplates,
-					fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist), version, dockerArchTag),
+					fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist, opts), version, dockerArchTag),
 				)
 			}
 		default:
 			imageTemplates = append(
 				imageTemplates,
-				fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist), version, arch),
+				fmt.Sprintf("%s/%s:%s-%s", prefix, imageName(dist, opts), version, arch),
 			)
 		}
 	}
 
 	manifest := config.DockerManifest{
-		NameTemplate:   fmt.Sprintf("%s/%s:%s", prefix, imageName(dist), version),
+		NameTemplate:   fmt.Sprintf("%s/%s:%s", prefix, imageName(dist, opts), version),
 		ImageTemplates: imageTemplates,
 	}
 	if os == "windows" {
@@ -680,6 +773,9 @@ func armVersions(dist string) []string {
 }
 
 // imageName translates a distribution name to a container image name.
-func imageName(dist string) string {
+func imageName(dist string, opts containerImageOptions) string {
+	if opts.binaryRelease {
+		return imageNamePrefix + "-" + dist
+	}
 	return strings.Replace(dist, binaryNamePrefix, imageNamePrefix, 1)
 }
