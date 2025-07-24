@@ -134,6 +134,7 @@ var (
 	}).WithBinArchive().
 		WithDefaultMonorepo().
 		WithDefaultEnv().
+		WithDefaultPartial().
 		Build()
 
 	// k8s distro
@@ -157,6 +158,7 @@ var (
 		WithDefaultSBOMs().
 		WithDefaultMonorepo().
 		WithDefaultEnv().
+		WithDefaultPartial().
 		Build()
 
 	// ebpf-profiler distro
@@ -180,6 +182,7 @@ var (
 		WithDefaultSBOMs().
 		WithDefaultMonorepo().
 		WithDefaultEnv().
+		WithDefaultPartial().
 		Build()
 
 	// OCB binary
@@ -431,8 +434,19 @@ func (b *distributionBuilder) WithDefaultEnv() *distributionBuilder {
 
 func (b *distributionBuilder) WithDefaultBinaryEnv() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		b.dist.env = []string{
+		env := []string{
 			containerEphemeralTag,
+		}
+
+		b.dist.env = env
+	})
+	return b
+}
+
+func (b *distributionBuilder) WithDefaultPartial() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		b.dist.partial = config.Partial{
+			By: "target",
 		}
 	})
 	return b
@@ -447,7 +461,8 @@ func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
 		WithDefaultMSIConfig().
 		WithDefaultSigns().
 		WithDefaultDockerSigns().
-		WithDefaultSBOMs()
+		WithDefaultSBOMs().
+		WithDefaultPartial()
 }
 
 func (b *distributionBuilder) WithBinaryPackagingDefaults() *distributionBuilder {
@@ -509,8 +524,9 @@ type distribution struct {
 	dockerSigns             []config.Sign
 	sboms                   []config.SBOM
 	checksum                config.Checksum
-	env                     []string
+	partial                 config.Partial
 	monorepo                config.Monorepo
+	env                     []string
 	enableCgo               bool
 	ldFlags                 string
 	goTags                  string
@@ -540,7 +556,7 @@ func (d *distribution) BuildProject() config.Project {
 		SBOMs:           d.sboms,
 		Version:         2,
 		Monorepo:        d.monorepo,
-		Partial:         config.Partial{By: "target"},
+		Partial:         d.partial,
 	}
 }
 
@@ -575,7 +591,7 @@ func (o *containerImageOptions) version() string {
 }
 
 func newContainerImages(dist string, targetOS string, targetArchs []string, opts containerImageOptions) []config.Docker {
-	images := []config.Docker{}
+	var images []config.Docker
 	for _, targetArch := range targetArchs {
 		images = append(images, dockerImageWithOS(dist, targetOS, targetArch, opts))
 	}
