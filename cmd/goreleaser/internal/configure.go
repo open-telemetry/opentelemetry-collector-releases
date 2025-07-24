@@ -42,6 +42,7 @@ const (
 	ocbBinary             = "builder"
 	opampBinary           = "opampsupervisor"
 	containerEphemeralTag = "CONTAINER_IMAGE_EPHEMERAL_TAG=latest"
+	projectName           = "opentelemetry-collector-releases"
 )
 
 var (
@@ -135,6 +136,7 @@ var (
 		WithDefaultMonorepo().
 		WithDefaultEnv().
 		WithDefaultPartial().
+		WithDefaultRelease().
 		Build()
 
 	// k8s distro
@@ -159,6 +161,7 @@ var (
 		WithDefaultMonorepo().
 		WithDefaultEnv().
 		WithDefaultPartial().
+		WithDefaultRelease().
 		Build()
 
 	// ebpf-profiler distro
@@ -183,6 +186,7 @@ var (
 		WithDefaultMonorepo().
 		WithDefaultEnv().
 		WithDefaultPartial().
+		WithDefaultRelease().
 		Build()
 
 	// OCB binary
@@ -452,6 +456,34 @@ func (b *distributionBuilder) WithDefaultPartial() *distributionBuilder {
 	return b
 }
 
+func (b *distributionBuilder) WithDefaultRelease() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		b.dist.release = config.Release{
+			ReplaceExistingArtifacts: true,
+		}
+	})
+	return b
+}
+
+func (b *distributionBuilder) WithDefaultBinaryRelease() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		b.dist.release = config.Release{
+			MakeLatest: "false",
+			GitHub: config.Repo{
+				Owner: "open-telemetry",
+				Name:  projectName,
+			},
+			Header: config.IncludedMarkdown{
+				FromURL: config.IncludeFromURL{
+					URL: "something",
+				},
+				Content: "### Images and binaries for collector distributions here: https://github.com/open-telemetry/opentelemetry-collector-releases/releases/tag/{{ .Tag }}",
+			},
+		}
+	})
+	return b
+}
+
 func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
 	return b.WithDefaultArchives().
 		WithDefaultChecksum().
@@ -462,7 +494,8 @@ func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
 		WithDefaultSigns().
 		WithDefaultDockerSigns().
 		WithDefaultSBOMs().
-		WithDefaultPartial()
+		WithDefaultPartial().
+		WithDefaultRelease()
 }
 
 func (b *distributionBuilder) WithBinaryPackagingDefaults() *distributionBuilder {
@@ -472,7 +505,8 @@ func (b *distributionBuilder) WithBinaryPackagingDefaults() *distributionBuilder
 		WithDefaultBinaryEnv().
 		WithDefaultSigns().
 		WithDefaultDockerSigns().
-		WithDefaultSBOMs()
+		WithDefaultSBOMs().
+		WithDefaultBinaryRelease()
 }
 
 func (b *distributionBuilder) WithConfigFunc(configFunc func(*distribution)) *distributionBuilder {
@@ -526,6 +560,7 @@ type distribution struct {
 	checksum                config.Checksum
 	partial                 config.Partial
 	monorepo                config.Monorepo
+	release                 config.Release
 	env                     []string
 	enableCgo               bool
 	ldFlags                 string
@@ -539,10 +574,8 @@ func (d *distribution) BuildProject() config.Project {
 	}
 
 	return config.Project{
-		ProjectName: "opentelemetry-collector-releases",
-		Release: config.Release{
-			ReplaceExistingArtifacts: true,
-		},
+		ProjectName:     projectName,
+		Release:         d.release,
 		Checksum:        d.checksum,
 		Env:             d.env,
 		Builds:          builds,
