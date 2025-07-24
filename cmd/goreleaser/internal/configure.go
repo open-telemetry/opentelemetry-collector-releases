@@ -208,8 +208,19 @@ var (
 
 	// OpAMP Supervisor binary
 	opampDist = newDistributionBuilder(opampBinary).WithConfigFunc(func(d *distribution) {
-		// stub
-	}).Build()
+		d.buildConfigs = []buildConfig{
+			&fullBuildConfig{targetOS: "linux", targetArch: ocbArchs, binaryName: "ocb"},
+			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs, binaryName: "ocb"},
+			&fullBuildConfig{targetOS: "windows", targetArch: []string{"amd64"}, binaryName: "ocb"},
+		}
+		d.containerImages = slices.Concat(
+			newContainerImages(d.name, "linux", ocbArchs, containerImageOptions{binaryRelease: true}),
+		)
+		d.containerImageManifests = slices.Concat(
+			newContainerImageManifests(d.name, "linux", ocbArchs, containerImageOptions{binaryRelease: true}),
+		)
+		d.ldFlags = "-s -w -X github.com/open-telemetry/opentelemetry-collector-contrib/cmd/opampsupervisor/internal.version={{ .Version }}"
+	}).WithBinaryPackagingDefaults().Build()
 )
 
 type buildConfig interface {
@@ -480,21 +491,30 @@ func (b *distributionBuilder) WithDefaultRelease() *distributionBuilder {
 
 func (b *distributionBuilder) WithDefaultBinaryRelease() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		b.dist.release = config.Release{
-			MakeLatest: "false",
-			GitHub: config.Repo{
-				Owner: "open-telemetry",
-				Name:  projectName,
-			},
-			Header: config.IncludedMarkdown{
-				FromURL: config.IncludeFromURL{
-					URL: "something",
-				},
-				Content: "### Images and binaries for collector distributions here: https://github.com/open-telemetry/opentelemetry-collector-releases/releases/tag/{{ .Tag }}",
-			},
-		}
+		b.dist.release = b.release()
 	})
 	return b
+}
+
+func (b *distributionBuilder) release() config.Release {
+	headerContent := ""
+	switch b.dist.name {
+	case ocbBinary:
+		headerContent = "### Images and binaries for collector distributions here: https://github.com/open-telemetry/opentelemetry-collector-releases/releases/tag/{{ .Tag }}"
+	case opampBinary:
+		headerContent = "### Release of OpAMP supervisor artifacts"
+	}
+
+	return config.Release{
+		MakeLatest: "false",
+		GitHub: config.Repo{
+			Owner: "open-telemetry",
+			Name:  projectName,
+		},
+		Header: config.IncludedMarkdown{
+			Content: headerContent,
+		},
+	}
 }
 
 func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
