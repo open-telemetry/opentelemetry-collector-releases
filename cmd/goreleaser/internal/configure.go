@@ -490,7 +490,7 @@ func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
 }
 
 func (b *distributionBuilder) WithBinaryPackagingDefaults() *distributionBuilder {
-	return b.WithDefaultArchives().
+	return b.WithBinArchive().
 		WithDefaultChecksum().
 		WithDefaultBinaryMonorepo().
 		WithDefaultEnv().
