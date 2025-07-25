@@ -15,10 +15,12 @@ jobs:
       distribution: otelcol-k8s
       goos: '[ "linux" ]'
       goarch: '[ "amd64", "arm64", "ppc64le", "s390x" ]'
+      nightly: ${{ contains(github.ref, '-nightly') }}
     secrets: inherit
     permissions: write-all
   release-windows:
     name: Release k8s (Windows)
+    if: ${{ !contains(github.ref, '-nightly') }}
     uses: ./.github/workflows/base-release.yaml
     with:
       distribution: otelcol-k8s

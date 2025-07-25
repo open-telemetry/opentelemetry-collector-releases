@@ -1,7 +1,7 @@
 name: CI - Core - GoReleaser
 
 on:
-  merge_group: 
+  merge_group:
   push:
     branches: [main]
     paths:
@@ -37,12 +37,12 @@ jobs:
     secrets: inherit
 
   package-tests:
-     name: Package tests
-     needs: check-goreleaser
-     uses: ./.github/workflows/base-package-tests.yaml
-     with:
-       distribution: otelcol
-       type: '[ "deb", "rpm" ]'
+    name: Package tests
+    needs: check-goreleaser
+    uses: ./.github/workflows/base-package-tests.yaml
+    with:
+      distribution: otelcol
+      type: '[ "deb", "rpm" ]'
 
   msi-tests:
     name: MSI tests
