@@ -28,6 +28,9 @@ on:
         required: false
         type: string
 
+permissions:
+  contents: read
+
 env:
   # renovate: datasource=github-releases depName=goreleaser/goreleaser-pro
   GORELEASER_PRO_VERSION: v2.11.0
