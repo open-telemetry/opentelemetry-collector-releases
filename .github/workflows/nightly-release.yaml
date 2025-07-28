@@ -34,10 +34,10 @@ jobs:
           # A previous release was created using a lightweight tag
           # git describe by default includes only annotated tags
           # git describe --tags includes lightweight tags as well
-          DESCRIBE=`git tag -l --sort=-v:refname | grep -v cmd | grep -v nightly | head -n 1`
-          MAJOR_VERSION=`echo $DESCRIBE | awk '{split($0,a,"."); print a[1]}'`
-          MINOR_VERSION=`echo $DESCRIBE | awk '{split($0,a,"."); print a[2]}'`
-          MINOR_VERSION="$((${MINOR_VERSION} + 1))"
+          DESCRIBE=`git tag -l --sort=-v:refname | grep -v cmd | grep -v nightly | head -n 1` # list tags except the ones containing cmd or nightly and then take the latest one
+          MAJOR_VERSION=`echo $DESCRIBE | awk '{split($0,a,"."); print a[1]}'` # take just the major version digits, e.g. "v0"
+          MINOR_VERSION=`echo $DESCRIBE | awk '{split($0,a,"."); print a[2]}'` # take just the minor version digits, e.g. "130"
+          MINOR_VERSION="$((${MINOR_VERSION} + 1))" # bump minor version
           TAG="${MAJOR_VERSION}.${MINOR_VERSION}.0-nightly.$(date +'%Y%m%d%H%M')"
           git tag -a $TAG -m "$TAG: nightly build"
           git push origin $TAG
