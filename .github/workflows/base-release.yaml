@@ -107,7 +107,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GH_PAT }}
 
       - name: Create artifacts directory to store build artifacts
         if: inputs.distribution == 'otelcol-contrib'
@@ -130,7 +130,7 @@ jobs:
           GOAMD64: v1
           GOPPC64: power8
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           COSIGN_YES: true
           GORELEASER_CURRENT_TAG: ${{ github.ref_name }}
 
