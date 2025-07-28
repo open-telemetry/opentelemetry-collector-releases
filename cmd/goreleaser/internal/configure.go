@@ -44,6 +44,8 @@ const (
 	containerEphemeralTag = "CONTAINER_IMAGE_EPHEMERAL_TAG=latest"
 	projectName           = "opentelemetry-collector-releases"
 	defaultBuildDir       = "_build"
+	ocbReleaseHeader      = "### Images and binaries for collector distributions here: https://github.com/open-telemetry/opentelemetry-collector-releases/releases/tag/{{ .Tag }}"
+	opampReleaseHeader    = "### Release of OpAMP supervisor artifacts"
 )
 
 var (
@@ -204,7 +206,10 @@ var (
 			newContainerImageManifests(d.name, "linux", ocbArchs, containerImageOptions{binaryRelease: true}),
 		)
 		d.ldFlags = "-s -w -X go.opentelemetry.io/collector/cmd/builder/internal.version={{ .Version }}"
-	}).WithBinaryPackagingDefaults().Build()
+	}).WithBinaryPackagingDefaults().
+		WithBinaryMonorepo(".core/cmd/builder").
+		WithDefaultBinaryRelease(ocbReleaseHeader).
+		Build()
 
 	// OpAMP Supervisor binary
 	opampDist = newDistributionBuilder(opampBinary).WithConfigFunc(func(d *distribution) {
@@ -220,7 +225,10 @@ var (
 			newContainerImageManifests(d.name, "linux", ocbArchs, containerImageOptions{binaryRelease: true}),
 		)
 		d.ldFlags = "-s -w -X github.com/open-telemetry/opentelemetry-collector-contrib/cmd/opampsupervisor/internal.version={{ .Version }}"
-	}).WithBinaryPackagingDefaults().Build()
+	}).WithBinaryPackagingDefaults().
+		WithBinaryMonorepo(".contrib/cmd/opampsupervisor").
+		WithDefaultBinaryRelease(opampReleaseHeader).
+		Build()
 )
 
 type buildConfig interface {
@@ -436,22 +444,14 @@ func (b *distributionBuilder) WithDefaultMonorepo() *distributionBuilder {
 	return b
 }
 
-func (b *distributionBuilder) WithDefaultBinaryMonorepo() *distributionBuilder {
+func (b *distributionBuilder) WithBinaryMonorepo(dir string) *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		b.dist.monorepo = b.binaryMonorepo()
+		b.dist.monorepo = b.binaryMonorepo(dir)
 	})
 	return b
 }
 
-func (b *distributionBuilder) binaryMonorepo() config.Monorepo {
-	dir := ""
-	switch b.dist.name {
-	case ocbBinary:
-		dir = ".core/cmd/builder"
-	case opampBinary:
-		dir = ".contrib/cmd/opampsupervisor"
-	}
-
+func (b *distributionBuilder) binaryMonorepo(dir string) config.Monorepo {
 	return config.Monorepo{
 		TagPrefix: fmt.Sprintf("cmd/%s/", b.dist.name),
 		Dir:       dir,
@@ -501,30 +501,18 @@ func (b *distributionBuilder) WithDefaultRelease() *distributionBuilder {
 	return b
 }
 
-func (b *distributionBuilder) WithDefaultBinaryRelease() *distributionBuilder {
+func (b *distributionBuilder) WithDefaultBinaryRelease(header string) *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		b.dist.release = b.release()
+		b.dist.release = b.release(header)
 	})
 	return b
 }
 
-func (b *distributionBuilder) release() config.Release {
-	headerContent := ""
-	switch b.dist.name {
-	case ocbBinary:
-		headerContent = "### Images and binaries for collector distributions here: https://github.com/open-telemetry/opentelemetry-collector-releases/releases/tag/{{ .Tag }}"
-	case opampBinary:
-		headerContent = "### Release of OpAMP supervisor artifacts"
-	}
-
+func (b *distributionBuilder) release(header string) config.Release {
 	return config.Release{
 		MakeLatest: "false",
-		GitHub: config.Repo{
-			Owner: "open-telemetry",
-			Name:  projectName,
-		},
 		Header: config.IncludedMarkdown{
-			Content: headerContent,
+			Content: header,
 		},
 	}
 }
@@ -553,12 +541,10 @@ func (b *distributionBuilder) WithBinaryPackagingDefaults() *distributionBuilder
 
 	return b.WithBinArchive().
 		WithDefaultChecksum().
-		WithDefaultBinaryMonorepo().
 		WithDefaultEnv().
 		WithDefaultSigns().
 		WithDefaultDockerSigns().
 		WithDefaultSBOMs().
-		WithDefaultBinaryRelease().
 		WithDefaultBinaryChecksum()
 }
 
