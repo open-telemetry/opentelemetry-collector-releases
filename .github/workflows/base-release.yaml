@@ -279,6 +279,7 @@ jobs:
           echo "---" >> ${{ env.issue-file }}
           echo "The nightly release failed in the following GitHub actions run." >> ${{ env.issue-file }}
           echo "* Link to run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> ${{ env.issue-file }}
+          echo "* Please also check the other distro release runs related to this nightly release" >> ${{ env.issue-file }}
           echo "* Triggered by: Nightly scheduled release" >> ${{ env.issue-file }}
           echo "" >> ${{ env.issue-file }}
           echo "Note: This issue was auto-generated from [base-release.yaml](https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/.github/workflows/base-release.yaml)" >> ${{ env.issue-file }}
