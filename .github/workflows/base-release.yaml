@@ -259,3 +259,35 @@ jobs:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GORELEASER_PREVIOUS_TAG: ${{ needs.prepare.outputs.PREVIOUS_RELEASE_TAG }}
           GORELEASER_CURRENT_TAG: ${{ github.ref_name }}
+
+  create-issue:
+    name: Create GitHub issue on failed nightly release
+    runs-on: ubuntu-latest
+    needs: [release]
+    if: failure() && inputs.nightly == 'true'
+    permissions:
+      issues: write
+    env:
+      issue-file: "nightly-release-failure.md"
+    steps:
+      - name: Formulate issue
+        run: |
+          # create a markdown file that contains details about the failure
+          echo "---" > ${{ env.issue-file }}
+          echo "title: Nightly Release Failed" >> ${{ env.issue-file }}
+          echo "labels: release:blocker" >> ${{ env.issue-file }}
+          echo "---" >> ${{ env.issue-file }}
+          echo "The nightly release failed in the following GitHub actions run." >> ${{ env.issue-file }}
+          echo "* Link to run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> ${{ env.issue-file }}
+          echo "* Triggered by: Nightly scheduled release" >> ${{ env.issue-file }}
+          echo "" >> ${{ env.issue-file }}
+          echo "Note: This issue was auto-generated from [base-release.yaml](https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/.github/workflows/base-release.yaml)" >> ${{ env.issue-file }}
+
+      - name: Create or update issue
+        uses: JasonEtco/create-an-issue@1b14a70e4d8dc185e5cc76d3bec9eab20257b2c5 # v2.9.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          update_existing: true
+          search_existing: open
+          filename: ${{ env.issue-file }}
