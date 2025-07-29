@@ -326,7 +326,7 @@ func (b *distributionBuilder) nightly() config.Nightly {
 	return config.Nightly{
 		VersionTemplate:   "{{ incpatch .Version}}-nightly.{{ .Now.Format \"200601021504\" }}",
 		TagName:           fmt.Sprintf("nightly-%s", b.dist.name),
-		PublishRelease:    true,
+		PublishRelease:    false,
 		KeepSingleRelease: true,
 	}
 }

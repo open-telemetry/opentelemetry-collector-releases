@@ -308,5 +308,4 @@ partial:
 nightly:
   version_template: '{{ incpatch .Version}}-nightly.{{ .Now.Format "200601021504" }}'
   tag_name: nightly-otelcol-otlp
-  publish_release: true
   keep_single_release: true
