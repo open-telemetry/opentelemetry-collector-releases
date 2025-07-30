@@ -503,16 +503,20 @@ func (b *distributionBuilder) WithDefaultRelease() *distributionBuilder {
 
 func (b *distributionBuilder) WithDefaultBinaryRelease(header string) *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		b.dist.release = b.release(header)
+		b.dist.release = b.binaryRelease(header)
 	})
 	return b
 }
 
-func (b *distributionBuilder) release(header string) config.Release {
+func (b *distributionBuilder) binaryRelease(header string) config.Release {
 	return config.Release{
 		MakeLatest: "false",
 		Header: config.IncludedMarkdown{
 			Content: header,
+		},
+		GitHub: config.Repo{
+			Owner: "open-telemetry",
+			Name:  "opentelemetry-collector-releases",
 		},
 	}
 }

@@ -7,10 +7,10 @@ env:
   - CONTAINER_IMAGE_EPHEMERAL_TAG=latest
   - CGO_ENABLED=0
 release:
-  make_latest: "false"
   github:
     owner: open-telemetry
     name: opentelemetry-collector-releases
+  make_latest: "false"
   header: '### Release of OpAMP supervisor artifacts'
 builds:
   - id: opampsupervisor-linux
