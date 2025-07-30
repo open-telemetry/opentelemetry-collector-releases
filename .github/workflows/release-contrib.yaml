@@ -4,9 +4,6 @@ on:
   push:
     tags: ["v*"]
 
-permissions:
-  contents: read
-
 jobs:
   release:
     name: Release Contrib

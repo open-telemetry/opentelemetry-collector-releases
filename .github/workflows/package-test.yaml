@@ -4,9 +4,6 @@ on:
   schedule:
     - cron: "0 2 * * *" # every day at 2am UTC
 
-permissions:
-  contents: read
-
 jobs:
   check-goreleaser:
     name: Build - Contrib - GoReleaser
