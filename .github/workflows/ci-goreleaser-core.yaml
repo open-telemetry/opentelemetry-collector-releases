@@ -23,9 +23,6 @@ on:
       - "go.mod"
       - "go.sum"
 
-permissions:
-  contents: read
-
 jobs:
   check-goreleaser:
     name: CI - Core - GoReleaser

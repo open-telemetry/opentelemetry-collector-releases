@@ -8,6 +8,9 @@ env:
   - CGO_ENABLED=0
 release:
   make_latest: "false"
+  github:
+    owner: open-telemetry
+    name: opentelemetry-collector-releases
   header: '### Release of OpAMP supervisor artifacts'
 builds:
   - id: opampsupervisor-linux
