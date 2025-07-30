@@ -6,6 +6,11 @@
 
 ## v0.131.0
 
+### 🛑 Breaking changes 🛑
+
+- `exporter/loki`: The `Loki Exporter` component has been removed from the repo and is no longer being published as it has been deprecated since 9th July 2024. (#1044)
+  Users of the `lokiexporter` can migrate to using an OTLP exporter. See https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/33916
+
 ### 🚀 New components 🚀
 
 - `prometheusremotewritereceiver`: Add the prometheusremotewritereceiver component to the contrib collector (#1020)
