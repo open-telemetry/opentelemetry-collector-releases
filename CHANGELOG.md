@@ -4,6 +4,18 @@
 
 <!-- next version -->
 
+## v0.131.0
+
+### 🚀 New components 🚀
+
+- `prometheusremotewritereceiver`: Add the prometheusremotewritereceiver component to the contrib collector (#1020)
+- `tinybirdexporter`: Add tinybird exporter to contrib distribution (#1045)
+
+### 💡 Enhancements 💡
+
+- `contrib`: add the `text_encoding` encoding extension to the contrib distribution (#1025)
+- `all`: Removes usages of golang.org/x/net/trace which uses html/template and text/template in gRPC. These usages disable golang DCE. (#1018)
+
 ## v0.130.0
 
 ### 🚀 New components 🚀
