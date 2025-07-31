@@ -161,5 +161,4 @@ monorepo:
 nightly:
   version_template: '{{ incpatch .Version}}-nightly.{{ .Now.Format "200601021504" }}'
   tag_name: nightly-builder
-  publish_release: true
   keep_single_release: true

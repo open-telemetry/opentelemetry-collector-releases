@@ -211,6 +211,7 @@ var (
 	}).WithBinaryPackagingDefaults().
 		WithBinaryMonorepo(".core/cmd/builder").
 		WithDefaultBinaryRelease(ocbReleaseHeader).
+		WithNightlyConfig().
 		Build()
 
 	// OpAMP Supervisor binary
@@ -230,6 +231,7 @@ var (
 	}).WithBinaryPackagingDefaults().
 		WithBinaryMonorepo(".contrib/cmd/opampsupervisor").
 		WithDefaultBinaryRelease(opampReleaseHeader).
+		WithNightlyConfig().
 		Build()
 )
 
