@@ -7,7 +7,7 @@ change_type: 'enhancement'
 component: platforms
 
 # A brief description of the change.  Surround your text with quotes ("") if it needs to start with a backtick (`).
-note: New Tier 3 - riscv64
+note: Add Tier 3 support for riscv64
 
 
 # One or more tracking issues or pull requests related to the change
