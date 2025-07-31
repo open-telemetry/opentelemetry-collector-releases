@@ -180,9 +180,6 @@ if [ "$commit_changes" = false ]; then
   exit 0
 fi
 
-git config --global user.name "github-actions[bot]"
-git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
 commit_changes() {
   local current_version=$1
   local next_version=$2
