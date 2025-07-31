@@ -16,13 +16,19 @@ on:
         required: false
         type: string
         default: ubuntu-24.04
+      nightly:
+        required: false
+        type: string
+        default: false
 
 env:
   # renovate: datasource=github-releases depName=goreleaser/goreleaser-pro
-  GORELEASER_PRO_VERSION: v2.11.0
+  GORELEASER_PRO_VERSION: v2.11.1
 
 jobs:
   prepare:
+    outputs:
+      PREVIOUS_RELEASE_TAG: ${{ steps.prev-tag.outputs.PREVIOUS_RELEASE_TAG }}
     strategy:
       matrix:
         GOOS: ${{ fromJSON(inputs.goos) }}
@@ -72,8 +78,25 @@ jobs:
           go-version: "~1.24"
           check-latest: true
 
+      - name: Set goreleaser last tag reference in case of non-nightly release
+        id: prev-tag
+        if: inputs.nightly != 'true'
+        # find previous tag by filtering out nightly tags and binary release (OCB, OpAMP) tags and then choosing the
+        # second to last tag (last one is the current release)
+        run: |
+          prev_tag=$(git tag | grep -v "cmd" | grep -v "nightly" | sort -r --version-sort | head -n 2 | tail -n 1)
+          echo "PREVIOUS_RELEASE_TAG=$prev_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Set nightly enabled
+        id: nightly-check
+        if: inputs.nightly == 'true'
+        run: |
+          echo "NIGHTLY_FLAG=--nightly" >> "$GITHUB_OUTPUT"
+
       - name: Generate distribution sources
         run: make generate-sources
+        env:
+          DISTRIBUTIONS: ${{ inputs.distribution }}
 
       - name: Log into Docker.io
         uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
@@ -101,7 +124,7 @@ jobs:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
           workdir: distributions/${{ inputs.distribution }}
-          args: release --clean --split --timeout 2h --config .goreleaser-build.yaml --release-header-tmpl=../../.github/release-template.md
+          args: release --clean --split --timeout 2h --config .goreleaser-build.yaml --release-header-tmpl=../../.github/release-template.md ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }}
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
@@ -111,6 +134,7 @@ jobs:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_YES: true
+          GORELEASER_CURRENT_TAG: ${{ github.ref_name }}
 
       - name: Move built artifacts
         if: inputs.distribution == 'otelcol-contrib'
@@ -127,7 +151,7 @@ jobs:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
           workdir: distributions/${{ inputs.distribution }}
-          args: release --clean --split --timeout 2h --release-header-tmpl=../../.github/release-template.md
+          args: release --clean --split --timeout 2h --release-header-tmpl=../../.github/release-template.md ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }}
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
@@ -143,7 +167,7 @@ jobs:
           if-no-files-found: error
 
   release:
-    name: ${{ inputs.distribution }} Release
+    name: Release
     runs-on: ${{ inputs.runner_os }}
     needs: prepare
 
@@ -232,3 +256,38 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_YES: true
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+          GORELEASER_PREVIOUS_TAG: ${{ needs.prepare.outputs.PREVIOUS_RELEASE_TAG }}
+          GORELEASER_CURRENT_TAG: ${{ github.ref_name }}
+
+  create-issue:
+    name: Create GitHub issue on failed nightly release
+    runs-on: ubuntu-latest
+    needs: [release]
+    if: failure() && inputs.nightly == 'true'
+    permissions:
+      issues: write
+    env:
+      issue-file: "nightly-release-failure.md"
+    steps:
+      - name: Formulate issue
+        run: |
+          # create a markdown file that contains details about the failure
+          echo "---" > ${{ env.issue-file }}
+          echo "title: Nightly Release Failed" >> ${{ env.issue-file }}
+          echo "labels: release:blocker" >> ${{ env.issue-file }}
+          echo "---" >> ${{ env.issue-file }}
+          echo "The nightly release failed in the following GitHub actions run." >> ${{ env.issue-file }}
+          echo "* Link to run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> ${{ env.issue-file }}
+          echo "* Please also check the other distro release runs related to this nightly release" >> ${{ env.issue-file }}
+          echo "* Triggered by: Nightly scheduled release" >> ${{ env.issue-file }}
+          echo "" >> ${{ env.issue-file }}
+          echo "Note: This issue was auto-generated from [base-release.yaml](https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/.github/workflows/base-release.yaml)" >> ${{ env.issue-file }}
+
+      - name: Create or update issue
+        uses: JasonEtco/create-an-issue@1b14a70e4d8dc185e5cc76d3bec9eab20257b2c5 # v2.9.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          update_existing: true
+          search_existing: open
+          filename: ${{ env.issue-file }}

@@ -4,7 +4,7 @@ env:
   - COSIGN_YES=true
   - LD_FLAGS=-extldflags=-static
   - BUILD_FLAGS=-trimpath
-  - CONTAINER_IMAGE_EPHEMERAL_TAG=latest
+  - CONTAINER_IMAGE_EPHEMERAL_TAG={{ if .IsNightly }}nightly{{ else }}latest{{ end }}
   - GO_TAGS=osusergo,netgo
 release:
   replace_existing_artifacts: true

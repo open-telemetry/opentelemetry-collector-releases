@@ -36,6 +36,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 - [Bogdan Drutu](https://github.com/bogdandrutu), Snowflake
 - [Dmitrii Anoshin](https://github.com/dmitryax), Splunk
 - [Evan Bradley](https://github.com/evan-bradley), Dynatrace
+- [Moritz Wiesinger](https://github.com/mowies), Dynatrace
 - [Pablo Baeyens](https://github.com/mx-psi), DataDog
 - [Sean Marciniak](https://github.com/MovieStoreGuy), Splunk
 - [Tyler Helmuth](https://github.com/TylerHelmuth), Honeycomb
@@ -50,7 +51,6 @@ For more information about the maintainer role, see the [community repository](h
 - [David Ashpole](https://github.com/dashpole), Google
 - [John L. Peterson (Jack)](https://github.com/jackgopack4), Datadog
 - [Matt Wear](https://github.com/mwear), Lightstep
-- [Moritz Wiesinger](https://github.com/mowies), Dynatrace
 - [Sam DeHaan](https://github.com/dehaansa), Grafana Labs
 - [Ziqi Zhao](https://github.com/fatsheep9146), Alibaba
 
