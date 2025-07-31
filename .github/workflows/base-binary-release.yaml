@@ -1,0 +1,97 @@
+name: Reusable binary release workflow
+on:
+  workflow_call:
+    inputs:
+      binary:
+        required: true
+        type: string
+        description: "Which binary to release. Possible options: ['builder', 'opampsupervisor']"
+      collector-dependency:
+        required: false
+        type: string
+        default: ""
+        description: "Set this to the repo slug of collector core or contrib to check out if it's needed as a dependency"
+      dependency-target-folder:
+        required: false
+        type: string
+        default: ""
+        description: "The collector dependency will be put into this folder"
+
+env:
+  # renovate: datasource=github-releases depName=goreleaser/goreleaser-pro
+  GORELEASER_PRO_VERSION: v2.11.0
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      id-token: write
+      packages: write
+      contents: write
+
+    steps:
+      - name: Checkout Releases Repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Push ${{ inputs.binary }} Tag
+        run: |
+          tag="cmd/${{ inputs.binary }}/${{ github.ref_name }}"
+          message="Releasing ${{ inputs.binary }} binaries for ${{ github.ref_name }}"
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git tag -a "${tag}" -m "${message}"
+          git push origin "${tag}"
+
+      - name: Checkout Collector dependency repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          repository: ${{ inputs.collector-dependency }}
+          ref: ${{ github.ref_name }}
+          path: ${{ inputs.dependency-target-folder }}
+
+      - name: Copy Dockerfile to Core Repo directory
+        run:  cp cmd/${{ inputs.binary }}/Dockerfile ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}/Dockerfile
+
+      - uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
+
+      - uses: anchore/sbom-action/download-syft@cee1b8e05ae5b2593a75e197229729eabaa9f8ec # v0.20.2
+
+      - uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
+        with:
+          platforms: amd64,arm64,ppc64le
+
+      - uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+
+      - name: Setup Go
+        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
+        with:
+          go-version: "~1.24"
+
+      - name: Log into Docker.io
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        with:
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
+
+      - name: Login to GitHub Package Registry
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
+        with:
+          distribution: goreleaser-pro
+          version: ${{ env.GORELEASER_PRO_VERSION }}
+          args: release --clean -f cmd/${{ inputs.binary }}/.goreleaser.yml
+        env:
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COSIGN_YES: true
+          SKIP_SIGNS: false
