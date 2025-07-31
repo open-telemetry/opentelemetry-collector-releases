@@ -39,3 +39,9 @@ jobs:
         run: make ci
         env:
           DISTRIBUTIONS: ${{ matrix.distro }}
+
+  build-result:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - run: echo "Build for all distros succeeded"
