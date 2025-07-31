@@ -200,7 +200,7 @@ create_pr() {
 
   gh pr create --title "[chore] Prepare release $next_version" \
     --body "This PR updates the version from $current_version to $next_version" \
-    --base main --head "$branch_name" --draft
+    --base main --head "$branch_name"
 }
 
 # TODO: Once Collector 1.0 is released, we can consider removing the
