@@ -4,7 +4,7 @@ env:
   - COSIGN_YES=true
   - LD_FLAGS=-s -w -X github.com/open-telemetry/opentelemetry-collector-contrib/cmd/opampsupervisor/internal.version={{ .Version }}
   - BUILD_FLAGS=-trimpath
-  - CONTAINER_IMAGE_EPHEMERAL_TAG=latest
+  - CONTAINER_IMAGE_EPHEMERAL_TAG={{ if .IsNightly }}nightly{{ else }}latest{{ end }}
   - CGO_ENABLED=0
 release:
   github:
@@ -158,3 +158,9 @@ sboms:
 monorepo:
   tag_prefix: cmd/opampsupervisor/
   dir: .contrib/cmd/opampsupervisor
+nightly:
+  version_template: '{{ incpatch .Version}}-nightly.{{ .Now.Format "200601021504" }}'
+  tag_name: nightly-opamp-supervisor
+  publish_release: true
+  keep_single_release: true
+

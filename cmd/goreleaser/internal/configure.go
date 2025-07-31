@@ -41,7 +41,7 @@ const (
 	imageNamePrefix       = "opentelemetry-collector"
 	ocbBinary             = "builder"
 	opampBinary           = "opampsupervisor"
-	containerEphemeralTag = "CONTAINER_IMAGE_EPHEMERAL_TAG=latest"
+	containerEphemeralTag = "CONTAINER_IMAGE_EPHEMERAL_TAG={{ if .IsNightly }}nightly{{ else }}latest{{ end }}"
 	projectName           = "opentelemetry-collector-releases"
 	defaultBuildDir       = "_build"
 	ocbReleaseHeader      = "### Images and binaries for collector distributions here: https://github.com/open-telemetry/opentelemetry-collector-releases/releases/tag/{{ .Tag }}"
@@ -140,6 +140,7 @@ var (
 		WithDefaultEnv().
 		WithDefaultPartial().
 		WithDefaultRelease().
+		WithNightlyConfig().
 		Build()
 
 	// k8s distro
@@ -165,6 +166,7 @@ var (
 		WithDefaultEnv().
 		WithDefaultPartial().
 		WithDefaultRelease().
+		WithNightlyConfig().
 		Build()
 
 	// ebpf-profiler distro
@@ -397,6 +399,22 @@ func (b *distributionBuilder) dockerSigns() []config.Sign {
 	}
 }
 
+func (b *distributionBuilder) WithNightlyConfig() *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		b.dist.nightly = b.nightly()
+	})
+	return b
+}
+
+func (b *distributionBuilder) nightly() config.Nightly {
+	return config.Nightly{
+		VersionTemplate:   "{{ incpatch .Version}}-nightly.{{ .Now.Format \"200601021504\" }}",
+		TagName:           fmt.Sprintf("nightly-%s", b.dist.name),
+		PublishRelease:    false,
+		KeepSingleRelease: true,
+	}
+}
+
 func (b *distributionBuilder) WithDefaultSBOMs() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
 		d.sboms = b.sboms()
@@ -532,7 +550,8 @@ func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
 		WithDefaultDockerSigns().
 		WithDefaultSBOMs().
 		WithDefaultPartial().
-		WithDefaultRelease()
+		WithDefaultRelease().
+		WithNightlyConfig()
 }
 
 func (b *distributionBuilder) WithBinaryPackagingDefaults() *distributionBuilder {
@@ -600,6 +619,7 @@ type distribution struct {
 	signs                   []config.Sign
 	dockerSigns             []config.Sign
 	sboms                   []config.SBOM
+	nightly                 config.Nightly
 	checksum                config.Checksum
 	partial                 config.Partial
 	monorepo                config.Monorepo
@@ -632,6 +652,7 @@ func (d *distribution) BuildProject() config.Project {
 		Signs:           d.signs,
 		DockerSigns:     d.dockerSigns,
 		SBOMs:           d.sboms,
+		Nightly:         d.nightly,
 		Version:         2,
 		Monorepo:        d.monorepo,
 		Partial:         d.partial,
