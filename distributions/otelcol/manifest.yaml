@@ -2,7 +2,7 @@ dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/core
   name: otelcol
   description: OpenTelemetry Collector
-  version: 0.131.0
+  version: 0.131.1
   output_path: ./_build
   build_tags: "grpcnotrace"
 
