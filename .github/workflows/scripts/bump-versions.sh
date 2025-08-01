@@ -180,9 +180,6 @@ if [ "$commit_changes" = false ]; then
   exit 0
 fi
 
-git config --global user.name "github-actions[bot]"
-git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
 commit_changes() {
   local current_version=$1
   local next_version=$2
@@ -203,7 +200,7 @@ create_pr() {
 
   gh pr create --title "[chore] Prepare release $next_version" \
     --body "This PR updates the version from $current_version to $next_version" \
-    --base main --head "$branch_name" --draft
+    --base main --head "$branch_name"
 }
 
 # TODO: Once Collector 1.0 is released, we can consider removing the
