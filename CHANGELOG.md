@@ -6,6 +6,13 @@
 
 ## v0.131.0
 
+### 🧰 Bug fixes 🧰
+
+- `service/telemetry`: Pins go.opentelemetry.io/otel/exporters/prometheus to v0.58.0 (#1067)
+  go.opentelemetry.io/otel/exporters/prometheus v0.59.x has a bug leading to unexpected suffix in metric names, we want to stay with v0.58.0 in the artifacts.
+
+## v0.131.0
+
 ### 🛑 Breaking changes 🛑
 
 - `exporter/loki`: The `Loki Exporter` component has been removed from the repo and is no longer being published as it has been deprecated since 9th July 2024. (#1044)
