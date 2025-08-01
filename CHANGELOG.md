@@ -4,6 +4,13 @@
 
 <!-- next version -->
 
+## v0.131.1
+
+### 🧰 Bug fixes 🧰
+
+- `service/telemetry`: Pins go.opentelemetry.io/otel/exporters/prometheus to v0.58.0 (#1067)
+  go.opentelemetry.io/otel/exporters/prometheus v0.59.x has a bug leading to unexpected suffix in metric names, we want to stay with v0.58.0 in the artifacts.
+
 ## v0.131.0
 
 ### 🛑 Breaking changes 🛑
