@@ -306,3 +306,15 @@ jobs:
             cat docker-logs-${{ inputs.distribution }}.log
             exit 1
           fi
+
+      - name: Run golden tests
+        run: |
+          echo "Running golden tests..."
+          cd tests/golden
+          IMG=${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }} docker compose up -d --wait
+          exit_code=$(docker wait golden)
+          docker logs golden
+          if [ "$exit_code" -ne 0 ]; then
+            docker logs collector
+            exit 1
+          fi
