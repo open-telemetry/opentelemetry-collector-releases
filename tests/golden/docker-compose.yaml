@@ -12,8 +12,9 @@ services:
     image: ghcr.io/open-telemetry/opentelemetry-collector-contrib/golden:latest
     volumes:
       - ./data:/var/data
+      - /tmp:/tmp
     command: >-
-      --expected /var/data/expected.yaml
+      --expected /tmp/expected.yaml
       --otlp-http-endpoint 0.0.0.0:4318
       --otlp-endpoint 0.0.0.0:4317
       --ignore-timestamp
@@ -31,4 +32,4 @@ services:
       --ignore-metric-values
       --ignore-data-points-attributes-order
       --ignore-scope-version
-      #--write-expected
+      --write-expected
