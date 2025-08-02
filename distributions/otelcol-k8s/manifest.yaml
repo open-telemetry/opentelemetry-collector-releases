@@ -88,3 +88,6 @@ providers:
   - gomod: go.opentelemetry.io/collector/confmap/provider/httpprovider v1.37.0
   - gomod: go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.37.0
   - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.37.0
+
+replaces:
+  - go.opentelemetry.io/otel/exporters/prometheus => go.opentelemetry.io/otel/exporters/prometheus v0.58.0
