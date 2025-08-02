@@ -3,7 +3,10 @@ services:
     container_name: collector
     image: ${IMG}
     volumes:
-      - ./config.yaml:/etc/otelcol-contrib/config.yaml
+      - ./config.yaml:/etc/config.yaml
+    command:
+      - --config
+      - /etc/config.yaml
   golden:
     container_name: golden
     image: ghcr.io/open-telemetry/opentelemetry-collector-contrib/golden:latest
@@ -28,4 +31,4 @@ services:
       --ignore-metric-values
       --ignore-data-points-attributes-order
       --ignore-scope-version
-      --write-expected
+      #--write-expected
