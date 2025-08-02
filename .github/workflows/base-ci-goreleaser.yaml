@@ -316,5 +316,6 @@ jobs:
           docker logs golden
           if [ "$exit_code" -ne 0 ]; then
             docker logs collector
+            cat data/expected.yaml
             exit 1
           fi

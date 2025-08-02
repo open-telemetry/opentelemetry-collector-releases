@@ -28,4 +28,4 @@ services:
       --ignore-metric-values
       --ignore-data-points-attributes-order
       --ignore-scope-version
-      #--write-expected
+      --write-expected
