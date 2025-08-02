@@ -48,3 +48,4 @@ jobs:
     with:
       distribution: otelcol-contrib
       type: '[ "msi" ]'
+
