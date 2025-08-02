@@ -2,7 +2,7 @@
 
 Support for a distribution implies all the duties covered by the Approver and Maintainer role requirements. In addition, support means that the Collector SIG is the owner and maintainer of the binaries/images of the different Collector distributions and is responsible for the pipeline that produces those artifacts.
 
-The Collector SIG will support at least one distribution that is recommended for production which includes support for Prometheus, Jaeger, Zipkin, and OpenCensus.
+The Collector SIG will support at least one distribution that is recommended for production which includes support for Prometheus, Jaeger, and Zipkin.
 
 Distributions supported by the Collector SIG should fulfill the following criteria:
 
