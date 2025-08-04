@@ -3,7 +3,9 @@ name: Regression Tests
 on:
   merge_group:
   push:
-    branches: [main]
+    branches:
+      - main
+      - release/*
 
 jobs:
   check-goreleaser:
