@@ -142,7 +142,7 @@ sboms:
   - id: package
     artifacts: package
 nightly:
-  version_template: '{{ incpatch .Version}}-nightly.{{ .Now.Format "200601021504" }}'
+  version_template: '{{ incpatch .Version}}-nightly.{{ .ShortCommit }}'
   tag_name: nightly-opamp-supervisor
   keep_single_release: true
     
