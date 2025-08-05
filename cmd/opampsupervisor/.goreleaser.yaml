@@ -160,5 +160,5 @@ monorepo:
   dir: .contrib/cmd/opampsupervisor
 nightly:
   version_template: '{{ incpatch .Version}}-nightly.{{ .ShortCommit }}'
-  tag_name: nightly-opamp-supervisor
+  tag_name: nightly-opampsupervisor
   keep_single_release: true
