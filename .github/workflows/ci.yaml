@@ -1,11 +1,15 @@
 name: CI - Binaries
 
 on:
-  merge_group: 
+  merge_group:
   push:
-    branches: [main]
+    branches:
+      - main
+      - release/*
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - release/*
 
 jobs:
   build:

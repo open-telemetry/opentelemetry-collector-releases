@@ -3,7 +3,9 @@ name: CI - Builder
 on:
   merge_group:
   push:
-    branches: [main]
+    branches:
+      - main
+      - release/*
     paths:
       - "distributions/otelcol-contrib/**"
       - "cmd/**"
@@ -13,7 +15,9 @@ on:
       - "go.mod"
       - "go.sum"
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - release/*
     paths:
       - "distributions/otelcol-contrib/**"
       - "cmd/**"
@@ -25,7 +29,7 @@ on:
 
 env:
   # renovate: datasource=github-releases depName=goreleaser/goreleaser-pro
-  GORELEASER_PRO_VERSION: v2.11.1
+  GORELEASER_PRO_VERSION: v2.11.2
 
 jobs:
   check-goreleaser:
