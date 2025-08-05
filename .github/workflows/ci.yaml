@@ -45,6 +45,7 @@ jobs:
           DISTRIBUTIONS: ${{ matrix.distro }}
 
   build-result:
+    name: "Build Result"
     runs-on: ubuntu-latest
     needs: build
     steps:
