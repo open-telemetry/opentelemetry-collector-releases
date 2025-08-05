@@ -15,4 +15,4 @@ The full list of components is available in the [manifest](manifest.yaml).
  - All components must be vendor-neutral.
  - Only exporters that use OTLP are allowed.
    - To facilitate troubleshooting, the nop, debug, and file exporters are exceptions.
- - All technologies OTel promised to support will be included as receivers. Specifically this means the `jaegerreceiver`, `zipkinreceiver`, `opencensusreceiver`, and `prometheusreceiver` will be included.
+ - All technologies OTel promised to support will be included as receivers. Specifically this means the `jaegerreceiver`, `zipkinreceiver`, and `prometheusreceiver` will be included.

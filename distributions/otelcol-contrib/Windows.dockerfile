@@ -7,4 +7,4 @@ COPY config.yaml ./config.yaml
 
 ENTRYPOINT ["otelcol-contrib.exe"]
 CMD ["--config", "config.yaml"]
-EXPOSE 4317 4318 55678 55679
+EXPOSE 4317 4318 55679
