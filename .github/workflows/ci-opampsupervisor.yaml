@@ -3,7 +3,9 @@ name: CI - OpAMP supervisor
 on:
   merge_group: 
   push:
-    branches: [main]
+    branches:
+      - main
+      - release/*
     paths:
       - "cmd/**"
       - ".github/**"
@@ -12,7 +14,9 @@ on:
       - "go.mod"
       - "go.sum"
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - release/*
     paths:
       - "cmd/**"
       - ".github/**"
