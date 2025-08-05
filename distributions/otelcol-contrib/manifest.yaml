@@ -80,7 +80,6 @@ exporters:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logicmonitorexporter v0.131.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.131.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/mezmoexporter v0.131.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/opencensusexporter v0.131.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/opensearchexporter v0.131.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/otelarrowexporter v0.131.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.131.0
@@ -189,7 +188,6 @@ receivers:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/nginxreceiver v0.131.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/nsxtreceiver v0.131.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/ntpreceiver v0.131.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/opencensusreceiver v0.131.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/oracledbreceiver v0.131.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/otlpjsonfilereceiver v0.131.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/otelarrowreceiver v0.131.0
@@ -262,3 +260,5 @@ providers:
 replaces:
   # see https://github.com/openshift/api/pull/1515
   - github.com/openshift/api => github.com/openshift/api v0.0.0-20230726162818-81f778f3b3ec
+  # see https://github.com/open-telemetry/opentelemetry-collector/pull/13466
+  - go.opentelemetry.io/otel/exporters/prometheus => go.opentelemetry.io/otel/exporters/prometheus v0.58.0
