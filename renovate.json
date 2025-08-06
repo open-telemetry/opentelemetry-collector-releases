@@ -145,9 +145,33 @@
         "github.com/goreleaser/goreleaser-pro"
       ],
       "groupName": "GoReleaser Pro"
+    },
+    {
+      "matchPackageNames": [
+        "open-telemetry/opentelemetry-collector",
+        "/^go\\.opentelemetry\\.io/collector//"
+      ],
+      "groupName": "OpenTelemetry Collector Core Components"
+    },
+    {
+      "matchPackageNames": [
+        "open-telemetry/opentelemetry-collector-contrib",
+        "/^github\\.com/open-telemetry/opentelemetry-collector-contrib//"
+      ],
+      "groupName": "OpenTelemetry Collector Contrib Components"
     }
   ],
   "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "^manifest.yaml$"
+      ],
+      "datasourceTemplate": "go",
+      "matchStrings": [
+        "- gomod: (?<depName>(go\\.opentelemetry\\.io/collector|github\\.com/open-telemetry/opentelemetry-collector-contrib)/([A-Za-z0-9]+/)*[A-Za-z0-9]+) (?<currentValue>v\\d+\\.\\d+\\.\\d+)\\n"
+      ]
+    },
     {
       "customType": "regex",
       "managerFilePatterns": [
