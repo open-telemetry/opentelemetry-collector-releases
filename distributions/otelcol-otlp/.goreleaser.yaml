@@ -93,7 +93,7 @@ nfpms:
     builds:
       - otelcol-otlp-linux
 checksum:
-  name_template: '{{ .ProjectName }}_otelcol-otlp_checksums.txt'
+  name_template: '{{ .ProjectName }}_otelcol-otlp{{ if .Runtime.Goos == "windows" }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt'
 dockers:
   - goos: linux
     goarch: "386"
