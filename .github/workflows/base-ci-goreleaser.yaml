@@ -29,7 +29,7 @@ on:
         type: string
 
 env:
-  # renovate: datasource=github-releases depName=goreleaser/goreleaser-pro
+  # renovate: datasource=github-releases packageName=goreleaser/goreleaser-pro
   GORELEASER_PRO_VERSION: v2.11.2
 
 jobs:
