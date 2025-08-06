@@ -19,6 +19,8 @@ subtext: |
   This fixes a bug that occurred because releases for Windows and other Platforms are split.
   The Windows release always overwrote the checksum files already created for Linux and Darwin and so, only
   the Windows checksums were accessible in the end.
+  
+  This change is breaking because checksum filenames for Windows were changed.
 
 # Optional: The change log or logs in which this entry should be included.
 # e.g. '[user]' or '[user, api]'
