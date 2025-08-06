@@ -152,12 +152,6 @@ echo "  - contrib beta module set from $current_beta_contrib to $next_beta_contr
 echo "  - distribution version to $next_distribution_version"
 for file in "${manifest_files[@]}"; do
   if [ -f "$file" ]; then
-    sed "s/\(^.*go\.opentelemetry\.io\/collector\/.*\) v$escaped_current_beta_core/\1 v$next_beta_core/" "$file" > "$file.tmp"
-    mv "$file.tmp" "$file"
-    sed "s/\(^.*github\.com\/open-telemetry\/opentelemetry-collector-contrib\/.*\) v$escaped_current_beta_contrib/\1 v$next_beta_contrib/" "$file" > "$file.tmp"
-    mv "$file.tmp" "$file"
-    sed "s/\(^.*go\.opentelemetry\.io\/collector\/.*\) v$escaped_current_stable/\1 v$next_stable_core/" "$file" > "$file.tmp"
-    mv "$file.tmp" "$file"
     sed "s/version: .*/version: $next_distribution_version/" "$file" > "$file.tmp"
     mv "$file.tmp" "$file"
   else
