@@ -102,15 +102,6 @@
       "matchManagers": [
         "gomod"
       ],
-      "groupName": "All go.opentelemetry.io/collector packages",
-      "matchPackageNames": [
-        "go.opentelemetry.io/collector{/,}**"
-      ]
-    },
-    {
-      "matchManagers": [
-        "gomod"
-      ],
       "groupName": "All go.opentelemetry.io/build-tools packages",
       "matchPackageNames": [
         "go.opentelemetry.io/build-tools{/,}**"
@@ -164,8 +155,8 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": [
-        "^manifest.yaml$"
+      "managerFilePatterns": [
+        "/(^|\\/)manifest.ya?ml$/"
       ],
       "datasourceTemplate": "go",
       "matchStrings": [
