@@ -7,7 +7,7 @@ change_type: breaking
 component: releases
 
 # A brief description of the change.  Surround your text with quotes ("") if it needs to start with a backtick (`).
-note: Fix artifact checksum files being incomplete
+note: Fix artifact checksum files being incomplete and split between Linux/Darwin and Windows.
 
 # One or more tracking issues or pull requests related to the change
 issues: [1002, 1086]
