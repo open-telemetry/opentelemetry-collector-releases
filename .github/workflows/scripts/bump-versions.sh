@@ -141,8 +141,6 @@ fi
 
 # add escape characters to the current versions to work with sed
 escaped_current_beta_core=${current_beta_core//./\\.}
-escaped_current_beta_contrib=${current_beta_contrib//./\\.}
-escaped_current_stable=${current_stable//./\\.}
 
 # Update versions in each manifest file
 echo "Making the following updates:"
