@@ -34,7 +34,7 @@ jobs:
     with:
       distribution: otelcol
       goos: '[ "linux", "windows", "darwin" ]'
-      goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x" ]'
+      goarch: '[ "386", "amd64", "arm", "arm64", "ppc64le", "riscv64", "s390x" ]'
     secrets: inherit
 
   package-tests:
