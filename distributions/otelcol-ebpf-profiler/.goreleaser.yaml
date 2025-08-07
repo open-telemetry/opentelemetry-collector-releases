@@ -26,7 +26,7 @@ archives:
     builds:
       - otelcol-ebpf-profiler-linux
 checksum:
-  name_template: '{{ .ProjectName }}_otelcol-ebpf-profiler_checksums.txt'
+  name_template: '{{ .ProjectName }}_otelcol-ebpf-profiler{{ if .Runtime.Goos == "windows" }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt'
 dockers:
   - goos: linux
     goarch: amd64
