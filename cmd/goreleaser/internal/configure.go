@@ -55,7 +55,8 @@ var (
 	darwinArchs       = []string{"amd64", "arm64"}
 	k8sArchs          = []string{"amd64", "arm64", "ppc64le", "riscv64", "s390x"}
 	ebpfProfilerArchs = []string{"amd64"}
-	ocbArchs          = []string{"amd64", "arm64", "ppc64le"}
+	ocbArchs          = []string{"amd64", "arm64", "ppc64le", "riscv64"}
+	opAmpArchs        = []string{"amd64", "arm64", "ppc64le"}
 
 	imageRepos = []string{dockerHub, ghcr}
 
@@ -217,15 +218,15 @@ var (
 	// OpAMP Supervisor binary
 	opampDist = newDistributionBuilder(opampBinary).WithConfigFunc(func(d *distribution) {
 		d.buildConfigs = []buildConfig{
-			&fullBuildConfig{targetOS: "linux", targetArch: ocbArchs, binaryName: "opampsupervisor"},
+			&fullBuildConfig{targetOS: "linux", targetArch: opAmpArchs, binaryName: "opampsupervisor"},
 			&fullBuildConfig{targetOS: "darwin", targetArch: darwinArchs, binaryName: "opampsupervisor"},
 			&fullBuildConfig{targetOS: "windows", targetArch: []string{"amd64"}, binaryName: "opampsupervisor"},
 		}
 		d.containerImages = slices.Concat(
-			newContainerImages(d.name, "linux", ocbArchs, containerImageOptions{binaryRelease: true}),
+			newContainerImages(d.name, "linux", opAmpArchs, containerImageOptions{binaryRelease: true}),
 		)
 		d.containerImageManifests = slices.Concat(
-			newContainerImageManifests(d.name, "linux", ocbArchs, containerImageOptions{binaryRelease: true}),
+			newContainerImageManifests(d.name, "linux", opAmpArchs, containerImageOptions{binaryRelease: true}),
 		)
 		d.ldFlags = "-s -w -X github.com/open-telemetry/opentelemetry-collector-contrib/cmd/opampsupervisor/internal.version={{ .Version }}"
 	}).WithBinaryPackagingDefaults().
