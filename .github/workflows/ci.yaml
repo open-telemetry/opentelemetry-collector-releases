@@ -1,4 +1,4 @@
-name: CI - Binaries
+name: CI - Collector Binaries
 
 on:
   merge_group:
