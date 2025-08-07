@@ -24,6 +24,7 @@ builds:
       - arm
       - arm64
       - ppc64le
+      - riscv64
       - s390x
     goarm:
       - "7"
@@ -187,6 +188,24 @@ dockers:
       - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
   - goos: linux
+    goarch: riscv64
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-otlp:{{ .Version }}-riscv64
+      - otel/opentelemetry-collector-otlp:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-riscv64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Version }}-riscv64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-riscv64
+    build_flag_templates:
+      - --pull
+      - --platform=linux/riscv64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+  - goos: linux
     goarch: s390x
     dockerfile: Dockerfile
     image_templates:
@@ -254,6 +273,7 @@ docker_manifests:
       - otel/opentelemetry-collector-otlp:{{ .Version }}-armv7
       - otel/opentelemetry-collector-otlp:{{ .Version }}-arm64
       - otel/opentelemetry-collector-otlp:{{ .Version }}-ppc64le
+      - otel/opentelemetry-collector-otlp:{{ .Version }}-riscv64
       - otel/opentelemetry-collector-otlp:{{ .Version }}-s390x
   - name_template: otel/opentelemetry-collector-otlp:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
     image_templates:
@@ -262,6 +282,7 @@ docker_manifests:
       - otel/opentelemetry-collector-otlp:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-armv7
       - otel/opentelemetry-collector-otlp:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
       - otel/opentelemetry-collector-otlp:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64le
+      - otel/opentelemetry-collector-otlp:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-riscv64
       - otel/opentelemetry-collector-otlp:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-s390x
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Version }}
     image_templates:
@@ -270,6 +291,7 @@ docker_manifests:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Version }}-armv7
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Version }}-arm64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Version }}-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Version }}-riscv64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Version }}-s390x
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
     image_templates:
@@ -278,6 +300,7 @@ docker_manifests:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-armv7
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-riscv64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-otlp:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-s390x
 signs:
   - cmd: cosign

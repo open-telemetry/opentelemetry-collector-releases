@@ -55,6 +55,10 @@ jobs:
             GOARCH: ppc64le
           - GOOS: windows
             GOARCH: ppc64le
+          - GOOS: darwin
+            GOARCH: riscv64
+          - GOOS: windows
+            GOARCH: riscv64
     runs-on: ubuntu-24.04
     outputs:
       version: ${{ steps.prep.outputs.version }}
@@ -68,7 +72,7 @@ jobs:
       - name: Setup QEMU
         uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
         with:
-          platforms: arm64,ppc64le,linux/arm/v7,s390x
+          platforms: arm64,ppc64le,linux/arm/v7,s390x,riscv64
 
       - name: Setup wixl # Required to build MSI packages for Windows
         if: ${{ matrix.GOOS == 'windows' && ( matrix.GOARCH == '386' || matrix.GOARCH == 'amd64') }}
@@ -268,7 +272,7 @@ jobs:
       - name: Setup QEMU
         uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
         with:
-          platforms: arm64,ppc64le,linux/arm/v7,s390x
+          platforms: arm64,ppc64le,linux/arm/v7,s390x,riscv64
 
       - name: Download container image artifact
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
@@ -304,5 +308,18 @@ jobs:
             echo "Printing container logs below..."
             echo ""
             cat docker-logs-${{ inputs.distribution }}.log
+            exit 1
+          fi
+
+      - name: Run golden tests
+        if: matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' && inputs.distribution == 'otelcol-contrib'
+        run: |
+          echo "Running golden tests..."
+          cd tests/golden
+          MY_UID="$(id -u)" MY_GID="$(id -g)" IMG=${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }} docker compose up -d --wait
+          exit_code=$(docker wait golden)
+          docker logs golden
+          if [ "$exit_code" -ne 0 ]; then
+            docker logs collector
             exit 1
           fi
