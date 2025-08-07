@@ -39,7 +39,7 @@ jobs:
       - name: Set goreleaser last tag reference in case of non-nightly release
         id: prev-tag
         if: ${{ !contains(github.ref, '-nightly') }}
-        # find previous tag by taking only OCB tags, filtering out nightly tags and then choosing the
+        # find previous tag by taking only binary tags, filtering out nightly tags and then choosing the
         # second to last tag (last one is the current release)
         run: |
           prev_tag=$(git tag | grep "cmd/${{ inputs.binary }}" | grep -v "nightly" | sort -r --version-sort | head -n 2 | tail -n 1)
@@ -77,7 +77,7 @@ jobs:
           ref: ${{ steps.collector-ref.outputs.COLLECTOR_REF }}
           path: ${{ inputs.dependency-target-folder }}
 
-      - name: Copy Dockerfile to Core Repo directory
+      - name: Copy Dockerfile to Collector dependency directory
         run: cp cmd/${{ inputs.binary }}/Dockerfile ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}/Dockerfile
 
       - uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
