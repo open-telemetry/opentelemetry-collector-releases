@@ -113,7 +113,7 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
-          args: release --clean -f cmd/${{ inputs.binary }}/.goreleaser.yml ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }}
+          args: release --clean -f cmd/${{ inputs.binary }}/.goreleaser.yaml ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }}
         env:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
