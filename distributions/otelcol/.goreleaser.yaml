@@ -98,7 +98,7 @@ nfpms:
     builds:
       - otelcol-linux
 checksum:
-  name_template: '{{ .ProjectName }}_otelcol{{ if .Runtime.Goos == "windows" }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt'
+  name_template: '{{ .ProjectName }}_otelcol{{ if eq .Runtime.Goos "windows" }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt'
 dockers:
   - goos: linux
     goarch: "386"
