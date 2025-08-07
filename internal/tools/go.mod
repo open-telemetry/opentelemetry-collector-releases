@@ -22,3 +22,5 @@ retract (
 	v0.57.1 // Release failed, use v0.57.2
 	v0.57.0 // Release failed, use v0.57.2
 )
+
+replace gopkg.in/yaml.v3 => sigs.k8s.io/yaml v3.0.4
