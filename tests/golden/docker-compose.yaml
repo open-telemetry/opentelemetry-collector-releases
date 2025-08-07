@@ -1,0 +1,35 @@
+services:
+  collector:
+    container_name: collector
+    image: ${IMG}
+    volumes:
+      - ./config.yaml:/etc/config.yaml
+    command:
+      - --config
+      - /etc/config.yaml
+  golden:
+    container_name: golden
+    image: ghcr.io/open-telemetry/opentelemetry-collector-contrib/golden:latest
+    user: ${MY_UID}:${MY_GID}
+    volumes:
+      - ./data:/var/data
+    command: >-
+      --expected /var/data/expected.yaml
+      --otlp-http-endpoint 0.0.0.0:4318
+      --otlp-endpoint 0.0.0.0:4317
+      --ignore-timestamp
+      --ignore-start-timestamp
+      --timeout 2m
+      --ignore-resource-attribute-value service.instance.id
+      --ignore-metric-attribute-value service.instance.id
+      --ignore-resource-attribute-value service.version
+      --ignore-resource-attribute-value service.name
+      --ignore-metric-attribute-value service.name
+      --ignore-resource-metrics-order
+      --ignore-scope-metrics-order
+      --ignore-metrics-order
+      --ignore-metrics-data-points-order
+      --ignore-metric-values
+      --ignore-data-points-attributes-order
+      --ignore-scope-version
+      #--write-expected
