@@ -193,6 +193,7 @@ var (
 		WithDefaultEnv().
 		WithDefaultPartial().
 		WithDefaultRelease().
+		WithNightlyConfig().
 		Build()
 
 	// OCB binary

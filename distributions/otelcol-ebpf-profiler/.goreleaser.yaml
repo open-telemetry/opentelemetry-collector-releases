@@ -85,3 +85,7 @@ monorepo:
   tag_prefix: v
 partial:
   by: target
+nightly:
+  version_template: '{{ incpatch .Version}}-nightly.{{ .ShortCommit }}'
+  tag_name: nightly-otelcol-ebpf-profiler
+  keep_single_release: true
