@@ -44,8 +44,8 @@ jobs:
         run: |
           echo "name=${{ steps.otelbot-token.outputs.app-slug }}[bot]"  >> "$GITHUB_OUTPUT"
           echo "email=${{ steps.get-user-id.outputs.user-id }}+${{ steps.otelbot-token.outputs.app-slug }}[bot]@users.noreply.github.com>"  >> "$GITHUB_OUTPUT"
-          git config --global user.name "$name"
-          git config --global user.email "$email"
+          git config --global user.name "${{ steps.otelbot-token.outputs.app-slug }}[bot]"
+          git config --global user.email "${{ steps.get-user-id.outputs.user-id }}+${{ steps.otelbot-token.outputs.app-slug }}[bot]@users.noreply.github.com>"
 
       - name: Checkout repository
         uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
