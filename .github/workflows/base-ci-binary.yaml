@@ -17,7 +17,10 @@ on:
         type: string
         default: ""
         description: "The collector dependency will be put into this folder"
-
+      runner_os:
+        required: false
+        type: string
+        default: ubuntu-24.04
 
 env:
   # renovate: datasource=github-releases depName=goreleaser/goreleaser-pro
@@ -25,7 +28,7 @@ env:
 
 jobs:
   check-goreleaser:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner_os }}
     steps:
       - name: Checkout Releases Repo
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2

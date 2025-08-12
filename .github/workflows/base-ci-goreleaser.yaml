@@ -12,6 +12,10 @@ on:
       goarch:
         required: true
         type: string
+      runner_os:
+        required: false
+        type: string
+        default: ubuntu-24.04
       nightly:
         required: false
         type: boolean
@@ -59,7 +63,7 @@ jobs:
             GOARCH: riscv64
           - GOOS: windows
             GOARCH: riscv64
-    runs-on: ubuntu-24.04
+    runs-on: ${{ inputs.runner_os }}
     outputs:
       version: ${{ steps.prep.outputs.version }}
 
@@ -264,7 +268,7 @@ jobs:
         exclude:
           - GOOS: darwin
           - GOOS: windows
-    runs-on: ubuntu-24.04
+    runs-on: ${{ inputs.runner_os }}
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2

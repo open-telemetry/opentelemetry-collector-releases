@@ -14,11 +14,15 @@ on:
         type: boolean
         default: false
         description: "Set to true if a GH issue should be generated upon failure"
+      runner_os:
+        required: false
+        type: string
+        default: ubuntu-24.04
 
 jobs:
   package-tests:
     name: Package Tests
-    runs-on: ubuntu-22.04
+    runs-on: ${{ inputs.runner_os }}
     strategy:
       matrix:
         type: ${{ fromJSON(inputs.type) }}
@@ -36,7 +40,7 @@ jobs:
 
   create-issue:
     name: Create GitHub Issue
-    runs-on: ubuntu-22.04
+    runs-on: ${{ inputs.runner_os }}
     needs: [package-tests]
     if: failure() && inputs.issue-on-failure == 'true'
     steps:
