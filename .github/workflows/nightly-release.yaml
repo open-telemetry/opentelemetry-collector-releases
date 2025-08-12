@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2.0.6
+      - uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b # v2.1.1
         id: otelbot-token
         with:
           app-id: ${{ vars.OTELBOT_COLLECTOR_RELEASES_APP_ID }}
@@ -34,7 +34,7 @@ jobs:
           echo "name=${{ steps.otelbot-token.outputs.app-slug }}[bot]"  >> "$GITHUB_OUTPUT"
           echo "email=${{ steps.get-user-id.outputs.user-id }}+${{ steps.otelbot-token.outputs.app-slug }}[bot]@users.noreply.github.com>"  >> "$GITHUB_OUTPUT"
 
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           fetch-depth: 0
           token: ${{ steps.otelbot-token.outputs.token }}
