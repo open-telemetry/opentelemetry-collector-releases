@@ -4,7 +4,7 @@ go 1.23.0
 
 toolchain go1.23.6
 
-require go.opentelemetry.io/build-tools/chloggen v0.26.0
+require go.opentelemetry.io/build-tools/chloggen v0.26.1
 
 require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
