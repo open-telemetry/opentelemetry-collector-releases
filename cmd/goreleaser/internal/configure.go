@@ -54,7 +54,7 @@ var (
 	winContainerArchs = []string{"amd64"}
 	darwinArchs       = []string{"amd64", "arm64"}
 	k8sArchs          = []string{"amd64", "arm64", "ppc64le", "riscv64", "s390x"}
-	ebpfProfilerArchs = []string{"amd64", "arm64"}
+	ebpfProfilerArchs = []string{"amd64"}
 	ocbArchs          = []string{"amd64", "arm64", "ppc64le", "riscv64"}
 	opAmpArchs        = []string{"amd64", "arm64", "ppc64le"}
 
