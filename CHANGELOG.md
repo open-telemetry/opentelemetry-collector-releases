@@ -4,6 +4,35 @@
 
 <!-- next version -->
 
+## v0.132.0
+
+### 🛑 Breaking changes 🛑
+
+- `releases`: Fix artifact checksum files being incomplete and split between Linux/Darwin and Windows. (#1002, #1086)
+  This fixes a bug that occurred because releases for Windows and other Platforms are split.
+  The Windows release always overwrote the checksum files already created for Linux and Darwin and so, only
+  the Windows checksums were accessible in the end.
+  
+  This change is breaking because checksum files for Linux/Darwin and Windows are now split.
+  
+- `otelcol`: Remove deprecated opencensus exporter and receiver (#1056)
+- `otelcol-contrib`: Remove deprecated opencensus exporter and receiver (#1056)
+- `otelcol-k8s`: Remove deprecated opencensus exporter and receiver (#1056)
+
+### 💡 Enhancements 💡
+
+- `contrib`: Add skywalkingencodingextension in otelcol-contrib distribution (#1078)
+- `releases`: Introduce nightly releases (#1016)
+- `platforms`: Add Tier 3 support for riscv64 (#968, #969)
+  New Tier 3 platform: riscv64 architecture is now included,
+  allowing the collector to be built and distributed for this platform.
+  
+
+### 🧰 Bug fixes 🧰
+
+- `service/telemetry`: Pins go.opentelemetry.io/otel/exporters/prometheus to v0.58.0 (#1067)
+  go.opentelemetry.io/otel/exporters/prometheus v0.59.x has a bug leading to unexpected suffix in metric names, we want to stay with v0.58.0 in the artifacts.
+
 ## v0.131.0
 
 ### 🛑 Breaking changes 🛑
