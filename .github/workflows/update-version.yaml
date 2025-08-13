@@ -22,15 +22,15 @@ jobs:
     permissions:
       contents: write # required for pushing changes
       pull-requests: write # required for creating PR
-    
+
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b # v2.1.1
         id: otelbot-token
         with:
-          app-id: ${{ vars.OTELBOT_APP_ID }}
-          private-key: ${{ secrets.OTELBOT_PRIVATE_KEY }}
+          app-id: ${{ vars.OTELBOT_COLLECTOR_RELEASES_APP_ID }}
+          private-key: ${{ secrets.OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY }}
 
       # The next 2 steps are taken from # from https://github.com/actions/create-github-app-token#create-a-git-committer-string-for-an-app-installation
       - name: Get GitHub App User ID
