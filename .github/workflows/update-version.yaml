@@ -30,7 +30,7 @@ jobs:
         id: otelbot-token
         with:
           app-id: ${{ vars.OTELBOT_COLLECTOR_RELEASES_APP_ID }}
-          private-key: ${{ secrets.OTELBOT_PRIVATE_KEY }}
+          private-key: ${{ secrets.OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY }}
 
       # The next 2 steps are taken from # from https://github.com/actions/create-github-app-token#create-a-git-committer-string-for-an-app-installation
       - name: Get GitHub App User ID
