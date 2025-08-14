@@ -42,8 +42,6 @@ jobs:
       - name: Set up commit author name and email
         id: committer
         run: |
-          echo "name=otelbot"  >> "$GITHUB_OUTPUT"
-          echo "email=197425009+otelbot@users.noreply.github.com"  >> "$GITHUB_OUTPUT"
           git config --global user.name "otelbot"
           git config --global user.email "197425009+otelbot@users.noreply.github.com"
 
