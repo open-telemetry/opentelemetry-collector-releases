@@ -17,7 +17,7 @@ on:
       runner_os:
         required: false
         type: string
-        default: ubuntu-24.04
+        default: ubuntu-22.04
 
 jobs:
   package-tests:
