@@ -32,13 +32,6 @@ jobs:
           app-id: ${{ vars.OTELBOT_COLLECTOR_RELEASES_APP_ID }}
           private-key: ${{ secrets.OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY }}
 
-      # The next 2 steps are taken from # from https://github.com/actions/create-github-app-token#create-a-git-committer-string-for-an-app-installation
-      - name: Get GitHub App User ID
-        id: get-user-id
-        run: echo "user-id=$(gh api "/users/${{ steps.otelbot-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
-        env:
-          GH_TOKEN: ${{ steps.otelbot-token.outputs.token }}
-
       - name: Set up commit author name and email
         id: committer
         run: |
