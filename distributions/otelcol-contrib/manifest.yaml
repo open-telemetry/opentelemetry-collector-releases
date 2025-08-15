@@ -111,6 +111,7 @@ processors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbyattrsprocessor v0.132.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbytraceprocessor v0.132.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/intervalprocessor v0.132.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/isolationforestprocessor v0.132.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.132.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/logdedupprocessor v0.132.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor v0.132.0
