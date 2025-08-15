@@ -10,7 +10,7 @@ component: isolationforestprocessor
 note: This feature introduces anomaly detection using the Online Isolation Forest algorithm applied to streaming - traces, metrics, or logs
 
 # One or more tracking issues or pull requests related to the change
-issues: [https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/41707]
+issues: [41707]
 
 # (Optional) One or more lines of additional information to render under the primary note.
 # These lines will be padded with 2 spaces and then inserted directly into the document.
