@@ -499,8 +499,7 @@ func (b *distributionBuilder) WithDefaultEnv() *distributionBuilder {
 		if !b.dist.enableCgo {
 			env = append(env, "CGO_ENABLED=0")
 		}
-
-		b.dist.env = env
+		b.dist.env = append(b.dist.env, env...)
 	})
 	return b
 }
