@@ -43,7 +43,7 @@ jobs:
         # second to last tag (last one is the current release)
         run: |
           prev_tag=$(git tag | grep "cmd/${{ inputs.binary }}" | grep -v "nightly" | sort -r --version-sort | head -n 2 | tail -n 1)
-          current_tag="cmd/${{ inputs.binary }}/${{ github.ref }}"
+          current_tag="cmd/${{ inputs.binary }}/${{ github.ref_name }}"
           echo "PREVIOUS_RELEASE_TAG=$prev_tag" >> "$GITHUB_OUTPUT"
           echo "CURRENT_TAG=$current_tag" >> "$GITHUB_OUTPUT"
 
