@@ -16,10 +16,6 @@ on:
         type: string
         default: ""
         description: "The collector dependency will be put into this folder"
-      runner_os:
-        required: false
-        type: string
-        default: ubuntu-24.04
 
 env:
   # renovate: datasource=github-releases depName=goreleaser/goreleaser-pro
@@ -27,7 +23,7 @@ env:
 
 jobs:
   goreleaser:
-    runs-on: ${{ inputs.runner_os }}
+    runs-on: ubuntu-24.04
 
     permissions:
       id-token: write
