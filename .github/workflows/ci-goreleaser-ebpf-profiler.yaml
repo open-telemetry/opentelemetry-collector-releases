@@ -28,7 +28,7 @@ on:
       - "go.sum"
 
 jobs:
-  check-goreleaser-amd64:
+  check-goreleaser:
     name: CI - eBPF Profiler - GoReleaser
     uses: ./.github/workflows/base-ci-goreleaser.yaml
     with:

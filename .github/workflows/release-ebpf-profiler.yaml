@@ -5,7 +5,7 @@ on:
     tags: ["v*"]
 
 jobs:
-  release-amd64:
+  release:
     name: Release eBPF Profiler
     uses: ./.github/workflows/base-release.yaml
     with:
