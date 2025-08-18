@@ -42,7 +42,7 @@ jobs:
           if [ '${{ contains(github.ref, '-nightly') }}' == 'true' ]; then
             echo "COLLECTOR_REF=main" >> "$GITHUB_OUTPUT"
           else
-            echo "COLLECTOR_TAG=${{ github.ref }}" >> "$GITHUB_OUTPUT"
+            echo "COLLECTOR_REF=${{ github.ref }}" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Push ${{ inputs.binary }} Tag
