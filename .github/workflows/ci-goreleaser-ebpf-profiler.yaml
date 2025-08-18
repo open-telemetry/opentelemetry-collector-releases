@@ -49,4 +49,5 @@ jobs:
       otelcol_run_options: "--feature-gates=service.profilesSupport"
       goos: '[ "linux" ]'
       goarch: '[ "arm64" ]'
+      runner_os: ubuntu-24.04-arm
     secrets: inherit
