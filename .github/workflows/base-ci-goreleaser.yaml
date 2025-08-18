@@ -12,6 +12,10 @@ on:
       goarch:
         required: true
         type: string
+      runner_os:
+        required: false
+        type: string
+        default: ubuntu-24.04
       nightly:
         required: false
         type: boolean
