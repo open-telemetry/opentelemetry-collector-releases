@@ -182,6 +182,7 @@ var (
 			newContainerImageManifests(d.name, "linux", ebpfProfilerArchs, containerImageOptions{}),
 		)
 		d.enableCgo = true
+		d.env = append(d.env, "TARGET_ARCH={{ .Arch }}")
 		d.ldFlags = "-extldflags=-static"
 		d.goTags = "osusergo,netgo"
 	}).WithDefaultArchives().
