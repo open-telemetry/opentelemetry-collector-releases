@@ -1,7 +1,7 @@
 version: 2
 project_name: opentelemetry-collector-releases
 env:
-  - TARGET_ARCH={{ .Target.Arch }}
+  - TARGET_ARCH={{ .Runtime.Goarch }}
   - COSIGN_YES=true
   - LD_FLAGS=-extldflags=-static
   - BUILD_FLAGS=-trimpath
