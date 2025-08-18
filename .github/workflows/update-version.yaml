@@ -15,6 +15,9 @@ on:
         required: false
         default: ''
 
+permissions:
+  contents: read
+
 jobs:
   update-version:
     runs-on: ubuntu-24.04

@@ -18,6 +18,8 @@ on:
         default: ""
         description: "The collector dependency will be put into this folder"
 
+permissions:
+  contents: read
 
 env:
   # renovate: datasource=github-releases depName=goreleaser/goreleaser-pro

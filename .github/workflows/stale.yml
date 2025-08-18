@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: "12 5 * * *" # arbitrary time not to DDOS GitHub
 
+permissions:
+  contents: read
+
 jobs:
   stale:
     runs-on: ubuntu-24.04

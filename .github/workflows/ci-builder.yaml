@@ -27,6 +27,9 @@ on:
       - "go.mod"
       - "go.sum"
 
+permissions:
+  contents: read
+
 jobs:
   ci:
     uses: ./.github/workflows/base-ci-binary.yaml
