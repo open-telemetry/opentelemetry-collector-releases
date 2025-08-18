@@ -7,6 +7,7 @@ env:
   - BUILD_FLAGS=-trimpath
   - CONTAINER_IMAGE_EPHEMERAL_TAG={{ if .IsNightly }}nightly{{ else }}latest{{ end }}
   - GO_TAGS=osusergo,netgo
+  - CGO_ENABLED=0
 release:
   replace_existing_artifacts: true
 builds:
