@@ -11,7 +11,7 @@ For general information about all Collector repositories release procedures, see
 0. Ensure that the [opentelemetry-collector][1] and [opentelemetry-collector-contrib][2] release procedures have been followed and a new
    opentelemetry-collector and opentelemetry-collector-contrib version have been released. The opentelemetry-collector-releases release
    should be done after both of these releases.
-1. Review and merge the 3 Renovate PRs for core and contrib components, as well as OCB.
+1. Review and merge the 2 Renovate PRs for core and contrib components, including OCB.
 2. Run the GitHub Action workflow "[Update Version in Distributions and Prepare PR](https://github.com/open-telemetry/opentelemetry-collector-releases/actions/workflows/update-version.yaml)" which will update the minor version automatically (e.g. v0.116.0 -> v0.117.0) or manually provide a new version if releasing a bugfix or skipping a version. Select "create pr" option.
 The PR needs to be manually closed and re-opened once to trigger pipelines.
    -  🛑 **Do not move forward until this PR is merged.** 🛑
