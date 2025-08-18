@@ -7,7 +7,7 @@ change_type: deprecation
 component: sapmreceiver
 
 # A brief description of the change.  Surround your text with quotes ("") if it needs to start with a backtick (`).
-note: Remove the sapmreceiver as deprecation period has passed.
+note: Remove the sapmreceiver from contrib as deprecation period has passed.
 
 # One or more tracking issues or pull requests related to the change
 issues: [1125]
