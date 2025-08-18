@@ -36,23 +36,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set goreleaser last tag reference in case of non-nightly release
-        id: prev-tag
-        if: ${{ !contains(github.ref, '-nightly') }}
-        # find previous tag by taking only binary tags, filtering out nightly tags and then choosing the
-        # second to last tag (last one is the current release)
-        run: |
-          prev_tag=$(git tag | grep "cmd/${{ inputs.binary }}" | grep -v "nightly" | sort -r --version-sort | head -n 2 | tail -n 1)
-          current_tag="cmd/${{ inputs.binary }}/${{ github.ref_name }}"
-          echo "PREVIOUS_RELEASE_TAG=$prev_tag" >> "$GITHUB_OUTPUT"
-          echo "CURRENT_TAG=$current_tag" >> "$GITHUB_OUTPUT"
-
-      - name: Set nightly enabled
-        id: nightly-check
-        if: ${{ contains(github.ref, '-nightly') }}
-        run: |
-          echo "NIGHTLY_FLAG=--nightly" >> "$GITHUB_OUTPUT"
-
       - name: Set COLLECTOR_REF
         id: collector-ref
         run: |
@@ -70,6 +53,23 @@ jobs:
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git tag -a "${tag}" -m "${message}"
           git push origin "${tag}"
+
+      - name: Set goreleaser last tag reference in case of non-nightly release
+        id: prev-tag
+        if: ${{ !contains(github.ref, '-nightly') }}
+        # find previous tag by taking only binary tags, filtering out nightly tags and then choosing the
+        # second to last tag (last one is the current release)
+        run: |
+          prev_tag=$(git tag | grep "cmd/${{ inputs.binary }}" | grep -v "nightly" | sort -r --version-sort | head -n 2 | tail -n 1)
+          current_tag="cmd/${{ inputs.binary }}/${{ github.ref_name }}"
+          echo "PREVIOUS_RELEASE_TAG=$prev_tag" >> "$GITHUB_OUTPUT"
+          echo "CURRENT_TAG=$current_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Set nightly enabled
+        id: nightly-check
+        if: ${{ contains(github.ref, '-nightly') }}
+        run: |
+          echo "NIGHTLY_FLAG=--nightly" >> "$GITHUB_OUTPUT"
 
       - name: Checkout Collector dependency repo
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
