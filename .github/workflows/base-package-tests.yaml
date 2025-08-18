@@ -36,7 +36,7 @@ jobs:
 
   create-issue:
     name: Create GitHub Issue
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [package-tests]
     if: failure() && inputs.issue-on-failure == 'true'
     steps:
