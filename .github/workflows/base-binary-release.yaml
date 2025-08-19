@@ -36,30 +36,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set goreleaser last tag reference in case of non-nightly release
-        id: prev-tag
-        if: ${{ !contains(github.ref, '-nightly') }}
-        # find previous tag by taking only binary tags, filtering out nightly tags and then choosing the
-        # second to last tag (last one is the current release)
-        run: |
-          prev_tag=$(git tag | grep "cmd/${{ inputs.binary }}" | grep -v "nightly" | sort -r --version-sort | head -n 2 | tail -n 1)
-          current_tag="cmd/${{ inputs.binary }}/${{ github.ref }}"
-          echo "PREVIOUS_RELEASE_TAG=$prev_tag" >> "$GITHUB_OUTPUT"
-          echo "CURRENT_TAG=$current_tag" >> "$GITHUB_OUTPUT"
-
-      - name: Set nightly enabled
-        id: nightly-check
-        if: ${{ contains(github.ref, '-nightly') }}
-        run: |
-          echo "NIGHTLY_FLAG=--nightly" >> "$GITHUB_OUTPUT"
-
       - name: Set COLLECTOR_REF
         id: collector-ref
         run: |
           if [ '${{ contains(github.ref, '-nightly') }}' == 'true' ]; then
             echo "COLLECTOR_REF=main" >> "$GITHUB_OUTPUT"
           else
-            echo "COLLECTOR_TAG=${{ github.ref }}" >> "$GITHUB_OUTPUT"
+            echo "COLLECTOR_REF=${{ github.ref }}" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Push ${{ inputs.binary }} Tag
@@ -70,6 +53,23 @@ jobs:
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git tag -a "${tag}" -m "${message}"
           git push origin "${tag}"
+
+      - name: Set goreleaser last tag reference in case of non-nightly release
+        id: prev-tag
+        if: ${{ !contains(github.ref, '-nightly') }}
+        # find previous tag by taking only binary tags, filtering out nightly tags and then choosing the
+        # second to last tag (last one is the current release)
+        run: |
+          prev_tag=$(git tag | grep "cmd/${{ inputs.binary }}" | grep -v "nightly" | sort -r --version-sort | head -n 2 | tail -n 1)
+          current_tag="cmd/${{ inputs.binary }}/${{ github.ref_name }}"
+          echo "PREVIOUS_RELEASE_TAG=$prev_tag" >> "$GITHUB_OUTPUT"
+          echo "CURRENT_TAG=$current_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Set nightly enabled
+        id: nightly-check
+        if: ${{ contains(github.ref, '-nightly') }}
+        run: |
+          echo "NIGHTLY_FLAG=--nightly" >> "$GITHUB_OUTPUT"
 
       - name: Checkout Collector dependency repo
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -111,7 +111,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
+        uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a # v6.4.0
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}

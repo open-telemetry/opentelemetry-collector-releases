@@ -21,19 +21,6 @@ jobs:
           private-key: ${{ secrets.OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY }}
           permission-contents: write
 
-      # The next 2 steps are taken from # from https://github.com/actions/create-github-app-token#create-a-git-committer-string-for-an-app-installation
-      - name: Get GitHub App User ID
-        id: get-user-id
-        run: echo "user-id=$(gh api "/users/${{ steps.otelbot-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
-        env:
-          GH_TOKEN: ${{ steps.otelbot-token.outputs.token }}
-
-      - name: Set up commit author name and email
-        id: committer
-        run: |
-          echo "name=${{ steps.otelbot-token.outputs.app-slug }}[bot]"  >> "$GITHUB_OUTPUT"
-          echo "email=${{ steps.get-user-id.outputs.user-id }}+${{ steps.otelbot-token.outputs.app-slug }}[bot]@users.noreply.github.com>"  >> "$GITHUB_OUTPUT"
-
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
@@ -41,8 +28,8 @@ jobs:
 
       - name: 'Push new tag'
         run: |
-          git config user.name "${{ steps.committer.outputs.name }}"
-          git config user.email "${{ steps.committer.outputs.email }}"
+          git config --global user.name "otelbot"
+          git config --global user.email "197425009+otelbot@users.noreply.github.com"
 
           # A previous release was created using a lightweight tag
           # git describe by default includes only annotated tags
