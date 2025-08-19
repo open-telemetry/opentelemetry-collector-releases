@@ -54,7 +54,7 @@ var (
 	winContainerArchs = []string{"amd64"}
 	darwinArchs       = []string{"amd64", "arm64"}
 	k8sArchs          = []string{"amd64", "arm64", "ppc64le", "riscv64", "s390x"}
-	ebpfProfilerArchs = []string{"amd64"}
+	ebpfProfilerArchs = []string{"amd64", "arm64"}
 	ocbArchs          = []string{"amd64", "arm64", "ppc64le", "riscv64"}
 	opAmpArchs        = []string{"amd64", "arm64", "ppc64le"}
 
@@ -181,7 +181,7 @@ var (
 		d.containerImageManifests = slices.Concat(
 			newContainerImageManifests(d.name, "linux", ebpfProfilerArchs, containerImageOptions{}),
 		)
-		d.enableCgo = true
+		d.env = append(d.env, "TARGET_ARCH={{ .Runtime.Goarch }}")
 		d.ldFlags = "-extldflags=-static"
 		d.goTags = "osusergo,netgo"
 	}).WithDefaultArchives().
@@ -193,6 +193,7 @@ var (
 		WithDefaultEnv().
 		WithDefaultPartial().
 		WithDefaultRelease().
+		WithNightlyConfig().
 		Build()
 
 	// OCB binary
@@ -499,8 +500,7 @@ func (b *distributionBuilder) WithDefaultEnv() *distributionBuilder {
 		if !b.dist.enableCgo {
 			env = append(env, "CGO_ENABLED=0")
 		}
-
-		b.dist.env = env
+		b.dist.env = append(b.dist.env, env...)
 	})
 	return b
 }
