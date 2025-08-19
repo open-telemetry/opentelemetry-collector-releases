@@ -5,6 +5,7 @@ env:
   - LD_FLAGS=-s -w
   - BUILD_FLAGS=-trimpath
   - CONTAINER_IMAGE_EPHEMERAL_TAG={{ if .IsNightly }}nightly{{ else }}latest{{ end }}
+  - GOPROXY=https://proxy.golang.org,direct
   - CGO_ENABLED=0
 release:
   replace_existing_artifacts: true
