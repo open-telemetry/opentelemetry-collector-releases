@@ -140,16 +140,11 @@
     {
       "matchPackageNames": [
         "open-telemetry/opentelemetry-collector",
-        "/^go\\.opentelemetry\\.io/collector//"
-      ],
-      "groupName": "OpenTelemetry Collector Core Components"
-    },
-    {
-      "matchPackageNames": [
+        "/^go\\.opentelemetry\\.io/collector//",
         "open-telemetry/opentelemetry-collector-contrib",
         "/^github\\.com/open-telemetry/opentelemetry-collector-contrib//"
       ],
-      "groupName": "OpenTelemetry Collector Contrib Components"
+      "groupName": "OpenTelemetry Collector Components"
     }
   ],
   "customManagers": [
