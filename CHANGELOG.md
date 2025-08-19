@@ -4,6 +4,16 @@
 
 <!-- next version -->
 
+## v0.133.0
+
+### 🚩 Deprecations 🚩
+
+- `sapmreceiver`: Remove the sapmreceiver from contrib as deprecation period has passed. (#1125)
+
+### 🚀 New components 🚀
+
+- `contrib`: This feature introduces anomaly detection using the Online Isolation Forest algorithm applied to streaming - traces, metrics, or logs (#1124)
+
 ## v0.132.0
 
 ### 🛑 Breaking changes 🛑
