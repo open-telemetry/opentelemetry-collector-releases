@@ -492,6 +492,7 @@ func (b *distributionBuilder) WithDefaultEnv() *distributionBuilder {
 			"LD_FLAGS=" + ldFlags,
 			"BUILD_FLAGS=-trimpath",
 			containerEphemeralTag,
+			"GOPROXY=https://proxy.golang.org,direct",
 		}
 		if b.dist.goTags != "" {
 			env = append(env, "GO_TAGS="+b.dist.goTags)
