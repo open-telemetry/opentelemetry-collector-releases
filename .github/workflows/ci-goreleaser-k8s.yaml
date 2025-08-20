@@ -1,9 +1,11 @@
 name: CI - k8s - GoReleaser
 
 on:
-  merge_group: 
+  merge_group:
   push:
-    branches: [main]
+    branches:
+      - main
+      - release/*
     paths:
       - "distributions/otelcol-k8s/**"
       - "cmd/**"
@@ -13,7 +15,9 @@ on:
       - "go.mod"
       - "go.sum"
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - release/*
     paths:
       - "distributions/otelcol-k8s/**"
       - "cmd/**"
@@ -30,5 +34,5 @@ jobs:
     with:
       distribution: otelcol-k8s
       goos: '[ "linux" ]'
-      goarch: '[ "amd64", "arm64", "ppc64le", "s390x" ]'
+      goarch: '[ "amd64", "arm64", "ppc64le", "riscv64", "s390x" ]'
     secrets: inherit

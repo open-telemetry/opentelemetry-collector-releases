@@ -1,0 +1,43 @@
+name: Nightly Release
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * *" # release nightly at 2AM
+
+permissions:
+  contents: read
+
+jobs:
+  nightly-release:
+    name: Nightly Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b # v2.1.1
+        id: otelbot-token
+        with:
+          app-id: ${{ vars.OTELBOT_COLLECTOR_RELEASES_APP_ID }}
+          private-key: ${{ secrets.OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY }}
+          permission-contents: write
+
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+          token: ${{ steps.otelbot-token.outputs.token }}
+
+      - name: 'Push new tag'
+        run: |
+          git config --global user.name "otelbot"
+          git config --global user.email "197425009+otelbot@users.noreply.github.com"
+
+          # A previous release was created using a lightweight tag
+          # git describe by default includes only annotated tags
+          # git describe --tags includes lightweight tags as well
+          DESCRIBE=`git tag -l --sort=-v:refname | grep -v cmd | grep -v nightly | head -n 1` # list tags except the ones containing cmd or nightly and then take the latest one
+          MAJOR_VERSION=`echo $DESCRIBE | awk '{split($0,a,"."); print a[1]}'` # take just the major version digits, e.g. "v0"
+          MINOR_VERSION=`echo $DESCRIBE | awk '{split($0,a,"."); print a[2]}'` # take just the minor version digits, e.g. "130"
+          MINOR_VERSION="$((${MINOR_VERSION} + 1))" # bump minor version
+          TAG="${MAJOR_VERSION}.${MINOR_VERSION}.0-nightly.$(date +'%Y%m%d%H%M')"
+          git tag -a $TAG -m "$TAG: nightly build"
+          git push origin $TAG

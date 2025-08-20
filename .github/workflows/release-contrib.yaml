@@ -11,11 +11,13 @@ jobs:
     with:
       distribution: otelcol-contrib
       goos: '[ "linux", "darwin" ]'
-      goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x" ]'
+      goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x", "riscv64" ]'
+      nightly: ${{ contains(github.ref, '-nightly') }}
     secrets: inherit
     permissions: write-all
   release-windows:
     name: Release Contrib (Windows)
+    if: ${{ !contains(github.ref, '-nightly') }}
     uses: ./.github/workflows/base-release.yaml
     with:
       distribution: otelcol-contrib

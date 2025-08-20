@@ -1,9 +1,11 @@
 name: CI - Core - GoReleaser
 
 on:
-  merge_group: 
+  merge_group:
   push:
-    branches: [main]
+    branches:
+      - main
+      - release/*
     paths:
       - "distributions/otelcol/**"
       - "cmd/**"
@@ -13,7 +15,9 @@ on:
       - "go.mod"
       - "go.sum"
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - release/*
     paths:
       - "distributions/otelcol/**"
       - "cmd/**"
@@ -30,16 +34,16 @@ jobs:
     with:
       distribution: otelcol
       goos: '[ "linux", "windows", "darwin" ]'
-      goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x" ]'
+      goarch: '[ "386", "amd64", "arm", "arm64", "ppc64le", "riscv64", "s390x" ]'
     secrets: inherit
 
   package-tests:
-     name: Package tests
-     needs: check-goreleaser
-     uses: ./.github/workflows/base-package-tests.yaml
-     with:
-       distribution: otelcol
-       type: '[ "deb", "rpm" ]'
+    name: Package tests
+    needs: check-goreleaser
+    uses: ./.github/workflows/base-package-tests.yaml
+    with:
+      distribution: otelcol
+      type: '[ "deb", "rpm" ]'
 
   msi-tests:
     name: MSI tests

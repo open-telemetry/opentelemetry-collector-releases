@@ -3,8 +3,10 @@ project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
   - LD_FLAGS=-s -w
-  - CGO_ENABLED=0
   - BUILD_FLAGS=-trimpath
+  - CONTAINER_IMAGE_EPHEMERAL_TAG={{ if .IsNightly }}nightly{{ else }}latest{{ end }}
+  - GOPROXY=https://proxy.golang.org,direct
+  - CGO_ENABLED=0
 release:
   replace_existing_artifacts: true
 builds:
@@ -17,6 +19,7 @@ builds:
       - arm
       - arm64
       - ppc64le
+      - riscv64
       - s390x
     goarm:
       - "7"
@@ -58,3 +61,7 @@ monorepo:
   tag_prefix: v
 partial:
   by: target
+nightly:
+  version_template: '{{ incpatch .Version}}-nightly.{{ .ShortCommit }}'
+  tag_name: nightly-otelcol-contrib
+  keep_single_release: true

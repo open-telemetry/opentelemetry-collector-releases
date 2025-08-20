@@ -1,0 +1,38 @@
+name: CI - Builder
+
+on:
+  merge_group:
+  push:
+    branches:
+      - main
+      - release/*
+    paths:
+      - "distributions/otelcol-contrib/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
+  pull_request:
+    branches:
+      - main
+      - release/*
+    paths:
+      - "distributions/otelcol-contrib/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
+
+jobs:
+  ci:
+    uses: ./.github/workflows/base-ci-binary.yaml
+    with:
+      binary: builder
+      collector-dependency: 'open-telemetry/opentelemetry-collector'
+      dependency-target-folder: '.core'
+    secrets: inherit
+    permissions: write-all

@@ -1,0 +1,16 @@
+name: Release OpAMP supervisor
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    name: Release OpAMP supervisor
+    uses: ./.github/workflows/base-binary-release.yaml
+    with:
+      binary: opampsupervisor
+      collector-dependency: 'open-telemetry/opentelemetry-collector-contrib'
+      dependency-target-folder: '.contrib'
+    secrets: inherit
+    permissions: write-all

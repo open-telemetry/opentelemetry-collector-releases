@@ -4,6 +4,114 @@
 
 <!-- next version -->
 
+## v0.132.0
+
+### 🛑 Breaking changes 🛑
+
+- `releases`: Fix artifact checksum files being incomplete and split between Linux/Darwin and Windows. (#1002, #1086)
+  This fixes a bug that occurred because releases for Windows and other Platforms are split.
+  The Windows release always overwrote the checksum files already created for Linux and Darwin and so, only
+  the Windows checksums were accessible in the end.
+  
+  This change is breaking because checksum files for Linux/Darwin and Windows are now split.
+  
+- `otelcol`: Remove deprecated opencensus exporter and receiver (#1056)
+- `otelcol-contrib`: Remove deprecated opencensus exporter and receiver (#1056)
+- `otelcol-k8s`: Remove deprecated opencensus exporter and receiver (#1056)
+
+### 💡 Enhancements 💡
+
+- `contrib`: Add skywalkingencodingextension in otelcol-contrib distribution (#1078)
+- `releases`: Introduce nightly releases (#1016)
+- `platforms`: Add Tier 3 support for riscv64 (#968, #969)
+  New Tier 3 platform: riscv64 architecture is now included,
+  allowing the collector to be built and distributed for this platform.
+  
+
+### 🧰 Bug fixes 🧰
+
+- `service/telemetry`: Pins go.opentelemetry.io/otel/exporters/prometheus to v0.58.0 (#1067)
+  go.opentelemetry.io/otel/exporters/prometheus v0.59.x has a bug leading to unexpected suffix in metric names, we want to stay with v0.58.0 in the artifacts.
+
+## v0.131.0
+
+### 🛑 Breaking changes 🛑
+
+- `exporter/loki`: The `Loki Exporter` component has been removed from the repo and is no longer being published as it has been deprecated since 9th July 2024. (#1044)
+  Users of the `lokiexporter` can migrate to using an OTLP exporter. See https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/33916
+
+### 🚀 New components 🚀
+
+- `prometheusremotewritereceiver`: Add the prometheusremotewritereceiver component to the contrib collector (#1020)
+- `tinybirdexporter`: Add tinybird exporter to contrib distribution (#1045)
+
+### 💡 Enhancements 💡
+
+- `contrib`: add the `text_encoding` encoding extension to the contrib distribution (#1025)
+- `all`: Removes usages of golang.org/x/net/trace which uses html/template and text/template in gRPC. These usages disable golang DCE. (#1018)
+
+## v0.130.0
+
+### 🚀 New components 🚀
+
+- `coralogixprocessor`: Add Coralogix processor to the OpenTelemetry Collector Contrib. (#1008)
+- `awslogsencodingextension`: Add the awslogsencodingextension component to the contrib collector (#996)
+
+### 🧰 Bug fixes 🧰
+
+- `release`: Revert to old docker token (#995)
+
+## v0.129.0
+
+### 🚀 New components 🚀
+
+- `datadog/extension`: Release datadog extension. See README for details: https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/extension/datadogextension/README.md (#983)
+- `googlecloudlogentryencodingextension`: Release Google Cloud Log Entry encoding extension, see https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/extension/encoding/googlecloudlogentryencodingextension/README.md (#985)
+
+## v0.128.0
+
+## v0.127.0
+
+### 🚀 New components 🚀
+
+- `faroreceiver, faroexporter`: Add faro receiver and faro exporter to the otelcol-contrib distribution (#955)
+- `googlesecretmanager`: Add googlesecretmanagerprovider to the contrib distribution (#949)
+- `metricstarttimeprocessor`: Add metricstarttimeprocessor to the contrib distribution (#940)
+- `stefreceiver, stefexporter`: Add stefexporter and stefreceiver to otelcol-contrib distribution (#956)
+
+### 💡 Enhancements 💡
+
+- `ebpf-profiler`: Build releases of the eBPF profiler distribution (#958)
+
+## v0.126.0
+
+### 🚀 New components 🚀
+
+- `k8sleaderelectorextension`: add k8sleaderelector extension to otelcol-contrib and otelcol-k8s distributions (#943)
+
+### 🧰 Bug fixes 🧰
+
+- `image repository`: Re-enable publishing images to dockerhub (#938)
+
+## v0.125.0
+
+### 🚀 New components 🚀
+
+- `azureauthextension`: Add azureauthextension to contrib distribution. (#931)
+- `otelcol-ebpf-profiler`: Introduce eBPF Profiler Distribution (#908)
+
+### 💡 Enhancements 💡
+
+- `service`: Add service reload signal to systemd unit (#887)
+
+## v0.124.1
+
+## v0.124.0
+
+### 🚀 New components 🚀
+
+- `azureblobexporter`: add azureblobexporter (#909)
+
 ## v0.123.1
 
 ### 🛑 Breaking changes 🛑
@@ -43,6 +151,10 @@
 - `packaging`: Ensure Linux package scripts work in environments without systemd such as chrooted environments (#767)
 
 ## v0.121.0
+
+### 🛑 Breaking changes 🛑
+
+- container group ID: Set user's primary group (USER_GID) to prevent container user 10001 being root group. (#738)
 
 ### 🚀 New components 🚀
 

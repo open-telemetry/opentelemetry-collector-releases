@@ -1,0 +1,16 @@
+name: Release Builder
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    name: Release Builder
+    uses: ./.github/workflows/base-binary-release.yaml
+    with:
+      binary: builder
+      collector-dependency: 'open-telemetry/opentelemetry-collector'
+      dependency-target-folder: '.core'
+    secrets: inherit
+    permissions: write-all

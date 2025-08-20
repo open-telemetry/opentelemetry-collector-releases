@@ -16,12 +16,33 @@ on:
         required: false
         type: string
         default: ubuntu-24.04
+      nightly:
+        required: false
+        type: string
+        default: false
 
 env:
-  # renovate: datasource=github-tags depName=goreleaser-pro packageName=goreleaser/goreleaser-pro
-  GORELEASER_PRO_VERSION: v2.7.0
+  # renovate: datasource=github-releases depName=goreleaser/goreleaser-pro
+  GORELEASER_PRO_VERSION: v2.11.2
 
 jobs:
+  prev-tag:
+    outputs:
+      PREVIOUS_RELEASE_TAG: ${{ steps.prev-tag.outputs.PREVIOUS_RELEASE_TAG }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+      - name: Set goreleaser last tag reference in case of non-nightly release
+        id: prev-tag
+        if: inputs.nightly != 'true'
+        # find previous tag by filtering out nightly tags and binary release (OCB, OpAMP) tags and then choosing the
+        # second to last tag (last one is the current release)
+        run: |
+          prev_tag=$(git tag | grep -v "cmd" | grep -v "nightly" | sort -r --version-sort | head -n 2 | tail -n 1)
+          echo "PREVIOUS_RELEASE_TAG=$prev_tag" >> "$GITHUB_OUTPUT"
+
   prepare:
     strategy:
       matrix:
@@ -36,23 +57,27 @@ jobs:
             GOARCH: ppc64le
           - GOOS: darwin
             GOARCH: arm
+          - GOOS: darwin
+            GOARCH: riscv64
     runs-on: ${{ inputs.runner_os }}
+    permissions:
+      packages: write
 
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
 
-      - uses: sigstore/cosign-installer@d7d6bc7722e3daa8354c50bcb52f4837da5e9b6a # v3.8.1
+      - uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
 
-      - uses: anchore/sbom-action/download-syft@f325610c9f50a54015d37c8d16cb3b0e2c8f4de0 # v0.18.0
+      - uses: anchore/sbom-action/download-syft@7b36ad622f042cab6f59a75c2ac24ccb256e9b45 # v0.20.4
 
       - uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
         if: runner.os != 'Windows'
         with:
-          platforms: arm64,ppc64le,linux/arm/v7,s390x
+          platforms: arm64,ppc64le,linux/arm/v7,s390x,riscv64
 
-      - uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
+      - uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
         if: runner.os != 'Windows'
 
         # Fix slow Go compile and cache restore
@@ -65,22 +90,30 @@ jobs:
           echo "GOTMPDIR=D:\gotmp" | Out-File -FilePath $env:GITHUB_ENV -Append
           mkdir D:\gotmp
 
-      - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
+      - uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
         with:
           go-version: "~1.24"
           check-latest: true
 
+      - name: Set nightly enabled
+        id: nightly-check
+        if: inputs.nightly == 'true'
+        run: |
+          echo "NIGHTLY_FLAG=--nightly" >> "$GITHUB_OUTPUT"
+
       - name: Generate distribution sources
         run: make generate-sources
+        env:
+          DISTRIBUTIONS: ${{ inputs.distribution }}
 
       - name: Log into Docker.io
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
 
       - name: Login to GitHub Package Registry
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -94,12 +127,12 @@ jobs:
         # otelcol-contrib is built in a separate stage
       - name: Build ${{ inputs.distribution }}
         if: inputs.distribution == 'otelcol-contrib'
-        uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
+        uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a # v6.4.0
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
           workdir: distributions/${{ inputs.distribution }}
-          args: release --clean --split --timeout 2h --config .goreleaser-build.yaml --release-header-tmpl=../../.github/release-template.md
+          args: release --clean --split --timeout 2h --config .goreleaser-build.yaml --release-header-tmpl=../../.github/release-template.md ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }}
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
@@ -107,8 +140,9 @@ jobs:
           GOAMD64: v1
           GOPPC64: power8
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_YES: true
+          GORELEASER_CURRENT_TAG: ${{ github.ref_name }}
 
       - name: Move built artifacts
         if: inputs.distribution == 'otelcol-contrib'
@@ -120,17 +154,17 @@ jobs:
         shell: bash
         run: ls -laR distributions/otelcol-contrib/artifacts
 
-      - uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
+      - uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a # v6.4.0
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
           workdir: distributions/${{ inputs.distribution }}
-          args: release --clean --split --timeout 2h --release-header-tmpl=../../.github/release-template.md
+          args: release --clean --split --timeout 2h --release-header-tmpl=../../.github/release-template.md ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }}
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
           GOARM: 7 # Default is 6
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_YES: true
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
@@ -141,9 +175,11 @@ jobs:
           if-no-files-found: error
 
   release:
-    name: ${{ inputs.distribution }} Release
+    name: Release
     runs-on: ${{ inputs.runner_os }}
-    needs: prepare
+    needs:
+      - prepare
+      - prev-tag
 
     permissions:
       id-token: write
@@ -151,20 +187,20 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
 
-      - uses: sigstore/cosign-installer@d7d6bc7722e3daa8354c50bcb52f4837da5e9b6a # v3.8.1
+      - uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
 
-      - uses: anchore/sbom-action/download-syft@f325610c9f50a54015d37c8d16cb3b0e2c8f4de0 # v0.18.0
+      - uses: anchore/sbom-action/download-syft@7b36ad622f042cab6f59a75c2ac24ccb256e9b45 # v0.20.4
 
       - uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
         if: runner.os != 'Windows'
         with:
-          platforms: arm64,ppc64le,s390x
+          platforms: arm64,ppc64le,s390x,riscv64
 
-      - uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
+      - uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
         if: runner.os != 'Windows'
 
         # Fix slow Go compile and cache restore
@@ -177,26 +213,26 @@ jobs:
           echo "GOTMPDIR=D:\gotmp" | Out-File -FilePath $env:GITHUB_ENV -Append
           mkdir D:\gotmp
 
-      - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
+      - uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
         with:
           go-version: "~1.24"
           check-latest: true
 
-      - uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         if: runner.os == 'Windows'
         with:
           pattern: artifacts-${{ inputs.distribution }}-windows-*
           path: distributions/${{ inputs.distribution }}/dist
           merge-multiple: true
 
-      - uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         if: runner.os != 'Windows'
         with:
           pattern: artifacts-${{ inputs.distribution }}-darwin-*
           path: distributions/${{ inputs.distribution }}/dist
           merge-multiple: true
 
-      - uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         if: runner.os != 'Windows'
         with:
           pattern: artifacts-${{ inputs.distribution }}-linux-*
@@ -208,19 +244,19 @@ jobs:
         run: ls -R distributions/${{ inputs.distribution }}/dist
 
       - name: Log into Docker.io
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
 
       - name: Login to GitHub Package Registry
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
+      - uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a # v6.4.0
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
@@ -230,3 +266,38 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_YES: true
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+          GORELEASER_PREVIOUS_TAG: ${{ needs.prev-tag.outputs.PREVIOUS_RELEASE_TAG }}
+          GORELEASER_CURRENT_TAG: ${{ github.ref_name }}
+
+  create-issue:
+    name: Create GitHub issue on failed nightly release
+    runs-on: ubuntu-latest
+    needs: [release]
+    if: failure() && inputs.nightly == 'true'
+    permissions:
+      issues: write
+    env:
+      issue-file: "nightly-release-failure.md"
+    steps:
+      - name: Formulate issue
+        run: |
+          # create a markdown file that contains details about the failure
+          echo "---" > ${{ env.issue-file }}
+          echo "title: Nightly Release Failed" >> ${{ env.issue-file }}
+          echo "labels: release:blocker" >> ${{ env.issue-file }}
+          echo "---" >> ${{ env.issue-file }}
+          echo "The nightly release failed in the following GitHub actions run." >> ${{ env.issue-file }}
+          echo "* Link to run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> ${{ env.issue-file }}
+          echo "* Please also check the other distro release runs related to this nightly release" >> ${{ env.issue-file }}
+          echo "* Triggered by: Nightly scheduled release" >> ${{ env.issue-file }}
+          echo "" >> ${{ env.issue-file }}
+          echo "Note: This issue was auto-generated from [base-release.yaml](https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/.github/workflows/base-release.yaml)" >> ${{ env.issue-file }}
+
+      - name: Create or update issue
+        uses: JasonEtco/create-an-issue@1b14a70e4d8dc185e5cc76d3bec9eab20257b2c5 # v2.9.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          update_existing: true
+          search_existing: open
+          filename: ${{ env.issue-file }}

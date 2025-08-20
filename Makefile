@@ -3,7 +3,7 @@ GORELEASER ?= goreleaser
 
 # SRC_ROOT is the top of the source tree.
 SRC_ROOT := $(shell git rev-parse --show-toplevel)
-OTELCOL_BUILDER_VERSION ?= 0.123.0
+OTELCOL_BUILDER_VERSION ?= 0.132.0
 OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
 
@@ -16,7 +16,8 @@ TOOLS_BIN_NAMES := $(addprefix $(TOOLS_BIN_DIR)/, $(notdir $(shell echo $(TOOLS_
 CHLOGGEN        := $(TOOLS_BIN_DIR)/chloggen
 CHLOGGEN_CONFIG := .chloggen/config.yaml
 
-DISTRIBUTIONS ?= "otelcol,otelcol-contrib,otelcol-k8s,otelcol-otlp"
+DISTRIBUTIONS ?= "otelcol,otelcol-contrib,otelcol-k8s,otelcol-otlp,otelcol-ebpf-profiler"
+BINARIES ?= "builder,opampsupervisor"
 
 ci: check build
 check: ensure-goreleaser-up-to-date validate-components
@@ -27,7 +28,7 @@ build: go ocb
 generate: generate-sources generate-goreleaser
 
 generate-goreleaser: go
-	@./scripts/generate-goreleaser.sh -d "${DISTRIBUTIONS}" -g ${GO}
+	@./scripts/generate-goreleaser.sh -d "${DISTRIBUTIONS}" -b "${BINARIES}" -g ${GO}
 
 generate-sources: go ocb
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER}

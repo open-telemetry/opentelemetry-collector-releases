@@ -12,15 +12,32 @@ on:
       goarch:
         required: true
         type: string
+      runner_os:
+        required: false
+        type: string
+        default: ubuntu-24.04
       nightly:
         required: false
         type: boolean
         default: false
         description: "Set to true to fetch latest otelcol-contrib main branch version instead of building the version in this repo"
+      config_file:
+        required: false
+        type: string
+        default: default-config.yaml
+      docker_run_options:
+        required: false
+        type: string
+      otelcol_run_options:
+        required: false
+        type: string
+
+permissions:
+  contents: read
 
 env:
-  # renovate: datasource=github-tags depName=goreleaser-pro packageName=goreleaser/goreleaser-pro
-  GORELEASER_PRO_VERSION: v2.7.0
+  # renovate: datasource=github-releases depName=goreleaser/goreleaser-pro
+  GORELEASER_PRO_VERSION: v2.11.2
 
 jobs:
   check-goreleaser:
@@ -45,20 +62,24 @@ jobs:
             GOARCH: ppc64le
           - GOOS: windows
             GOARCH: ppc64le
-    runs-on: ubuntu-24.04
+          - GOOS: darwin
+            GOARCH: riscv64
+          - GOOS: windows
+            GOARCH: riscv64
+    runs-on: ${{ inputs.runner_os }}
     outputs:
       version: ${{ steps.prep.outputs.version }}
 
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
         with:
-          platforms: arm64,ppc64le,linux/arm/v7,s390x
+          platforms: arm64,ppc64le,linux/arm/v7,s390x,riscv64
 
       - name: Setup wixl # Required to build MSI packages for Windows
         if: ${{ matrix.GOOS == 'windows' && ( matrix.GOARCH == '386' || matrix.GOARCH == 'amd64') }}
@@ -67,10 +88,10 @@ jobs:
           sudo apt-get install -y wixl
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
 
       - name: Setup Go
-        uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
+        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
         with:
           go-version: "~1.24"
           check-latest: true
@@ -103,7 +124,7 @@ jobs:
 
       - name: "[Nightly] Download built otelcol-contrib artifact from contrib repo"
         if: inputs.distribution == 'otelcol-contrib' && inputs.nightly == true && matrix.GOARCH == 'amd64' && matrix.GOOS == 'linux'
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: collector-binaries-linux-amd64
           repository: open-telemetry/opentelemetry-collector-contrib
@@ -127,7 +148,7 @@ jobs:
         # otelcol-contrib is built in a separate stage
       - name: Build ${{ inputs.distribution }}
         if: inputs.distribution == 'otelcol-contrib' && inputs.nightly != true
-        uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
+        uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a # v6.4.0
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
@@ -150,7 +171,7 @@ jobs:
         run: ls -laR distributions/otelcol-contrib/artifacts
 
       - name: Run GoReleaser for ${{ inputs.distribution }}
-        uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
+        uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a # v6.4.0
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
@@ -197,12 +218,12 @@ jobs:
           # Find version number and types of built artifacts
           echo "version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')" >> "$GITHUB_OUTPUT"
           echo "types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )" >> "$GITHUB_OUTPUT"
-          
+
           # Find GOOS and GOARCH
           os=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r '.[] | select(.name | contains(".tar.gz")) | .goos')
           arch=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r '.[] | select(.name | contains(".tar.gz")) | .goarch')
           echo "arch=$os-$arch" >> "$GITHUB_OUTPUT"
-          
+
           # Find binary path
           echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path' )" >> "$GITHUB_OUTPUT"
 
@@ -220,7 +241,7 @@ jobs:
 
       - name: Build container images locally
         if: matrix.GOOS == 'linux' && contains(steps.prep.outputs.types, 'Docker Image')
-        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
           context: ./distributions/${{ inputs.distribution }}
           push: false
@@ -250,18 +271,18 @@ jobs:
         exclude:
           - GOOS: darwin
           - GOOS: windows
-    runs-on: ubuntu-24.04
+    runs-on: ${{ inputs.runner_os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
         with:
-          platforms: arm64,ppc64le,linux/arm/v7,s390x
+          platforms: arm64,ppc64le,linux/arm/v7,s390x,riscv64
 
       - name: Download container image artifact
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: ${{ inputs.distribution }}-image-${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
 
@@ -276,9 +297,10 @@ jobs:
           echo "Running container..."
           docker run --name ${{ inputs.distribution }} \
             -d \
-            -v ${PWD}/tests/docker-tests/default-config.yaml:/config.yaml \
+            ${{ inputs.docker_run_options }} \
+            -v ${PWD}/tests/docker-tests/${{ inputs.config_file }}:/config.yaml \
             ${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }} \
-            --config /config.yaml
+            ${{ inputs.otelcol_run_options }} --config /config.yaml
           echo "docker ps:"
           echo ""
           docker ps
@@ -293,5 +315,18 @@ jobs:
             echo "Printing container logs below..."
             echo ""
             cat docker-logs-${{ inputs.distribution }}.log
+            exit 1
+          fi
+
+      - name: Run golden tests
+        if: matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' && inputs.distribution == 'otelcol-contrib'
+        run: |
+          echo "Running golden tests..."
+          cd tests/golden
+          MY_UID="$(id -u)" MY_GID="$(id -g)" IMG=${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }} docker compose up -d --wait
+          exit_code=$(docker wait golden)
+          docker logs golden
+          if [ "$exit_code" -ne 0 ]; then
+            docker logs collector
             exit 1
           fi

@@ -5,7 +5,7 @@
 
 # This script verifies that all components declared in manifest.yaml files are
 # defined in the builder-config.yaml from the opentelemetry-collector-contrib
-# repository, ensuring they were built and tested successfully.
+# repository, or ebpf-profiler, ensuring they were built and tested successfully.
 
 set -euo pipefail
 
@@ -35,6 +35,8 @@ valid_components="$(
     | awk '{print $1}' \
     | sort -u
 )"
+valid_components+='
+go.opentelemetry.io/ebpf-profiler'
 
 if [[ -z "$valid_components" ]]; then
   echo "Error: No valid 'gomod' entries found in builder-config.yaml!"
