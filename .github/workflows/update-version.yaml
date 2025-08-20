@@ -45,7 +45,7 @@ jobs:
         run: |
           .github/workflows/scripts/bump-versions.sh --commit --pull-request
         env:
-          GH_TOKEN: ${{ steps.otelbot-token.outputs.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           next_beta_core: ${{ github.event.inputs.next_beta_core }}
           next_beta_contrib: ${{ github.event.inputs.next_beta_contrib }}
           next_stable_core: ${{ github.event.inputs.next_stable_core }}
