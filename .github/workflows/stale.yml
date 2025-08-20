@@ -10,8 +10,8 @@ permissions:
 jobs:
   stale:
     permissions:
-      issues: write # required for managing stale issues
-      pull-requests: write # required for managing stale PRs
+      issues: write # for actions/stale to close stale issues
+      pull-requests: write # for actions/stale to close stale PRs
     runs-on: ubuntu-24.04
     env:
       GH_TOKEN: ${{ github.token }}
