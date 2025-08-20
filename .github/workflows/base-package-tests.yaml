@@ -15,6 +15,9 @@ on:
         default: false
         description: "Set to true if a GH issue should be generated upon failure"
 
+permissions:
+  contents: read
+
 jobs:
   package-tests:
     name: Package Tests

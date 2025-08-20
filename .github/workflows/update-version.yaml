@@ -15,16 +15,16 @@ on:
         required: false
         default: ''
 
+permissions:
+  contents: read
+
 jobs:
   update-version:
     runs-on: ubuntu-24.04
     
     permissions:
       contents: write # required for pushing changes
-      pull-requests: write # required for creating PR
-
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      pull-requests: write # required for creating PRs
     steps:
       - uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b # v2.1.1
         id: otelbot-token
