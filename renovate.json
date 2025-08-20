@@ -14,6 +14,9 @@
     "config:best-practices",
     "helpers:pinGitHubActionDigestsToSemver"
   ],
+  "ocb": {
+    "managerFilePatterns": ["/(^|\\/)manifest.ya?ml$/"]
+  },
   "packageRules": [
     {
       "matchManagers": [
@@ -148,16 +151,6 @@
     }
   ],
   "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": [
-        "/(^|\\/)manifest.ya?ml$/"
-      ],
-      "datasourceTemplate": "go",
-      "matchStrings": [
-        "- gomod: (?<depName>(go\\.opentelemetry\\.io/collector|github\\.com/open-telemetry/opentelemetry-collector-contrib)/([A-Za-z0-9]+/)*[A-Za-z0-9]+) (?<currentValue>v\\d+\\.\\d+\\.\\d+)\\n"
-      ]
-    },
     {
       "customType": "regex",
       "managerFilePatterns": [
