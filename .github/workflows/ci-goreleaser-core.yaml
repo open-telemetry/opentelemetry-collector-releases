@@ -73,6 +73,7 @@ jobs:
 
       - name: Fetch tags to delete
         run: |
+          cutoff_date=$(date -d "2 weeks ago" +%s)
           tags=$(git tag | grep -v "cmd" | grep -E "nightly\." | sort --version-sort)
 
           for tag in $tags; do
