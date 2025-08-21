@@ -1,0 +1,17 @@
+name: Release eBPF Profiler
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    name: Release eBPF Profiler
+    uses: ./.github/workflows/base-release.yaml
+    with:
+      distribution: otelcol-ebpf-profiler
+      goos: '[ "linux" ]'
+      goarch: '[ "amd64", "arm64" ]'
+      nightly: ${{ contains(github.ref, '-nightly') }}
+    secrets: inherit
+    permissions: write-all

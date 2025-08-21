@@ -23,8 +23,6 @@ jobs:
       contents: write # required for pushing changes
       pull-requests: write # required for creating PR
 
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b # v2.1.1
         id: otelbot-token
@@ -47,7 +45,7 @@ jobs:
         run: |
           .github/workflows/scripts/bump-versions.sh --commit --pull-request
         env:
-          GITHUB_TOKEN: ${{ steps.otelbot-token.outputs.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           next_beta_core: ${{ github.event.inputs.next_beta_core }}
           next_beta_contrib: ${{ github.event.inputs.next_beta_contrib }}
           next_stable_core: ${{ github.event.inputs.next_stable_core }}
