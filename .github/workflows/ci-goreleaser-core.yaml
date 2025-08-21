@@ -52,3 +52,39 @@ jobs:
     with:
       distribution: otelcol
       type: '[ "msi" ]'
+
+  nightly-cleanup:
+    name: Nightly Cleanup
+    runs-on: ubuntu-24.04
+#    needs: nightly-release
+
+    steps:
+      #      - uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b # v2.1.1
+      #        id: otelbot-token
+      #        with:
+      #          app-id: ${{ vars.OTELBOT_COLLECTOR_RELEASES_APP_ID }}
+      #          private-key: ${{ secrets.OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY }}
+      #          permission-contents: write
+
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+          token: ${{ steps.otelbot-token.outputs.token }}
+
+      - name: Fetch tags to delete
+        run: |
+          tags=$(git tag | grep -v "cmd" | grep -E "nightly\." | sort --version-sort)
+
+          for tag in "${tags[@]}"; do
+            # Extract the timestamp part (e.g., 202508120233)
+            timestamp=$(echo "$tag" | grep -oP '\d{12}')
+
+            # Convert the timestamp to epoch time
+
+            tag_date=$(date -d "${timestamp:0:8} ${timestamp:8:2}:${timestamp:10:2}" +%s)
+
+            # Compare the tag date with the cutoff date
+            if [[ $tag_date -lt $cutoff_date ]]; then
+              echo "Old tag: $tag"
+            fi
+          done
