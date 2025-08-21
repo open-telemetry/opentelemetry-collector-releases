@@ -85,6 +85,7 @@ jobs:
             # Convert the timestamp to epoch time
 
             tag_date=$(date -d "${timestamp:0:8} ${timestamp:8:2}:${timestamp:10:2}" +%s)
+            echo "epochs to compare: cutoff: $cutoff_date | current: $tag_date"
 
             # Compare the tag date with the cutoff date
             if [[ $tag_date -lt $cutoff_date ]]; then
