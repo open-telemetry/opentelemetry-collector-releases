@@ -72,6 +72,12 @@ jobs:
 #          token: ${{ steps.otelbot-token.outputs.token }}
 
       - name: Fetch tags to delete
+        env:
+          DOCKERHUB_USERNAME: ${{ vars.DOCKER_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
+          DOCKERHUB_REPO: otel
+          GHCR_USERNAME: ${{ github.repository_owner }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cutoff_date=$(date -d "2 weeks ago" +%s)
           echo "Cutoff date to delete tags is: $cutoff_date"
@@ -90,5 +96,16 @@ jobs:
             # Compare the tag date with the cutoff date
             if [[ $tag_date -lt $cutoff_date ]]; then
               echo "Old tag: $tag"
+#              curl -X DELETE \
+#                -u "$DOCKERHUB_USERNAME:$DOCKERHUB_TOKEN" \
+#                "https://hub.docker.com/v2/repositories/$DOCKERHUB_REPO/$image_name/tags/$tag/" || echo "Failed to delete tag from dockerhub: $tag"
+#
+#              version_id=$(curl -s -H "Authorization: Bearer $GHCR_PAT" \
+#                "https://api.github.com/orgs/${{ github.repository_owner }}/packages/container/$package_name/versions?per_page=100" \
+#                | jq -r --arg TAG "$tag" '.[] | select(.metadata.container.tags[] == $TAG) | .id')
+#
+#              curl -X DELETE \
+#                -H "Authorization: Bearer $GHCR_PAT" \
+#                "https://api.github.com/orgs/${{ github.repository_owner }}/packages/container/$package_name/versions/$tag" || echo "Failed to delete tag from dockerhub: $tag"
             fi
           done
