@@ -75,7 +75,8 @@ jobs:
         run: |
           tags=$(git tag | grep -v "cmd" | grep -E "nightly\." | sort --version-sort)
 
-          for tag in "${tags[@]}"; do
+          for tag in $tags; do
+            echo "working on tag $tag ..."
             # Extract the timestamp part (e.g., 202508120233)
             timestamp=$(echo "$tag" | grep -oP '\d{12}')
 
