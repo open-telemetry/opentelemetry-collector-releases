@@ -3,6 +3,9 @@
 # Changelog
 
 <!-- next version -->
+### 💡 Enhancements 💡
+
+- `packaging`: Start producing container images for Windows 2025 on amd64 (#339)
 
 ## v0.132.0
 

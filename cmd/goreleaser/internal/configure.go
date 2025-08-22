@@ -71,6 +71,7 @@ var (
 			newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"}),
 			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2019"}),
 			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2022"}),
+			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2025"}),
 		)
 		d.containerImageManifests = slices.Concat(
 			newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{}),
@@ -88,6 +89,7 @@ var (
 			newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"}),
 			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2019"}),
 			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2022"}),
+			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2025"}),
 		)
 		d.containerImageManifests = slices.Concat(
 			newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{}),
@@ -123,6 +125,7 @@ var (
 			newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"}),
 			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2019"}),
 			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2022"}),
+			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2025"}),
 		)
 		d.containerImageManifests = slices.Concat(
 			newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{}),
@@ -154,6 +157,7 @@ var (
 			newContainerImages(d.name, "linux", k8sArchs, containerImageOptions{armVersion: "7"}),
 			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2019"}),
 			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2022"}),
+			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2025"}),
 		)
 		d.containerImageManifests = slices.Concat(
 			newContainerImageManifests(d.name, "linux", k8sArchs, containerImageOptions{}),
