@@ -293,6 +293,29 @@ dockers:
       - --label=org.opencontainers.image.source={{.GitURL}}
       - --label=org.opencontainers.image.licenses=Apache-2.0
     use: docker
+  - goos: windows
+    goarch: amd64
+    dockerfile: Windows.dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-contrib:{{ .Version }}-windows-2025-amd64
+      - otel/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-windows-2025-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-windows-2025-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-windows-2025-amd64
+    skip_build: '{{ not (eq .Runtime.Goos "windows") }}'
+    skip_push: '{{ not (eq .Runtime.Goos "windows") }}'
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --build-arg=WIN_VERSION=2025
+      - --platform=windows/amd64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: docker
 docker_manifests:
   - name_template: otel/opentelemetry-collector-contrib:{{ .Version }}
     image_templates:
