@@ -1,32 +1,59 @@
-monorepo:
-  tag_prefix: cmd/opampsupervisor/
-  dir: .contrib/cmd/opampsupervisor
 version: 2
+project_name: opentelemetry-collector-releases
 env:
+  - COSIGN_YES=true
+  - LD_FLAGS=-s -w -X github.com/open-telemetry/opentelemetry-collector-contrib/cmd/opampsupervisor/internal.version={{ .Version }}
+  - BUILD_FLAGS=-trimpath
   - CONTAINER_IMAGE_EPHEMERAL_TAG={{ if .IsNightly }}nightly{{ else }}latest{{ end }}
+  - GOPROXY=https://proxy.golang.org,direct
+  - CGO_ENABLED=0
+release:
+  github:
+    owner: open-telemetry
+    name: opentelemetry-collector-releases
+  make_latest: "false"
+  header: '### Release of OpAMP supervisor artifacts'
 builds:
-  - flags:
-      - -trimpath
-    ldflags:
-      - -s -w -X github.com/open-telemetry/opentelemetry-collector-contrib/cmd/opampsupervisor/internal.version={{ .Version }}
-    env:
-      - CGO_ENABLED=0
+  - id: opampsupervisor-linux
     goos:
       - linux
-      - windows
-      - darwin
     goarch:
       - amd64
       - arm64
       - ppc64le
-    ignore:
-      - goos: windows
-        goarch: arm64
-      - goos: windows
-        goarch: ppc64le
-      - goos: darwin
-        goarch: ppc64le
     binary: opampsupervisor
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
+  - id: opampsupervisor-darwin
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    binary: opampsupervisor
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
+  - id: opampsupervisor-windows
+    goos:
+      - windows
+    goarch:
+      - amd64
+    binary: opampsupervisor
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
+archives:
+  - formats:
+      - binary
+snapshot:
+  version_template: '{{ .Tag }}-next'
+checksum:
+  name_template: checksums.txt
 dockers:
   - goos: linux
     goarch: amd64
@@ -45,6 +72,7 @@ dockers:
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
       - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
   - goos: linux
     goarch: arm64
     dockerfile: Dockerfile
@@ -62,6 +90,7 @@ dockers:
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.source={{.GitURL}}
       - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
   - goos: linux
     goarch: ppc64le
     dockerfile: Dockerfile
@@ -101,25 +130,10 @@ docker_manifests:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64le
-release:
-  make_latest: false
-  github:
-    owner: open-telemetry
-    name: opentelemetry-collector-releases
-  header: |
-    ### Release of OpAMP supervisor artifacts
-archives:
-  - formats:
-    - binary
-checksum:
-  name_template: "checksums.txt"
-snapshot:
-  version_template: "{{ .Tag }}-next"
 changelog:
-  disable: true
+  disable: "true"
 signs:
-  - if: $SKIP_SIGNS != "true"
-    cmd: cosign
+  - cmd: cosign
     args:
       - sign-blob
       - --output-signature
@@ -129,20 +143,23 @@ signs:
       - ${artifact}
     signature: ${artifact}.sig
     artifacts: all
+    if: $SKIP_SIGNS != 'true'
     certificate: ${artifact}.pem
 docker_signs:
-  - if: $SKIP_SIGNS != "true"
-    args:
+  - args:
       - sign
       - ${artifact}
     artifacts: all
+    if: $SKIP_SIGNS != 'true'
 sboms:
   - id: archive
     artifacts: archive
   - id: package
     artifacts: package
+monorepo:
+  tag_prefix: cmd/opampsupervisor/
+  dir: .contrib/cmd/opampsupervisor
 nightly:
   version_template: '{{ incpatch .Version}}-nightly.{{ .ShortCommit }}'
-  tag_name: nightly-opamp-supervisor
+  tag_name: nightly-opampsupervisor
   keep_single_release: true
-    

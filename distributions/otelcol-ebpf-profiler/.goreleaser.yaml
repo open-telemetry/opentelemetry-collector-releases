@@ -1,11 +1,14 @@
 version: 2
 project_name: opentelemetry-collector-releases
 env:
+  - TARGET_ARCH={{ .Runtime.Goarch }}
   - COSIGN_YES=true
   - LD_FLAGS=-extldflags=-static
   - BUILD_FLAGS=-trimpath
   - CONTAINER_IMAGE_EPHEMERAL_TAG={{ if .IsNightly }}nightly{{ else }}latest{{ end }}
+  - GOPROXY=https://proxy.golang.org,direct
   - GO_TAGS=osusergo,netgo
+  - CGO_ENABLED=0
 release:
   replace_existing_artifacts: true
 builds:
@@ -14,6 +17,7 @@ builds:
       - linux
     goarch:
       - amd64
+      - arm64
     dir: _build
     binary: otelcol-ebpf-profiler
     ldflags:
@@ -46,19 +50,41 @@ dockers:
       - --label=org.opencontainers.image.source={{.GitURL}}
       - --label=org.opencontainers.image.licenses=Apache-2.0
     use: buildx
+  - goos: linux
+    goarch: arm64
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-ebpf-profiler:{{ .Version }}-arm64
+      - otel/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
+    build_flag_templates:
+      - --pull
+      - --platform=linux/arm64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
 docker_manifests:
   - name_template: otel/opentelemetry-collector-ebpf-profiler:{{ .Version }}
     image_templates:
       - otel/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
+      - otel/opentelemetry-collector-ebpf-profiler:{{ .Version }}-arm64
   - name_template: otel/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
     image_templates:
       - otel/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
+      - otel/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Version }}-arm64
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
 signs:
   - cmd: cosign
     args:
@@ -85,3 +111,7 @@ monorepo:
   tag_prefix: v
 partial:
   by: target
+nightly:
+  version_template: '{{ incpatch .Version}}-nightly.{{ .ShortCommit }}'
+  tag_name: nightly-otelcol-ebpf-profiler
+  keep_single_release: true
