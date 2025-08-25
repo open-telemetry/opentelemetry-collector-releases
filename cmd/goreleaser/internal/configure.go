@@ -353,15 +353,8 @@ func (b *distributionBuilder) WithDefaultSigns() *distributionBuilder {
 }
 
 func (b *distributionBuilder) signs() []config.Sign {
-	condition := ""
-	switch b.dist.name {
-	case ocbBinary, opampBinary:
-		condition = "$SKIP_SIGNS != 'true'"
-	}
-
 	return []config.Sign{
 		{
-			If:          condition,
 			Artifacts:   "all",
 			Signature:   "${artifact}.sig",
 			Certificate: "${artifact}.pem",
@@ -806,8 +799,6 @@ func dockerImageWithOS(dist, os, arch string, opts containerImageOptions) config
 		)
 		imageConfig.Dockerfile = "Windows.dockerfile"
 		imageConfig.Use = "docker"
-		imageConfig.SkipBuild = "{{ not (eq .Runtime.Goos \"windows\") }}"
-		imageConfig.SkipPush = "{{ not (eq .Runtime.Goos \"windows\") }}"
 	}
 	return imageConfig
 }
@@ -889,9 +880,6 @@ func osDockerManifest(prefix, version, dist, os string, archs []string, opts con
 	manifest := config.DockerManifest{
 		NameTemplate:   fmt.Sprintf("%s/%s:%s", prefix, imageName(dist, opts), version),
 		ImageTemplates: imageTemplates,
-	}
-	if os == "windows" {
-		manifest.SkipPush = "{{ not (eq .Runtime.Goos \"windows\") }}"
 	}
 	return manifest
 }
