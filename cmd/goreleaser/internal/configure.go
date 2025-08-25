@@ -883,6 +883,9 @@ func osDockerManifest(prefix, version, dist, os string, archs []string, opts con
 		NameTemplate:   fmt.Sprintf("%s/%s:%s", prefix, imageName(dist, opts), version),
 		ImageTemplates: imageTemplates,
 	}
+	if os == "windows" {
+		manifest.SkipPush = "{{ not (eq .Runtime.Goos \"windows\") }}"
+	}
 	return manifest
 }
 
