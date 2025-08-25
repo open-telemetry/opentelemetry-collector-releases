@@ -40,10 +40,10 @@ builds:
       - '{{ .Env.BUILD_FLAGS }}'
 archives:
   - id: otelcol-k8s
-    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
-    builds:
+    ids:
       - otelcol-k8s-linux
       - otelcol-k8s-windows
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 checksum:
   name_template: '{{ .ProjectName }}_otelcol-k8s{{ if eq .Runtime.Goos "windows" }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt'
 dockers:
