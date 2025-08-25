@@ -7,6 +7,9 @@ on:
       - main
       - release/*
 
+permissions:
+  contents: read
+
 jobs:
   check-goreleaser:
     name: Check docker token
