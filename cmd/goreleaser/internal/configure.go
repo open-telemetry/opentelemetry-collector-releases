@@ -353,15 +353,8 @@ func (b *distributionBuilder) WithDefaultSigns() *distributionBuilder {
 }
 
 func (b *distributionBuilder) signs() []config.Sign {
-	condition := ""
-	switch b.dist.name {
-	case ocbBinary, opampBinary:
-		condition = "$SKIP_SIGNS != 'true'"
-	}
-
 	return []config.Sign{
 		{
-			If:          condition,
 			Artifacts:   "all",
 			Signature:   "${artifact}.sig",
 			Certificate: "${artifact}.pem",
