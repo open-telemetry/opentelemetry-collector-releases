@@ -20,7 +20,7 @@ import (
 	"os"
 
 	"github.com/open-telemetry/opentelemetry-collector-releases/cmd/goreleaser/internal"
-	"sigs.k8s.io/yaml"
+	"go.yaml.in/yaml/v3"
 )
 
 var (
