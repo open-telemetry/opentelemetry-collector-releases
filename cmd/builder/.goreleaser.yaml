@@ -166,7 +166,6 @@ signs:
       - ${artifact}
     signature: ${artifact}.sig
     artifacts: all
-    if: $SKIP_SIGNS != 'true'
     certificate: ${artifact}.pem
 docker_signs:
   - args:

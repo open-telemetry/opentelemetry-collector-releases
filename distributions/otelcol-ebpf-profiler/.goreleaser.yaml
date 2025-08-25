@@ -26,9 +26,9 @@ builds:
       - '{{ .Env.BUILD_FLAGS }}'
 archives:
   - id: otelcol-ebpf-profiler
-    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
-    builds:
+    ids:
       - otelcol-ebpf-profiler-linux
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 checksum:
   name_template: '{{ .ProjectName }}_otelcol-ebpf-profiler{{ if eq .Runtime.Goos "windows" }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt'
 dockers:
