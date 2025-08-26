@@ -19,9 +19,8 @@ import (
 	"log"
 	"os"
 
-	"gopkg.in/yaml.v3"
-
 	"github.com/open-telemetry/opentelemetry-collector-releases/cmd/goreleaser/internal"
+	"go.yaml.in/yaml/v3"
 )
 
 var (
