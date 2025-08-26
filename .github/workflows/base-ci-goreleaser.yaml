@@ -188,7 +188,7 @@ jobs:
         run: cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json
 
       - name: Print dist folder contents
-        if: always()
+        if: always() && runner.os != 'Windows'
         run: ls -laR ./distributions/${{ inputs.distribution }}/dist
 
       - name: Upload linux service packages
