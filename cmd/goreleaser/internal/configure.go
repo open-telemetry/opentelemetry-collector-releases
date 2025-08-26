@@ -271,12 +271,12 @@ func (b *distributionBuilder) WithBinArchive() *distributionBuilder {
 	return b
 }
 
-func (b *distributionBuilder) newArchives(dist string, builds []string) []config.Archive {
+func (b *distributionBuilder) newArchives(dist string, ids []string) []config.Archive {
 	return []config.Archive{
 		{
 			ID:           dist,
 			NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}",
-			Builds:       builds,
+			IDs:          ids,
 		},
 	}
 }
@@ -303,7 +303,7 @@ func (b *distributionBuilder) newNfpms(dist string) []config.NFPM {
 	return []config.NFPM{
 		{
 			ID:          dist,
-			Builds:      []string{dist + "-linux"},
+			IDs:         []string{dist + "-linux"},
 			Formats:     []string{"deb", "rpm"},
 			License:     "Apache 2.0",
 			Description: fmt.Sprintf("OpenTelemetry Collector - %s", dist),
@@ -353,15 +353,8 @@ func (b *distributionBuilder) WithDefaultSigns() *distributionBuilder {
 }
 
 func (b *distributionBuilder) signs() []config.Sign {
-	condition := ""
-	switch b.dist.name {
-	case ocbBinary, opampBinary:
-		condition = "$SKIP_SIGNS != 'true'"
-	}
-
 	return []config.Sign{
 		{
-			If:          condition,
 			Artifacts:   "all",
 			Signature:   "${artifact}.sig",
 			Certificate: "${artifact}.pem",

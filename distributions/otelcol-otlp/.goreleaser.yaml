@@ -64,11 +64,11 @@ builds:
       - '{{ .Env.BUILD_FLAGS }}'
 archives:
   - id: otelcol-otlp
-    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
-    builds:
+    ids:
       - otelcol-otlp-linux
       - otelcol-otlp-darwin
       - otelcol-otlp-windows
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
   - package_name: otelcol-otlp
     contents:
@@ -86,14 +86,14 @@ nfpms:
         dependencies:
           - /bin/sh
     id: otelcol-otlp
+    ids:
+      - otelcol-otlp-linux
     formats:
       - deb
       - rpm
     maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
     description: OpenTelemetry Collector - otelcol-otlp
     license: Apache 2.0
-    builds:
-      - otelcol-otlp-linux
 checksum:
   name_template: '{{ .ProjectName }}_otelcol-otlp{{ if eq .Runtime.Goos "windows" }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt'
 dockers:
