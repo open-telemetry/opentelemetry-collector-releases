@@ -37,11 +37,9 @@ exporters:
     verbosity: detailed
 
 service:
-
   telemetry:
     metrics:
       level: basic
-      address: 0.0.0.0:8888
   pipelines:
 
     traces:
