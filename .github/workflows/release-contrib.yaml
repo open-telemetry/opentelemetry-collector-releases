@@ -23,6 +23,6 @@ jobs:
       distribution: otelcol-contrib
       goos: '[ "windows" ]'
       goarch: '[ "386", "amd64" ]'
-      runner_os: windows-2022
+      runner_os: windows-2025
     secrets: inherit
     permissions: write-all
