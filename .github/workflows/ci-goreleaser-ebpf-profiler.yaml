@@ -27,6 +27,9 @@ on:
       - "go.mod"
       - "go.sum"
 
+permissions:
+  contents: read
+
 jobs:
   check-goreleaser-amd64:
     name: CI - eBPF Profiler - GoReleaser
