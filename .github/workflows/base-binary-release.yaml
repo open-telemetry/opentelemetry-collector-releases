@@ -21,6 +21,9 @@ env:
   # renovate: datasource=github-releases depName=goreleaser/goreleaser-pro
   GORELEASER_PRO_VERSION: v2.12.0
 
+permissions:
+  contents: read
+
 jobs:
   goreleaser:
     runs-on: ubuntu-24.04
