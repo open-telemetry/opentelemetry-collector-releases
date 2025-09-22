@@ -121,12 +121,12 @@ dockers_v2:
       - "{{ .Version }}"
       - "{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}"
     labels:
-      org.opencontainers.image.created: {{.Date}}
-      org.opencontainers.image.name: {{.ProjectName}}
-      org.opencontainers.image.revision: {{.FullCommit}}
-      org.opencontainers.image.version: {{.Version}}
-      org.opencontainers.image.source: {{.GitURL}}
-      org.opencontainers.image.licenses: Apache-2.0
+      "org.opencontainers.image.created": {{.Date}}
+      "org.opencontainers.image.name": {{.ProjectName}}
+      "org.opencontainers.image.revision": {{.FullCommit}}
+      "org.opencontainers.image.version": {{.Version}}
+      "org.opencontainers.image.source": {{.GitURL}}
+      "org.opencontainers.image.licenses": Apache-2.0
     flags:
       - "--pull"
   - dockerfile: Windows.dockerfile
@@ -143,12 +143,12 @@ dockers_v2:
       - "{{ .Version }}-windows-2019"
       - "{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-windows-2019"
     labels:
-      org.opencontainers.image.created: {{.Date}}
-      org.opencontainers.image.name: {{.ProjectName}}
-      org.opencontainers.image.revision: {{.FullCommit}}
-      org.opencontainers.image.version: {{.Version}}
-      org.opencontainers.image.source: {{.GitURL}}
-      org.opencontainers.image.licenses: Apache-2.0
+      "org.opencontainers.image.created": {{.Date}}
+      "org.opencontainers.image.name": {{.ProjectName}}
+      "org.opencontainers.image.revision": {{.FullCommit}}
+      "org.opencontainers.image.version": {{.Version}}
+      "org.opencontainers.image.source": {{.GitURL}}
+      "org.opencontainers.image.licenses": Apache-2.0
     flags:
       - "--pull"
     build_args:
@@ -167,12 +167,12 @@ dockers_v2:
       - "{{ .Version }}-windows-2022"
       - "{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-windows-2022"
     labels:
-      org.opencontainers.image.created: {{.Date}}
-      org.opencontainers.image.name: {{.ProjectName}}
-      org.opencontainers.image.revision: {{.FullCommit}}
-      org.opencontainers.image.version: {{.Version}}
-      org.opencontainers.image.source: {{.GitURL}}
-      org.opencontainers.image.licenses: Apache-2.0
+      "org.opencontainers.image.created": {{.Date}}
+      "org.opencontainers.image.name": {{.ProjectName}}
+      "org.opencontainers.image.revision": {{.FullCommit}}
+      "org.opencontainers.image.version": {{.Version}}
+      "org.opencontainers.image.source": {{.GitURL}}
+      "org.opencontainers.image.licenses": Apache-2.0
     flags:
       - "--pull"
     build_args:
