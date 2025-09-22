@@ -16,6 +16,3 @@ receivers:
 providers:
   - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.41.0
   - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.41.0
-
-replaces:
-  - go.opentelemetry.io/otel/exporters/prometheus => go.opentelemetry.io/otel/exporters/prometheus v0.58.0
