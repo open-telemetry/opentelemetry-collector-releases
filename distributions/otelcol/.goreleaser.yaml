@@ -101,7 +101,8 @@ nfpms:
 checksum:
   name_template: '{{ .ProjectName }}_otelcol{{ if eq .Runtime.Goos "windows" }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt'
 dockers_v2:
-  - dockerfile: Dockerfile
+  - id: docker-linux
+    dockerfile: Dockerfile
     ids:
       - otelcol-linux
     extra_files:
@@ -129,7 +130,8 @@ dockers_v2:
       "org.opencontainers.image.licenses": "Apache-2.0"
     flags:
       - "--pull"
-  - dockerfile: Windows.dockerfile
+  - id: docker-windows-2019
+    dockerfile: Windows.dockerfile
     ids:
       - otelcol-windows
     extra_files:
@@ -153,7 +155,8 @@ dockers_v2:
       - "--pull"
     build_args:
       WIN_VERSION: "2019"
-  - dockerfile: Windows.dockerfile
+  - id: docker-windows-2022
+    dockerfile: Windows.dockerfile
     ids:
       - otelcol-windows
     extra_files:
