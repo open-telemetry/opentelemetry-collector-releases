@@ -36,8 +36,8 @@ permissions:
   contents: read
 
 env:
-  # renovate: datasource=github-releases depName=goreleaser/goreleaser-pro
-  GORELEASER_PRO_VERSION: v2.12.0
+  # renovate: datasource=github-releases packageName=goreleaser/goreleaser-pro
+  GORELEASER_PRO_VERSION: v2.12.1
 
 jobs:
   check-goreleaser:
