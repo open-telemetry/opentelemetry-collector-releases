@@ -7,29 +7,29 @@ dist:
   build_tags: "grpcnotrace"
 
 exporters:
-  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.135.0
-  - gomod: go.opentelemetry.io/collector/exporter/nopexporter v0.135.0
-  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.135.0
-  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.135.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.135.0
+  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.136.0
+  - gomod: go.opentelemetry.io/collector/exporter/nopexporter v0.136.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.136.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.136.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.136.0
 
 processors:
-  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.135.0
-  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.135.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.135.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.135.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.135.0
+  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.136.0
+  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.136.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.136.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.136.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.136.0
 
 receivers:
-  - gomod: go.opentelemetry.io/ebpf-profiler v0.0.202536
+  - gomod: go.opentelemetry.io/ebpf-profiler v0.0.202539
     import: go.opentelemetry.io/ebpf-profiler/collector
 
 providers:
-  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.41.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.41.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/httpprovider v1.41.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.41.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.41.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.42.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.42.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/httpprovider v1.42.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.42.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.42.0
 
 # When adding a replace, add a comment before it to document why it's needed and when it can be removed
 replaces:
