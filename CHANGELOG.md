@@ -4,6 +4,12 @@
 
 <!-- next version -->
 
+## v0.136.0
+
+### 💡 Enhancements 💡
+
+- `service/telemetry`: Stops pinning go.opentelemetry.io/otel/exporters/prometheus to v0.58.0 (#1178)
+
 ## v0.135.0
 
 ## v0.134.0
