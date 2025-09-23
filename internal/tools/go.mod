@@ -4,7 +4,7 @@ go 1.23.0
 
 toolchain go1.23.6
 
-require go.opentelemetry.io/build-tools/chloggen v0.26.2
+require go.opentelemetry.io/build-tools/chloggen v0.28.0
 
 require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
