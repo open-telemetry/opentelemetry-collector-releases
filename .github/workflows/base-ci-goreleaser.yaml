@@ -77,17 +77,13 @@ jobs:
           fetch-depth: 0
 
       - name: Setup QEMU
+        if: runner.os != 'Windows'
         uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
         with:
           platforms: arm64,ppc64le,linux/arm/v7,s390x,riscv64
 
-      - name: Setup wixl # Required to build MSI packages for Windows
-        if: ${{ matrix.GOOS == 'windows' && ( matrix.GOARCH == '386' || matrix.GOARCH == 'amd64') }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wixl
-
       - name: Setup Docker Buildx
+        if: runner.os != 'Windows'
         uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
 
       - name: Setup Go
@@ -167,7 +163,7 @@ jobs:
         run: mv distributions/otelcol-contrib/dist/**/* distributions/otelcol-contrib/artifacts/
 
       - name: Show built or downloaded content
-        if: inputs.distribution == 'otelcol-contrib'
+        if: inputs.distribution == 'otelcol-contrib' && runner.os != 'Windows'
         run: ls -laR distributions/otelcol-contrib/artifacts
 
       - name: Run GoReleaser for ${{ inputs.distribution }}
@@ -192,7 +188,7 @@ jobs:
         run: cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json
 
       - name: Print dist folder contents
-        if: always()
+        if: always() && runner.os != 'Windows'
         run: ls -laR ./distributions/${{ inputs.distribution }}/dist
 
       - name: Upload linux service packages
