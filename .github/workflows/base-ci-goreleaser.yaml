@@ -42,6 +42,7 @@ env:
 jobs:
   check-goreleaser:
     strategy:
+      fail-fast: false
       matrix:
         GOOS: ${{ fromJSON( inputs.goos) }}
         GOARCH: ${{ fromJSON( inputs.goarch) }}
