@@ -1,12 +1,12 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
    <Product
       Name="OpenTelemetry Collector ({{ .Version }}) - {{ .Binary }} distribution"
-      Id="B250A214-D463-4E9B-8902-1DE5C19EA951"
+      Id="*"
       UpgradeCode="B7C263DD-95A5-436A-A025-DCA5200C2BE3"
       Version="{{ .Version }}"
       Manufacturer="OpenTelemetry"
       Language="1033">
-      
+
       <Package
          InstallerVersion="200"
          Compressed="yes"
@@ -75,7 +75,7 @@
                   <RegistryKey
                      Root="HKLM"
                      Key="SYSTEM\CurrentControlSet\Services\EventLog\Application\{{ .Binary }}">
-                     <RegistryValue 
+                     <RegistryValue
                         Type="expandable"
                         Name="EventMessageFile"
                         Value="%SystemRoot%\System32\EventCreate.exe"/>
