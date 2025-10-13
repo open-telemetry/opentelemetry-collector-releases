@@ -233,6 +233,14 @@ var (
 	}).WithBinaryPackagingDefaults().
 		WithBinaryMonorepo(".contrib/cmd/opampsupervisor").
 		WithDefaultBinaryRelease(opampReleaseHeader).
+		WithDefaultNfpms().
+		WithConfigFunc(func(d *distribution) {
+			d.nfpms[0].Contents = append(d.nfpms[0].Contents, config.NFPMContent{
+				Source:      "config.example.yaml",
+				Destination: path.Join("/etc", d.name, "config.example.yaml"),
+				Type:        "config|noreplace",
+			})
+		}).
 		WithNightlyConfig().
 		Build()
 )
