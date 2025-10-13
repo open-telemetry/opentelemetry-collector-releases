@@ -6,6 +6,16 @@
 
 ## v0.137.0
 
+### 🚀 New components 🚀
+
+- `unrollprocessor`: Adds the unroll processor to the Contrib distribution (#1189)
+
+### 💡 Enhancements 💡
+
+- `packaging`: Allow in-place upgrades for Windows MSI installations (#1197)
+
+## v0.137.0
+
 ## v0.136.0
 
 ### 💡 Enhancements 💡
