@@ -86,10 +86,10 @@ jobs:
           COSIGN_YES: false
 
       - name: Print built artifacts
-        run: cat ./dist/**/artifacts.json
+        run: cat ./dist/artifacts.json
 
       - name: Print metadata
-        run: cat ./dist/**/metadata.json
+        run: cat ./dist/metadata.json
 
       - name: Print dist folder contents
         if: always()
