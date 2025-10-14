@@ -86,19 +86,19 @@ jobs:
           COSIGN_YES: false
 
       - name: Print built artifacts
-        run: cat ./cmd/${{ inputs.binary }}/dist/**/artifacts.json
+        run: cat ./dist/**/artifacts.json
 
       - name: Print metadata
-        run: cat ./cmd/${{ inputs.binary }}/dist/**/metadata.json
+        run: cat ./dist/**/metadata.json
 
       - name: Print dist folder contents
         if: always()
-        run: ls -laR ./cmd/${{ inputs.binary }}/dist
+        run: ls -laR ./dist
 
       - name: Upload linux service packages
         if: ${{ inputs.linux-packages == true }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: linux-packages
-          path: cmd/${{ inputs.binary }}/dist/linux_amd64_v1/*
+          path: dist/linux_amd64_v1/*
           if-no-files-found: error
