@@ -12,7 +12,7 @@ on:
       binary_name:
         required: false
         type: string
-        default: "otelcol-SNAPSHOT-*_linux_amd64"
+        default: "otelcol*-SNAPSHOT-*_linux_amd64"
         description: "The name of the binary to test"
       issue-on-failure:
         required: false
