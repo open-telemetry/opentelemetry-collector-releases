@@ -39,3 +39,10 @@ jobs:
       dependency-target-folder: '.contrib'
     secrets: inherit
     permissions: write-all
+  package-tests:
+    uses: ./.github/workflows/base-package-tests.yaml
+    with:
+      distribution: opampsupervisor
+      type: '[ "deb", "rpm" ]'
+      issue-on-failure: true
+    secrets: inherit
