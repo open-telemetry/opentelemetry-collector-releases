@@ -240,6 +240,10 @@ var (
 				Destination: path.Join("/etc", d.name, "config.example.yaml"),
 				Type:        "config|noreplace",
 			})
+			for i, content := range d.nfpms[0].Contents {
+				content.Source = path.Join("cmd", d.name, content.Source)
+				d.nfpms[0].Contents[i] = content
+			}
 		}).
 		WithNightlyConfig().
 		Build()

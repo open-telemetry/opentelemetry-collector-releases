@@ -53,12 +53,12 @@ archives:
 nfpms:
   - package_name: opampsupervisor
     contents:
-      - src: opampsupervisor.service
+      - src: cmd/opampsupervisor/opampsupervisor.service
         dst: /lib/systemd/system/opampsupervisor.service
-      - src: opampsupervisor.conf
+      - src: cmd/opampsupervisor/opampsupervisor.conf
         dst: /etc/opampsupervisor/opampsupervisor.conf
         type: config|noreplace
-      - src: config.example.yaml
+      - src: cmd/opampsupervisor/config.example.yaml
         dst: /etc/opampsupervisor/config.example.yaml
         type: config|noreplace
     scripts:
