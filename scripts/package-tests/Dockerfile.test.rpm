@@ -1,6 +1,6 @@
 # A rockylinux image with systemd enabled.  Must be run with:
 # `-d --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro` flags
-FROM rockylinux:9.6@sha256:91bbb8eb52ca462611c1f9ce5c4cede4172a31bfe64f336e82f29648694a3cfe
+FROM rockylinux:9.6@sha256:7620071ad66949c3aef9fd313151f0cfee46b75485990c3b03710624f5e1b7b3
 
 ENV container docker
 
