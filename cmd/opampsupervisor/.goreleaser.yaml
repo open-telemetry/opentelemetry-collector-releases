@@ -62,9 +62,9 @@ nfpms:
         dst: /etc/opampsupervisor/config.example.yaml
         type: config|noreplace
     scripts:
-      preinstall: preinstall.sh
-      postinstall: postinstall.sh
-      preremove: preremove.sh
+      preinstall: cmd/opampsupervisor/preinstall.sh
+      postinstall: cmd/opampsupervisor/postinstall.sh
+      preremove: cmd/opampsupervisor/preremove.sh
     overrides:
       rpm:
         dependencies:

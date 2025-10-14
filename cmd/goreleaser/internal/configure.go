@@ -244,6 +244,9 @@ var (
 				content.Source = path.Join("cmd", d.name, content.Source)
 				d.nfpms[0].Contents[i] = content
 			}
+			d.nfpms[0].Scripts.PreInstall = path.Join("cmd", d.name, d.nfpms[0].Scripts.PreInstall)
+			d.nfpms[0].Scripts.PostInstall = path.Join("cmd", d.name, d.nfpms[0].Scripts.PostInstall)
+			d.nfpms[0].Scripts.PreRemove = path.Join("cmd", d.name, d.nfpms[0].Scripts.PreRemove)
 		}).
 		WithNightlyConfig().
 		Build()
