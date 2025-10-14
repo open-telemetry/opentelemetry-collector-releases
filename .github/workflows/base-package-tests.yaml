@@ -12,7 +12,7 @@ on:
       binary_name:
         required: false
         type: string
-        default: "otelcol-SNAPSHOT-*"
+        default: "otelcol-SNAPSHOT-*_linux_amd64"
         description: "The name of the binary to test"
       issue-on-failure:
         required: false
@@ -40,7 +40,7 @@ jobs:
           name: linux-packages
 
       - name: Test ${{ matrix.type }} package
-        run: ./scripts/package-tests/package-tests.sh ./${{ inputs.binary_name }}_linux_amd64.${{ matrix.type }} ${{ inputs.distribution }}
+        run: ./scripts/package-tests/package-tests.sh ./${{ inputs.binary_name }}.${{ matrix.type }} ${{ inputs.distribution }}
 
   create-issue:
     name: Create GitHub Issue
