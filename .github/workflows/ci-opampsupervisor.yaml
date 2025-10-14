@@ -37,6 +37,7 @@ jobs:
       binary: opampsupervisor
       collector-dependency: 'open-telemetry/opentelemetry-collector-contrib'
       dependency-target-folder: '.contrib'
+      linux-packages: true
     secrets: inherit
     permissions: write-all
   package-tests:
