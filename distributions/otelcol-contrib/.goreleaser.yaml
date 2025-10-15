@@ -255,8 +255,6 @@ dockers:
       - otel/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-windows-2019-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-windows-2019-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-windows-2019-amd64
-    skip_build: '{{ not (eq .Runtime.Goos "windows") }}'
-    skip_push: '{{ not (eq .Runtime.Goos "windows") }}'
     extra_files:
       - config.yaml
     build_flag_templates:
@@ -278,8 +276,6 @@ dockers:
       - otel/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-windows-2022-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-windows-2022-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-windows-2022-amd64
-    skip_build: '{{ not (eq .Runtime.Goos "windows") }}'
-    skip_push: '{{ not (eq .Runtime.Goos "windows") }}'
     extra_files:
       - config.yaml
     build_flag_templates:
