@@ -805,8 +805,8 @@ func dockerImageWithOS(dist, os, arch string, opts containerImageOptions) config
 		)
 		imageConfig.Dockerfile = "Windows.dockerfile"
 		imageConfig.Use = "docker"
-		// imageConfig.SkipBuild = "{{ not (eq .Runtime.Goos \"windows\") }}"
-		// imageConfig.SkipPush = "{{ not (eq .Runtime.Goos \"windows\") }}"
+		imageConfig.SkipBuild = "{{ not (eq .Runtime.Goos \"windows\") }}"
+		imageConfig.SkipPush = "{{ not (eq .Runtime.Goos \"windows\") }}"
 	}
 	return imageConfig
 }
