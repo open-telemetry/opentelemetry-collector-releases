@@ -74,12 +74,12 @@ var (
 			&fullBuildConfig{targetOS: "windows", targetArch: winArchs, buildDir: defaultBuildDir},
 		}
 		d.containerImages = slices.Concat(
-			// newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"}),
+			newContainerImages(d.name, "linux", baseArchs, containerImageOptions{armVersion: "7"}),
 			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2019"}),
 			newContainerImages(d.name, "windows", winContainerArchs, containerImageOptions{winVersion: "2022"}),
 		)
 		d.containerImageManifests = slices.Concat(
-			newContainerImageManifests(d.name, "windows", baseArchs, containerImageOptions{}),
+			newContainerImageManifests(d.name, "linux", baseArchs, containerImageOptions{}),
 		)
 	}).WithPackagingDefaults().Build()
 
@@ -889,9 +889,9 @@ func osDockerManifest(prefix, version, dist, os string, archs []string, opts con
 		NameTemplate:   fmt.Sprintf("%s/%s:%s", prefix, imageName(dist, opts), version),
 		ImageTemplates: imageTemplates,
 	}
-	// if os == "windows" {
-	// 	manifest.SkipPush = "{{ not (eq .Runtime.Goos \"windows\") }}"
-	// }
+	if os == "windows" {
+		manifest.SkipPush = "{{ not (eq .Runtime.Goos \"windows\") }}"
+	}
 	return manifest
 }
 
