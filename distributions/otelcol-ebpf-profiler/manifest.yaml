@@ -2,37 +2,36 @@ dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/ebpf-profiler
   name: otelcol-ebpf-profiler
   description: OpenTelemetry Collector for eBPF Profiling
-  version: 0.133.0
+  version: 0.137.0
   output_path: ./_build
   build_tags: "grpcnotrace"
 
 exporters:
-  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.133.0
-  - gomod: go.opentelemetry.io/collector/exporter/nopexporter v0.133.0
-  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.133.0
-  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.133.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.133.0
+  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.137.0
+  - gomod: go.opentelemetry.io/collector/exporter/nopexporter v0.137.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.137.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.137.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.137.0
 
 processors:
-  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.133.0
-  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.133.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.133.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.133.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.133.0
+  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.137.0
+  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.137.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.137.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.137.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.137.0
 
 receivers:
-  - gomod: go.opentelemetry.io/ebpf-profiler v0.0.202531
+  - gomod: go.opentelemetry.io/ebpf-profiler v0.0.202540
     import: go.opentelemetry.io/ebpf-profiler/collector
 
 providers:
-  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.39.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.39.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/httpprovider v1.39.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.39.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.39.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.43.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.43.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/httpprovider v1.43.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.43.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.43.0
 
 # When adding a replace, add a comment before it to document why it's needed and when it can be removed
 replaces:
   # see https://github.com/openshift/api/pull/1515
   - github.com/openshift/api => github.com/openshift/api v0.0.0-20230726162818-81f778f3b3ec
-  - go.opentelemetry.io/otel/exporters/prometheus => go.opentelemetry.io/otel/exporters/prometheus v0.58.0
