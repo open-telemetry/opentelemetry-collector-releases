@@ -36,15 +36,6 @@ jobs:
     uses: ./.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-otlp
-      goos: '[ "linux", "darwin" ]'
+      goos: '[ "linux", "windows", "darwin" ]'
       goarch: '[ "386", "amd64", "arm", "arm64", "ppc64le", "riscv64", "s390x" ]'
-    secrets: inherit
-  check-goreleaser-windows:
-    name: CI - OTLP - GoReleaser
-    uses: ./.github/workflows/base-ci-goreleaser.yaml
-    with:
-      distribution: otelcol-otlp
-      goos: '[ "windows" ]'
-      goarch: '[ "386", "amd64", "arm64" ]'
-      runner_os: 'windows-2025'
     secrets: inherit
