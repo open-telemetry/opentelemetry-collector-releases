@@ -10,6 +10,9 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: read
+
 jobs:
   msi-tests:
     name: MSI Tests

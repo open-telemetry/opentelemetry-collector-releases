@@ -14,6 +14,9 @@
     "config:best-practices",
     "helpers:pinGitHubActionDigestsToSemver"
   ],
+  "ocb": {
+    "managerFilePatterns": ["/(^|\\/)manifest.ya?ml$/"]
+  },
   "packageRules": [
     {
       "matchManagers": [
@@ -102,15 +105,6 @@
       "matchManagers": [
         "gomod"
       ],
-      "groupName": "All go.opentelemetry.io/collector packages",
-      "matchPackageNames": [
-        "go.opentelemetry.io/collector{/,}**"
-      ]
-    },
-    {
-      "matchManagers": [
-        "gomod"
-      ],
       "groupName": "All go.opentelemetry.io/build-tools packages",
       "matchPackageNames": [
         "go.opentelemetry.io/build-tools{/,}**"
@@ -145,6 +139,15 @@
         "github.com/goreleaser/goreleaser-pro"
       ],
       "groupName": "GoReleaser Pro"
+    },
+    {
+      "matchPackageNames": [
+        "open-telemetry/opentelemetry-collector",
+        "/^go\\.opentelemetry\\.io/collector//",
+        "open-telemetry/opentelemetry-collector-contrib",
+        "/^github\\.com/open-telemetry/opentelemetry-collector-contrib//"
+      ],
+      "groupName": "OpenTelemetry Collector Components"
     }
   ],
   "customManagers": [
@@ -158,7 +161,7 @@
         "/(^|\\/).*\\.sh$/"
       ],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>.+?) depName=(?<depName>.+?)\\s.*(:|=|\\?=|:=|\\+=) ?\\\"?(?<currentValue>.+?)?\\\"?\\s"
+        "# renovate: datasource=(?<datasource>.+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)\\s.*(:|=|\\?=|:=|\\+=) ?\\\"?(?<currentValue>.+?)?\\\"?\\s"
       ]
     }
   ],

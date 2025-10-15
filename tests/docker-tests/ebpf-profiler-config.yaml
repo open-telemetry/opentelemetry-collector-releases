@@ -1,6 +1,6 @@
 receivers:
   profiling:
-    SamplesPerSecond: 19
+    samples_per_second: 19
 
 exporters:
   otlphttp:
