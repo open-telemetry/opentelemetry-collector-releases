@@ -85,16 +85,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_YES: false
 
-      - name: Print built artifacts
-        run: cat ./dist/artifacts.json
-
-      - name: Print metadata
-        run: cat ./dist/metadata.json
-
-      - name: Print dist folder contents
-        if: always()
-        run: ls -laR ./dist
-
       - name: Upload linux service packages
         if: ${{ inputs.linux-packages == true }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
