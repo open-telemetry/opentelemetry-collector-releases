@@ -234,6 +234,8 @@ var (
 		WithBinaryMonorepo(".contrib/cmd/opampsupervisor").
 		WithDefaultBinaryRelease(opampReleaseHeader).
 		WithDefaultNfpms().
+		// This is required because of same non-obvious path/workdir handling in
+		// Github Actions specific to the binaries CI.
 		WithConfigFunc(func(d *distribution) {
 			d.nfpms[0].Contents = append(d.nfpms[0].Contents, config.NFPMContent{
 				Source:      "config.example.yaml",
