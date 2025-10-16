@@ -84,21 +84,12 @@ add_trap_func journalctl_logs
 # ensure service has started and still running after 5 seconds
 sleep 5
 echo "Checking $SERVICE_NAME service status ..."
-if $container_exec systemctl --no-pager status "$SERVICE_NAME"; then
-  echo "$SERVICE_NAME service is running"
-else
-    if [ "$DISTRO" = "opampsupervisor" ]; then
-        echo "$SERVICE_NAME service is not running, as expected"
-    else
-        echo "$SERVICE_NAME service is not running"
-        exit 1
-    fi
-fi
+$container_exec systemctl --no-pager status "$SERVICE_NAME"
 
 echo "Checking $PROCESS_NAME process ..."
 if [ "$DISTRO" = "otelcol" ]; then
   $container_exec pgrep -a -u otel "$PROCESS_NAME"
-elif [ "$DISTRO" = "otelcol-contrib" ]; then
+else
   $container_exec pgrep -a -u otelcol-contrib "$PROCESS_NAME"
 fi
 

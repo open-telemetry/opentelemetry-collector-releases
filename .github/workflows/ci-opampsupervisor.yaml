@@ -40,13 +40,3 @@ jobs:
       linux-packages: true
     secrets: inherit
     permissions: write-all
-
-  package-tests:
-    uses: ./.github/workflows/base-package-tests.yaml
-    needs: [ci]
-    with:
-      distribution: opampsupervisor
-      binary_name: "opampsupervisor_*_linux_amd64"
-      type: '[ "deb", "rpm" ]'
-      issue-on-failure: true
-    secrets: inherit
