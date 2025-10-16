@@ -17,6 +17,11 @@ on:
         type: string
         default: ""
         description: "The collector dependency will be put into this folder"
+      linux-packages:
+        required: false
+        type: boolean
+        default: false
+        description: "Set to true if linux packages should be uploaded as an artifact"
 
 permissions:
   contents: read
@@ -79,3 +84,13 @@ jobs:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COSIGN_YES: false
+
+      - name: Upload linux service packages
+        if: ${{ inputs.linux-packages == true }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: linux-packages
+          path: |
+            dist/*amd64*.deb
+            dist/*amd64*.rpm
+          if-no-files-found: error

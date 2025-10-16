@@ -50,6 +50,34 @@ builds:
 archives:
   - formats:
       - binary
+nfpms:
+  - package_name: opampsupervisor
+    contents:
+      - src: cmd/opampsupervisor/opampsupervisor.service
+        dst: /lib/systemd/system/opampsupervisor.service
+      - src: cmd/opampsupervisor/opampsupervisor.conf
+        dst: /etc/opampsupervisor/opampsupervisor.conf
+        type: config|noreplace
+      - src: cmd/opampsupervisor/config.example.yaml
+        dst: /etc/opampsupervisor/config.example.yaml
+        type: config|noreplace
+    scripts:
+      preinstall: cmd/opampsupervisor/preinstall.sh
+      postinstall: cmd/opampsupervisor/postinstall.sh
+      preremove: cmd/opampsupervisor/preremove.sh
+    overrides:
+      rpm:
+        dependencies:
+          - /bin/sh
+    id: opampsupervisor
+    ids:
+      - opampsupervisor-linux
+    formats:
+      - deb
+      - rpm
+    maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
+    description: OpenTelemetry Collector - opampsupervisor
+    license: Apache 2.0
 snapshot:
   version_template: '{{ .Tag }}-next'
 checksum:
