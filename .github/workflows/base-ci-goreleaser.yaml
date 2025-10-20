@@ -83,7 +83,7 @@ jobs:
           platforms: arm64,ppc64le,linux/arm/v7,s390x,riscv64
 
       - name: Setup wixl # Required to build MSI packages for Windows
-        if: ${{ matrix.GOOS == 'windows' }}
+        if: runner.os != 'Windows'
         run: |
           sudo apt-get update
           sudo apt-get install -y wixl
