@@ -60,7 +60,7 @@ jobs:
 
   msi-tests:
     name: MSI tests
-    needs: check-goreleaser
+    needs: check-goreleaser-windows
     uses: ./.github/workflows/msi-tests.yaml
     with:
       distribution: otelcol-contrib
