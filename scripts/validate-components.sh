@@ -70,7 +70,7 @@ while IFS= read -r manifest_file; do
 
   # Compare each manifest component against the valid list
   while IFS= read -r component; do
-    if ! printf '%s\n' "$valid_components" | grep -qxF "$component"; then
+    if ! grep -qxF "$component" <<< "$valid_components"; then
       invalid_components="${invalid_components}\n${component}"
     fi
   done <<< "$manifest_components"
