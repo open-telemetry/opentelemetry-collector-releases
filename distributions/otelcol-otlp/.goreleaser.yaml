@@ -15,7 +15,6 @@ msi:
     wxs: windows-installer.wxs
     extra_files:
       - opentelemetry.ico
-    disable: '{{ .IsSnapshot }}'
 builds:
   - id: otelcol-otlp-linux
     goos:

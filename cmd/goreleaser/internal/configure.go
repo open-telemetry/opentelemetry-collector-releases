@@ -343,11 +343,10 @@ func (b *distributionBuilder) newMSIConfig(dist string) []config.MSI {
 	files := []string{"opentelemetry.ico"}
 	return []config.MSI{
 		{
-			ID:      dist,
-			Name:    fmt.Sprintf("%s_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}", dist),
-			WXS:     "windows-installer.wxs",
-			Files:   files,
-			Disable: "{{ .IsSnapshot }}",
+			ID:    dist,
+			Name:  fmt.Sprintf("%s_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}", dist),
+			WXS:   "windows-installer.wxs",
+			Files: files,
 		},
 	}
 }
