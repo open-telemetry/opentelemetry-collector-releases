@@ -16,6 +16,7 @@ msi:
     extra_files:
       - opentelemetry.ico
       - config.yaml
+    disable: '{{ .IsSnapshot }}'
 builds:
   - id: otelcol-contrib-linux
     goos:
