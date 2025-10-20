@@ -11,6 +11,8 @@ set -euo pipefail
 
 BUILDER_CONFIG_URL="https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/cmd/otelcontribcol/builder-config.yaml"
 MANIFEST_DIR="distributions"
+CURL_MAX_RETRIES=3
+CURL_RETRY_DELAY_SECONDS=1
 
 # Ensure required tools are available
 if ! command -v curl &> /dev/null || ! command -v yq &> /dev/null; then
@@ -18,10 +20,20 @@ if ! command -v curl &> /dev/null || ! command -v yq &> /dev/null; then
     exit 1
 fi
 
+CURL_FETCH_ARGS=(
+  --fail
+  --show-error
+  --location
+  --silent
+  --retry "${CURL_MAX_RETRIES}"
+  --retry-delay "${CURL_RETRY_DELAY_SECONDS}"
+  --retry-all-errors
+)
+
 # Fetch and parse valid components from builder-config.yaml
 echo "Fetching builder-config.yaml..."
 valid_components="$(
-  curl -s "$BUILDER_CONFIG_URL" \
+  curl "${CURL_FETCH_ARGS[@]}" "$BUILDER_CONFIG_URL" \
     | yq -r '
       (
         .extensions[]?.gomod,
