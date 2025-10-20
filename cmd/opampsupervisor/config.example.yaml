@@ -20,7 +20,7 @@ agent:
 
   # This passes config files to the Collector.
   config_files:
-    - /etc/opampsupervisor/config.yaml
+    - /etc/opampsupervisor/collector.yaml
 
   # This adds CLI arguments to the Collector.
   args: []
