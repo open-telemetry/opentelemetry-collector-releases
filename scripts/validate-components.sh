@@ -32,9 +32,24 @@ CURL_FETCH_ARGS=(
 
 # Fetch and parse valid components from builder-config.yaml
 echo "Fetching builder-config.yaml..."
+builder_config_tmp="$(mktemp)"
+trap 'rm -f "$builder_config_tmp"' EXIT
+if ! http_status="$(
+  curl "${CURL_FETCH_ARGS[@]}" \
+    --write-out '%{http_code}' \
+    --output "$builder_config_tmp" \
+    "$BUILDER_CONFIG_URL"
+)"; then
+  echo "Failed to fetch builder-config.yaml via curl." >&2
+  exit 1
+fi
+if [[ "$http_status" != "200" ]]; then
+  echo "Failed to fetch builder-config.yaml: HTTP ${http_status}" >&2
+  exit 1
+fi
+
 valid_components="$(
-  curl "${CURL_FETCH_ARGS[@]}" "$BUILDER_CONFIG_URL" \
-    | yq -r '
+  yq -r '
       (
         .extensions[]?.gomod,
         .receivers[]?.gomod,
@@ -43,7 +58,7 @@ valid_components="$(
         .exporters[]?.gomod,
         .providers[]?.gomod
       )
-    ' \
+    ' "$builder_config_tmp" \
     | awk '{print $1}' \
     | sort -u
 )"
