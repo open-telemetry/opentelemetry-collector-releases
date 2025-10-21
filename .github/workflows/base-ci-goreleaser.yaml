@@ -228,7 +228,7 @@ jobs:
           echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path' )" >> "$GITHUB_OUTPUT"
 
       - name: Print version and target
-        if: matrix.GOOS == 'linux'
+        if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
         run: |
           echo 'Version: ${{ steps.prep.outputs.version }}'
           echo 'Types: ${{ steps.prep.outputs.types }}'
