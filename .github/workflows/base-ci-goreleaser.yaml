@@ -214,6 +214,7 @@ jobs:
           if-no-files-found: error
 
       - name: Prepare variables
+        if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
         shell: bash
         id: prep
         run: |
@@ -234,7 +235,6 @@ jobs:
         if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
         shell: bash
         run: |
-          echo 'Test: ${{ steps.prep.outputs.testytest }}'
           echo 'Version: ${{ steps.prep.outputs.version }}'
           echo 'Types: ${{ steps.prep.outputs.types }}'
           echo 'Arch: ${{ steps.prep.outputs.arch }}'
