@@ -214,32 +214,21 @@ jobs:
           if-no-files-found: error
 
       - name: Prepare variables
-        if: matrix.GOOS == 'linux'
+        shell: bash
         id: prep
         run: |
           # Find version number and types of built artifacts
-          echo "version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')" >> "$GITHUB_OUTPUT"
-          echo "types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )" >> "$GITHUB_OUTPUT"
-
-          # Find GOOS and GOARCH
-          echo "arch=${{ matrix.GOOS }}-${{ matrix.GOARCH }}" >> "$GITHUB_OUTPUT"
-
-          # Find binary path
-          echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path' )" >> "$GITHUB_OUTPUT"
-
-      - name: Prepare variables (Windows)
-        if: matrix.GOOS == 'windows'
-        id: prep
-        run: |
-          # Find version number and types of built artifacts
-          echo "version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')" >> $env:GITHUB_OUTPUT
-          echo "types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )" >> $env:GITHUB_OUTPUT
-
-          # Find GOOS and GOARCH
-          echo "arch=${{ matrix.GOOS }}-${{ matrix.GOARCH }}" >> $env:GITHUB_OUTPUT
-
-          # Find binary path
-          echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path' )" >> $env:GITHUB_OUTPUT
+          if [[ "${{ matrix.GOOS }}" == "linux" ]]; then
+            echo "version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')" >> $GITHUB_OUTPUT
+            echo "types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )" >> $GITHUB_OUTPUT
+            echo "arch=${{ matrix.GOOS }}-${{ matrix.GOARCH }}" >> $GITHUB_OUTPUT
+            echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains(\"Binary\")))) | .[].path')" >> $GITHUB_OUTPUT
+          else
+            echo "version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')" >> $env:GITHUB_OUTPUT
+            echo "types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )" >> $env:GITHUB_OUTPUT
+            echo "arch=${{ matrix.GOOS }}-${{ matrix.GOARCH }}" >> $env:GITHUB_OUTPUT
+            echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains(\"Binary\")))) | .[].path')" >> $env:GITHUB_OUTPUT
+          fi
 
       - name: Print version and target
         if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
