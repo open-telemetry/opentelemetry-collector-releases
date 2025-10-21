@@ -222,12 +222,12 @@ jobs:
             echo "version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')" >> $GITHUB_OUTPUT
             echo "types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )" >> $GITHUB_OUTPUT
             echo "arch=${{ matrix.GOOS }}-${{ matrix.GOARCH }}" >> $GITHUB_OUTPUT
-            echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains(\"Binary\")))) | .[].path')" >> $GITHUB_OUTPUT
+            echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path')" >> $GITHUB_OUTPUT
           else
             echo "version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')" >> $env:GITHUB_OUTPUT
             echo "types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )" >> $env:GITHUB_OUTPUT
             echo "arch=${{ matrix.GOOS }}-${{ matrix.GOARCH }}" >> $env:GITHUB_OUTPUT
-            echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains(\"Binary\")))) | .[].path')" >> $env:GITHUB_OUTPUT
+            echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path')" >> $env:GITHUB_OUTPUT
           fi
 
       - name: Print version and target
