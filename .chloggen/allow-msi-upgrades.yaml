@@ -1,5 +1,0 @@
-change_type: enhancement
-component: packaging
-note: 'Allow in-place upgrades for Windows MSI installations'
-issues: [1197]
-change_logs: ['user']
