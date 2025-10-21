@@ -89,7 +89,6 @@ jobs:
           sudo apt-get install -y wixl
 
       - name: Setup Docker Buildx
-        if: runner.os != 'Windows'
         uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
 
       - name: Setup Go
