@@ -228,16 +228,25 @@ jobs:
             echo version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version') >> $env:GITHUB_OUTPUT
             echo types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' ) >> $env:GITHUB_OUTPUT
             echo arch=${{ matrix.GOOS }}-${{ matrix.GOARCH }} >> $env:GITHUB_OUTPUT
-            echo binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains(\"Binary\")))) | .[].path') >> $env:GITHUB_OUTPUT
+            echo binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path') >> $env:GITHUB_OUTPUT
+          
+            cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version'
+            cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]'
           fi
 
       - name: Print version and target
         if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
         run: |
+          echo 'Test: ${{ steps.prep.outputs.testytest }}'
           echo 'Version: ${{ steps.prep.outputs.version }}'
           echo 'Types: ${{ steps.prep.outputs.types }}'
           echo 'Arch: ${{ steps.prep.outputs.arch }}'
           echo 'Images?: ${{ steps.prep.outputs.container-images }}'
+          echo Test: ${{ steps.prep.outputs.testytest }}
+          echo Version: ${{ steps.prep.outputs.version }}
+          echo Types: ${{ steps.prep.outputs.types }}
+          echo Arch: ${{ steps.prep.outputs.arch }}
+          echo Images?: ${{ steps.prep.outputs.container-images }}
 
       - name: Copy binary to distro root folder
         if: matrix.GOOS == 'linux'
