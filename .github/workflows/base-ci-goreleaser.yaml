@@ -224,11 +224,11 @@ jobs:
             echo "arch=${{ matrix.GOOS }}-${{ matrix.GOARCH }}" >> $GITHUB_OUTPUT
             echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path')" >> $GITHUB_OUTPUT
           else
-            echo "testytest=testtest123" >> $env:GITHUB_OUTPUT
-            echo version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version') >> $env:GITHUB_OUTPUT
-            echo types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' ) >> $env:GITHUB_OUTPUT
-            echo arch=${{ matrix.GOOS }}-${{ matrix.GOARCH }} >> $env:GITHUB_OUTPUT
-            echo binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path') >> $env:GITHUB_OUTPUT
+            echo "testytest=testtest123" >> $ENV:GITHUB_OUTPUT
+            echo version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version') >> $ENV:GITHUB_OUTPUT
+            echo types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' ) >> $ENV:GITHUB_OUTPUT
+            echo arch=${{ matrix.GOOS }}-${{ matrix.GOARCH }} >> $ENV:GITHUB_OUTPUT
+            echo binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path') >> $ENV:GITHUB_OUTPUT
           
             cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version'
             cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]'
