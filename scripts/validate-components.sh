@@ -11,6 +11,8 @@ set -euo pipefail
 
 BUILDER_CONFIG_URL="https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/main/cmd/otelcontribcol/builder-config.yaml"
 MANIFEST_DIR="distributions"
+CURL_MAX_RETRIES=3
+CURL_RETRY_DELAY_SECONDS=1
 
 # Ensure required tools are available
 if ! command -v curl &> /dev/null || ! command -v yq &> /dev/null; then
@@ -18,11 +20,36 @@ if ! command -v curl &> /dev/null || ! command -v yq &> /dev/null; then
     exit 1
 fi
 
+CURL_FETCH_ARGS=(
+  --fail
+  --show-error
+  --location
+  --silent
+  --retry "${CURL_MAX_RETRIES}"
+  --retry-delay "${CURL_RETRY_DELAY_SECONDS}"
+  --retry-all-errors
+)
+
 # Fetch and parse valid components from builder-config.yaml
 echo "Fetching builder-config.yaml..."
+builder_config_tmp="$(mktemp)"
+trap 'rm -f "$builder_config_tmp"' EXIT
+if ! http_status="$(
+  curl "${CURL_FETCH_ARGS[@]}" \
+    --write-out '%{http_code}' \
+    --output "$builder_config_tmp" \
+    "$BUILDER_CONFIG_URL"
+)"; then
+  echo "Failed to fetch builder-config.yaml via curl." >&2
+  exit 1
+fi
+if [[ "$http_status" != "200" ]]; then
+  echo "Failed to fetch builder-config.yaml: HTTP ${http_status}" >&2
+  exit 1
+fi
+
 valid_components="$(
-  curl -s "$BUILDER_CONFIG_URL" \
-    | yq -r '
+  yq -r '
       (
         .extensions[]?.gomod,
         .receivers[]?.gomod,
@@ -31,7 +58,7 @@ valid_components="$(
         .exporters[]?.gomod,
         .providers[]?.gomod
       )
-    ' \
+    ' "$builder_config_tmp" \
     | awk '{print $1}' \
     | sort -u
 )"
