@@ -215,7 +215,6 @@ jobs:
 
       - name: Prepare variables
         if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
-        shell: bash
         id: prep
         run: |
           # Find version number and types of built artifacts
@@ -235,7 +234,6 @@ jobs:
 
       - name: Print version and target
         if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
-        shell: bash
         run: |
           echo 'Version: ${{ steps.prep.outputs.version }}'
           echo 'Types: ${{ steps.prep.outputs.types }}'
@@ -246,7 +244,6 @@ jobs:
 
       - name: Copy binary to distro root folder
         if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
-        shell: bash
         run: cp ./distributions/${{ inputs.distribution }}/${{ steps.prep.outputs.binarypath }} ./distributions/${{ inputs.distribution }}
 
       - name: Build container images locally (Linux)
@@ -288,6 +285,9 @@ jobs:
           - GOOS: windows
             GOARCH: "386"
     runs-on: ${{ inputs.runner_os }}
+    defaults:
+      run:
+        shell: bash
 #    if: startsWith(inputs.runner_os, 'ubuntu')
     steps:
       - name: Checkout
@@ -311,14 +311,13 @@ jobs:
           docker image inspect ${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
 
       - name: Run container image
-        shell: bash
         run: |
           echo "Running container..."
           docker run --name ${{ inputs.distribution }} \
             -d \
             ${{ inputs.docker_run_options }} \
             -v ${PWD}/tests/docker-tests/${{ inputs.config_file }}:/config.yaml \
-            ${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }} -- \
+            ${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }} \
             ${{ inputs.otelcol_run_options }} --config /config.yaml
           echo "docker ps:"
           echo ""
