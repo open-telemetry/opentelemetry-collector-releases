@@ -219,8 +219,8 @@ jobs:
         id: prep
         run: |
           # Find version number and types of built artifacts
-          version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')"
-          types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )"
+          version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')
+          types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )
           arch="${{ matrix.GOOS }}-${{ matrix.GOARCH }}"
           
           echo "version=$version" >> $GITHUB_OUTPUT
