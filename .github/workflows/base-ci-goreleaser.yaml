@@ -67,6 +67,8 @@ jobs:
           - GOOS: windows
             GOARCH: riscv64
     runs-on: ${{ inputs.runner_os }}
+    env:
+      TAG: ${{ inputs.distribution }}:${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
     outputs:
       version: ${{ steps.prep.outputs.version }}
 
@@ -245,26 +247,24 @@ jobs:
           context: ./distributions/${{ inputs.distribution }}
           push: false
           load: true
-          tags: ${{ inputs.distribution }}:${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
+          tags: ${{ env.TAG }}
 
       - name: Build container images locally
         if: matrix.GOOS == 'windows' && contains(steps.prep.outputs.types, 'Docker Image')
-        env:
-          TAG: ${{ inputs.distribution }}:${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
         run: |
           docker build -f ./distributions/${{ inputs.distribution }}/Windows.dockerfile -t ${{ env.TAG }} ./distributions/${{ inputs.distribution }}/
 
       - name: Export container image to tarball
         if: (matrix.GOOS == 'linux' || matrix.GOOS == 'windows') && contains(steps.prep.outputs.types, 'Docker Image')
         run: |
-          docker save ${{ inputs.distribution }}:${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }} > /tmp/${{ inputs.distribution }}.tar
+          docker save ${{ env.TAG }} > ${{ runner.temp }}/${{ inputs.distribution }}.tar
 
       - name: Upload container image artifact
         if: (matrix.GOOS == 'linux' || matrix.GOOS == 'windows') && contains(steps.prep.outputs.types, 'Docker Image')
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ${{ inputs.distribution }}-image-${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
-          path: /tmp/${{ inputs.distribution }}.tar
+          path: ${{ runner.temp }}/${{ inputs.distribution }}.tar
           retention-days: 7
 
   docker-tests:
