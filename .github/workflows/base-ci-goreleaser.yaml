@@ -313,7 +313,8 @@ jobs:
           docker image ls
           docker image inspect ${{ inputs.distribution }}:${{ env.TAG }}
 
-      - name: Run container image
+      - name: Run container image (Linux)
+        if: matrix.GOOS == 'linux'
         run: |
           echo "Running container..."
           docker run --name ${{ inputs.distribution }} \
@@ -322,6 +323,34 @@ jobs:
             -v ${PWD}/tests/docker-tests/${{ inputs.config_file }}:/config.yaml \
             ${{ inputs.distribution }}:${{ env.TAG }} \
             ${{ inputs.otelcol_run_options }} --config /config.yaml
+          echo "docker ps:"
+          echo ""
+          docker ps
+          echo "Sleeping for a bit..."
+          sleep 10
+          echo "Checking logs for correct startup..."
+          docker logs ${{ inputs.distribution }} >& docker-logs-${{ inputs.distribution }}.log
+          if cat docker-logs-${{ inputs.distribution }}.log | grep "Everything is ready."; then
+            echo "${{ inputs.distribution }} started up correctly"
+          else
+            echo "${{ inputs.distribution }} failed to start"
+            echo "Printing container logs below..."
+            echo ""
+            cat docker-logs-${{ inputs.distribution }}.log
+            exit 1
+          fi
+
+      - name: Run container image (Windows)
+        if: matrix.GOOS == 'windows'
+        shell: bash
+        run: |
+          echo "Running container..."
+          docker run --name ${{ inputs.distribution }} \
+            -d \
+            ${{ inputs.docker_run_options }} \
+            -v ${PWD}/tests/docker-tests/${{ inputs.config_file }}:C:\config.yaml \
+            ${{ inputs.distribution }}:${{ env.TAG }} \
+            ${{ inputs.otelcol_run_options }} --config C:\config.yaml
           echo "docker ps:"
           echo ""
           docker ps
