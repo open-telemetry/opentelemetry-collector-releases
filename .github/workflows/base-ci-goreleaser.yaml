@@ -69,9 +69,6 @@ jobs:
     runs-on: ${{ inputs.runner_os }}
     outputs:
       version: ${{ steps.prep.outputs.version }}
-    defaults:
-      run:
-        shell: bash
 
     steps:
       - name: Checkout
