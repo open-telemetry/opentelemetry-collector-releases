@@ -286,6 +286,8 @@ jobs:
           - GOOS: windows
             GOARCH: "386"
     runs-on: ${{ inputs.runner_os }}
+    env:
+      TAG: ${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
     defaults:
       run:
         shell: bash
@@ -303,13 +305,13 @@ jobs:
       - name: Download container image artifact
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
-          name: ${{ inputs.distribution }}-image-${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
+          name: ${{ inputs.distribution }}-image-${{ env.TAG }}
 
       - name: Load image into docker
         run: |
           docker image load --input ./${{ inputs.distribution }}.tar
           docker image ls
-          docker image inspect ${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
+          docker image inspect ${{ inputs.distribution }}:${{ env.TAG }}
 
       - name: Run container image
         run: |
@@ -318,7 +320,7 @@ jobs:
             -d \
             ${{ inputs.docker_run_options }} \
             -v ${PWD}/tests/docker-tests/${{ inputs.config_file }}:/config.yaml \
-            ${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }} \
+            ${{ inputs.distribution }}:${{ env.TAG }} \
             ${{ inputs.otelcol_run_options }} --config /config.yaml
           echo "docker ps:"
           echo ""
@@ -342,7 +344,7 @@ jobs:
         run: |
           echo "Running golden tests..."
           cd tests/golden
-          MY_UID="$(id -u)" MY_GID="$(id -g)" IMG=${{ inputs.distribution }}:${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }} docker compose up -d --wait
+          MY_UID="$(id -u)" MY_GID="$(id -g)" IMG=${{ inputs.distribution }}:${{ env.TAG }} docker compose up -d --wait
           exit_code=$(docker wait golden)
           docker logs golden
           if [ "$exit_code" -ne 0 ]; then
