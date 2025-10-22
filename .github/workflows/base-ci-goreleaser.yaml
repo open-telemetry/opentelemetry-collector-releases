@@ -216,6 +216,7 @@ jobs:
       - name: Prepare variables
         if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
         id: prep
+        shell: bash
         run: |
           # Find version number and types of built artifacts
           version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')
