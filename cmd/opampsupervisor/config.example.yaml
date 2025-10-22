@@ -1,0 +1,41 @@
+server:
+  endpoint: "http://:4320/v1/opamp"
+  headers:
+    X-Auth: "some_token"
+  tls:
+    insecure_skip_verify: false
+
+capabilities:
+  reports_effective_config: true
+  reports_own_metrics: true
+  reports_own_logs: true
+  reports_own_traces: true
+  reports_health: true
+  accepts_remote_config: true
+  reports_remote_config: true
+
+agent:
+  executable: /etc/opampsupervisor/otelcol-contrib
+  passthrough_logs: true
+
+  # This passes config files to the Collector.
+  config_files:
+    - /etc/opampsupervisor/collector.yaml
+
+  # This adds CLI arguments to the Collector.
+  args: []
+
+  # This adds env vars to the Collector process.
+  env: {}
+
+# The storage can be used for many things:
+# - It stores configuration sent by the OpAMP server so that new collector
+#   processes can start with the most known desired config.
+storage:
+  directory: /var/lib/opampsupervisor/
+
+telemetry:
+  logs:
+    level: debug
+    output_paths:
+      - /var/log/opampsupervisor/opampsupervisor.log

@@ -222,6 +222,23 @@ var (
 	}).WithBinaryPackagingDefaults().
 		WithBinaryMonorepo(".contrib/cmd/opampsupervisor").
 		WithDefaultBinaryRelease(opampReleaseHeader).
+		WithDefaultNfpms().
+		// This is required because of same non-obvious path/workdir handling in
+		// Github Actions specific to the binaries CI.
+		WithConfigFunc(func(d *distribution) {
+			d.nfpms[0].Contents = append(d.nfpms[0].Contents, config.NFPMContent{
+				Source:      "config.example.yaml",
+				Destination: path.Join("/etc", d.name, "config.example.yaml"),
+				Type:        "config|noreplace",
+			})
+			for i, content := range d.nfpms[0].Contents {
+				content.Source = path.Join("cmd", d.name, content.Source)
+				d.nfpms[0].Contents[i] = content
+			}
+			d.nfpms[0].Scripts.PreInstall = path.Join("cmd", d.name, d.nfpms[0].Scripts.PreInstall)
+			d.nfpms[0].Scripts.PostInstall = path.Join("cmd", d.name, d.nfpms[0].Scripts.PostInstall)
+			d.nfpms[0].Scripts.PreRemove = path.Join("cmd", d.name, d.nfpms[0].Scripts.PreRemove)
+		}).
 		WithNightlyConfig().
 		Build()
 )
