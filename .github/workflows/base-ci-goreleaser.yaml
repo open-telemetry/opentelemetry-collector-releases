@@ -67,8 +67,6 @@ jobs:
           - GOOS: windows
             GOARCH: riscv64
     runs-on: ${{ inputs.runner_os }}
-    env:
-      TAG: ${{ inputs.distribution }}:${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
     outputs:
       version: ${{ steps.prep.outputs.version }}
 
@@ -225,6 +223,8 @@ jobs:
           echo "types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )" >> $GITHUB_OUTPUT
           echo "arch=${{ matrix.GOOS }}-${{ matrix.GOARCH }}" >> $GITHUB_OUTPUT
           echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path')" >> $GITHUB_OUTPUT
+          
+          echo "TAG=${{ inputs.distribution }}:$version-$arch" >> $GITHUB_ENV
 
 
       - name: Print version and target
