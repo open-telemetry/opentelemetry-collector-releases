@@ -342,7 +342,6 @@ jobs:
 
       - name: Run container image (Windows)
         if: matrix.GOOS == 'windows'
-        shell: bash
         run: |
           echo "Running container..."
           docker run --name ${{ inputs.distribution }} \
