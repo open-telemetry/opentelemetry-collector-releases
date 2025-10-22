@@ -222,12 +222,13 @@ jobs:
           version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')"
           types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )"
           arch=${{ matrix.GOOS }}-${{ matrix.GOARCH }}"
-          binarypath=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path')"
           
           echo "version=$version" >> $GITHUB_OUTPUT
           echo "arch=$arch" >> $GITHUB_OUTPUT
           echo "types=$types" >> $GITHUB_OUTPUT
-          echo "binarypath=$binarypath" >> $GITHUB_OUTPUT
+          
+          # Find binary path
+          echo "binarypath=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path' )" >> "$GITHUB_OUTPUT"
           
           echo "TAG=${{ inputs.distribution }}:$version-$arch" >> $GITHUB_ENV
 
@@ -239,6 +240,7 @@ jobs:
           echo 'Version: ${{ steps.prep.outputs.version }}'
           echo 'Types: ${{ steps.prep.outputs.types }}'
           echo 'Arch: ${{ steps.prep.outputs.arch }}'
+          echo 'Binary path: ${{ steps.prep.outputs.binarypath }}'
           echo 'Images?: ${{ steps.prep.outputs.container-images }}'
           echo 'Image tag: ${{ env.TAG }}'
 
