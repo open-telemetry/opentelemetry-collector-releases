@@ -219,10 +219,15 @@ jobs:
         id: prep
         run: |
           # Find version number and types of built artifacts
-          echo "version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')" >> $GITHUB_OUTPUT
-          echo "types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )" >> $GITHUB_OUTPUT
-          echo "arch=${{ matrix.GOOS }}-${{ matrix.GOARCH }}" >> $GITHUB_OUTPUT
-          echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path')" >> $GITHUB_OUTPUT
+          version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')"
+          types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )"
+          arch=${{ matrix.GOOS }}-${{ matrix.GOARCH }}"
+          binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path')"
+          
+          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "arch=$arch" >> $GITHUB_OUTPUT
+          echo "types=$types" >> $GITHUB_OUTPUT
+          echo "binary-path=$binary-path" >> $GITHUB_OUTPUT
           
           echo "TAG=${{ inputs.distribution }}:$version-$arch" >> $GITHUB_ENV
 
@@ -235,6 +240,7 @@ jobs:
           echo 'Types: ${{ steps.prep.outputs.types }}'
           echo 'Arch: ${{ steps.prep.outputs.arch }}'
           echo 'Images?: ${{ steps.prep.outputs.container-images }}'
+          echo 'Image tag: ${{ env.TAG }}'
 
       - name: Copy binary to distro root folder
         if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
