@@ -252,7 +252,7 @@ jobs:
         env:
           TAG: ${{ inputs.distribution }}:${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
         run: |
-          docker build -t $TAG -f ./distributions/${{ inputs.distribution }}/Windows.dockerfile .
+          docker build -f ./distributions/${{ inputs.distribution }}/Windows.dockerfile -t $TAG ./distributions/${{ inputs.distribution }}/
 
       - name: Export container image to tarball
         if: (matrix.GOOS == 'linux' || matrix.GOOS == 'windows') && contains(steps.prep.outputs.types, 'Docker Image')
