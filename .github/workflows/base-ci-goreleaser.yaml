@@ -249,7 +249,7 @@ jobs:
         shell: bash
         run: cp ./distributions/${{ inputs.distribution }}/${{ steps.prep.outputs.binarypath }} ./distributions/${{ inputs.distribution }}
 
-      - name: Build container images locally
+      - name: Build container images locally (Linux)
         if: matrix.GOOS == 'linux' && contains(steps.prep.outputs.types, 'Docker Image')
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
@@ -258,7 +258,7 @@ jobs:
           load: true
           tags: ${{ env.TAG }}
 
-      - name: Build container images locally
+      - name: Build container images locally (Windows)
         if: matrix.GOOS == 'windows' && contains(steps.prep.outputs.types, 'Docker Image')
         run: |
           docker build -f ./distributions/${{ inputs.distribution }}/Windows.dockerfile -t ${{ env.TAG }} ./distributions/${{ inputs.distribution }}/
@@ -285,6 +285,8 @@ jobs:
         GOARCH: ${{ fromJSON( inputs.goarch) }}
         exclude:
           - GOOS: darwin
+          - GOOS: windows
+            GOARCH: "386"
     runs-on: ${{ inputs.runner_os }}
 #    if: startsWith(inputs.runner_os, 'ubuntu')
     steps:
