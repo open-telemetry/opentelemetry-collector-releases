@@ -45,6 +45,6 @@ jobs:
     with:
       distribution: otelcol-k8s
       goos: '[ "windows" ]'
-      goarch: '[ "386", "amd64" ]'
+      goarch: '[ "amd64" ]'
       runner_os: 'windows-2022'
     secrets: inherit
