@@ -51,12 +51,12 @@ jobs:
     secrets: inherit
 
   package-tests:
-     name: Package tests
-     needs: check-goreleaser
-     uses: ./.github/workflows/base-package-tests.yaml
-     with:
-       distribution: otelcol-contrib
-       type: '[ "deb", "rpm" ]'
+    name: Package tests
+    needs: check-goreleaser
+    uses: ./.github/workflows/base-package-tests.yaml
+    with:
+      distribution: otelcol-contrib
+      type: '[ "deb", "rpm" ]'
 
   msi-tests:
     name: MSI tests
@@ -65,4 +65,3 @@ jobs:
     with:
       distribution: otelcol-contrib
       type: '[ "msi" ]'
-
