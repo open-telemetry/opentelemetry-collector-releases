@@ -30,8 +30,11 @@ generate: generate-sources generate-goreleaser
 generate-goreleaser: go
 	@./scripts/generate-goreleaser.sh -d "${DISTRIBUTIONS}" -b "${BINARIES}" -g ${GO}
 
-generate-sources: go ocb
+generate-sources: go ocb generate-msi
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER}
+
+generate-msi: go ocb
+	$(GO) run cmd/msi-generator/main.go -d "${DISTRIBUTIONS}"
 
 goreleaser-verify: goreleaser
 	@${GORELEASER} release --snapshot --clean
