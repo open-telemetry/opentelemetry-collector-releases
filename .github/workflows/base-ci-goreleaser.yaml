@@ -247,7 +247,7 @@ jobs:
           echo "arch=$arch" >> $GITHUB_OUTPUT
           
           # Find binary path
-          echo "binary-path=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path' )" >> "$GITHUB_OUTPUT"
+          echo "binarypath=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path' )" >> "$GITHUB_OUTPUT"
           
           echo "TAG=${{ inputs.distribution }}:$version-$arch" >> $GITHUB_ENV
 
@@ -258,13 +258,13 @@ jobs:
           echo 'Version: ${{ steps.prep.outputs.version }}'
           echo 'Types: ${{ steps.prep.outputs.types }}'
           echo 'Arch: ${{ steps.prep.outputs.arch }}'
-          echo 'Binary path: ${{ steps.prep.outputs.binary-path }}'
+          echo 'Binary path: ${{ steps.prep.outputs.binarypath }}'
           echo 'Images?: ${{ steps.prep.outputs.container-images }}'
           echo 'Image tag: ${{ env.TAG }}'
 
       - name: Copy binary to distro root folder
         if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
-        run: cp ./distributions/${{ inputs.distribution }}/${{ steps.prep.outputs.binary-path }} ./distributions/${{ inputs.distribution }}
+        run: cp ./distributions/${{ inputs.distribution }}/${{ steps.prep.outputs.binarypath }} ./distributions/${{ inputs.distribution }}
 
       - name: Build container images locally (Linux)
         if: matrix.GOOS == 'linux' && contains(steps.prep.outputs.types, 'Docker Image')
