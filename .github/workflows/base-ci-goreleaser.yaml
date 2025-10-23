@@ -287,6 +287,8 @@ jobs:
           - GOOS: darwin
           - GOOS: windows
             GOARCH: "386"
+          - GOOS: windows
+            GOARCH: arm64
     runs-on: ${{ inputs.runner_os }}
     env:
       TAG: ${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
