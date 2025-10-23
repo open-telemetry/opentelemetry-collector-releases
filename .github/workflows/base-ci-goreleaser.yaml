@@ -351,7 +351,7 @@ jobs:
           echo "Sleeping for a bit..."
           sleep 10
           echo "Checking logs for correct startup..."
-          docker logs ${{ inputs.distribution }} *> "docker-logs-${{ inputs.distribution }}.log"
+          docker logs ${{ inputs.distribution }} "docker-logs-${{ inputs.distribution }}.log" 2>&1
           if (Get-Content docker-logs-${{ inputs.distribution }}.log | Select-String -Pattern "Everything is ready.") {
             echo "${{ inputs.distribution }} started up correctly"
           } else {
