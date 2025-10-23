@@ -219,9 +219,12 @@ jobs:
         shell: bash
         run: |
           # Find version number and types of built artifacts
-          echo "version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')" >> $GITHUB_OUTPUT
+          version=$(cat ./distributions/${{ inputs.distribution }}/dist/**/metadata.json | jq -r '.version')
+          arch="${{ matrix.GOOS }}-${{ matrix.GOARCH }}"
+          
+          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "arch=$arch" >> $GITHUB_OUTPUT
           echo "types=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq '[.[].type]' | tr -d '\n' )" >> $GITHUB_OUTPUT
-          echo "arch=${{ matrix.GOOS }}-${{ matrix.GOARCH }}" >> $GITHUB_OUTPUT
           
           # Find binary path
           echo "binarypath=$(cat ./distributions/${{ inputs.distribution }}/dist/**/artifacts.json | jq -r 'map(select(any(.type; contains("Binary")))) | .[].path' )" >> "$GITHUB_OUTPUT"
@@ -321,7 +324,7 @@ jobs:
           echo "Sleeping for a bit..."
           sleep 10
           echo "Checking logs for correct startup..."
-          docker logs ${{ inputs.distribution }} &>docker-logs-${{ inputs.distribution }}.log
+          docker logs ${{ inputs.distribution }} 2>&1 docker-logs-${{ inputs.distribution }}.log
           if cat docker-logs-${{ inputs.distribution }}.log | grep "Everything is ready."; then
             echo "${{ inputs.distribution }} started up correctly"
           else
@@ -341,14 +344,15 @@ jobs:
             ${{ inputs.docker_run_options }} \
             -v ${PWD}\\tests\\docker-tests\\${{ inputs.config_file }}:C:\\config.yaml \
             ${{ inputs.distribution }}:${{ env.TAG }} \
-            ${{ inputs.otelcol_run_options }} -c C:\\config.yaml
+            ${{ inputs.otelcol_run_options }} \
+            --config C:\\config.yaml
           echo "docker ps:"
           echo ""
           docker ps
           echo "Sleeping for a bit..."
           sleep 10
           echo "Checking logs for correct startup..."
-          docker logs ${{ inputs.distribution }} &>docker-logs-${{ inputs.distribution }}.log
+          docker logs ${{ inputs.distribution }} 2>&1 docker-logs-${{ inputs.distribution }}.log
           if cat docker-logs-${{ inputs.distribution }}.log | grep "Everything is ready."; then
             echo "${{ inputs.distribution }} started up correctly"
           else
