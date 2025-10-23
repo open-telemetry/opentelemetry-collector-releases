@@ -260,7 +260,7 @@ jobs:
         run: |
           docker build -f ./distributions/${{ inputs.distribution }}/Windows.dockerfile `
             -t ${{ env.TAG }} `
-            --build-arg WIN_VERSION=2025 `
+            --build-arg WIN_VERSION=2022 `
             ./distributions/${{ inputs.distribution }}/
 
       - name: Export container image to tarball

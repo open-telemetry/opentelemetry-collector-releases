@@ -47,7 +47,7 @@ jobs:
       distribution: otelcol
       goos: '[ "windows" ]'
       goarch: '[ "386", "amd64" ]'
-      runner_os: 'windows-2025'
+      runner_os: 'windows-2022'
     secrets: inherit
 
   package-tests:
