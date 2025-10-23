@@ -1,0 +1,75 @@
+// Copyright The OpenTelemetry Authors
+// SPDX-License-Identifier: Apache-2.0
+
+package main
+
+import (
+	"bytes"
+	"flag"
+	"fmt"
+	"log"
+	"strings"
+	"text/template"
+)
+
+const (
+	coreDistro       = "otelcol"
+	contribDistro    = "otelcol-contrib"
+	otlpDistro       = "otelcol-otlp"
+	templateFilename = "windows-installer.wxs.tmpl"
+)
+
+var (
+	distFlag = flag.String("d", "", "Collector distributions to build")
+)
+
+func main() {
+	flag.Parse()
+
+	if len(*distFlag) == 0 {
+		log.Fatal("no distribution to template")
+	}
+	distros := strings.Split(*distFlag, ",")
+
+	for _, distro := range distros {
+		log.Println("Templating MSI installer for distribution: " + distro)
+		TemplateDist(distro)
+	}
+}
+
+func TemplateDist(dist string) {
+	switch dist {
+	case coreDistro:
+		templateDist(true)
+	case otlpDistro:
+		templateDist(false)
+	case contribDistro:
+		templateDist(true)
+	default:
+		log.Println("Unknown distribution: " + dist)
+	}
+}
+
+func templateDist(addConfig bool) {
+	// Parse the base template
+	baseTemplate, err := template.New("base").ParseFiles(templateFilename)
+	if err != nil {
+		panic(err)
+	}
+
+	// Data for the base template
+	data := map[string]interface{}{
+		"AddConfig": addConfig,
+	}
+
+	// Execute the base template to generate a new template
+	var generatedTemplateContent bytes.Buffer
+	err = baseTemplate.ExecuteTemplate(&generatedTemplateContent, "base", data)
+	if err != nil {
+		panic(err)
+	}
+
+	// The generated template content
+	fmt.Println("Generated Template Content:")
+	fmt.Println(generatedTemplateContent.String())
+}

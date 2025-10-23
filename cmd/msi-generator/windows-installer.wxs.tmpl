@@ -47,10 +47,12 @@
                      Name="{{ .Binary }}.exe"
                      Source="{{ .Binary }}.exe"
                      KeyPath="yes"/>
+                  {{ if .AddConfig }}
                   <File
                      Id="config.yaml"
                      Name="config.yaml"
                      Source="config.yaml"/>
+                  {{ end }}
 
                   <ServiceInstall
                      Id="Sevice"
