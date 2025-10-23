@@ -16,7 +16,8 @@ const (
 	coreDistro       = "otelcol"
 	contribDistro    = "otelcol-contrib"
 	otlpDistro       = "otelcol-otlp"
-	templateFilename = "windows-installer.wxs.tmpl"
+	templateFilename = "cmd/msi-generator/windows-installer.wxs.tmpl"
+	distroFolder     = "distributions"
 )
 
 var (
@@ -52,7 +53,7 @@ func TemplateDist(dist string) {
 
 func templateDist(addConfig bool) {
 	// Parse the base template
-	baseTemplate, err := template.New("base").ParseFiles(templateFilename)
+	baseTemplate, err := template.New("base").Delims("<<", ">>").ParseFiles(templateFilename)
 	if err != nil {
 		panic(err)
 	}
