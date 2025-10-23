@@ -339,11 +339,11 @@ jobs:
         if: matrix.GOOS == 'windows'
         run: |
           echo "Running container..."
-          docker run --name ${{ inputs.distribution }} \
-            -d \
-            ${{ inputs.docker_run_options }} \
-            -v ${PWD}\\tests\\docker-tests\\${{ inputs.config_file }}:C:\\config.yaml \
-            ${{ inputs.distribution }}:${{ env.TAG }} \
+          docker run --name ${{ inputs.distribution }} `
+            -d `
+            ${{ inputs.docker_run_options }} `
+            -v ${PWD}\\tests\\docker-tests\\${{ inputs.config_file }}:C:\\config.yaml `
+            ${{ inputs.distribution }}:${{ env.TAG }} `
             ${{ inputs.otelcol_run_options }} -c C:\\config.yaml
           echo "docker ps:"
           echo ""
