@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 	"text/template"
 )
@@ -17,6 +18,7 @@ const (
 	contribDistro    = "otelcol-contrib"
 	otlpDistro       = "otelcol-otlp"
 	templateFilename = "cmd/msi-generator/windows-installer.wxs.tmpl"
+	finalFilename    = "windows-installer.wxs"
 	distroFolder     = "distributions"
 )
 
@@ -40,18 +42,16 @@ func main() {
 
 func TemplateDist(dist string) {
 	switch dist {
-	case coreDistro:
-		templateDist(true)
+	case coreDistro, contribDistro:
+		templateDist(dist, true)
 	case otlpDistro:
-		templateDist(false)
-	case contribDistro:
-		templateDist(true)
+		templateDist(dist, false)
 	default:
 		log.Println("Unknown distribution: " + dist)
 	}
 }
 
-func templateDist(addConfig bool) {
+func templateDist(dist string, addConfig bool) {
 	// Parse the base template
 	baseTemplate, err := template.New("base").Delims("<<", ">>").ParseFiles(templateFilename)
 	if err != nil {
@@ -73,4 +73,8 @@ func templateDist(addConfig bool) {
 	// The generated template content
 	fmt.Println("Generated Template Content:")
 	fmt.Println(generatedTemplateContent.String())
+	err = os.WriteFile(fmt.Sprintf("%s/%s/%s", distroFolder, dist, finalFilename), generatedTemplateContent.Bytes(), 0644)
+	if err != nil {
+		panic(err)
+	}
 }
