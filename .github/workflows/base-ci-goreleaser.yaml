@@ -325,7 +325,7 @@ jobs:
           echo "Sleeping for a bit..."
           sleep 10
           echo "Checking logs for correct startup..."
-          docker logs ${{ inputs.distribution }} >& docker-logs-${{ inputs.distribution }}.log
+          docker logs ${{ inputs.distribution }} 2>&1 docker-logs-${{ inputs.distribution }}.log
           if cat docker-logs-${{ inputs.distribution }}.log | grep "Everything is ready."; then
             echo "${{ inputs.distribution }} started up correctly"
           else
@@ -353,7 +353,7 @@ jobs:
           echo "Sleeping for a bit..."
           sleep 10
           echo "Checking logs for correct startup..."
-          docker logs ${{ inputs.distribution }} >& docker-logs-${{ inputs.distribution }}.log
+          docker logs ${{ inputs.distribution }} 2>&1 docker-logs-${{ inputs.distribution }}.log
           if cat docker-logs-${{ inputs.distribution }}.log | grep "Everything is ready."; then
             echo "${{ inputs.distribution }} started up correctly"
           else
