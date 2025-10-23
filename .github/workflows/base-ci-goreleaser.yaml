@@ -336,6 +336,7 @@ jobs:
           fi
 
       - name: Run container image (Windows)
+        shell: bash
         if: matrix.GOOS == 'windows'
         run: |
           echo "Running container..."
