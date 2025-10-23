@@ -84,6 +84,7 @@ jobs:
           - GOOS: windows
             GOARCH: riscv64
     runs-on: ${{ inputs.runner_os }}
+    needs: prev-tag
     outputs:
       version: ${{ steps.prep.outputs.version }}
 
