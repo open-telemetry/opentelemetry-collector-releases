@@ -336,7 +336,6 @@ jobs:
           fi
 
       - name: Run container image (Windows)
-        shell: bash
         if: matrix.GOOS == 'windows'
         run: |
           echo "Running container..."
@@ -353,15 +352,15 @@ jobs:
           sleep 10
           echo "Checking logs for correct startup..."
           docker logs ${{ inputs.distribution }} 2>&1 docker-logs-${{ inputs.distribution }}.log
-          if cat docker-logs-${{ inputs.distribution }}.log | grep "Everything is ready."; then
+          if (Get-Content $logFile | Select-String -Pattern "Everything is ready.") {
             echo "${{ inputs.distribution }} started up correctly"
-          else
+          } else {
             echo "${{ inputs.distribution }} failed to start"
             echo "Printing container logs below..."
             echo ""
-            cat docker-logs-${{ inputs.distribution }}.log
+            Get-Content docker-logs-${{ inputs.distribution }}.log
             exit 1
-          fi
+          }
 
       - name: Run golden tests
         if: matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' && inputs.distribution == 'otelcol-contrib'
