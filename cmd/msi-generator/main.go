@@ -70,9 +70,6 @@ func templateDist(dist string, addConfig bool) {
 		panic(err)
 	}
 
-	// The generated template content
-	fmt.Println("Generated Template Content:")
-	fmt.Println(generatedTemplateContent.String())
 	err = os.WriteFile(fmt.Sprintf("%s/%s/%s", distroFolder, dist, finalFilename), generatedTemplateContent.Bytes(), 0644)
 	if err != nil {
 		panic(err)
