@@ -347,7 +347,8 @@ jobs:
             ${{ inputs.docker_run_options }} `
             -v ${PWD}\tests\docker-tests:C:\config `
             ${{ inputs.distribution }}:${{ env.TAG }} `
-            ${{ inputs.otelcol_run_options }} -c C:\config\${{ inputs.config_file }}
+            --config C:\config\${{ inputs.config_file }} `
+            ${{ inputs.otelcol_run_options }}
           echo "docker ps:"
           echo ""
           docker ps
