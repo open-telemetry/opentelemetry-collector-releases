@@ -79,7 +79,7 @@ nfpms:
     description: OpenTelemetry Collector - opampsupervisor
     license: Apache 2.0
 snapshot:
-  version_template: '{{ .Tag }}-next'
+  version_template: '{{ incpatch .Version }}-next'
 checksum:
   name_template: checksums.txt
 dockers:

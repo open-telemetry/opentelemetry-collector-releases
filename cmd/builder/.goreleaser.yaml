@@ -52,7 +52,7 @@ archives:
   - formats:
       - binary
 snapshot:
-  version_template: '{{ .Tag }}-next'
+  version_template: '{{ incpatch .Version }}-next'
 checksum:
   name_template: checksums.txt
 dockers:

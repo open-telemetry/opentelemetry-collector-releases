@@ -157,6 +157,7 @@ var (
 		WithDefaultPartial().
 		WithDefaultRelease().
 		WithNightlyConfig().
+		WithDefaultSnapshot().
 		Build()
 
 	// ebpf-profiler distro
@@ -183,6 +184,7 @@ var (
 		WithDefaultPartial().
 		WithDefaultRelease().
 		WithNightlyConfig().
+		WithDefaultSnapshot().
 		Build()
 
 	// OCB binary
@@ -456,6 +458,13 @@ func (b *distributionBuilder) WithDefaultBinaryChecksum() *distributionBuilder {
 	return b
 }
 
+func (b *distributionBuilder) WithDefaultSnapshot() *distributionBuilder {
+	b.dist.snapshot = config.Snapshot{
+		VersionTemplate: "{{ incpatch .Version }}-next",
+	}
+	return b
+}
+
 func (b *distributionBuilder) WithDefaultMonorepo() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
 		b.dist.monorepo = config.Monorepo{
@@ -544,6 +553,7 @@ func (b *distributionBuilder) binaryRelease(header string) config.Release {
 
 func (b *distributionBuilder) WithPackagingDefaults() *distributionBuilder {
 	return b.WithDefaultArchives().
+		WithDefaultSnapshot().
 		WithDefaultChecksum().
 		WithDefaultMonorepo().
 		WithDefaultEnv().
@@ -561,11 +571,9 @@ func (b *distributionBuilder) WithBinaryPackagingDefaults() *distributionBuilder
 	b.dist.changelog = config.Changelog{
 		Disable: "true",
 	}
-	b.dist.snapshot = config.Snapshot{
-		VersionTemplate: "{{ .Tag }}-next",
-	}
 
 	return b.WithBinArchive().
+		WithDefaultSnapshot().
 		WithDefaultChecksum().
 		WithDefaultEnv().
 		WithDefaultSigns().
