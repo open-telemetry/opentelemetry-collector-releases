@@ -1,3 +1,4 @@
+<< define "base" ->>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
    <Product
       Name="OpenTelemetry Collector ({{ .Version }}) - {{ .Binary }} distribution"
@@ -47,10 +48,12 @@
                      Name="{{ .Binary }}.exe"
                      Source="{{ .Binary }}.exe"
                      KeyPath="yes"/>
+                  << if .AddConfig >>
                   <File
                      Id="config.yaml"
                      Name="config.yaml"
                      Source="config.yaml"/>
+                  << end ->>
 
                   <ServiceInstall
                      Id="Sevice"
@@ -86,3 +89,4 @@
       </Directory>
    </Product>
 </Wix>
+<< end >>
