@@ -98,6 +98,8 @@ nfpms:
     maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
     description: OpenTelemetry Collector - otelcol
     license: Apache 2.0
+snapshot:
+  version_template: '{{ incpatch .Version }}-next'
 checksum:
   name_template: '{{ .ProjectName }}_otelcol{{ if eq .Runtime.Goos "windows" }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt'
 dockers:
