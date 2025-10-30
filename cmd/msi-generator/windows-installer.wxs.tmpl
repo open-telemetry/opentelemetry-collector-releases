@@ -4,7 +4,7 @@
       Name="OpenTelemetry Collector ({{ .Version }}) - {{ .Binary }} distribution"
       Id="*"
       UpgradeCode="B7C263DD-95A5-436A-A025-DCA5200C2BE3"
-      Version="{{ .Version }}"
+      Version="{{ if .IsSnapshot }}{{ .RawVersion }}{{ else }}{{ .Version }}{{ end }}"
       Manufacturer="OpenTelemetry"
       Language="1033">
 
