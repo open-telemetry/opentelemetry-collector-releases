@@ -23,7 +23,7 @@ func main() {
 	if len(*distFlag) == 0 {
 		log.Fatal("no distribution to build")
 	}
-	project := internal.BuildDist(*distFlag, *contribBuildOrRestFlag)
+	project := internal.BuildDistribution(*distFlag, *contribBuildOrRestFlag)
 
 	e := yaml.NewEncoder(os.Stdout)
 	e.SetIndent(2)
