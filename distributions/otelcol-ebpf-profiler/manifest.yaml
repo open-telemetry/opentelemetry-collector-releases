@@ -6,6 +6,9 @@ dist:
   output_path: ./_build
   build_tags: "grpcnotrace"
 
+extensions:
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/opampextension v0.138.0
+
 exporters:
   - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.138.0
   - gomod: go.opentelemetry.io/collector/exporter/nopexporter v0.138.0
