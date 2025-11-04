@@ -71,7 +71,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: sigstore/cosign-installer@7e8b541eb2e61bf99390e1afd4be13a184e9ebc5 # v3.10.1
+      - uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # v4.0.0
+        with:
+          cosign-release: "v2.6.1"
 
       - uses: anchore/sbom-action/download-syft@8e94d75ddd33f69f691467e42275782e4bfefe84 # v0.20.9
 
@@ -172,7 +174,7 @@ jobs:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GORELEASER_CURRENT_TAG: ${{ github.ref_name }}
 
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: artifacts-${{ inputs.distribution }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
           path: distributions/${{ inputs.distribution }}/dist/**/*
@@ -195,7 +197,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: sigstore/cosign-installer@7e8b541eb2e61bf99390e1afd4be13a184e9ebc5 # v3.10.1
+      - uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # v4.0.0
+        with:
+          cosign-release: "v2.6.1"
 
       - uses: anchore/sbom-action/download-syft@8e94d75ddd33f69f691467e42275782e4bfefe84 # v0.20.9
 
@@ -222,21 +226,21 @@ jobs:
           go-version: "~1.25.0"
           check-latest: true
 
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         if: runner.os == 'Windows'
         with:
           pattern: artifacts-${{ inputs.distribution }}-windows-*
           path: distributions/${{ inputs.distribution }}/dist
           merge-multiple: true
 
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         if: runner.os != 'Windows'
         with:
           pattern: artifacts-${{ inputs.distribution }}-darwin-*
           path: distributions/${{ inputs.distribution }}/dist
           merge-multiple: true
 
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         if: runner.os != 'Windows'
         with:
           pattern: artifacts-${{ inputs.distribution }}-linux-*

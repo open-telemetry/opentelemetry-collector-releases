@@ -4,6 +4,20 @@
 
 <!-- next version -->
 
+## v0.139.0
+
+### 🛑 Breaking changes 🛑
+
+- `ecstaskobserver`: Removing unmaintained component (#1232)
+
+### 🚀 New components 🚀
+
+- `contrib`: Add GitLab receiver to contrib distribution (#1225)
+
+### 💡 Enhancements 💡
+
+- `opampsupervisor`: Add .deb and .rpm packages release artifacts for the OpAMP supervisor (#1209)
+
 ## v0.138.0
 
 ### 🚀 New components 🚀
