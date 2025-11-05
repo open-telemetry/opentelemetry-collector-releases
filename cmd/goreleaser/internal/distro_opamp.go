@@ -34,7 +34,7 @@ var (
 		withDefaultBinaryRelease(opampReleaseHeader).
 		withDefaultMSIConfig().
 		withDefaultNfpms().
-		// This is required because of same non-obvious path/workdir handling in
+		// This is required because of some non-obvious path/workdir handling in
 		// Github Actions specific to the binaries CI.
 		withConfigFunc(func(d *distribution) {
 			d.Nfpms[0].Contents = append(d.Nfpms[0].Contents, config.NFPMContent{
