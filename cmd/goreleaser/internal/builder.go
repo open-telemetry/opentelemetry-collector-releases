@@ -272,12 +272,12 @@ func (b *distributionBuilder) signs() []config.Sign {
 
 func (b *distributionBuilder) withDefaultDockerSigns() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		d.DockerSigns = b.dockerSigns()
+		d.DockerSigns = b.newDockerSigns()
 	})
 	return b
 }
 
-func (b *distributionBuilder) dockerSigns() []config.Sign {
+func (b *distributionBuilder) newDockerSigns() []config.Sign {
 	condition := ""
 	switch b.dist.Name {
 	case ocbBinary, opampBinary:
@@ -297,12 +297,12 @@ func (b *distributionBuilder) dockerSigns() []config.Sign {
 
 func (b *distributionBuilder) withNightlyConfig() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		b.dist.Nightly = b.nightly()
+		b.dist.Nightly = b.newNightly()
 	})
 	return b
 }
 
-func (b *distributionBuilder) nightly() config.Nightly {
+func (b *distributionBuilder) newNightly() config.Nightly {
 	return config.Nightly{
 		VersionTemplate:   "{{ incpatch .Version}}-nightly.{{ .ShortCommit }}",
 		TagName:           fmt.Sprintf("nightly-%s", b.dist.Name),
@@ -313,12 +313,12 @@ func (b *distributionBuilder) nightly() config.Nightly {
 
 func (b *distributionBuilder) withDefaultSBOMs() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		d.Sboms = b.sboms()
+		d.Sboms = b.newSboms()
 	})
 	return b
 }
 
-func (b *distributionBuilder) sboms() []config.SBOM {
+func (b *distributionBuilder) newSboms() []config.SBOM {
 	return []config.SBOM{
 		{
 			ID:        "archive",
@@ -369,12 +369,12 @@ func (b *distributionBuilder) withDefaultMonorepo() *distributionBuilder {
 
 func (b *distributionBuilder) withBinaryMonorepo(dir string) *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		b.dist.Monorepo = b.binaryMonorepo(dir)
+		b.dist.Monorepo = b.newBinaryMonorepo(dir)
 	})
 	return b
 }
 
-func (b *distributionBuilder) binaryMonorepo(dir string) config.Monorepo {
+func (b *distributionBuilder) newBinaryMonorepo(dir string) config.Monorepo {
 	return config.Monorepo{
 		TagPrefix: fmt.Sprintf("cmd/%s/", b.dist.Name),
 		Dir:       dir,
@@ -426,12 +426,12 @@ func (b *distributionBuilder) withDefaultRelease() *distributionBuilder {
 
 func (b *distributionBuilder) withDefaultBinaryRelease(header string) *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
-		b.dist.Release = b.binaryRelease(header)
+		b.dist.Release = b.newBinaryRelease(header)
 	})
 	return b
 }
 
-func (b *distributionBuilder) binaryRelease(header string) config.Release {
+func (b *distributionBuilder) newBinaryRelease(header string) config.Release {
 	return config.Release{
 		MakeLatest: "false",
 		Header: config.IncludedMarkdown{
