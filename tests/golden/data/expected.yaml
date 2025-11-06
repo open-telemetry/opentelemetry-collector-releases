@@ -6,59 +6,38 @@ resourceMetrics:
             stringValue: "8888"
         - key: service.instance.id
           value:
-            stringValue: d23001b5-3ac2-46eb-85b6-3e434276b2b7
+            stringValue: 5230d18c-f0dc-4ff3-9284-f273297bb543
         - key: service.name
           value:
             stringValue: otelcol-contrib
         - key: service.version
           value:
-            stringValue: 0.133.0
+            stringValue: 0.139.0
         - key: url.scheme
           value:
             stringValue: http
     scopeMetrics:
       - metrics:
-          - description: The scraping was successful
+          - description: Bytes of allocated heap objects (see 'go doc runtime.MemStats.HeapAlloc') [Alpha]
             gauge:
               dataPoints:
-                - asDouble: 1
-                  timeUnixNano: "1000000"
-            metadata:
-              - key: prometheus.type
-                value:
-                  stringValue: gauge
-            name: up
-          - description: Duration of the scrape
-            gauge:
-              dataPoints:
-                - asDouble: 0.005323833
-                  timeUnixNano: "1000000"
-            metadata:
-              - key: prometheus.type
-                value:
-                  stringValue: gauge
-            name: scrape_duration_seconds
-            unit: s
-          - description: Total physical memory (resident set size) [alpha]
-            gauge:
-              dataPoints:
-                - asDouble: 1.74903296e+08
+                - asDouble: 2.0731296e+07
                   attributes:
                     - key: service.instance.id
                       value:
-                        stringValue: d23001b5-3ac2-46eb-85b6-3e434276b2b7
+                        stringValue: 5230d18c-f0dc-4ff3-9284-f273297bb543
                     - key: service.name
                       value:
                         stringValue: otelcol-contrib
                     - key: service.version
                       value:
-                        stringValue: 0.133.0
+                        stringValue: 0.139.0
                   timeUnixNano: "1000000"
             metadata:
               - key: prometheus.type
                 value:
                   stringValue: gauge
-            name: otelcol_process_memory_rss
+            name: otelcol_process_runtime_heap_alloc_bytes
           - description: Total number of internal errors encountered by the promhttp metric handler.
             metadata:
               - key: prometheus.type
@@ -83,6 +62,93 @@ resourceMetrics:
                   startTimeUnixNano: "1000000"
                   timeUnixNano: "1000000"
               isMonotonic: true
+          - description: Cumulative bytes allocated for heap objects (see 'go doc runtime.MemStats.TotalAlloc') [Alpha]
+            metadata:
+              - key: prometheus.type
+                value:
+                  stringValue: counter
+            name: otelcol_process_runtime_total_alloc_bytes
+            sum:
+              aggregationTemporality: 2
+              dataPoints:
+                - asDouble: 3.2133528e+07
+                  attributes:
+                    - key: service.instance.id
+                      value:
+                        stringValue: 5230d18c-f0dc-4ff3-9284-f273297bb543
+                    - key: service.name
+                      value:
+                        stringValue: otelcol-contrib
+                    - key: service.version
+                      value:
+                        stringValue: 0.139.0
+                  startTimeUnixNano: "1000000"
+                  timeUnixNano: "1000000"
+              isMonotonic: true
+          - description: Total bytes of memory obtained from the OS (see 'go doc runtime.MemStats.Sys') [Alpha]
+            gauge:
+              dataPoints:
+                - asDouble: 3.7312776e+07
+                  attributes:
+                    - key: service.instance.id
+                      value:
+                        stringValue: 5230d18c-f0dc-4ff3-9284-f273297bb543
+                    - key: service.name
+                      value:
+                        stringValue: otelcol-contrib
+                    - key: service.version
+                      value:
+                        stringValue: 0.139.0
+                  timeUnixNano: "1000000"
+            metadata:
+              - key: prometheus.type
+                value:
+                  stringValue: gauge
+            name: otelcol_process_runtime_total_sys_memory_bytes
+          - description: Uptime of the process [Alpha]
+            metadata:
+              - key: prometheus.type
+                value:
+                  stringValue: counter
+            name: otelcol_process_uptime
+            sum:
+              aggregationTemporality: 2
+              dataPoints:
+                - asDouble: 6.80132517
+                  attributes:
+                    - key: service.instance.id
+                      value:
+                        stringValue: 5230d18c-f0dc-4ff3-9284-f273297bb543
+                    - key: service.name
+                      value:
+                        stringValue: otelcol-contrib
+                    - key: service.version
+                      value:
+                        stringValue: 0.139.0
+                  startTimeUnixNano: "1000000"
+                  timeUnixNano: "1000000"
+              isMonotonic: true
+          - description: The scraping was successful
+            gauge:
+              dataPoints:
+                - asDouble: 1
+                  timeUnixNano: "1000000"
+            metadata:
+              - key: prometheus.type
+                value:
+                  stringValue: gauge
+            name: up
+          - description: Duration of the scrape
+            gauge:
+              dataPoints:
+                - asDouble: 0.008631292
+                  timeUnixNano: "1000000"
+            metadata:
+              - key: prometheus.type
+                value:
+                  stringValue: gauge
+            name: scrape_duration_seconds
+            unit: s
           - description: The number of samples the target exposed
             gauge:
               dataPoints:
@@ -113,7 +179,7 @@ resourceMetrics:
                 value:
                   stringValue: gauge
             name: scrape_series_added
-          - description: Total CPU user and system time in seconds [alpha]
+          - description: Total CPU user and system time in seconds [Alpha]
             metadata:
               - key: prometheus.type
                 value:
@@ -122,106 +188,40 @@ resourceMetrics:
             sum:
               aggregationTemporality: 2
               dataPoints:
-                - asDouble: 0.09
+                - asDouble: 0.2
                   attributes:
                     - key: service.instance.id
                       value:
-                        stringValue: d23001b5-3ac2-46eb-85b6-3e434276b2b7
+                        stringValue: 5230d18c-f0dc-4ff3-9284-f273297bb543
                     - key: service.name
                       value:
                         stringValue: otelcol-contrib
                     - key: service.version
                       value:
-                        stringValue: 0.133.0
+                        stringValue: 0.139.0
                   startTimeUnixNano: "1000000"
                   timeUnixNano: "1000000"
               isMonotonic: true
-          - description: Bytes of allocated heap objects (see 'go doc runtime.MemStats.HeapAlloc') [alpha]
+          - description: Total physical memory (resident set size) [Alpha]
             gauge:
               dataPoints:
-                - asDouble: 1.7492368e+07
+                - asDouble: 1.72855296e+08
                   attributes:
                     - key: service.instance.id
                       value:
-                        stringValue: d23001b5-3ac2-46eb-85b6-3e434276b2b7
+                        stringValue: 5230d18c-f0dc-4ff3-9284-f273297bb543
                     - key: service.name
                       value:
                         stringValue: otelcol-contrib
                     - key: service.version
                       value:
-                        stringValue: 0.133.0
+                        stringValue: 0.139.0
                   timeUnixNano: "1000000"
             metadata:
               - key: prometheus.type
                 value:
                   stringValue: gauge
-            name: otelcol_process_runtime_heap_alloc_bytes
-          - description: Cumulative bytes allocated for heap objects (see 'go doc runtime.MemStats.TotalAlloc') [alpha]
-            metadata:
-              - key: prometheus.type
-                value:
-                  stringValue: counter
-            name: otelcol_process_runtime_total_alloc_bytes
-            sum:
-              aggregationTemporality: 2
-              dataPoints:
-                - asDouble: 3.1338e+07
-                  attributes:
-                    - key: service.instance.id
-                      value:
-                        stringValue: d23001b5-3ac2-46eb-85b6-3e434276b2b7
-                    - key: service.name
-                      value:
-                        stringValue: otelcol-contrib
-                    - key: service.version
-                      value:
-                        stringValue: 0.133.0
-                  startTimeUnixNano: "1000000"
-                  timeUnixNano: "1000000"
-              isMonotonic: true
-          - description: Total bytes of memory obtained from the OS (see 'go doc runtime.MemStats.Sys') [alpha]
-            gauge:
-              dataPoints:
-                - asDouble: 3.6787464e+07
-                  attributes:
-                    - key: service.instance.id
-                      value:
-                        stringValue: d23001b5-3ac2-46eb-85b6-3e434276b2b7
-                    - key: service.name
-                      value:
-                        stringValue: otelcol-contrib
-                    - key: service.version
-                      value:
-                        stringValue: 0.133.0
-                  timeUnixNano: "1000000"
-            metadata:
-              - key: prometheus.type
-                value:
-                  stringValue: gauge
-            name: otelcol_process_runtime_total_sys_memory_bytes
-          - description: Uptime of the process [alpha]
-            metadata:
-              - key: prometheus.type
-                value:
-                  stringValue: counter
-            name: otelcol_process_uptime
-            sum:
-              aggregationTemporality: 2
-              dataPoints:
-                - asDouble: 6.868990629
-                  attributes:
-                    - key: service.instance.id
-                      value:
-                        stringValue: d23001b5-3ac2-46eb-85b6-3e434276b2b7
-                    - key: service.name
-                      value:
-                        stringValue: otelcol-contrib
-                    - key: service.version
-                      value:
-                        stringValue: 0.133.0
-                  startTimeUnixNano: "1000000"
-                  timeUnixNano: "1000000"
-              isMonotonic: true
+            name: otelcol_process_memory_rss
         scope:
           name: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver
-          version: 0.133.0
+          version: 0.139.0
