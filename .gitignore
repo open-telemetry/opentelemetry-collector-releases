@@ -7,3 +7,4 @@ dist/
 .core
 .contrib
 .tools
+.DS_Store
