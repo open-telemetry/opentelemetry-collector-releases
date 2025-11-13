@@ -32,7 +32,6 @@ var (
 	}).withBinaryPackagingDefaults().
 		withBinaryMonorepo(".contrib/cmd/opampsupervisor").
 		withDefaultBinaryRelease(opampReleaseHeader).
-		withDefaultMSIConfig().
 		withDefaultNfpms().
 		// This is required because of some non-obvious path/workdir handling in
 		// Github Actions specific to the binaries CI.
@@ -49,10 +48,6 @@ var (
 			d.Nfpms[0].Scripts.PreInstall = path.Join("cmd", d.Name, d.Nfpms[0].Scripts.PreInstall)
 			d.Nfpms[0].Scripts.PostInstall = path.Join("cmd", d.Name, d.Nfpms[0].Scripts.PostInstall)
 			d.Nfpms[0].Scripts.PreRemove = path.Join("cmd", d.Name, d.Nfpms[0].Scripts.PreRemove)
-
-			for i, msiFiles := range d.MsiConfig[0].Files {
-				d.MsiConfig[0].Files[i] = path.Join("cmd", d.Name, msiFiles)
-			}
 		}).
 		withNightlyConfig().
 		build()
