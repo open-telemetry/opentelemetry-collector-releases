@@ -13,6 +13,12 @@ release:
     name: opentelemetry-collector-releases
   make_latest: "false"
   header: '### Release of OpAMP supervisor artifacts'
+msi:
+  - id: opampsupervisor
+    name: opampsupervisor_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}
+    wxs: windows-installer.wxs
+    extra_files:
+      - cmd/opampsupervisor/opentelemetry.ico
 builds:
   - id: opampsupervisor-linux
     goos:
