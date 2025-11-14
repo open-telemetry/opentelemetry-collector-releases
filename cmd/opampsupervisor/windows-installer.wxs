@@ -3,7 +3,7 @@
       Name="OpenTelemetry OpAMP Supervisor ({{ .Version }})"
       Id="*"
       UpgradeCode="B7C263DD-95A5-436A-A025-DCA5200C2BE3"
-      Version="{{ .Version }}"
+      Version="{{ if .IsSnapshot }}{{ .RawVersion }}{{ else }}{{ .Version }}{{ end }}"
       Manufacturer="OpenTelemetry"
       Language="1033">
 
@@ -27,14 +27,14 @@
          <ComponentRef Id="ApplicationComponent"/>
       </Feature>
 
-      <Property Id="COLLECTOR_SVC_ARGS"/>
+      <Property Id="SUPERVISOR_SVC_ARGS"/>
       <CustomAction
-         Id="SetCollectorSvcArgs"
-         Property="COLLECTOR_SVC_ARGS"
+         Id="SetSupervisorSvcArgs"
+         Property="SUPERVISOR_SVC_ARGS"
          Value="--config &quot;[INSTALLDIR]config.yaml&quot;"/>
 
       <InstallExecuteSequence>
-         <Custom Action="SetCollectorSvcArgs" Before="InstallFiles">NOT COLLECTOR_SVC_ARGS</Custom>
+         <Custom Action="SetSupervisorSvcArgs" Before="InstallFiles">NOT SUPERVISOR_SVC_ARGS</Custom>
       </InstallExecuteSequence>
 
       <Directory Id="TARGETDIR" Name="SourceDir">
@@ -48,9 +48,9 @@
                      Source="{{ .Binary }}.exe"
                      KeyPath="yes"/>
                   <File
-                     Id="config.yaml"
-                     Name="config.yaml"
-                     Source="config.yaml"/>
+                     Id="config.example.yaml"
+                     Name="config.example.yaml"
+                     Source="config.windows.example.yaml"/>
 
                   <ServiceInstall
                      Id="Sevice"
@@ -62,7 +62,7 @@
                      Start="demand"
                      Account="LocalSystem"
                      ErrorControl="normal"
-                     Arguments="[COLLECTOR_SVC_ARGS]"
+                     Arguments="[SUPERVISOR_SVC_ARGS]"
                      Interactive="no"/>
                   <ServiceControl
                      Id="StopRemoveService"
