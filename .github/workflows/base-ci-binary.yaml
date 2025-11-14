@@ -120,5 +120,5 @@ jobs:
         with:
           name: windows-msi
           path: |
-            dist/*.msi
+            dist/msi/**/*.msi
           if-no-files-found: error
