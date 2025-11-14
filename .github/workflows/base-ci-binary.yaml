@@ -22,6 +22,11 @@ on:
         type: boolean
         default: false
         description: "Set to true if linux packages should be uploaded as an artifact"
+      windows-msi:
+        required: false
+        type: boolean
+        default: false
+        description: 'Set to true if windows msi should be uploaded as an artifact'
 
 permissions:
   contents: read
@@ -50,6 +55,7 @@ jobs:
         run: cp cmd/${{ inputs.binary }}/Dockerfile ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}/Dockerfile
 
       - name: Copy MSI files to Core Repo directory
+        if: ${{ inputs.windows-msi == true }}
         run: |
           cp cmd/${{ inputs.binary }}/windows-installer.wxs ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}
           cp cmd/${{ inputs.binary }}/opentelemetry.ico ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}
@@ -98,6 +104,16 @@ jobs:
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: linux-packages
+          path: |
+            dist/*amd64*.deb
+            dist/*amd64*.rpm
+          if-no-files-found: error
+
+      - name: Upload Windows MSI
+        if: ${{ inputs.windows-msi == true }}
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: windows-msi
           path: |
             dist/*amd64*.deb
             dist/*amd64*.rpm
