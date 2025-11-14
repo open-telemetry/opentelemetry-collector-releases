@@ -120,6 +120,5 @@ jobs:
         with:
           name: windows-msi
           path: |
-            dist/*amd64*.deb
-            dist/*amd64*.rpm
+            dist/*.msi
           if-no-files-found: error
