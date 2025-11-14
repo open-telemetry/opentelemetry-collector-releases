@@ -1,7 +1,3 @@
-# Default paths assume the MSI installs into
-# "C:\Program Files\OpenTelemetry Collector". Update the INSTALLDIR segments
-# below if you chose a different target folder when running the installer.
-
 server:
   endpoint: 'http://:4320/v1/opamp'
   headers:
