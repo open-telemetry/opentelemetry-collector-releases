@@ -57,7 +57,6 @@ jobs:
       - name: Copy MSI files to Core Repo directory
         if: ${{ inputs.windows-msi == true }}
         run: |
-          cp cmd/${{ inputs.binary }}/windows-installer.wxs ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}
           cp cmd/${{ inputs.binary }}/opentelemetry.ico ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}
           cp cmd/${{ inputs.binary }}/config.windows.example.yaml ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}
 
