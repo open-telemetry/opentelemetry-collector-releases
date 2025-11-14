@@ -8,3 +8,4 @@ dist/
 .contrib
 .tools
 .DS_Store
+.zed
