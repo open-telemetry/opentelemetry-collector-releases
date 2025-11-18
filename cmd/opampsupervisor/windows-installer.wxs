@@ -25,6 +25,8 @@
 
       <Feature Id="Feature" Level="1">
          <ComponentRef Id="ApplicationComponent"/>
+         <ComponentRef Id="ProgramDataOpampSupervisorFolderComponent"/>
+         <ComponentRef Id="ProgramDataLogsFolderComponent"/>
       </Feature>
 
       <Property Id="SUPERVISOR_SVC_ARGS"/>
@@ -80,6 +82,20 @@
                         Value="%SystemRoot%\System32\EventCreate.exe"/>
                   </RegistryKey>
                </Component>
+            </Directory>
+         </Directory>
+         <Directory Id="CommonAppDataFolder">
+            <Directory Id="ProgramDataOpampSupervisorFolder" Name="opampsupervisor">
+               <Component Id="ProgramDataOpampSupervisorFolderComponent" Guid="19F0A11E-747B-4C63-95CB-58F140150368">
+                  <CreateFolder/>
+                  <RemoveFolder Id="ProgramDataOpampSupervisorFolder" On="uninstall"/>
+               </Component>
+               <Directory Id="ProgramDataLogsFolder" Name="logs">
+                  <Component Id="ProgramDataLogsFolderComponent" Guid="D54D7207-A1C5-42C1-8BF5-A8107734ED28">
+                     <CreateFolder/>
+                     <RemoveFolder Id="ProgramDataLogsFolder" On="uninstall"/>
+                  </Component>
+               </Directory>
             </Directory>
          </Directory>
       </Directory>
