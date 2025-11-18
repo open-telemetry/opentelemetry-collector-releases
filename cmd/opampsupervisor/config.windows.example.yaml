@@ -20,7 +20,7 @@ agent:
 
   # This passes config files to the Collector.
   config_files:
-    - 'C:\Program Files\OpenTelemetry Collector\collector.yaml'
+    - 'C:\Program Files\OpenTelemetry Collector\config.yaml'
 
   # This adds CLI arguments to the Collector.
   args: []
