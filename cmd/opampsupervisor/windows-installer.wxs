@@ -2,7 +2,7 @@
    <Product
       Name="OpenTelemetry OpAMP Supervisor ({{ .Version }})"
       Id="*"
-      UpgradeCode="B7C263DD-95A5-436A-A025-DCA5200C2BE3"
+      UpgradeCode="457B2070-3249-4092-A99E-EF8F7D2F5534"
       Version="{{ if .IsSnapshot }}{{ .RawVersion }}{{ else }}{{ .Version }}{{ end }}"
       Manufacturer="OpenTelemetry"
       Language="1033">
@@ -39,8 +39,8 @@
 
       <Directory Id="TARGETDIR" Name="SourceDir">
          <Directory Id="ProgramFiles64Folder">
-            <Directory Id="INSTALLDIR" Name="OpenTelemetry Collector">
-               <Component Id="ApplicationComponent" Guid="1207C3C4-1830-4DC8-8A7B-2BD7DBE45BC3">
+            <Directory Id="INSTALLDIR" Name="OpenTelemetry OpAMP Supervisor">
+               <Component Id="ApplicationComponent" Guid="0FE94277-1637-4469-858C-10795FD73DA8">
                   <!-- Files to include -->
                   <File
                      Id="{{ replace .Binary "-"  "_"}}.exe"
