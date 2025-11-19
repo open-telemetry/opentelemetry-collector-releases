@@ -2,7 +2,7 @@ module go.opentelemetry.io/collector/internal/tools
 
 go 1.24.0
 
-require go.opentelemetry.io/build-tools/chloggen v0.28.0
+require go.opentelemetry.io/build-tools/chloggen v0.29.0
 
 require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect

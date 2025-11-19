@@ -36,23 +36,32 @@ jobs:
     uses: ./.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-contrib
-      goos: '[ "linux", "windows", "darwin" ]'
+      goos: '[ "linux", "darwin" ]'
       goarch: '[ "386", "amd64", "arm", "arm64", "ppc64le", "riscv64", "s390x" ]'
     secrets: inherit
 
+  check-goreleaser-windows:
+    name: CI - Contrib - GoReleaser
+    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    with:
+      distribution: otelcol-contrib
+      goos: '[ "windows" ]'
+      goarch: '[ "386", "amd64", "arm64" ]'
+      runner_os: 'windows-2022'
+    secrets: inherit
+
   package-tests:
-     name: Package tests
-     needs: check-goreleaser
-     uses: ./.github/workflows/base-package-tests.yaml
-     with:
-       distribution: otelcol-contrib
-       type: '[ "deb", "rpm" ]'
+    name: Package tests
+    needs: check-goreleaser
+    uses: ./.github/workflows/base-package-tests.yaml
+    with:
+      distribution: otelcol-contrib
+      type: '[ "deb", "rpm" ]'
 
   msi-tests:
     name: MSI tests
-    needs: check-goreleaser
+    needs: check-goreleaser-windows
     uses: ./.github/workflows/msi-tests.yaml
     with:
       distribution: otelcol-contrib
       type: '[ "msi" ]'
-

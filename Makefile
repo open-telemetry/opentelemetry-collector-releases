@@ -3,7 +3,10 @@ GORELEASER ?= goreleaser
 
 # SRC_ROOT is the top of the source tree.
 SRC_ROOT := $(shell git rev-parse --show-toplevel)
-OTELCOL_BUILDER_VERSION ?= 0.135.0
+
+# renovate: datasource=github-releases depName=OCB packageName=open-telemetry/opentelemetry-collector
+OTELCOL_BUILDER_VERSION ?= 0.139.0
+
 OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
 
@@ -30,14 +33,18 @@ generate: generate-sources generate-goreleaser
 generate-goreleaser: go
 	@./scripts/generate-goreleaser.sh -d "${DISTRIBUTIONS}" -b "${BINARIES}" -g ${GO}
 
-generate-sources: go ocb
+generate-sources: go ocb generate-msi
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER}
+
+generate-msi: go ocb
+	$(GO) run cmd/msi-generator/main.go -d "${DISTRIBUTIONS}"
 
 goreleaser-verify: goreleaser
 	@${GORELEASER} release --snapshot --clean
 
 ensure-goreleaser-up-to-date: generate-goreleaser
 	@git diff -s --exit-code distributions/*/.goreleaser.yaml || (echo "Check failed: The goreleaser templates have changed but the .goreleaser.yamls haven't. Run 'make generate-goreleaser' and update your PR." && exit 1)
+	@git diff -s --exit-code cmd/*/.goreleaser.yaml || (echo "Check failed: The goreleaser templates have changed but the .goreleaser.yamls haven't. Run 'make generate-goreleaser' and update your PR." && exit 1)
 
 validate-components:
 	@./scripts/validate-components.sh

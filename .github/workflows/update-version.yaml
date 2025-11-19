@@ -1,19 +1,6 @@
 name: Update Version in Distributions and Prepare PR
 on:
   workflow_dispatch:
-    inputs:
-      next_beta_core:
-        description: 'Collector core beta module set version to update to. Leave empty to bump to next minor version (e.g. 0.120.1 -> 0.121.0)'
-        required: false
-        default: ''
-      next_beta_contrib:
-        description: 'Collector contrib beta module set version to update to. Leave empty to bump to next minor version (e.g. 0.120.1 -> 0.121.0)'
-        required: false
-        default: ''
-      next_stable_core:
-        description: 'Collector core stable module set version to update to. Leave empty to bump to next minor version (e.g. 1.26.0 -> 1.27.0)'
-        required: false
-        default: ''
 
 permissions:
   contents: read
@@ -40,7 +27,7 @@ jobs:
           git config --global user.email "197425009+otelbot@users.noreply.github.com"
 
       - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
         with:
           token: ${{ steps.otelbot-token.outputs.token }}
 
@@ -49,6 +36,3 @@ jobs:
           .github/workflows/scripts/bump-versions.sh --commit --pull-request
         env:
           GH_TOKEN: ${{ steps.otelbot-token.outputs.token }}
-          next_beta_core: ${{ github.event.inputs.next_beta_core }}
-          next_beta_contrib: ${{ github.event.inputs.next_beta_contrib }}
-          next_stable_core: ${{ github.event.inputs.next_stable_core }}

@@ -145,7 +145,8 @@
         "open-telemetry/opentelemetry-collector",
         "/^go\\.opentelemetry\\.io/collector//",
         "open-telemetry/opentelemetry-collector-contrib",
-        "/^github\\.com/open-telemetry/opentelemetry-collector-contrib//"
+        "/^github\\.com/open-telemetry/opentelemetry-collector-contrib//",
+        "ocb"
       ],
       "groupName": "OpenTelemetry Collector Components"
     }

@@ -1,0 +1,19 @@
+[Unit]
+Description=OpenTelemetry Collector OpAMP Supervisor
+After=network.target
+AssertPathExists=/etc/opampsupervisor/config.yaml
+
+[Service]
+EnvironmentFile=/etc/opampsupervisor/opampsupervisor.conf
+ExecStart=/usr/bin/opampsupervisor $OPAMP_OPTIONS
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+Type=simple
+User=opampsupervisor
+Group=opampsupervisor
+ConfigurationDirectory=opampsupervisor
+StateDirectory=opampsupervisor
+LogsDirectory=opampsupervisor
+
+[Install]
+WantedBy=multi-user.target
