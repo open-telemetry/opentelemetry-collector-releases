@@ -4,6 +4,14 @@
 
 <!-- next version -->
 
+## v0.140.1
+
+### 🚀 New components 🚀
+
+- `ebpf-profiler`: Add the `opampextension` to the ebpf-profiler distribution (#1237)
+- `ebpf-profiler`: Add the `transformprocessor` to the ebpf-profiler distribution (#1251)
+- `exporter/googlecloudstorage`: Add google cloud storage exporter to contrib distribution. (#1253)
+
 ## v0.139.0
 
 ### 🛑 Breaking changes 🛑
