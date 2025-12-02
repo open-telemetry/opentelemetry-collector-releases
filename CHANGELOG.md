@@ -6,6 +6,16 @@
 
 ## v0.140.1
 
+### 🛑 Breaking changes 🛑
+
+- `exporter/carbon`: Remove unmaintained component (#1279)
+
+### 🚀 New components 🚀
+
+- `ebpf-profiler`: Add the `healthcheck` and `pprof` extensions to the ebpf-profiler distribution (#1274)
+
+## v0.140.1
+
 ### 🚀 New components 🚀
 
 - `ebpf-profiler`: Add the `opampextension` to the ebpf-profiler distribution (#1237)
