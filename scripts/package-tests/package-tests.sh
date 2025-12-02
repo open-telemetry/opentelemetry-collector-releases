@@ -76,7 +76,9 @@ podman rm -fv "$container_name" >/dev/null 2>&1 || true
 podman run --name "$container_name" --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d "$image_name"
 
 # ensure that the system is up and running by checking if systemctl is running
-# $container_exec systemctl is-system-running --wait
+# TODO(MovieStoreGuy): re-enable when we have a way validate that systemd is fully running
+# $container_exec systemctl is-system-running --wait --quiet
+
 install_pkg "$container_name" "$PKG_PATH"
 
 # If we got to this point, we might need to check the logs of the systemd service
