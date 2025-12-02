@@ -73,7 +73,7 @@ podman build -t "$image_name" -f "$SCRIPT_DIR/Dockerfile.test.$pkg_type" "$SCRIP
 podman rm -fv "$container_name" >/dev/null 2>&1 || true
 
 # test install
-podman run --name "$container_name" -d "$image_name"
+podman run --name "$container_name" --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d "$image_name"
 
 podman ps -a | grep "$container_name"
 
