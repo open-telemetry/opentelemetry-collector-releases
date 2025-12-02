@@ -36,6 +36,7 @@ trap 'run_traps' EXIT
 # shellcheck source=scripts/package-tests/common.sh
 source "$SCRIPT_DIR"/common.sh
 
+
 if [[ -z "$PKG_PATH" ]]; then
     echo "usage: ${BASH_SOURCE[0]} DEB_OR_RPM_PATH" >&2
     exit 1
@@ -61,6 +62,12 @@ podman_cleanup() {
 	podman rm -fv "$container_name" >/dev/null 2>&1 || true
 }
 add_trap_func podman_cleanup
+
+podman_logs() {
+    echo "Container logs:"
+    podman logs "$container_name" || true
+}
+add_trap_func podman_logs
 
 podman build -t "$image_name" -f "$SCRIPT_DIR/Dockerfile.test.$pkg_type" "$SCRIPT_DIR"
 podman rm -fv "$container_name" >/dev/null 2>&1 || true
