@@ -75,9 +75,11 @@ podman rm -fv "$container_name" >/dev/null 2>&1 || true
 # test install
 podman run --name "$container_name" --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d "$image_name"
 
-podman ps -a | grep "$container_name"
 
-sleep 2
+$container_exec systemctl || {
+    echo "systemctl not running in container" >&2
+    exit 1
+}
 
 # ensure that the system is up and running by checking if systemctl is running
 $container_exec systemctl is-system-running --wait
