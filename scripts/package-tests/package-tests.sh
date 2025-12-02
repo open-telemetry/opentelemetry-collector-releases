@@ -78,7 +78,7 @@ podman run --name "$container_name" --privileged -v /sys/fs/cgroup:/sys/fs/cgrou
 podman ps -a | grep "$container_name"
 
 # ensure that the system is up and running by checking if systemctl is running
-$container_exec systemctl is-system-running --quiet --wait
+$container_exec systemctl is-system-running --wait
 install_pkg "$container_name" "$PKG_PATH"
 
 # If we got to this point, we might need to check the logs of the systemd service
