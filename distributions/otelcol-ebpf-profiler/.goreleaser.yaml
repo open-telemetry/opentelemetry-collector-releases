@@ -33,6 +33,36 @@ snapshot:
   version_template: '{{ incpatch .Version }}-next'
 checksum:
   name_template: '{{ .ProjectName }}_otelcol-ebpf-profiler{{ if eq .Runtime.Goos "windows" }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt'
+signs:
+  - cmd: cosign
+    args:
+      - sign-blob
+      - --output-signature
+      - ${artifact}.sig
+      - --output-certificate
+      - ${artifact}.pem
+      - ${artifact}
+    signature: ${artifact}.sig
+    artifacts: all
+    certificate: ${artifact}.pem
+docker_signs:
+  - args:
+      - sign
+      - ${artifact}
+    artifacts: all
+sboms:
+  - id: archive
+    artifacts: archive
+  - id: package
+    artifacts: package
+monorepo:
+  tag_prefix: v
+partial:
+  by: target
+nightly:
+  version_template: '{{ incpatch .Version}}-nightly.{{ .ShortCommit }}'
+  tag_name: nightly-otelcol-ebpf-profiler
+  keep_single_release: true
 dockers:
   - goos: linux
     goarch: amd64
@@ -87,33 +117,3 @@ docker_manifests:
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
-signs:
-  - cmd: cosign
-    args:
-      - sign-blob
-      - --output-signature
-      - ${artifact}.sig
-      - --output-certificate
-      - ${artifact}.pem
-      - ${artifact}
-    signature: ${artifact}.sig
-    artifacts: all
-    certificate: ${artifact}.pem
-docker_signs:
-  - args:
-      - sign
-      - ${artifact}
-    artifacts: all
-sboms:
-  - id: archive
-    artifacts: archive
-  - id: package
-    artifacts: package
-monorepo:
-  tag_prefix: v
-partial:
-  by: target
-nightly:
-  version_template: '{{ incpatch .Version}}-nightly.{{ .ShortCommit }}'
-  tag_name: nightly-otelcol-ebpf-profiler
-  keep_single_release: true

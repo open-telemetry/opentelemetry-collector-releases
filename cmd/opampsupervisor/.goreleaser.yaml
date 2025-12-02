@@ -82,6 +82,38 @@ snapshot:
   version_template: '{{ incpatch .Version }}-next'
 checksum:
   name_template: checksums.txt
+changelog:
+  disable: "true"
+signs:
+  - cmd: cosign
+    args:
+      - sign-blob
+      - --output-signature
+      - ${artifact}.sig
+      - --output-certificate
+      - ${artifact}.pem
+      - ${artifact}
+    signature: ${artifact}.sig
+    artifacts: all
+    certificate: ${artifact}.pem
+docker_signs:
+  - args:
+      - sign
+      - ${artifact}
+    artifacts: all
+    if: $SKIP_SIGNS != 'true'
+sboms:
+  - id: archive
+    artifacts: archive
+  - id: package
+    artifacts: package
+monorepo:
+  tag_prefix: cmd/opampsupervisor/
+  dir: .contrib/cmd/opampsupervisor
+nightly:
+  version_template: '{{ incpatch .Version}}-nightly.{{ .ShortCommit }}'
+  tag_name: nightly-opampsupervisor
+  keep_single_release: true
 dockers:
   - goos: linux
     goarch: amd64
@@ -158,35 +190,3 @@ docker_manifests:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-opampsupervisor:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64le
-changelog:
-  disable: "true"
-signs:
-  - cmd: cosign
-    args:
-      - sign-blob
-      - --output-signature
-      - ${artifact}.sig
-      - --output-certificate
-      - ${artifact}.pem
-      - ${artifact}
-    signature: ${artifact}.sig
-    artifacts: all
-    certificate: ${artifact}.pem
-docker_signs:
-  - args:
-      - sign
-      - ${artifact}
-    artifacts: all
-    if: $SKIP_SIGNS != 'true'
-sboms:
-  - id: archive
-    artifacts: archive
-  - id: package
-    artifacts: package
-monorepo:
-  tag_prefix: cmd/opampsupervisor/
-  dir: .contrib/cmd/opampsupervisor
-nightly:
-  version_template: '{{ incpatch .Version}}-nightly.{{ .ShortCommit }}'
-  tag_name: nightly-opampsupervisor
-  keep_single_release: true
