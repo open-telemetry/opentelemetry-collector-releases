@@ -36,6 +36,7 @@ trap 'run_traps' EXIT
 # shellcheck source=scripts/package-tests/common.sh
 source "$SCRIPT_DIR"/common.sh
 
+
 if [[ -z "$PKG_PATH" ]]; then
     echo "usage: ${BASH_SOURCE[0]} DEB_OR_RPM_PATH" >&2
     exit 1
@@ -62,14 +63,22 @@ podman_cleanup() {
 }
 add_trap_func podman_cleanup
 
+podman_logs() {
+    echo "Container logs:"
+    podman logs "$container_name" || true
+}
+add_trap_func podman_logs
+
 podman build -t "$image_name" -f "$SCRIPT_DIR/Dockerfile.test.$pkg_type" "$SCRIPT_DIR"
 podman rm -fv "$container_name" >/dev/null 2>&1 || true
 
 # test install
-podman run --name "$container_name" -d "$image_name"
+podman run --name "$container_name" --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d "$image_name"
 
 # ensure that the system is up and running by checking if systemctl is running
-$container_exec systemctl is-system-running --quiet --wait
+# TODO(MovieStoreGuy): re-enable when we have a way validate that systemd is fully running
+# $container_exec systemctl is-system-running --wait --quiet
+
 install_pkg "$container_name" "$PKG_PATH"
 
 # If we got to this point, we might need to check the logs of the systemd service
