@@ -75,6 +75,8 @@ podman rm -fv "$container_name" >/dev/null 2>&1 || true
 # test install
 podman run --name "$container_name" -d "$image_name"
 
+podman ps -a | grep "$container_name"
+
 # ensure that the system is up and running by checking if systemctl is running
 $container_exec systemctl is-system-running --quiet --wait
 install_pkg "$container_name" "$PKG_PATH"
