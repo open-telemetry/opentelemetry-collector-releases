@@ -19,7 +19,7 @@ on:
 
 env:
   # renovate: datasource=github-releases packageName=goreleaser/goreleaser-pro
-  GORELEASER_PRO_VERSION: v2.12.7
+  GORELEASER_PRO_VERSION: v2.13.0
 
 permissions:
   contents: read
@@ -35,7 +35,7 @@ jobs:
 
     steps:
       - name: Checkout Releases Repo
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 0
 
@@ -75,7 +75,7 @@ jobs:
           echo "NIGHTLY_FLAG=--nightly" >> "$GITHUB_OUTPUT"
 
       - name: Checkout Collector dependency repo
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 0
           repository: ${{ inputs.collector-dependency }}
