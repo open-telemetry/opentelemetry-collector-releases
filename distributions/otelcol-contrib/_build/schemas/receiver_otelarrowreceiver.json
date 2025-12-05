@@ -1,0 +1,267 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "admission": {
+      "description": "Admission is the configuration for controlling amount of request memory entering the receiver.",
+      "properties": {
+        "request_limit_mib": {
+          "description": "RequestLimitMiB limits the number of requests that are received by the stream based on uncompressed request size. Request size is used to control how much traffic we admit for processing.  When this field is zero, admission control is disabled.",
+          "type": "integer"
+        },
+        "waiting_limit_mib": {
+          "description": "WaitingLimitMiB is the limit on the amount of data waiting to be consumed. This is a dimension of memory limiting to ensure waiters are not consuming an unexpectedly large amount of memory in the arrow receiver.",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "arrow": {
+      "properties": {
+        "admission_limit_mib": {
+          "deprecated": true,
+          "description": "Deprecated: This field is no longer supported, use cfg.Admission.RequestLimitMiB instead.",
+          "type": "integer"
+        },
+        "memory_limit_mib": {
+          "description": "MemoryLimitMiB is the size of a shared memory region used by all Arrow streams, in MiB.  When too much load is passing through, they will see ResourceExhausted errors.",
+          "type": "integer"
+        },
+        "waiter_limit": {
+          "deprecated": true,
+          "description": "Deprecated: This field is no longer supported, use cfg.Admission.WaiterLimit instead.",
+          "type": "integer"
+        },
+        "zstd": {
+          "description": "Zstd settings apply to OTel-Arrow use of gRPC specifically.",
+          "properties": {
+            "concurrency": {
+              "description": "Concurrency is a Zstd-library parameter that configures the use of background goroutines to improve decompression speed. 0 means to let the library decide (it will use up to GOMAXPROCS), and 1 means to avoid background workers.  (default: 1) See `zstdlib.WithDecoderConcurrency()`.",
+              "type": "integer"
+            },
+            "max_window_size_mib": {
+              "description": "MaxWindowSizeMiB limits window sizes that can be configured in the corresponding encoder's `EncoderConfig.WindowSizeMiB` setting, as a way to control memory usage. See `zstdlib.WithDecoderMaxWindow()`.",
+              "type": "integer"
+            },
+            "memory_limit_mib": {
+              "description": "MemoryLimitMiB is a memory limit control for the decoder, as a way to limit overall memory use by Zstd. See `zstdlib.WithDecoderMaxMemory()`.",
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "grpc": {
+      "properties": {
+        "auth": {
+          "description": "Auth for this receiver",
+          "properties": {
+            "authenticator": {
+              "description": "AuthenticatorID specifies the name of the extension to use in order to authenticate the incoming data point.",
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "include_metadata": {
+          "description": "Include propagates the incoming connection's metadata to downstream consumers.",
+          "type": "boolean"
+        },
+        "keepalive": {
+          "description": "Keepalive anchor for all the settings related to keepalive.",
+          "properties": {
+            "enforcement_policy": {
+              "properties": {
+                "min_time": {
+                  "description": "Duration string (e.g., '1s', '5m', '1h')",
+                  "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+                  "type": "string"
+                },
+                "permit_without_stream": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "server_parameters": {
+              "properties": {
+                "max_connection_age": {
+                  "description": "Duration string (e.g., '1s', '5m', '1h')",
+                  "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+                  "type": "string"
+                },
+                "max_connection_age_grace": {
+                  "description": "Duration string (e.g., '1s', '5m', '1h')",
+                  "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+                  "type": "string"
+                },
+                "max_connection_idle": {
+                  "description": "Duration string (e.g., '1s', '5m', '1h')",
+                  "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+                  "type": "string"
+                },
+                "time": {
+                  "description": "Duration string (e.g., '1s', '5m', '1h')",
+                  "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+                  "type": "string"
+                },
+                "timeout": {
+                  "description": "Duration string (e.g., '1s', '5m', '1h')",
+                  "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "max_concurrent_streams": {
+          "description": "MaxConcurrentStreams sets the limit on the number of concurrent streams to each ServerTransport. It has effect only for streaming RPCs.",
+          "type": "integer"
+        },
+        "max_recv_msg_size_mib": {
+          "description": "MaxRecvMsgSizeMiB sets the maximum size (in MiB) of messages accepted by the server.",
+          "type": "integer"
+        },
+        "middlewares": {
+          "description": "Middlewares for the gRPC server.",
+          "items": {
+            "properties": {
+              "id": {
+                "description": "ID specifies the name of the extension to use.",
+                "type": "object"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "netaddr": {
+          "description": "Server net.Addr config. For transport only \"tcp\" and \"unix\" are valid options.",
+          "properties": {
+            "dialer": {
+              "description": "DialerConfig contains options for connecting to an address.",
+              "properties": {
+                "timeout": {
+                  "description": "Timeout is the maximum amount of time a dial will wait for a connect to complete. The default is no timeout.",
+                  "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "endpoint": {
+              "description": "Endpoint configures the address for this network connection. For TCP and UDP networks, the address has the form \"host:port\". The host must be a literal IP address, or a host name that can be resolved to IP addresses. The port must be a literal port number or a service name. If the host is a literal IPv6 address it must be enclosed in square brackets, as in \"[2001:db8::1]:80\" or \"[fe80::1%zone]:80\". The zone specifies the scope of the literal IPv6 address as defined in RFC 4007.",
+              "type": "string"
+            },
+            "transport": {
+              "description": "Transport to use. Allowed protocols are \"tcp\", \"tcp4\" (IPv4-only), \"tcp6\" (IPv6-only), \"udp\", \"udp4\" (IPv4-only), \"udp6\" (IPv6-only), \"ip\", \"ip4\" (IPv4-only), \"ip6\" (IPv6-only), \"unix\", \"unixgram\" and \"unixpacket\".",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "read_buffer_size": {
+          "description": "ReadBufferSize for gRPC server. See grpc.ReadBufferSize. (https://godoc.org/google.golang.org/grpc#ReadBufferSize).",
+          "type": "integer"
+        },
+        "tls": {
+          "description": "Configures the protocol to use TLS. The default value is nil, which will cause the protocol to not use TLS.",
+          "properties": {
+            "ca_file": {
+              "description": "Path to the CA cert. For a client this verifies the server certificate. For a server this verifies client certificates. If empty uses system root CA. (optional)",
+              "type": "string"
+            },
+            "ca_pem": {
+              "description": "In memory PEM encoded cert. (optional)",
+              "type": "string"
+            },
+            "cert_file": {
+              "description": "Path to the TLS cert to use for TLS required connections. (optional)",
+              "type": "string"
+            },
+            "cert_pem": {
+              "description": "In memory PEM encoded TLS cert to use for TLS required connections. (optional)",
+              "type": "string"
+            },
+            "cipher_suites": {
+              "description": "CipherSuites is a list of TLS cipher suites that the TLS transport can use. If left blank, a safe default list is used. See https://go.dev/src/crypto/tls/cipher_suites.go for a list of supported cipher suites.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "client_ca_file": {
+              "description": "Path to the TLS cert to use by the server to verify a client certificate. (optional) This sets the ClientCAs and ClientAuth to RequireAndVerifyClientCert in the TLSConfig. Please refer to https://godoc.org/crypto/tls#Config for more information. (optional)",
+              "type": "string"
+            },
+            "client_ca_file_reload": {
+              "description": "Reload the ClientCAs file when it is modified (optional, default false)",
+              "type": "boolean"
+            },
+            "curve_preferences": {
+              "description": "contains the elliptic curves that will be used in an ECDHE handshake, in preference order Defaults to empty list and \"crypto/tls\" defaults are used, internally.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "include_system_ca_certs_pool": {
+              "description": "If true, load system CA certificates pool in addition to the certificates configured in this struct.",
+              "type": "boolean"
+            },
+            "key_file": {
+              "description": "Path to the TLS key to use for TLS required connections. (optional)",
+              "type": "string"
+            },
+            "key_pem": {
+              "description": "In memory PEM encoded TLS key to use for TLS required connections. (optional)",
+              "type": "string"
+            },
+            "max_version": {
+              "description": "MaxVersion sets the maximum TLS version that is acceptable. If not set, refer to crypto/tls for defaults. (optional)",
+              "type": "string"
+            },
+            "min_version": {
+              "description": "MinVersion sets the minimum TLS version that is acceptable. If not set, TLS 1.2 will be used. (optional)",
+              "type": "string"
+            },
+            "reload_interval": {
+              "description": "ReloadInterval specifies the duration after which the certificate will be reloaded If not set, it will never be reloaded (optional)",
+              "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+              "type": "string"
+            },
+            "tpm": {
+              "description": "Trusted platform module configuration",
+              "properties": {
+                "auth": {
+                  "type": "string"
+                },
+                "enabled": {
+                  "type": "boolean"
+                },
+                "owner_auth": {
+                  "type": "string"
+                },
+                "path": {
+                  "description": "The path to the TPM device or Unix domain socket. For instance /dev/tpm0 or /dev/tpmrm0.",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "write_buffer_size": {
+          "description": "WriteBufferSize for gRPC server. See grpc.WriteBufferSize. (https://godoc.org/google.golang.org/grpc#WriteBufferSize).",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}

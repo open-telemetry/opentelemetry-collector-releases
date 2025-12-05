@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "gomaxprocs": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "gomemlimit": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "ratio": {
+          "type": "number"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}

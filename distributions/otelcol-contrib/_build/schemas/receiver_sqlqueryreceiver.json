@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "additional_params": {
+      "additionalProperties": {
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "collection_interval": {
+      "description": "CollectionInterval sets how frequently the scraper should be called and used as the context timeout to ensure that scrapers don't exceed the interval.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "database": {
+      "type": "string"
+    },
+    "datasource": {
+      "type": "string"
+    },
+    "driver": {
+      "type": "string"
+    },
+    "host": {
+      "type": "string"
+    },
+    "initial_delay": {
+      "description": "InitialDelay sets the initial start delay for the scraper, any non positive value is assumed to be immediately.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "max_open_conn": {
+      "description": "The maximumn number of open connections to the sql server. \u003c= 0 means unlimited",
+      "type": "integer"
+    },
+    "password": {
+      "type": "string"
+    },
+    "port": {
+      "type": "integer"
+    },
+    "queries": {
+      "items": {
+        "properties": {
+          "logs": {
+            "items": {
+              "properties": {
+                "attribute_columns": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "body_column": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "metrics": {
+            "items": {
+              "properties": {
+                "aggregation": {
+                  "type": "string"
+                },
+                "attribute_columns": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "data_type": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "metric_name": {
+                  "type": "string"
+                },
+                "monotonic": {
+                  "type": "boolean"
+                },
+                "start_ts_column": {
+                  "type": "string"
+                },
+                "static_attributes": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "ts_column": {
+                  "type": "string"
+                },
+                "unit": {
+                  "type": "string"
+                },
+                "value_column": {
+                  "type": "string"
+                },
+                "value_type": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "sql": {
+            "type": "string"
+          },
+          "tracking_column": {
+            "type": "string"
+          },
+          "tracking_start_value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "storage": {
+      "type": "object"
+    },
+    "telemetry": {
+      "properties": {
+        "logs": {
+          "properties": {
+            "query": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "timeout": {
+      "description": "Timeout is an optional value used to set scraper's context deadline.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "username": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

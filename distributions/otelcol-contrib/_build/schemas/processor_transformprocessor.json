@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "error_mode": {
+      "description": "ErrorMode determines how the processor reacts to errors that occur while processing a statement. Valid values are `ignore` and `propagate`. `ignore` means the processor ignores errors returned by statements and continues on to the next statement. This is the recommended mode. `propagate` means the processor returns the error up the pipeline.  This will result in the payload being dropped from the collector. The default value is `propagate`.",
+      "type": "string"
+    },
+    "flatten_data": {
+      "type": "boolean"
+    },
+    "log_statements": {
+      "items": {
+        "properties": {
+          "conditions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "context": {
+            "type": "string"
+          },
+          "error_mode": {
+            "description": "ErrorMode determines how the processor reacts to errors that occur while processing this group of statements. When provided, it overrides the default Config ErrorMode.",
+            "type": "string"
+          },
+          "statements": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "metric_statements": {
+      "items": {
+        "properties": {
+          "conditions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "context": {
+            "type": "string"
+          },
+          "error_mode": {
+            "description": "ErrorMode determines how the processor reacts to errors that occur while processing this group of statements. When provided, it overrides the default Config ErrorMode.",
+            "type": "string"
+          },
+          "statements": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "profile_statements": {
+      "items": {
+        "properties": {
+          "conditions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "context": {
+            "type": "string"
+          },
+          "error_mode": {
+            "description": "ErrorMode determines how the processor reacts to errors that occur while processing this group of statements. When provided, it overrides the default Config ErrorMode.",
+            "type": "string"
+          },
+          "statements": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "trace_statements": {
+      "items": {
+        "properties": {
+          "conditions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "context": {
+            "type": "string"
+          },
+          "error_mode": {
+            "description": "ErrorMode determines how the processor reacts to errors that occur while processing this group of statements. When provided, it overrides the default Config ErrorMode.",
+            "type": "string"
+          },
+          "statements": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "type": "object"
+}
