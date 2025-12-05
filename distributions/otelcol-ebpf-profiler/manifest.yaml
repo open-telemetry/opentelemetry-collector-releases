@@ -27,7 +27,7 @@ processors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.141.0
 
 receivers:
-  - gomod: go.opentelemetry.io/ebpf-profiler v0.0.202547
+  - gomod: go.opentelemetry.io/ebpf-profiler v0.0.202549
     import: go.opentelemetry.io/ebpf-profiler/collector
 
 providers:
