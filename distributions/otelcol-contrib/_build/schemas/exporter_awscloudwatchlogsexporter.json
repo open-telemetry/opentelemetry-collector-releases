@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "enabled": {
+      "description": "Enabled indicates whether to not retry sending batches in case of export failure.",
+      "type": "boolean"
+    },
+    "endpoint": {
+      "description": "X-Ray service endpoint to which the collector sends segment documents.",
+      "type": "string"
+    },
+    "external_id": {
+      "description": "External ID to verify third party role assumption",
+      "type": "string"
+    },
+    "initial_interval": {
+      "description": "InitialInterval the time to wait after the first failure before retrying.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "local_mode": {
+      "description": "Local mode to skip EC2 instance metadata check.",
+      "type": "boolean"
+    },
+    "log_group_name": {
+      "description": "LogGroupName is the name of CloudWatch log group which defines group of log streams that share the same retention, monitoring, and access control settings.",
+      "type": "string"
+    },
+    "log_retention": {
+      "description": "LogRetention is the option to set the log retention policy for the CloudWatch Log Group. Defaults to Never Expire if not specified or set to 0 Possible values are 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 2192, 2557, 2922, 3288, or 3653",
+      "type": "integer"
+    },
+    "log_stream_name": {
+      "description": "LogStreamName is the name of CloudWatch log stream which is a sequence of log events that share the same source.",
+      "type": "string"
+    },
+    "max_elapsed_time": {
+      "description": "MaxElapsedTime is the maximum amount of time (including retries) spent trying to send a request/batch. Once this value is reached, the data is discarded. If set to 0, the retries are never stopped.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "max_interval": {
+      "description": "MaxInterval is the upper bound on backoff interval. Once this value is reached the delay between consecutive retries will always be `MaxInterval`.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "max_retries": {
+      "description": "Maximum number of retries before abandoning an attempt to post data.",
+      "type": "integer"
+    },
+    "multiplier": {
+      "description": "Multiplier is the value multiplied by the backoff interval bounds",
+      "type": "number"
+    },
+    "no_verify_ssl": {
+      "description": "Enable or disable TLS certificate verification.",
+      "type": "boolean"
+    },
+    "num_workers": {
+      "description": "Maximum number of concurrent calls to AWS X-Ray to upload documents.",
+      "type": "integer"
+    },
+    "proxy_address": {
+      "description": "Upload segments to AWS X-Ray through a proxy.",
+      "type": "string"
+    },
+    "randomization_factor": {
+      "description": "RandomizationFactor is a random factor used to calculate next backoffs Randomized interval = RetryInterval * (1 ± RandomizationFactor)",
+      "type": "number"
+    },
+    "raw_log": {
+      "description": "Export raw log string instead of log wrapper Required for emf logs",
+      "type": "boolean"
+    },
+    "region": {
+      "description": "Send segments to AWS X-Ray service in a specific region.",
+      "type": "string"
+    },
+    "request_timeout_seconds": {
+      "description": "Number of seconds before timing out a request.",
+      "type": "integer"
+    },
+    "resource_arn": {
+      "description": "Amazon Resource Name (ARN) of the AWS resource running the collector.",
+      "type": "string"
+    },
+    "role_arn": {
+      "description": "IAM role to upload segments to a different account.",
+      "type": "string"
+    },
+    "sending_queue": {
+      "description": "Queue settings frm the exporterhelper",
+      "type": "object"
+    },
+    "tags": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Tags is the option to set tags for the CloudWatch Log Group.  If specified, please add at least 1 and at most 50 tags.  Input is a string to string map like so: { 'key': 'value' } Keys must be between 1-128 characters and follow the regex pattern: ^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]+)$ Values must be between 1-256 characters and follow the regex pattern: ^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
+      "type": "object"
+    }
+  },
+  "type": "object"
+}

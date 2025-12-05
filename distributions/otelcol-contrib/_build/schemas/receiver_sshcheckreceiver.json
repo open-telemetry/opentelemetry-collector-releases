@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "check_sftp": {
+      "type": "boolean"
+    },
+    "collection_interval": {
+      "description": "CollectionInterval sets how frequently the scraper should be called and used as the context timeout to ensure that scrapers don't exceed the interval.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "endpoint": {
+      "description": "Endpoint is always required",
+      "type": "string"
+    },
+    "ignore_host_key": {
+      "description": "IgnoreHostKey provides an insecure path to quickstarts and testing",
+      "type": "boolean"
+    },
+    "initial_delay": {
+      "description": "InitialDelay sets the initial start delay for the scraper, any non positive value is assumed to be immediately.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "key_file": {
+      "type": "string"
+    },
+    "known_hosts": {
+      "description": "file path to the known_hosts",
+      "type": "string"
+    },
+    "metricsbuilderconfig": {
+      "properties": {
+        "metrics": {
+          "properties": {
+            "sshcheck.duration": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "sshcheck.error": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "sshcheck.sftp_duration": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "sshcheck.sftp_error": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "sshcheck.sftp_status": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "sshcheck.status": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "resource_attributes": {
+          "properties": {
+            "ssh.endpoint": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "metrics_exclude": {
+                  "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "metrics_include": {
+                  "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "password": {
+      "type": "string"
+    },
+    "timeout": {
+      "description": "Duration string (e.g., '1s', '5m', '1h')",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "username": {
+      "description": "authentication requires a Username and either a Password or KeyFile",
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

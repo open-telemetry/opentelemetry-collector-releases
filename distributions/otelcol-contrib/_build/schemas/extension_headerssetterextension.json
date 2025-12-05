@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "additional_auth": {
+      "type": "object"
+    },
+    "headers": {
+      "items": {
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "default_value": {
+            "type": "string"
+          },
+          "from_attribute": {
+            "type": "string"
+          },
+          "from_context": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "type": "object"
+}

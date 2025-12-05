@@ -1,0 +1,303 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "auth": {
+      "description": "Auth configuration for outgoing HTTP calls.",
+      "properties": {
+        "authenticator": {
+          "description": "AuthenticatorID specifies the name of the extension to use in order to authenticate the incoming data point.",
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "bulk_action": {
+      "description": "BulkAction configures the action for ingesting data. Only `create` and `index` are allowed here. If not specified, the default value `create` will be used.",
+      "type": "string"
+    },
+    "compression": {
+      "description": "The compression key for supported compression types within collector.",
+      "type": "string"
+    },
+    "compression_params": {
+      "description": "Advanced configuration options for the Compression",
+      "properties": {
+        "level": {
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "cookies": {
+      "description": "Cookies configures the cookie management of the HTTP client.",
+      "type": "object"
+    },
+    "dataset": {
+      "description": "The Observability indices would follow the recommended for immutable data stream ingestion pattern using the data_stream concepts. See https://opensearch.org/docs/latest/dashboards/im-dashboards/datastream/ Index pattern will follow the next naming template ss4o_{type}-{dataset}-{namespace}",
+      "type": "string"
+    },
+    "dedot": {
+      "type": "boolean"
+    },
+    "dedup": {
+      "description": "Try to find and remove duplicate fields",
+      "type": "boolean"
+    },
+    "disable_keep_alives": {
+      "description": "DisableKeepAlives, if true, disables HTTP keep-alives and will only use the connection to the server for a single HTTP request. WARNING: enabling this option can result in significant overhead establishing a new HTTP(S) connection for every request. Before enabling this option please consider whether changes to idle connection settings can achieve your goal.",
+      "type": "boolean"
+    },
+    "enabled": {
+      "description": "Enabled indicates whether to not retry sending batches in case of export failure.",
+      "type": "boolean"
+    },
+    "endpoint": {
+      "description": "The target URL to send data to (e.g.: http://some.url:9411/v1/traces).",
+      "type": "string"
+    },
+    "fields": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Additional field mappings.",
+      "type": "object"
+    },
+    "file": {
+      "description": "File to read additional fields mappings from.",
+      "type": "string"
+    },
+    "force_attempt_http2": {
+      "description": "Enabling ForceAttemptHTTP2 forces the HTTP transport to use the HTTP/2 protocol. By default, this is set to true. NOTE: HTTP/2 does not support settings such as MaxConnsPerHost, MaxIdleConnsPerHost and MaxIdleConns.",
+      "type": "boolean"
+    },
+    "headers": {
+      "description": "Additional headers attached to each HTTP request sent by the client. Existing header values are overwritten if collision happens. Header values are opaque since they may be sensitive.",
+      "items": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "http2_ping_timeout": {
+      "description": "HTTP2PingTimeout if there's no response to the ping within the configured value, the connection will be closed. If not set or set to 0, it defaults to 15s.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "http2_read_idle_timeout": {
+      "description": "This is needed in case you run into https://github.com/golang/go/issues/59690 https://github.com/golang/go/issues/36026 HTTP2ReadIdleTimeout if the connection has been idle for the configured value send a ping frame for health check 0s means no health check will be performed.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "idle_conn_timeout": {
+      "description": "IdleConnTimeout is the maximum amount of time a connection will remain open before closing itself. By default, it is set to 90 seconds.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "initial_interval": {
+      "description": "InitialInterval the time to wait after the first failure before retrying.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "logs_index": {
+      "description": "LogsIndex configures the index, index alias, or data stream name logs should be indexed in. https://opensearch.org/docs/latest/im-plugin/index/ https://opensearch.org/docs/latest/dashboards/im-dashboards/datastream/",
+      "type": "string"
+    },
+    "logs_index_fallback": {
+      "type": "string"
+    },
+    "logs_index_time_format": {
+      "type": "string"
+    },
+    "max_conns_per_host": {
+      "description": "MaxConnsPerHost limits the total number of connections per host, including connections in the dialing, active, and idle states. Default is 0 (unlimited).",
+      "type": "integer"
+    },
+    "max_elapsed_time": {
+      "description": "MaxElapsedTime is the maximum amount of time (including retries) spent trying to send a request/batch. Once this value is reached, the data is discarded. If set to 0, the retries are never stopped.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "max_idle_conns": {
+      "description": "MaxIdleConns is used to set a limit to the maximum idle HTTP connections the client can keep open. By default, it is set to 100. Zero means no limit.",
+      "type": "integer"
+    },
+    "max_idle_conns_per_host": {
+      "description": "MaxIdleConnsPerHost is used to set a limit to the maximum idle HTTP connections the host can keep open. If zero, [net/http.DefaultMaxIdleConnsPerHost] is used.",
+      "type": "integer"
+    },
+    "max_interval": {
+      "description": "MaxInterval is the upper bound on backoff interval. Once this value is reached the delay between consecutive retries will always be `MaxInterval`.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "middlewares": {
+      "description": "Middlewares are used to add custom functionality to the HTTP client. Middleware handlers are called in the order they appear in this list, with the first middleware becoming the outermost handler.",
+      "items": {
+        "properties": {
+          "id": {
+            "description": "ID specifies the name of the extension to use.",
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "mode": {
+      "description": "Mode configures the field mappings. Supported modes are the following: ss4o: exports logs in the Simple Schema for Observability standard. This mode is enabled by default. See: https://opensearch.org/docs/latest/observing-your-data/ss4o/ ecs: maps fields defined in the OpenTelemetry Semantic Conventions to the Elastic Common Schema. See: https://www.elastic.co/guide/en/ecs/current/index.html flatten_attributes: uses the ECS mapping but flattens all resource and log attributes in the record to the top-level. bodymap: supports only logs and uses the \"body\" of a log record as the exact content of the OpenSearch document, without any transformation. This mapping mode is intended for use cases where the client wishes to have complete control over the OpenSearch document structure.",
+      "type": "string"
+    },
+    "multiplier": {
+      "description": "Multiplier is the value multiplied by the backoff interval bounds",
+      "type": "number"
+    },
+    "namespace": {
+      "type": "string"
+    },
+    "proxy_url": {
+      "description": "ProxyURL setting for the collector",
+      "type": "string"
+    },
+    "randomization_factor": {
+      "description": "RandomizationFactor is a random factor used to calculate next backoffs Randomized interval = RetryInterval * (1 ± RandomizationFactor)",
+      "type": "number"
+    },
+    "read_buffer_size": {
+      "description": "ReadBufferSize for HTTP client. See http.Transport.ReadBufferSize. Default is 0.",
+      "type": "integer"
+    },
+    "sending_queue": {
+      "type": "object"
+    },
+    "timeout": {
+      "description": "Timeout parameter configures `http.Client.Timeout`. Default is 0 (unlimited).",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "timeoutsettings": {
+      "type": "object"
+    },
+    "timestamp_field": {
+      "description": "Field to store timestamp in.  If not set uses the default @timestamp",
+      "type": "string"
+    },
+    "tls": {
+      "description": "TLS struct exposes TLS client configuration.",
+      "properties": {
+        "ca_file": {
+          "description": "Path to the CA cert. For a client this verifies the server certificate. For a server this verifies client certificates. If empty uses system root CA. (optional)",
+          "type": "string"
+        },
+        "ca_pem": {
+          "description": "In memory PEM encoded cert. (optional)",
+          "type": "string"
+        },
+        "cert_file": {
+          "description": "Path to the TLS cert to use for TLS required connections. (optional)",
+          "type": "string"
+        },
+        "cert_pem": {
+          "description": "In memory PEM encoded TLS cert to use for TLS required connections. (optional)",
+          "type": "string"
+        },
+        "cipher_suites": {
+          "description": "CipherSuites is a list of TLS cipher suites that the TLS transport can use. If left blank, a safe default list is used. See https://go.dev/src/crypto/tls/cipher_suites.go for a list of supported cipher suites.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "curve_preferences": {
+          "description": "contains the elliptic curves that will be used in an ECDHE handshake, in preference order Defaults to empty list and \"crypto/tls\" defaults are used, internally.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "include_system_ca_certs_pool": {
+          "description": "If true, load system CA certificates pool in addition to the certificates configured in this struct.",
+          "type": "boolean"
+        },
+        "insecure": {
+          "description": "In gRPC and HTTP when set to true, this is used to disable the client transport security. See https://godoc.org/google.golang.org/grpc#WithInsecure for gRPC. Please refer to https://godoc.org/crypto/tls#Config for more information. (optional, default false)",
+          "type": "boolean"
+        },
+        "insecure_skip_verify": {
+          "description": "InsecureSkipVerify will enable TLS but not verify the certificate.",
+          "type": "boolean"
+        },
+        "key_file": {
+          "description": "Path to the TLS key to use for TLS required connections. (optional)",
+          "type": "string"
+        },
+        "key_pem": {
+          "description": "In memory PEM encoded TLS key to use for TLS required connections. (optional)",
+          "type": "string"
+        },
+        "max_version": {
+          "description": "MaxVersion sets the maximum TLS version that is acceptable. If not set, refer to crypto/tls for defaults. (optional)",
+          "type": "string"
+        },
+        "min_version": {
+          "description": "MinVersion sets the minimum TLS version that is acceptable. If not set, TLS 1.2 will be used. (optional)",
+          "type": "string"
+        },
+        "reload_interval": {
+          "description": "ReloadInterval specifies the duration after which the certificate will be reloaded If not set, it will never be reloaded (optional)",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        },
+        "server_name_override": {
+          "description": "ServerName requested by client for virtual hosting. This sets the ServerName in the TLSConfig. Please refer to https://godoc.org/crypto/tls#Config for more information. (optional)",
+          "type": "string"
+        },
+        "tpm": {
+          "description": "Trusted platform module configuration",
+          "properties": {
+            "auth": {
+              "type": "string"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "owner_auth": {
+              "type": "string"
+            },
+            "path": {
+              "description": "The path to the TPM device or Unix domain socket. For instance /dev/tpm0 or /dev/tpmrm0.",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "traces_index": {
+      "description": "TracesIndex configures the index, index alias, or data stream name traces should be indexed in. https://opensearch.org/docs/latest/im-plugin/index/ https://opensearch.org/docs/latest/dashboards/im-dashboards/datastream/",
+      "type": "string"
+    },
+    "traces_index_fallback": {
+      "type": "string"
+    },
+    "traces_index_time_format": {
+      "type": "string"
+    },
+    "unix_timestamp": {
+      "description": "Whether to store timestamp in Epoch milliseconds",
+      "type": "boolean"
+    },
+    "write_buffer_size": {
+      "description": "WriteBufferSize for HTTP client. See http.Transport.WriteBufferSize. Default is 0.",
+      "type": "integer"
+    }
+  },
+  "type": "object"
+}

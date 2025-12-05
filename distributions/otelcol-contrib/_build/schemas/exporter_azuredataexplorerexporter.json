@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "application_id": {
+      "type": "string"
+    },
+    "application_key": {
+      "type": "string"
+    },
+    "cluster_uri": {
+      "type": "string"
+    },
+    "db_name": {
+      "type": "string"
+    },
+    "enabled": {
+      "description": "Enabled indicates whether to not retry sending batches in case of export failure.",
+      "type": "boolean"
+    },
+    "ingestion_type": {
+      "type": "string"
+    },
+    "initial_interval": {
+      "description": "InitialInterval the time to wait after the first failure before retrying.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "logs_table_json_mapping": {
+      "type": "string"
+    },
+    "logs_table_name": {
+      "type": "string"
+    },
+    "managed_identity_id": {
+      "type": "string"
+    },
+    "max_elapsed_time": {
+      "description": "MaxElapsedTime is the maximum amount of time (including retries) spent trying to send a request/batch. Once this value is reached, the data is discarded. If set to 0, the retries are never stopped.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "max_interval": {
+      "description": "MaxInterval is the upper bound on backoff interval. Once this value is reached the delay between consecutive retries will always be `MaxInterval`.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "metrics_table_json_mapping": {
+      "type": "string"
+    },
+    "metrics_table_name": {
+      "type": "string"
+    },
+    "multiplier": {
+      "description": "Multiplier is the value multiplied by the backoff interval bounds",
+      "type": "number"
+    },
+    "randomization_factor": {
+      "description": "RandomizationFactor is a random factor used to calculate next backoffs Randomized interval = RetryInterval * (1 ± RandomizationFactor)",
+      "type": "number"
+    },
+    "sending_queue": {
+      "type": "object"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "timeoutsettings": {
+      "description": "squash ensures fields are correctly decoded in embedded struct.",
+      "type": "object"
+    },
+    "traces_table_json_mapping": {
+      "type": "string"
+    },
+    "traces_table_name": {
+      "type": "string"
+    },
+    "use_azure_auth": {
+      "type": "boolean"
+    }
+  },
+  "type": "object"
+}

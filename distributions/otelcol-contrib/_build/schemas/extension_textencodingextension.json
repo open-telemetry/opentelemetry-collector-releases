@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "encoding": {
+      "type": "string"
+    },
+    "marshaling_separator": {
+      "type": "string"
+    },
+    "unmarshaling_separator": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

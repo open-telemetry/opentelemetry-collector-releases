@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "cache_loop": {
+      "description": "CacheLoop is the time to cleans the cache periodically.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "database_name_attributes": {
+      "description": "DatabaseNameAttributes is the attribute name list of attributes need to match used to identify the database name from span attributes, the higher the front, the higher the priority. The default value is {\"db.name\"}.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "dimensions": {
+      "description": "Dimensions defines the list of additional dimensions on top of the provided: - client - server - failed - connection_type The dimensions will be fetched from the span's attributes. Examples of some conventionally used attributes: https://github.com/open-telemetry/opentelemetry-collector/blob/main/model/semconv/opentelemetry.go.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "exponential_histogram_max_size": {
+      "description": "ExponentialHistogramMaxSize is the setting of exponential histogram",
+      "type": "integer"
+    },
+    "latency_histogram_buckets": {
+      "description": "LatencyHistogramBuckets is the list of durations representing latency histogram buckets. See defaultLatencyHistogramBucketsMs in processor.go for the default value. make sure use either `LatencyHistogramBuckets` or `ExponentialHistogramMaxSize`",
+      "items": {
+        "description": "Duration string (e.g., '1s', '5m', '1h')",
+        "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "metrics_exporter": {
+      "deprecated": true,
+      "description": "MetricsExporter is the name of the metrics exporter to use to ship metrics. Deprecated: The exporter is defined as part of the pipeline and this option is currently noop.",
+      "type": "string"
+    },
+    "metrics_flush_interval": {
+      "description": "MetricsFlushInterval is the interval at which metrics are flushed to the exporter. If set to 0, metrics are flushed on every received batch of traces. Default is 60s if unset.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "metrics_timestamp_offset": {
+      "description": "MetricsTimestampOffset is the offset to subtract from metric timestamps. If set to a positive duration, metric timestamps will be set to (current time - offset), effectively shifting metrics to appear as if they were generated in the past. Default is 0, which means no offset is applied.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "store": {
+      "description": "Store contains the config for the in-memory store used to find requests between services by pairing spans.",
+      "properties": {
+        "max_items": {
+          "description": "MaxItems is the maximum number of items to keep in the store.",
+          "type": "integer"
+        },
+        "ttl": {
+          "description": "TTL is the time to live for items in the store.",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "store_expiration_loop": {
+      "description": "CacheLoop is the time to expire old entries from the store periodically.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "virtual_node_extra_label": {
+      "description": "VirtualNodeExtraLabel enables the `virtual_node` label to be added to the spans.",
+      "type": "boolean"
+    },
+    "virtual_node_peer_attributes": {
+      "description": "VirtualNodePeerAttributes the list of attributes need to match, the higher the front, the higher the priority.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    }
+  },
+  "type": "object"
+}
