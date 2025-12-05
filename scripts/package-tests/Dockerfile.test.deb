@@ -2,8 +2,8 @@
 # `-d --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro` flags
 FROM debian:13@sha256:8f6a88feef3ed01a300dafb87f208977f39dccda1fd120e878129463f7fa3b8f
 
-ENV container docker
-ENV DEBIAN_FRONTEND noninteractive
+ENV container=docker \
+    DEBIAN_FRONTEND=noninteractive
 
 # Enable systemd.
 RUN apt-get update ; \

@@ -2,7 +2,7 @@
 # `-d --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro` flags
 FROM rockylinux/rockylinux:10.1@sha256:f4da504c18e7aced902f4f728cde787cd9d9b817bc639fe171026d18364dca6c
 
-ENV container docker
+ENV container=docker
 
 RUN dnf install -y initscripts
 
