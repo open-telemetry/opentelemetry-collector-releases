@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "audience": {
+      "description": "Audience specifies the audience claim used for generating ID token.",
+      "type": "string"
+    },
+    "project": {
+      "description": "Project is the project telemetry is sent to if the gcp.project.id resource attribute is not set. If unspecified, this is determined using application default credentials.",
+      "type": "string"
+    },
+    "quota_project": {
+      "description": "QuotaProject specifies a project for quota and billing purposes. The caller must have serviceusage.services.use permission on the project. For more information please read: https://cloud.google.com/apis/docs/system-parameters",
+      "type": "string"
+    },
+    "scopes": {
+      "description": "Scope specifies optional requested permissions. See https://datatracker.ietf.org/doc/html/rfc6749#section-3.3",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "token_type": {
+      "description": "TokenType specifies which type of token will be generated. default: access_token",
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

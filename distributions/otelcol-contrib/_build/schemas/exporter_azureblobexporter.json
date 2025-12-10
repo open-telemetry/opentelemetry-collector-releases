@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "append_blob": {
+      "description": "AppendBlob configures append blob behavior",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "separator": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "auth": {
+      "properties": {
+        "client_id": {
+          "description": "ClientID is the AAD Application client id. It's needed when type is service principal or user managed identity",
+          "type": "string"
+        },
+        "client_secret": {
+          "type": "string"
+        },
+        "connection_string": {
+          "description": "ConnectionString to the endpoint.",
+          "type": "string"
+        },
+        "federated_token_file": {
+          "description": "FederatedTokenFile is the path to the file containing the federated token. It's needed when type is workload_identity.",
+          "type": "string"
+        },
+        "tenant_id": {
+          "description": "TenantID is the tenand id for the AAD App. It's only needed when type is service principal.",
+          "type": "string"
+        },
+        "type": {
+          "description": "Type is the authentication type. supported values are connection_string, service_principal, system_managed_identity and user_managed_identity",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "blob_name_format": {
+      "description": "BlobNameFormat is the format of the blob name. It controls the uploaded blob name, e.g. \"2006/01/02/metrics_15_04_05.json\"",
+      "properties": {
+        "logs_format": {
+          "type": "string"
+        },
+        "metrics_format": {
+          "type": "string"
+        },
+        "params": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "serial_num_before_extension": {
+          "type": "boolean"
+        },
+        "serial_num_enabled": {
+          "type": "boolean"
+        },
+        "serial_num_range": {
+          "type": "integer"
+        },
+        "template_enabled": {
+          "type": "boolean"
+        },
+        "time_parser_enabled": {
+          "type": "boolean"
+        },
+        "traces_format": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "container": {
+      "description": "A container organizes a set of blobs, similar to a directory in a file system.",
+      "properties": {
+        "logs": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "string"
+        },
+        "traces": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "enabled": {
+      "description": "Enabled indicates whether to not retry sending batches in case of export failure.",
+      "type": "boolean"
+    },
+    "encodings": {
+      "description": "Encoding extension to apply for logs/metrics/traces. If present, overrides the marshaler configuration option and format.",
+      "properties": {
+        "logs": {
+          "type": "object"
+        },
+        "metrics": {
+          "type": "object"
+        },
+        "traces": {
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "format": {
+      "description": "FormatType is the format of encoded telemetry data. Supported values are json and proto.",
+      "type": "string"
+    },
+    "initial_interval": {
+      "description": "InitialInterval the time to wait after the first failure before retrying.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "max_elapsed_time": {
+      "description": "MaxElapsedTime is the maximum amount of time (including retries) spent trying to send a request/batch. Once this value is reached, the data is discarded. If set to 0, the retries are never stopped.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "max_interval": {
+      "description": "MaxInterval is the upper bound on backoff interval. Once this value is reached the delay between consecutive retries will always be `MaxInterval`.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "multiplier": {
+      "description": "Multiplier is the value multiplied by the backoff interval bounds",
+      "type": "number"
+    },
+    "randomization_factor": {
+      "description": "RandomizationFactor is a random factor used to calculate next backoffs Randomized interval = RetryInterval * (1 ± RandomizationFactor)",
+      "type": "number"
+    },
+    "url": {
+      "description": "URL is the endpoint to the azure storage account. This is only required until there is an azure auth extension in the future.",
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

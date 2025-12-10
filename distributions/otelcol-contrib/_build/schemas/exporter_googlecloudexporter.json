@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "destination_project_quota": {
+      "type": "boolean"
+    },
+    "impersonate": {
+      "properties": {
+        "delegates": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "subject": {
+          "type": "string"
+        },
+        "target_principal": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "log": {
+      "properties": {
+        "clientconfig": {
+          "properties": {
+            "compression": {
+              "description": "Compression specifies the compression format for Metrics and Logging gRPC requests. Supported values: gzip.",
+              "type": "string"
+            },
+            "endpoint": {
+              "type": "string"
+            },
+            "grpc_pool_size": {
+              "description": "GRPCPoolSize sets the size of the connection pool in the GCP client",
+              "type": "integer"
+            },
+            "use_insecure": {
+              "description": "Only has effect if Endpoint is not \"\"",
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "default_log_name": {
+          "description": "DefaultLogName sets the fallback log name to use when one isn't explicitly set for a log entry. If unset, logs without a log name will raise an error.",
+          "type": "string"
+        },
+        "error_reporting_type": {
+          "description": "ErrorReportingType enables automatically parsing error logs to a json payload containing the type value for GCP Error Reporting. See https://cloud.google.com/error-reporting/docs/formatting-error-messages#log-text.",
+          "type": "boolean"
+        },
+        "resource_filters": {
+          "description": "ResourceFilters, if provided, provides a list of resource filters. Resource attributes matching any filter will be included in LogEntry labels. Defaults to empty, which won't include any additional resource labels.",
+          "items": {
+            "properties": {
+              "prefix": {
+                "description": "Match resource keys by prefix",
+                "type": "string"
+              },
+              "regex": {
+                "description": "Match resource keys by regex",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "service_resource_labels": {
+          "description": "ServiceResourceLabels, if true, causes the exporter to copy OTel's service.name, service.namespace, and service.instance.id resource attributes into the Cloud Logging LogEntry labels. Disabling this option does not prevent resource_filters from adding those labels. Default is true.",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "metric": {
+      "properties": {
+        "clientconfig": {
+          "properties": {
+            "compression": {
+              "description": "Compression specifies the compression format for Metrics and Logging gRPC requests. Supported values: gzip.",
+              "type": "string"
+            },
+            "endpoint": {
+              "type": "string"
+            },
+            "grpc_pool_size": {
+              "description": "GRPCPoolSize sets the size of the connection pool in the GCP client",
+              "type": "integer"
+            },
+            "use_insecure": {
+              "description": "Only has effect if Endpoint is not \"\"",
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "create_metric_descriptor_buffer_size": {
+          "description": "CreateMetricDescriptorBufferSize is the buffer size for the channel which asynchronously calls CreateMetricDescriptor. Default is 10.",
+          "type": "integer"
+        },
+        "create_service_timeseries": {
+          "description": "CreateServiceTimeSeries, if true, this will send all timeseries using `CreateServiceTimeSeries`. Implicitly, this sets `SkipMetricDescriptor` to true.",
+          "type": "boolean"
+        },
+        "cumulative_normalization": {
+          "description": "CumulativeNormalization normalizes cumulative metrics without start times or with explicit reset points by subtracting subsequent points from the initial point. It is enabled by default. Since it caches starting points, it may result in increased memory usage.",
+          "type": "boolean"
+        },
+        "experimental_wal_config": {
+          "description": "WALConfig holds configuration settings for the write ahead log.",
+          "properties": {
+            "directory": {
+              "description": "Directory is the location to store WAL files.",
+              "type": "string"
+            },
+            "max_backoff": {
+              "description": "MaxBackoff sets the length of time to exponentially re-try failed exports.",
+              "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "instrumentation_library_labels": {
+          "description": "InstrumentationLibraryLabels, if true, set the instrumentation_source and instrumentation_version labels. Defaults to true.",
+          "type": "boolean"
+        },
+        "known_domains": {
+          "description": "KnownDomains contains a list of prefixes. If a metric already has one of these prefixes, the prefix is not added.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "prefix": {
+          "type": "string"
+        },
+        "resource_filters": {
+          "description": "ResourceFilters, if provided, provides a list of resource filters. Resource attributes matching any filter will be included in metric labels. Defaults to empty, which won't include any additional resource labels. Note that the service_resource_labels option operates independently from resource_filters.",
+          "items": {
+            "properties": {
+              "prefix": {
+                "description": "Match resource keys by prefix",
+                "type": "string"
+              },
+              "regex": {
+                "description": "Match resource keys by regex",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "service_resource_labels": {
+          "description": "ServiceResourceLabels, if true, causes the exporter to copy OTel's service.name, service.namespace, and service.instance.id resource attributes into the GCM timeseries metric labels. This option is recommended to avoid writing duplicate timeseries against the same monitored resource. Disabling this option does not prevent resource_filters from adding those labels. Default is true.",
+          "type": "boolean"
+        },
+        "skip_create_descriptor": {
+          "type": "boolean"
+        },
+        "sum_of_squared_deviation": {
+          "description": "EnableSumOfSquaredDeviation enables calculation of an estimated sum of squared deviation.  It isn't correct, so we don't send it by default, and don't expose it to users. For some uses, it is expected, however.",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "project": {
+      "description": "ProjectID is the project telemetry is sent to if the gcp.project.id resource attribute is not set. If unspecified, this is determined using application default credentials.",
+      "type": "string"
+    },
+    "sending_queue": {
+      "type": "object"
+    },
+    "timeoutsettings": {
+      "description": "Timeout for all API calls. If not set, defaults to 12 seconds.",
+      "type": "object"
+    },
+    "trace": {
+      "properties": {
+        "attribute_mappings": {
+          "description": "AttributeMappings determines how to map from OpenTelemetry attribute keys to Google Cloud Trace keys.  By default, it changes http and service keys so that they appear more prominently in the UI.",
+          "items": {
+            "properties": {
+              "key": {
+                "description": "Key is the OpenTelemetry attribute key",
+                "type": "string"
+              },
+              "replacement": {
+                "description": "Replacement is the attribute sent to Google Cloud Trace",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "clientconfig": {
+          "properties": {
+            "compression": {
+              "description": "Compression specifies the compression format for Metrics and Logging gRPC requests. Supported values: gzip.",
+              "type": "string"
+            },
+            "endpoint": {
+              "type": "string"
+            },
+            "grpc_pool_size": {
+              "description": "GRPCPoolSize sets the size of the connection pool in the GCP client",
+              "type": "integer"
+            },
+            "use_insecure": {
+              "description": "Only has effect if Endpoint is not \"\"",
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "user_agent": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

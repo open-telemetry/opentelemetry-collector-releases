@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "array_mode": {
+      "type": "boolean"
+    },
+    "mode": {
+      "description": "Export raw log string instead of log wrapper",
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

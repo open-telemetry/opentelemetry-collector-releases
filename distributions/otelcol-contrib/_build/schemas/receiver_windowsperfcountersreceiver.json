@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "collection_interval": {
+      "description": "CollectionInterval sets how frequently the scraper should be called and used as the context timeout to ensure that scrapers don't exceed the interval.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "initial_delay": {
+      "description": "InitialDelay sets the initial start delay for the scraper, any non positive value is assumed to be immediately.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "metrics": {
+      "additionalProperties": {
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "gauge": {
+            "type": "object"
+          },
+          "sum": {
+            "properties": {
+              "aggregation": {
+                "type": "string"
+              },
+              "monotonic": {
+                "type": "boolean"
+              }
+            },
+            "type": "object"
+          },
+          "unit": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "perfcounters": {
+      "items": {
+        "properties": {
+          "counters": {
+            "items": {
+              "properties": {
+                "attributes": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "metric": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "recreate_query": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "instances": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "object": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "timeout": {
+      "description": "Timeout is an optional value used to set scraper's context deadline.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

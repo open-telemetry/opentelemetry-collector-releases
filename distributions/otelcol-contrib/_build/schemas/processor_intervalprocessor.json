@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "interval": {
+      "description": "Interval is the time interval at which the processor will aggregate metrics.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "pass_through": {
+      "description": "PassThrough is a configuration that determines whether gauge and summary metrics should be passed through as they are or aggregated.",
+      "properties": {
+        "gauge": {
+          "description": "Gauge is a flag that determines whether gauge metrics should be passed through as they are or aggregated.",
+          "type": "boolean"
+        },
+        "summary": {
+          "description": "Summary is a flag that determines whether summary metrics should be passed through as they are or aggregated.",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}

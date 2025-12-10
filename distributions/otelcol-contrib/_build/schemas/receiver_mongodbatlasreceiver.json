@@ -1,0 +1,1374 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "alerts": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "max_pages": {
+          "type": "integer"
+        },
+        "mode": {
+          "type": "string"
+        },
+        "page_size": {
+          "type": "integer"
+        },
+        "poll_interval": {
+          "description": "Duration string (e.g., '1s', '5m', '1h')",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        },
+        "projects": {
+          "description": "these parameters are only relevant in retrieval mode",
+          "items": {
+            "properties": {
+              "exclude_clusters": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "include_clusters": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "secret": {
+          "type": "string"
+        },
+        "tls": {
+          "properties": {
+            "ca_file": {
+              "description": "Path to the CA cert. For a client this verifies the server certificate. For a server this verifies client certificates. If empty uses system root CA. (optional)",
+              "type": "string"
+            },
+            "ca_pem": {
+              "description": "In memory PEM encoded cert. (optional)",
+              "type": "string"
+            },
+            "cert_file": {
+              "description": "Path to the TLS cert to use for TLS required connections. (optional)",
+              "type": "string"
+            },
+            "cert_pem": {
+              "description": "In memory PEM encoded TLS cert to use for TLS required connections. (optional)",
+              "type": "string"
+            },
+            "cipher_suites": {
+              "description": "CipherSuites is a list of TLS cipher suites that the TLS transport can use. If left blank, a safe default list is used. See https://go.dev/src/crypto/tls/cipher_suites.go for a list of supported cipher suites.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "client_ca_file": {
+              "description": "Path to the TLS cert to use by the server to verify a client certificate. (optional) This sets the ClientCAs and ClientAuth to RequireAndVerifyClientCert in the TLSConfig. Please refer to https://godoc.org/crypto/tls#Config for more information. (optional)",
+              "type": "string"
+            },
+            "client_ca_file_reload": {
+              "description": "Reload the ClientCAs file when it is modified (optional, default false)",
+              "type": "boolean"
+            },
+            "curve_preferences": {
+              "description": "contains the elliptic curves that will be used in an ECDHE handshake, in preference order Defaults to empty list and \"crypto/tls\" defaults are used, internally.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "include_system_ca_certs_pool": {
+              "description": "If true, load system CA certificates pool in addition to the certificates configured in this struct.",
+              "type": "boolean"
+            },
+            "key_file": {
+              "description": "Path to the TLS key to use for TLS required connections. (optional)",
+              "type": "string"
+            },
+            "key_pem": {
+              "description": "In memory PEM encoded TLS key to use for TLS required connections. (optional)",
+              "type": "string"
+            },
+            "max_version": {
+              "description": "MaxVersion sets the maximum TLS version that is acceptable. If not set, refer to crypto/tls for defaults. (optional)",
+              "type": "string"
+            },
+            "min_version": {
+              "description": "MinVersion sets the minimum TLS version that is acceptable. If not set, TLS 1.2 will be used. (optional)",
+              "type": "string"
+            },
+            "reload_interval": {
+              "description": "ReloadInterval specifies the duration after which the certificate will be reloaded If not set, it will never be reloaded (optional)",
+              "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+              "type": "string"
+            },
+            "tpm": {
+              "description": "Trusted platform module configuration",
+              "properties": {
+                "auth": {
+                  "type": "string"
+                },
+                "enabled": {
+                  "type": "boolean"
+                },
+                "owner_auth": {
+                  "type": "string"
+                },
+                "path": {
+                  "description": "The path to the TPM device or Unix domain socket. For instance /dev/tpm0 or /dev/tpmrm0.",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "base_url": {
+      "type": "string"
+    },
+    "collection_interval": {
+      "description": "CollectionInterval sets how frequently the scraper should be called and used as the context timeout to ensure that scrapers don't exceed the interval.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "events": {
+      "properties": {
+        "max_pages": {
+          "type": "integer"
+        },
+        "organizations": {
+          "items": {
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "page_size": {
+          "type": "integer"
+        },
+        "poll_interval": {
+          "description": "Duration string (e.g., '1s', '5m', '1h')",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        },
+        "projects": {
+          "items": {
+            "properties": {
+              "exclude_clusters": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "include_clusters": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "types": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "granularity": {
+      "type": "string"
+    },
+    "initial_delay": {
+      "description": "InitialDelay sets the initial start delay for the scraper, any non positive value is assumed to be immediately.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "logs": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "projects": {
+          "items": {
+            "properties": {
+              "access_logs": {
+                "properties": {
+                  "auth_result": {
+                    "type": "boolean"
+                  },
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "max_pages": {
+                    "type": "integer"
+                  },
+                  "page_size": {
+                    "type": "integer"
+                  },
+                  "poll_interval": {
+                    "description": "Duration string (e.g., '1s', '5m', '1h')",
+                    "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "collect_audit_logs": {
+                "type": "boolean"
+              },
+              "collect_host_logs": {
+                "type": "boolean"
+              },
+              "exclude_clusters": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "include_clusters": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "metricsbuilderconfig": {
+      "properties": {
+        "metrics": {
+          "properties": {
+            "mongodbatlas.db.counts": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.db.size": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.disk.partition.iops.average": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.disk.partition.iops.max": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.disk.partition.latency.average": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.disk.partition.latency.max": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.disk.partition.queue.depth": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.disk.partition.space.average": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.disk.partition.space.max": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.disk.partition.throughput": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.disk.partition.usage.average": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.disk.partition.usage.max": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.disk.partition.utilization.average": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.disk.partition.utilization.max": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.asserts": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.background_flush": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.cache.io": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.cache.ratio": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.cache.size": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.connections": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.cpu.children.normalized.usage.average": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.cpu.children.normalized.usage.max": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.cpu.children.usage.average": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.cpu.children.usage.max": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.cpu.normalized.usage.average": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.cpu.normalized.usage.max": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.cpu.usage.average": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.cpu.usage.max": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.cursors": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.db.document.rate": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.db.operations.rate": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.db.operations.time": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.db.query_executor.scanned": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.db.query_targeting.scanned_per_returned": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.db.storage": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.global_lock": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.index.btree_miss_ratio": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.index.counters": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.journaling.commits": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.journaling.data_files": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.journaling.written": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.memory.usage": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.network.io": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.network.requests": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.oplog.rate": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.oplog.time": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.page_faults": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.restarts": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.process.tickets": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.system.cpu.normalized.usage.average": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.system.cpu.normalized.usage.max": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.system.cpu.usage.average": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.system.cpu.usage.max": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.system.fts.cpu.normalized.usage": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.system.fts.cpu.usage": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.system.fts.disk.used": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.system.fts.memory.usage": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.system.memory.usage.average": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.system.memory.usage.max": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.system.network.io.average": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.system.network.io.max": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.system.paging.io.average": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.system.paging.io.max": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.system.paging.usage.average": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "mongodbatlas.system.paging.usage.max": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "resource_attributes": {
+          "properties": {
+            "mongodb_atlas.cluster.name": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "metrics_exclude": {
+                  "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "metrics_include": {
+                  "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            },
+            "mongodb_atlas.db.name": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "metrics_exclude": {
+                  "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "metrics_include": {
+                  "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            },
+            "mongodb_atlas.disk.partition": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "metrics_exclude": {
+                  "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "metrics_include": {
+                  "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            },
+            "mongodb_atlas.host.name": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "metrics_exclude": {
+                  "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "metrics_include": {
+                  "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            },
+            "mongodb_atlas.org_name": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "metrics_exclude": {
+                  "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "metrics_include": {
+                  "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            },
+            "mongodb_atlas.process.id": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "metrics_exclude": {
+                  "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "metrics_include": {
+                  "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            },
+            "mongodb_atlas.process.port": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "metrics_exclude": {
+                  "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "metrics_include": {
+                  "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            },
+            "mongodb_atlas.process.type_name": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "metrics_exclude": {
+                  "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "metrics_include": {
+                  "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            },
+            "mongodb_atlas.project.id": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "metrics_exclude": {
+                  "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "metrics_include": {
+                  "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            },
+            "mongodb_atlas.project.name": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "metrics_exclude": {
+                  "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "metrics_include": {
+                  "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            },
+            "mongodb_atlas.provider.name": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "metrics_exclude": {
+                  "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "metrics_include": {
+                  "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            },
+            "mongodb_atlas.region.name": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "metrics_exclude": {
+                  "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "metrics_include": {
+                  "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            },
+            "mongodb_atlas.user.alias": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "metrics_exclude": {
+                  "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "metrics_include": {
+                  "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+                  "items": {
+                    "properties": {
+                      "regexp": {
+                        "type": "string"
+                      },
+                      "strict": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "private_key": {
+      "type": "string"
+    },
+    "projects": {
+      "items": {
+        "properties": {
+          "exclude_clusters": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "include_clusters": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "public_key": {
+      "type": "string"
+    },
+    "retry_on_failure": {
+      "properties": {
+        "enabled": {
+          "description": "Enabled indicates whether to not retry sending batches in case of export failure.",
+          "type": "boolean"
+        },
+        "initial_interval": {
+          "description": "InitialInterval the time to wait after the first failure before retrying.",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        },
+        "max_elapsed_time": {
+          "description": "MaxElapsedTime is the maximum amount of time (including retries) spent trying to send a request/batch. Once this value is reached, the data is discarded. If set to 0, the retries are never stopped.",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        },
+        "max_interval": {
+          "description": "MaxInterval is the upper bound on backoff interval. Once this value is reached the delay between consecutive retries will always be `MaxInterval`.",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        },
+        "multiplier": {
+          "description": "Multiplier is the value multiplied by the backoff interval bounds",
+          "type": "number"
+        },
+        "randomization_factor": {
+          "description": "RandomizationFactor is a random factor used to calculate next backoffs Randomized interval = RetryInterval * (1 ± RandomizationFactor)",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "storage": {
+      "type": "object"
+    },
+    "timeout": {
+      "description": "Timeout is an optional value used to set scraper's context deadline.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

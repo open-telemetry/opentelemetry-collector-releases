@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "conditions": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "exclude_fields": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "include_fields": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "interval": {
+      "description": "Duration string (e.g., '1s', '5m', '1h')",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "log_count_attribute": {
+      "type": "string"
+    },
+    "timezone": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

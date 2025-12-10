@@ -1,0 +1,440 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "api": {
+      "description": "Define the site and API key (and whether to fail on invalid API key) in API.",
+      "properties": {
+        "fail_on_invalid_key": {
+          "description": "FailOnInvalidKey states whether to exit at startup on invalid API key. The default value is false.",
+          "type": "boolean"
+        },
+        "key": {
+          "description": "Key is the Datadog API key to associate your Agent's data with your organization. Create a new API key here: https://app.datadoghq.com/account/settings",
+          "type": "string"
+        },
+        "site": {
+          "description": "Site is the site of the Datadog intake to send data to. The default value is \"datadoghq.com\".",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "auth": {
+      "description": "Auth configuration for outgoing HTTP calls.",
+      "properties": {
+        "authenticator": {
+          "description": "AuthenticatorID specifies the name of the extension to use in order to authenticate the incoming data point.",
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "compression": {
+      "description": "The compression key for supported compression types within collector.",
+      "type": "string"
+    },
+    "compression_params": {
+      "description": "Advanced configuration options for the Compression",
+      "properties": {
+        "level": {
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "cookies": {
+      "description": "Cookies configures the cookie management of the HTTP client.",
+      "type": "object"
+    },
+    "disable_keep_alives": {
+      "description": "DisableKeepAlives, if true, disables HTTP keep-alives and will only use the connection to the server for a single HTTP request. WARNING: enabling this option can result in significant overhead establishing a new HTTP(S) connection for every request. Before enabling this option please consider whether changes to idle connection settings can achieve your goal.",
+      "type": "boolean"
+    },
+    "endpoint": {
+      "description": "The target URL to send data to (e.g.: http://some.url:9411/v1/traces).",
+      "type": "string"
+    },
+    "force_attempt_http2": {
+      "description": "Enabling ForceAttemptHTTP2 forces the HTTP transport to use the HTTP/2 protocol. By default, this is set to true. NOTE: HTTP/2 does not support settings such as MaxConnsPerHost, MaxIdleConnsPerHost and MaxIdleConns.",
+      "type": "boolean"
+    },
+    "headers": {
+      "description": "Additional headers attached to each HTTP request sent by the client. Existing header values are overwritten if collision happens. Header values are opaque since they may be sensitive.",
+      "items": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "hostname": {
+      "description": "If Hostname is empty extension will use available system APIs and cloud provider endpoints.",
+      "type": "string"
+    },
+    "http": {
+      "description": "HTTPConfig is v2 config for the http metadata service.",
+      "properties": {
+        "auth": {
+          "description": "Auth for this receiver",
+          "properties": {
+            "authenticator": {
+              "description": "AuthenticatorID specifies the name of the extension to use in order to authenticate the incoming data point.",
+              "type": "object"
+            },
+            "request_params": {
+              "description": "RequestParameters is a list of parameters that should be extracted from the request and added to the context. When a parameter is found in both the query string and the header, the value from the query string will be used.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "compression_algorithms": {
+          "description": "CompressionAlgorithms configures the list of compression algorithms the server can accept. Default: [\"\", \"gzip\", \"zstd\", \"zlib\", \"snappy\", \"deflate\"]",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "cors": {
+          "description": "CORS configures the server for HTTP cross-origin resource sharing (CORS).",
+          "properties": {
+            "allowed_headers": {
+              "description": "AllowedHeaders sets what headers will be allowed in CORS requests. The Accept, Accept-Language, Content-Type, and Content-Language headers are implicitly allowed. If no headers are listed, X-Requested-With will also be accepted by default. Include \"*\" to allow any request header.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "allowed_origins": {
+              "description": "AllowedOrigins sets the allowed values of the Origin header for HTTP/JSON requests to an OTLP receiver. An origin may contain a wildcard (*) to replace 0 or more characters (e.g., \"http://*.domain.com\", or \"*\" to allow any origin).",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "max_age": {
+              "description": "MaxAge sets the value of the Access-Control-Max-Age response header. Set it to the number of seconds that browsers should cache a CORS preflight response for.",
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        },
+        "endpoint": {
+          "description": "Endpoint configures the listening address for the server.",
+          "type": "string"
+        },
+        "idle_timeout": {
+          "description": "IdleTimeout is the maximum amount of time to wait for the next request when keep-alives are enabled. If IdleTimeout is zero, the value of ReadTimeout is used. If both are zero, there is no timeout.",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        },
+        "include_metadata": {
+          "description": "IncludeMetadata propagates the client metadata from the incoming requests to the downstream consumers",
+          "type": "boolean"
+        },
+        "keep_alives_enabled": {
+          "description": "KeepAlivesEnabled controls whether HTTP keep-alives are enabled. By default, keep-alives are always enabled. Only very resource-constrained environments should disable them.",
+          "type": "boolean"
+        },
+        "max_request_body_size": {
+          "description": "MaxRequestBodySize sets the maximum request body size in bytes. Default: 20MiB.",
+          "type": "integer"
+        },
+        "middlewares": {
+          "description": "Middlewares are used to add custom functionality to the HTTP server. Middleware handlers are called in the order they appear in this list, with the first middleware becoming the outermost handler.",
+          "items": {
+            "properties": {
+              "id": {
+                "description": "ID specifies the name of the extension to use.",
+                "type": "object"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "path": {
+          "type": "string"
+        },
+        "read_header_timeout": {
+          "description": "ReadHeaderTimeout is the amount of time allowed to read request headers. The connection's read deadline is reset after reading the headers and the Handler can decide what is considered too slow for the body. If ReadHeaderTimeout is zero, the value of ReadTimeout is used. If both are zero, there is no timeout.",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        },
+        "read_timeout": {
+          "description": "ReadTimeout is the maximum duration for reading the entire request, including the body. A zero or negative value means there will be no timeout. Because ReadTimeout does not let Handlers make per-request decisions on each request body's acceptable deadline or upload rate, most users will prefer to use ReadHeaderTimeout. It is valid to use them both.",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        },
+        "response_headers": {
+          "description": "Additional headers attached to each HTTP response sent to the client. Header values are opaque since they may be sensitive.",
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "tls": {
+          "description": "TLS struct exposes TLS client configuration.",
+          "properties": {
+            "ca_file": {
+              "description": "Path to the CA cert. For a client this verifies the server certificate. For a server this verifies client certificates. If empty uses system root CA. (optional)",
+              "type": "string"
+            },
+            "ca_pem": {
+              "description": "In memory PEM encoded cert. (optional)",
+              "type": "string"
+            },
+            "cert_file": {
+              "description": "Path to the TLS cert to use for TLS required connections. (optional)",
+              "type": "string"
+            },
+            "cert_pem": {
+              "description": "In memory PEM encoded TLS cert to use for TLS required connections. (optional)",
+              "type": "string"
+            },
+            "cipher_suites": {
+              "description": "CipherSuites is a list of TLS cipher suites that the TLS transport can use. If left blank, a safe default list is used. See https://go.dev/src/crypto/tls/cipher_suites.go for a list of supported cipher suites.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "client_ca_file": {
+              "description": "Path to the TLS cert to use by the server to verify a client certificate. (optional) This sets the ClientCAs and ClientAuth to RequireAndVerifyClientCert in the TLSConfig. Please refer to https://godoc.org/crypto/tls#Config for more information. (optional)",
+              "type": "string"
+            },
+            "client_ca_file_reload": {
+              "description": "Reload the ClientCAs file when it is modified (optional, default false)",
+              "type": "boolean"
+            },
+            "curve_preferences": {
+              "description": "contains the elliptic curves that will be used in an ECDHE handshake, in preference order Defaults to empty list and \"crypto/tls\" defaults are used, internally.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "include_system_ca_certs_pool": {
+              "description": "If true, load system CA certificates pool in addition to the certificates configured in this struct.",
+              "type": "boolean"
+            },
+            "key_file": {
+              "description": "Path to the TLS key to use for TLS required connections. (optional)",
+              "type": "string"
+            },
+            "key_pem": {
+              "description": "In memory PEM encoded TLS key to use for TLS required connections. (optional)",
+              "type": "string"
+            },
+            "max_version": {
+              "description": "MaxVersion sets the maximum TLS version that is acceptable. If not set, refer to crypto/tls for defaults. (optional)",
+              "type": "string"
+            },
+            "min_version": {
+              "description": "MinVersion sets the minimum TLS version that is acceptable. If not set, TLS 1.2 will be used. (optional)",
+              "type": "string"
+            },
+            "reload_interval": {
+              "description": "ReloadInterval specifies the duration after which the certificate will be reloaded If not set, it will never be reloaded (optional)",
+              "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+              "type": "string"
+            },
+            "tpm": {
+              "description": "Trusted platform module configuration",
+              "properties": {
+                "auth": {
+                  "type": "string"
+                },
+                "enabled": {
+                  "type": "boolean"
+                },
+                "owner_auth": {
+                  "type": "string"
+                },
+                "path": {
+                  "description": "The path to the TPM device or Unix domain socket. For instance /dev/tpm0 or /dev/tpmrm0.",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "write_timeout": {
+          "description": "WriteTimeout is the maximum duration before timing out writes of the response. It is reset whenever a new request's header is read. Like ReadTimeout, it does not let Handlers make decisions on a per-request basis. A zero or negative value means there will be no timeout.",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "http2_ping_timeout": {
+      "description": "HTTP2PingTimeout if there's no response to the ping within the configured value, the connection will be closed. If not set or set to 0, it defaults to 15s.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "http2_read_idle_timeout": {
+      "description": "This is needed in case you run into https://github.com/golang/go/issues/59690 https://github.com/golang/go/issues/36026 HTTP2ReadIdleTimeout if the connection has been idle for the configured value send a ping frame for health check 0s means no health check will be performed.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "idle_conn_timeout": {
+      "description": "IdleConnTimeout is the maximum amount of time a connection will remain open before closing itself. By default, it is set to 90 seconds.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "max_conns_per_host": {
+      "description": "MaxConnsPerHost limits the total number of connections per host, including connections in the dialing, active, and idle states. Default is 0 (unlimited).",
+      "type": "integer"
+    },
+    "max_idle_conns": {
+      "description": "MaxIdleConns is used to set a limit to the maximum idle HTTP connections the client can keep open. By default, it is set to 100. Zero means no limit.",
+      "type": "integer"
+    },
+    "max_idle_conns_per_host": {
+      "description": "MaxIdleConnsPerHost is used to set a limit to the maximum idle HTTP connections the host can keep open. If zero, [net/http.DefaultMaxIdleConnsPerHost] is used.",
+      "type": "integer"
+    },
+    "middlewares": {
+      "description": "Middlewares are used to add custom functionality to the HTTP client. Middleware handlers are called in the order they appear in this list, with the first middleware becoming the outermost handler.",
+      "items": {
+        "properties": {
+          "id": {
+            "description": "ID specifies the name of the extension to use.",
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "proxy_url": {
+      "description": "ProxyURL setting for the collector",
+      "type": "string"
+    },
+    "read_buffer_size": {
+      "description": "ReadBufferSize for HTTP client. See http.Transport.ReadBufferSize. Default is 0.",
+      "type": "integer"
+    },
+    "timeout": {
+      "description": "Timeout parameter configures `http.Client.Timeout`. Default is 0 (unlimited).",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "tls": {
+      "description": "TLS struct exposes TLS client configuration.",
+      "properties": {
+        "ca_file": {
+          "description": "Path to the CA cert. For a client this verifies the server certificate. For a server this verifies client certificates. If empty uses system root CA. (optional)",
+          "type": "string"
+        },
+        "ca_pem": {
+          "description": "In memory PEM encoded cert. (optional)",
+          "type": "string"
+        },
+        "cert_file": {
+          "description": "Path to the TLS cert to use for TLS required connections. (optional)",
+          "type": "string"
+        },
+        "cert_pem": {
+          "description": "In memory PEM encoded TLS cert to use for TLS required connections. (optional)",
+          "type": "string"
+        },
+        "cipher_suites": {
+          "description": "CipherSuites is a list of TLS cipher suites that the TLS transport can use. If left blank, a safe default list is used. See https://go.dev/src/crypto/tls/cipher_suites.go for a list of supported cipher suites.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "curve_preferences": {
+          "description": "contains the elliptic curves that will be used in an ECDHE handshake, in preference order Defaults to empty list and \"crypto/tls\" defaults are used, internally.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "include_system_ca_certs_pool": {
+          "description": "If true, load system CA certificates pool in addition to the certificates configured in this struct.",
+          "type": "boolean"
+        },
+        "insecure": {
+          "description": "In gRPC and HTTP when set to true, this is used to disable the client transport security. See https://godoc.org/google.golang.org/grpc#WithInsecure for gRPC. Please refer to https://godoc.org/crypto/tls#Config for more information. (optional, default false)",
+          "type": "boolean"
+        },
+        "insecure_skip_verify": {
+          "description": "InsecureSkipVerify will enable TLS but not verify the certificate.",
+          "type": "boolean"
+        },
+        "key_file": {
+          "description": "Path to the TLS key to use for TLS required connections. (optional)",
+          "type": "string"
+        },
+        "key_pem": {
+          "description": "In memory PEM encoded TLS key to use for TLS required connections. (optional)",
+          "type": "string"
+        },
+        "max_version": {
+          "description": "MaxVersion sets the maximum TLS version that is acceptable. If not set, refer to crypto/tls for defaults. (optional)",
+          "type": "string"
+        },
+        "min_version": {
+          "description": "MinVersion sets the minimum TLS version that is acceptable. If not set, TLS 1.2 will be used. (optional)",
+          "type": "string"
+        },
+        "reload_interval": {
+          "description": "ReloadInterval specifies the duration after which the certificate will be reloaded If not set, it will never be reloaded (optional)",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        },
+        "server_name_override": {
+          "description": "ServerName requested by client for virtual hosting. This sets the ServerName in the TLSConfig. Please refer to https://godoc.org/crypto/tls#Config for more information. (optional)",
+          "type": "string"
+        },
+        "tpm": {
+          "description": "Trusted platform module configuration",
+          "properties": {
+            "auth": {
+              "type": "string"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "owner_auth": {
+              "type": "string"
+            },
+            "path": {
+              "description": "The path to the TPM device or Unix domain socket. For instance /dev/tpm0 or /dev/tpmrm0.",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "write_buffer_size": {
+      "description": "WriteBufferSize for HTTP client. See http.Transport.WriteBufferSize. Default is 0.",
+      "type": "integer"
+    }
+  },
+  "type": "object"
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "rules": {
+      "description": "Set of rules for generating new metrics",
+      "items": {
+        "properties": {
+          "metric1": {
+            "description": "First operand metric to use in the calculation. This is a required field.",
+            "type": "string"
+          },
+          "metric2": {
+            "description": "Second operand metric to use in the calculation. A required field if the type is calculate.",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name of the new metric being generated. This is a required field.",
+            "type": "string"
+          },
+          "operation": {
+            "description": "The arithmetic operation to apply for the calculation. This is a required field.",
+            "type": "string"
+          },
+          "scale_by": {
+            "description": "A constant number by which the first operand will be scaled. A required field if the type is scale.",
+            "type": "number"
+          },
+          "type": {
+            "description": "The rule type following which the new metric will be generated. This is a required field.",
+            "type": "string"
+          },
+          "unit": {
+            "description": "Unit for the new metric being generated.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "type": "object"
+}

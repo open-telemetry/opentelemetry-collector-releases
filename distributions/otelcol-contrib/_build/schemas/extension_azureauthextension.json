@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "managed_identity": {
+      "properties": {
+        "client_id": {
+          "description": "if left empty, then it is system managed",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "scopes": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "service_principal": {
+      "properties": {
+        "client_certificate_path": {
+          "type": "string"
+        },
+        "client_id": {
+          "type": "string"
+        },
+        "client_secret": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "use_default": {
+      "type": "boolean"
+    },
+    "workload_identity": {
+      "properties": {
+        "client_id": {
+          "type": "string"
+        },
+        "federated_token_file": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}
