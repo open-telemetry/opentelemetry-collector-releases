@@ -25,6 +25,7 @@ func main() {
 	}
 	project := internal.BuildDistribution(*distFlag, *contribBuildOrRestFlag)
 
+	os.Stdout.WriteString("# yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json\n")
 	e := yaml.NewEncoder(os.Stdout)
 	e.SetIndent(2)
 	if err := e.Encode(&project); err != nil {
