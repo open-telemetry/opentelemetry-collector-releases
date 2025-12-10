@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "max_stale": {
+      "description": "Duration string (e.g., '1s', '5m', '1h')",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "max_streams": {
+      "type": "integer"
+    }
+  },
+  "type": "object"
+}

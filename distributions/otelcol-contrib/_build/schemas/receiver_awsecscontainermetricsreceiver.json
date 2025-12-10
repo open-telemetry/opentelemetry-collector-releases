@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "collection_interval": {
+      "description": "CollectionInterval is the interval at which metrics should be collected",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

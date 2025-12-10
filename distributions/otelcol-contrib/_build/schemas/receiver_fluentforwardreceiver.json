@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "endpoint": {
+      "description": "The address to listen on for incoming Fluent Forward events.  Should be of the form `\u003cip addr\u003e:\u003cport\u003e` (TCP) or `unix://\u003csocket_path\u003e` (Unix domain socket).",
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

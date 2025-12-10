@@ -1,0 +1,433 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "auth": {
+      "description": "Auth configuration for outgoing HTTP calls.",
+      "properties": {
+        "authenticator": {
+          "description": "AuthenticatorID specifies the name of the extension to use in order to authenticate the incoming data point.",
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "authentication": {
+      "properties": {
+        "api_key": {
+          "description": "APIKey is used to configure ApiKey based Authentication. https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-create-api-key.html",
+          "type": "string"
+        },
+        "password": {
+          "description": "Password is used to configure HTTP Basic Authentication.",
+          "type": "string"
+        },
+        "user": {
+          "description": "User is used to configure HTTP Basic Authentication.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "cloudid": {
+      "description": "CloudID holds the cloud ID to identify the Elastic Cloud cluster to send events to. https://www.elastic.co/guide/en/cloud/current/ec-cloud-id.html This setting is required if no URL is configured.",
+      "type": "string"
+    },
+    "compression": {
+      "description": "The compression key for supported compression types within collector.",
+      "type": "string"
+    },
+    "compression_params": {
+      "description": "Advanced configuration options for the Compression",
+      "properties": {
+        "level": {
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "cookies": {
+      "description": "Cookies configures the cookie management of the HTTP client.",
+      "type": "object"
+    },
+    "disable_keep_alives": {
+      "description": "DisableKeepAlives, if true, disables HTTP keep-alives and will only use the connection to the server for a single HTTP request. WARNING: enabling this option can result in significant overhead establishing a new HTTP(S) connection for every request. Before enabling this option please consider whether changes to idle connection settings can achieve your goal.",
+      "type": "boolean"
+    },
+    "discover": {
+      "properties": {
+        "interval": {
+          "description": "Interval instructs the exporter to renew the list of Elasticsearch URLs with the given interval. URLs will not be updated if Interval is \u003c=0.",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        },
+        "on_start": {
+          "description": "OnStart, if set, instructs the exporter to look for available Elasticsearch nodes the first time the exporter connects to the cluster.",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "endpoint": {
+      "description": "The target URL to send data to (e.g.: http://some.url:9411/v1/traces).",
+      "type": "string"
+    },
+    "endpoints": {
+      "description": "Endpoints holds the Elasticsearch URLs the exporter should send events to. This setting is required if CloudID is not set and if the ELASTICSEARCH_URL environment variable is not set.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "flush": {
+      "deprecated": true,
+      "description": "Deprecated: [v0.136.0] This config is now deprecated. Use `sending_queue::batch` instead. If this config is defined then it will be used to configure sending queue's batch provided sending queue's config are not explicitly defined.",
+      "properties": {
+        "bytes": {
+          "deprecated": true,
+          "description": "Bytes sets the send buffer flushing limit. Bytes is now deprecated. Use `sending_queue::batch::{min, max}_size` with `bytes` sizer to configure batching based on bytes. If this config option is defined then it will be used to configure `sending_queue::batch::max_size` provided it is not explcitly defined.",
+          "type": "integer"
+        },
+        "interval": {
+          "deprecated": true,
+          "description": "Interval configures the max age of a document in the send buffer. Interval is now deprecated. Use `sending-queue::batch::flush_timeout` instead. If this config option is defined then it will be used to configure `sending_queue::batch::flush_timeout` provided it is not explcitly defined.",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "force_attempt_http2": {
+      "description": "Enabling ForceAttemptHTTP2 forces the HTTP transport to use the HTTP/2 protocol. By default, this is set to true. NOTE: HTTP/2 does not support settings such as MaxConnsPerHost, MaxIdleConnsPerHost and MaxIdleConns.",
+      "type": "boolean"
+    },
+    "headers": {
+      "description": "Additional headers attached to each HTTP request sent by the client. Existing header values are overwritten if collision happens. Header values are opaque since they may be sensitive.",
+      "items": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "http2_ping_timeout": {
+      "description": "HTTP2PingTimeout if there's no response to the ping within the configured value, the connection will be closed. If not set or set to 0, it defaults to 15s.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "http2_read_idle_timeout": {
+      "description": "This is needed in case you run into https://github.com/golang/go/issues/59690 https://github.com/golang/go/issues/36026 HTTP2ReadIdleTimeout if the connection has been idle for the configured value send a ping frame for health check 0s means no health check will be performed.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "idle_conn_timeout": {
+      "description": "IdleConnTimeout is the maximum amount of time a connection will remain open before closing itself. By default, it is set to 90 seconds.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "include_source_on_error": {
+      "description": "IncludeSourceOnError configures whether the bulk index responses include a part of the source document on error. Defaults to nil. This setting requires Elasticsearch 8.18+. Using it in prior versions have no effect. NOTE: The default behavior if this configuration is not set, is to discard the error reason entirely, i.e. only the error type is returned. WARNING: If set to true, the exporter may log error responses containing request payload, causing potential sensitive data to be exposed in logs. Users are expected to sanitize the responses themselves.",
+      "type": "boolean"
+    },
+    "log_failed_docs_input": {
+      "type": "boolean"
+    },
+    "log_failed_docs_input_rate_limit": {
+      "description": "Duration string (e.g., '1s', '5m', '1h')",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "log_request_body": {
+      "type": "boolean"
+    },
+    "log_response_body": {
+      "type": "boolean"
+    },
+    "logs_dynamic_id": {
+      "description": "LogsDynamicID configures whether log record attribute `elasticsearch.document_id` is set as the document ID in ES.",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "logs_dynamic_index": {
+      "properties": {
+        "enabled": {
+          "deprecated": true,
+          "description": "Enabled enables dynamic index routing. Deprecated: [v0.122.0] This config is now ignored. Dynamic index routing is always done by default.",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "logs_dynamic_pipeline": {
+      "description": "LogsDynamicPipeline configures whether log record attribute `elasticsearch.document_pipeline` is set as the document ingest pipeline for ES.",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "logs_index": {
+      "description": "LogsIndex configures the static index used for document routing for logs. It should be empty if dynamic document routing is preferred.",
+      "type": "string"
+    },
+    "logstash_format": {
+      "properties": {
+        "date_format": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "prefix_separator": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "mapping": {
+      "properties": {
+        "allowed_modes": {
+          "description": "AllowedModes controls the allowed document mapping modes specified through X-Elastic-Mapping-Mode client metadata. If unspecified, all mapping modes are allowed.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "mode": {
+          "description": "Mode configures the default document mapping mode. The mode may be overridden in two ways: - by the client metadata key X-Elastic-Mapping-Mode, if specified - by the scope attribute elastic.mapping.mode, if specified The order of precedence is: scope attribute \u003e client metadata \u003e default mode.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "max_conns_per_host": {
+      "description": "MaxConnsPerHost limits the total number of connections per host, including connections in the dialing, active, and idle states. Default is 0 (unlimited).",
+      "type": "integer"
+    },
+    "max_idle_conns": {
+      "description": "MaxIdleConns is used to set a limit to the maximum idle HTTP connections the client can keep open. By default, it is set to 100. Zero means no limit.",
+      "type": "integer"
+    },
+    "max_idle_conns_per_host": {
+      "description": "MaxIdleConnsPerHost is used to set a limit to the maximum idle HTTP connections the host can keep open. If zero, [net/http.DefaultMaxIdleConnsPerHost] is used.",
+      "type": "integer"
+    },
+    "metadata_keys": {
+      "deprecated": true,
+      "description": "Experimental: MetadataKeys defines a list of client.Metadata keys that will be used as partition keys for when batcher is enabled and will be added to the exporter's telemetry if defined. The config only applies when `sending_queue::batch` is defined or when the, now deprecated, batcher is used (set to `true` or `false`). The metadata keys are converted to lower case as key lookups for client metadata is case insensitive. This means that the metric produced by internal telemetry will also have the attribute in lower case. Keys are case-insensitive and duplicates will trigger a validation error.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "metrics_dynamic_index": {
+      "properties": {
+        "enabled": {
+          "deprecated": true,
+          "description": "Enabled enables dynamic index routing. Deprecated: [v0.122.0] This config is now ignored. Dynamic index routing is always done by default.",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "metrics_index": {
+      "description": "MetricsIndex configures the static index used for document routing for metrics. It should be empty if dynamic document routing is preferred.",
+      "type": "string"
+    },
+    "middlewares": {
+      "description": "Middlewares are used to add custom functionality to the HTTP client. Middleware handlers are called in the order they appear in this list, with the first middleware becoming the outermost handler.",
+      "items": {
+        "properties": {
+          "id": {
+            "description": "ID specifies the name of the extension to use.",
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "num_workers": {
+      "deprecated": true,
+      "description": "NumWorkers configures the number of workers publishing bulk requests. Deprecated: [v0.136.0] This config is now deprecated. Use `sending_queue::num_consumers` instead. If this config is defined and `sending_queue::num_consumers` is not defined then it will be used to set `sending_queue::num_consumers`.",
+      "type": "integer"
+    },
+    "pipeline": {
+      "description": "Pipeline configures the ingest node pipeline name that should be used to process the events. https://www.elastic.co/guide/en/elasticsearch/reference/current/ingest.html",
+      "type": "string"
+    },
+    "proxy_url": {
+      "description": "ProxyURL setting for the collector",
+      "type": "string"
+    },
+    "read_buffer_size": {
+      "description": "ReadBufferSize for HTTP client. See http.Transport.ReadBufferSize. Default is 0.",
+      "type": "integer"
+    },
+    "retry": {
+      "properties": {
+        "enabled": {
+          "description": "Enabled allows users to disable retry without having to comment out all settings.",
+          "type": "boolean"
+        },
+        "initial_interval": {
+          "description": "InitialInterval configures the initial waiting time if a request failed.",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        },
+        "max_interval": {
+          "description": "MaxInterval configures the max waiting time if consecutive requests failed.",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        },
+        "max_requests": {
+          "deprecated": true,
+          "description": "MaxRequests configures how often an HTTP request is attempted before it is assumed to be failed. Deprecated: use MaxRetries instead.",
+          "type": "integer"
+        },
+        "max_retries": {
+          "description": "MaxRetries configures how many times an HTTP request is retried.",
+          "type": "integer"
+        },
+        "retry_on_status": {
+          "description": "RetryOnStatus configures the status codes that trigger request or document level retries.",
+          "items": {
+            "type": "integer"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "sending_queue": {
+      "description": "QueueBatchConfig configures the sending queue and the batching done by the exporter. The performed batching can further be customized by configuring `metadata_keys` which will be used to partition the batches.",
+      "type": "object"
+    },
+    "timeout": {
+      "description": "Timeout parameter configures `http.Client.Timeout`. Default is 0 (unlimited).",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "tls": {
+      "description": "TLS struct exposes TLS client configuration.",
+      "properties": {
+        "ca_file": {
+          "description": "Path to the CA cert. For a client this verifies the server certificate. For a server this verifies client certificates. If empty uses system root CA. (optional)",
+          "type": "string"
+        },
+        "ca_pem": {
+          "description": "In memory PEM encoded cert. (optional)",
+          "type": "string"
+        },
+        "cert_file": {
+          "description": "Path to the TLS cert to use for TLS required connections. (optional)",
+          "type": "string"
+        },
+        "cert_pem": {
+          "description": "In memory PEM encoded TLS cert to use for TLS required connections. (optional)",
+          "type": "string"
+        },
+        "cipher_suites": {
+          "description": "CipherSuites is a list of TLS cipher suites that the TLS transport can use. If left blank, a safe default list is used. See https://go.dev/src/crypto/tls/cipher_suites.go for a list of supported cipher suites.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "curve_preferences": {
+          "description": "contains the elliptic curves that will be used in an ECDHE handshake, in preference order Defaults to empty list and \"crypto/tls\" defaults are used, internally.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "include_system_ca_certs_pool": {
+          "description": "If true, load system CA certificates pool in addition to the certificates configured in this struct.",
+          "type": "boolean"
+        },
+        "insecure": {
+          "description": "In gRPC and HTTP when set to true, this is used to disable the client transport security. See https://godoc.org/google.golang.org/grpc#WithInsecure for gRPC. Please refer to https://godoc.org/crypto/tls#Config for more information. (optional, default false)",
+          "type": "boolean"
+        },
+        "insecure_skip_verify": {
+          "description": "InsecureSkipVerify will enable TLS but not verify the certificate.",
+          "type": "boolean"
+        },
+        "key_file": {
+          "description": "Path to the TLS key to use for TLS required connections. (optional)",
+          "type": "string"
+        },
+        "key_pem": {
+          "description": "In memory PEM encoded TLS key to use for TLS required connections. (optional)",
+          "type": "string"
+        },
+        "max_version": {
+          "description": "MaxVersion sets the maximum TLS version that is acceptable. If not set, refer to crypto/tls for defaults. (optional)",
+          "type": "string"
+        },
+        "min_version": {
+          "description": "MinVersion sets the minimum TLS version that is acceptable. If not set, TLS 1.2 will be used. (optional)",
+          "type": "string"
+        },
+        "reload_interval": {
+          "description": "ReloadInterval specifies the duration after which the certificate will be reloaded If not set, it will never be reloaded (optional)",
+          "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+          "type": "string"
+        },
+        "server_name_override": {
+          "description": "ServerName requested by client for virtual hosting. This sets the ServerName in the TLSConfig. Please refer to https://godoc.org/crypto/tls#Config for more information. (optional)",
+          "type": "string"
+        },
+        "tpm": {
+          "description": "Trusted platform module configuration",
+          "properties": {
+            "auth": {
+              "type": "string"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "owner_auth": {
+              "type": "string"
+            },
+            "path": {
+              "description": "The path to the TPM device or Unix domain socket. For instance /dev/tpm0 or /dev/tpmrm0.",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "traces_dynamic_index": {
+      "properties": {
+        "enabled": {
+          "deprecated": true,
+          "description": "Enabled enables dynamic index routing. Deprecated: [v0.122.0] This config is now ignored. Dynamic index routing is always done by default.",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "traces_index": {
+      "description": "TracesIndex configures the static index used for document routing for metrics. It should be empty if dynamic document routing is preferred.",
+      "type": "string"
+    },
+    "write_buffer_size": {
+      "description": "WriteBufferSize for HTTP client. See http.Transport.WriteBufferSize. Default is 0.",
+      "type": "integer"
+    }
+  },
+  "type": "object"
+}
