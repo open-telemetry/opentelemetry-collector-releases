@@ -296,6 +296,9 @@ jobs:
           path: ${{ runner.temp }}/${{ inputs.distribution }}.tar
           retention-days: 7
 
+      - if: always()
+        run: ./.github/workflows/scripts/check-disk-space.sh
+
   docker-tests:
     needs:
       - check-goreleaser
@@ -400,3 +403,6 @@ jobs:
             docker logs collector
             exit 1
           fi
+
+      - if: always()
+        run: ./.github/workflows/scripts/check-disk-space.sh
