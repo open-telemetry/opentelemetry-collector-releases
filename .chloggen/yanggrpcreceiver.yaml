@@ -4,13 +4,13 @@
 change_type: new_component
 
 # The name of the component, or a single word describing the area of concern, (e.g. otlpreceiver)
-component: exporter/googlecloudstorage
+component: contrib
 
 # A brief description of the change.  Surround your text with quotes ("") if it needs to start with a backtick (`).
-note: Add google cloud storage exporter to contrib distribution.
+note: Add yanggrpcreceiver to the contrib distribution
 
 # One or more tracking issues or pull requests related to the change
-issues: [1253]
+issues: [1306]
 
 # (Optional) One or more lines of additional information to render under the primary note.
 # These lines will be padded with 2 spaces and then inserted directly into the document.

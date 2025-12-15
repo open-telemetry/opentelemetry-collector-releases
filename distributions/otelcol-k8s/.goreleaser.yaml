@@ -49,6 +49,36 @@ snapshot:
   version_template: '{{ incpatch .Version }}-next'
 checksum:
   name_template: '{{ .ProjectName }}_otelcol-k8s{{ if eq .Runtime.Goos "windows" }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt'
+signs:
+  - cmd: cosign
+    args:
+      - sign-blob
+      - --output-signature
+      - ${artifact}.sig
+      - --output-certificate
+      - ${artifact}.pem
+      - ${artifact}
+    signature: ${artifact}.sig
+    artifacts: all
+    certificate: ${artifact}.pem
+docker_signs:
+  - args:
+      - sign
+      - ${artifact}
+    artifacts: all
+sboms:
+  - id: archive
+    artifacts: archive
+  - id: package
+    artifacts: package
+monorepo:
+  tag_prefix: v
+partial:
+  by: target
+nightly:
+  version_template: '{{ incpatch .Version}}-nightly.{{ .ShortCommit }}'
+  tag_name: nightly-otelcol-k8s
+  keep_single_release: true
 dockers:
   - goos: linux
     goarch: amd64
@@ -211,33 +241,3 @@ docker_manifests:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64le
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-riscv64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-s390x
-signs:
-  - cmd: cosign
-    args:
-      - sign-blob
-      - --output-signature
-      - ${artifact}.sig
-      - --output-certificate
-      - ${artifact}.pem
-      - ${artifact}
-    signature: ${artifact}.sig
-    artifacts: all
-    certificate: ${artifact}.pem
-docker_signs:
-  - args:
-      - sign
-      - ${artifact}
-    artifacts: all
-sboms:
-  - id: archive
-    artifacts: archive
-  - id: package
-    artifacts: package
-monorepo:
-  tag_prefix: v
-partial:
-  by: target
-nightly:
-  version_template: '{{ incpatch .Version}}-nightly.{{ .ShortCommit }}'
-  tag_name: nightly-otelcol-k8s
-  keep_single_release: true
