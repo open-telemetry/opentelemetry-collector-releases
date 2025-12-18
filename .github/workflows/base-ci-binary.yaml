@@ -55,7 +55,7 @@ jobs:
         run: cp cmd/${{ inputs.binary }}/Dockerfile ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}/Dockerfile
 
       - name: Copy MSI files to Core Repo directory
-        if: ${{ inputs.windows-msi == true }}
+        if: inputs.windows-msi == true
         run: |
           cp cmd/${{ inputs.binary }}/opentelemetry.ico ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}
           cp cmd/${{ inputs.binary }}/config.windows.example.yaml ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}
