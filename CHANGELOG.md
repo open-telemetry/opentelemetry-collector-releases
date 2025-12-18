@@ -4,6 +4,18 @@
 
 <!-- next version -->
 
+## v0.142.0
+
+### 🚀 New components 🚀
+
+- `contrib`: Add yanggrpcreceiver to the contrib distribution (#1306)
+- `otelcol-contrib`: Add the macOS Unified Logging receiver (#44089)
+- `otelcol-contrib`: Add the systemd receiver (#1298)
+
+### 💡 Enhancements 💡
+
+- `otelcol-ebpf-profiler`: update ebpf-profiler to v0.0.202549 (#1295)
+
 ## v0.141.0
 
 ### 🛑 Breaking changes 🛑
