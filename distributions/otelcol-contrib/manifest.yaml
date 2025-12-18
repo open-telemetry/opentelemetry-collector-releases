@@ -261,8 +261,3 @@ providers:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/s3provider v0.142.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/secretsmanagerprovider v0.142.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/googlesecretmanagerprovider v0.142.0
-
-# When adding a replace, add a comment before it to document why it's needed and when it can be removed
-replaces:
-  # see https://github.com/openshift/api/pull/1515
-  - github.com/openshift/api => github.com/openshift/api v0.0.0-20230726162818-81f778f3b3ec
