@@ -16,15 +16,6 @@ receivers:
       http:
         endpoint: 0.0.0.0:4318
 
-  # Collect own metrics
-  prometheus:
-    config:
-      scrape_configs:
-      - job_name: 'otel-collector'
-        scrape_interval: 10s
-        static_configs:
-        - targets: ['0.0.0.0:8888']
-
   jaeger:
     protocols:
       grpc:
@@ -47,6 +38,16 @@ exporters:
     verbosity: detailed
 
 service:
+  telemetry:
+    metrics:
+      level: basic
+      readers:
+        - periodic:
+            interval: 10000
+            exporter:
+              otlp:
+                protocol: grpc
+                endpoint: http://localhost:4317
 
   pipelines:
 
@@ -56,7 +57,7 @@ service:
       exporters: [debug]
 
     metrics:
-      receivers: [otlp, prometheus]
+      receivers: [otlp]
       processors: [batch]
       exporters: [debug]
 
