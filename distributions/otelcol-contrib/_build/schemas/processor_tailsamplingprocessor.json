@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "block_on_overflow": {
+      "description": "BlockOnOverflow determines the behavior when the component's NumTraces limit is reached. If true, the component will wait for space; otherwise, old traces will be evicted to make space.",
+      "type": "boolean"
+    },
+    "decision_cache": {
+      "description": "DecisionCache holds configuration for the decision cache(s)",
+      "properties": {
+        "non_sampled_cache_size": {
+          "description": "NonSampledCacheSize specifies the size of the cache that holds the non-sampled trace IDs. This value will be the maximum amount of trace IDs that the cache can hold before overwriting previous IDs. For effective use, this value should be at least an order of magnitude greater than Config.NumTraces. If left as default 0, a no-op DecisionCache will be used.",
+          "type": "integer"
+        },
+        "sampled_cache_size": {
+          "description": "SampledCacheSize specifies the size of the cache that holds the sampled trace IDs. This value will be the maximum amount of trace IDs that the cache can hold before overwriting previous IDs. For effective use, this value should be at least an order of magnitude greater than Config.NumTraces. If left as default 0, a no-op DecisionCache will be used.",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "decision_wait": {
+      "description": "DecisionWait is the desired wait time from the arrival of the first span of trace until the decision about sampling it or not is evaluated.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "drop_pending_traces_on_shutdown": {
+      "description": "DropPendingTracesOnShutdown will drop all traces that are part of batches that have not yet reached the decision wait when the processor is shutdown.",
+      "type": "boolean"
+    },
+    "expected_new_traces_per_sec": {
+      "description": "ExpectedNewTracesPerSec sets the expected number of new traces sending to the tail sampling processor per second. This helps with allocating data structures with closer to actual usage size.",
+      "type": "integer"
+    },
+    "num_traces": {
+      "description": "NumTraces is the number of traces kept on memory. Typically most of the data of a trace is released after a sampling decision is taken.",
+      "type": "integer"
+    },
+    "policies": {
+      "description": "PolicyCfgs sets the tail-based sampling policy which makes a sampling decision for a given trace when requested.",
+      "items": {
+        "properties": {
+          "and": {
+            "description": "Configs for defining and policy",
+            "properties": {
+              "and_sub_policy": {
+                "items": {
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          },
+          "composite": {
+            "description": "Configs for defining composite policy",
+            "properties": {
+              "composite_sub_policy": {
+                "items": {
+                  "properties": {
+                    "and": {
+                      "description": "Configs for and policy evaluator.",
+                      "properties": {
+                        "and_sub_policy": {
+                          "items": {
+                            "type": "object"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "max_total_spans_per_second": {
+                "type": "integer"
+              },
+              "policy_order": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "rate_allocation": {
+                "items": {
+                  "properties": {
+                    "percent": {
+                      "type": "integer"
+                    },
+                    "policy": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          },
+          "drop": {
+            "description": "Configs for defining drop policy",
+            "properties": {
+              "drop_sub_policy": {
+                "items": {
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "sample_on_first_match": {
+      "description": "Make decision as soon as a policy matches",
+      "type": "boolean"
+    }
+  },
+  "type": "object"
+}

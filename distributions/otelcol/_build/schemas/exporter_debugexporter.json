@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "sampling_initial": {
+      "description": "SamplingInitial defines how many samples are initially logged during each second.",
+      "type": "integer"
+    },
+    "sampling_thereafter": {
+      "description": "SamplingThereafter defines the sampling rate after the initial samples are logged.",
+      "type": "integer"
+    },
+    "sending_queue": {
+      "type": "object"
+    },
+    "use_internal_logger": {
+      "description": "UseInternalLogger defines whether the exporter sends the output to the collector's internal logger.",
+      "type": "boolean"
+    },
+    "verbosity": {
+      "description": "Verbosity defines the debug exporter verbosity.",
+      "type": "integer"
+    }
+  },
+  "type": "object"
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "auth": {
+      "properties": {
+        "password": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "compression": {
+      "properties": {
+        "algorithm": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "dsn": {
+      "type": "string"
+    },
+    "keyspace": {
+      "type": "string"
+    },
+    "logs_table": {
+      "type": "string"
+    },
+    "port": {
+      "type": "integer"
+    },
+    "replication": {
+      "properties": {
+        "class": {
+          "type": "string"
+        },
+        "replication_factor": {
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "timeout": {
+      "description": "Duration string (e.g., '1s', '5m', '1h')",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "trace_table": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

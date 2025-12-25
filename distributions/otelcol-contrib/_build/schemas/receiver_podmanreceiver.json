@@ -1,0 +1,284 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "api_version": {
+      "type": "string"
+    },
+    "collection_interval": {
+      "description": "CollectionInterval sets how frequently the scraper should be called and used as the context timeout to ensure that scrapers don't exceed the interval.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "endpoint": {
+      "description": "The URL of the podman server.  Default is \"unix:///run/podman/podman.sock\"",
+      "type": "string"
+    },
+    "initial_delay": {
+      "description": "InitialDelay sets the initial start delay for the scraper, any non positive value is assumed to be immediately.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "metrics": {
+      "properties": {
+        "container.blockio.io_service_bytes_recursive.read": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "container.blockio.io_service_bytes_recursive.write": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "container.cpu.percent": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "container.cpu.usage.percpu": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "container.cpu.usage.system": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "container.cpu.usage.total": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "container.memory.percent": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "container.memory.usage.limit": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "container.memory.usage.total": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "container.network.io.usage.rx_bytes": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "container.network.io.usage.tx_bytes": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "resource_attributes": {
+      "properties": {
+        "container.id": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "metrics_exclude": {
+              "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+              "items": {
+                "properties": {
+                  "regexp": {
+                    "type": "string"
+                  },
+                  "strict": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "metrics_include": {
+              "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+              "items": {
+                "properties": {
+                  "regexp": {
+                    "type": "string"
+                  },
+                  "strict": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "container.image.name": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "metrics_exclude": {
+              "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+              "items": {
+                "properties": {
+                  "regexp": {
+                    "type": "string"
+                  },
+                  "strict": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "metrics_include": {
+              "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+              "items": {
+                "properties": {
+                  "regexp": {
+                    "type": "string"
+                  },
+                  "strict": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "container.name": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "metrics_exclude": {
+              "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+              "items": {
+                "properties": {
+                  "regexp": {
+                    "type": "string"
+                  },
+                  "strict": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "metrics_include": {
+              "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+              "items": {
+                "properties": {
+                  "regexp": {
+                    "type": "string"
+                  },
+                  "strict": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "container.runtime": {
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "metrics_exclude": {
+              "description": "Experimental: MetricsExclude defines a list of filters for attribute values. If the list is not empty, metrics with matching resource attribute values will not be emitted. MetricsInclude has higher priority than MetricsExclude.",
+              "items": {
+                "properties": {
+                  "regexp": {
+                    "type": "string"
+                  },
+                  "strict": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "metrics_include": {
+              "description": "Experimental: MetricsInclude defines a list of filters for attribute values. If the list is not empty, only metrics with matching resource attribute values will be emitted.",
+              "items": {
+                "properties": {
+                  "regexp": {
+                    "type": "string"
+                  },
+                  "strict": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ssh_key": {
+      "type": "string"
+    },
+    "ssh_passphrase": {
+      "type": "string"
+    },
+    "timeout": {
+      "description": "Timeout is an optional value used to set scraper's context deadline.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

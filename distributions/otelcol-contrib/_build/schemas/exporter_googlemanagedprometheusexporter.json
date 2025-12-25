@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "metric": {
+      "properties": {
+        "clientconfig": {
+          "properties": {
+            "compression": {
+              "description": "Compression specifies the compression format for Metrics and Logging gRPC requests. Supported values: gzip.",
+              "type": "string"
+            },
+            "endpoint": {
+              "type": "string"
+            },
+            "grpc_pool_size": {
+              "description": "GRPCPoolSize sets the size of the connection pool in the GCP client",
+              "type": "integer"
+            },
+            "use_insecure": {
+              "description": "Only has effect if Endpoint is not \"\"",
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "config": {
+          "properties": {
+            "add_metric_suffixes": {
+              "description": "AddMetricSuffixes controls whether suffixes are added to metric names. Defaults to true.",
+              "type": "boolean"
+            },
+            "extra_metrics_config": {
+              "description": "ExtraMetricsConfig configures the target_info and otel_scope_info metrics.",
+              "properties": {
+                "enable_scope_info": {
+                  "description": "Add `otel_scope_info` metric and `scope_name`/`scope_version` attributes to all other metrics. On by default.",
+                  "type": "boolean"
+                },
+                "enable_target_info": {
+                  "description": "Add `target_info` metric based on the resource. On by default.",
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "cumulative_normalization": {
+          "description": "CumulativeNormalization normalizes cumulative metrics without start times or with explicit reset points by subtracting subsequent points from the initial point. It is enabled by default. Since it caches starting points, it may result in increased memory usage.",
+          "type": "boolean"
+        },
+        "prefix": {
+          "description": "Prefix configures the prefix of metrics sent to GoogleManagedPrometheus.  Defaults to prometheus.googleapis.com. Changing this prefix is not recommended, as it may cause metrics to not be queryable with promql in the Cloud Monitoring UI.",
+          "type": "string"
+        },
+        "resource_filters": {
+          "items": {
+            "properties": {
+              "prefix": {
+                "description": "Match resource keys by prefix",
+                "type": "string"
+              },
+              "regex": {
+                "description": "Match resource keys by regex",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "project": {
+      "type": "string"
+    },
+    "sending_queue": {
+      "type": "object"
+    },
+    "timeoutsettings": {
+      "description": "Timeout for all API calls. If not set, defaults to 12 seconds.",
+      "type": "object"
+    },
+    "user_agent": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

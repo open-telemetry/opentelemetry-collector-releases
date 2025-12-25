@@ -39,7 +39,7 @@ do
     echo "Using Builder: $(command -v "$BUILDER")"
     echo "Using Go: $(command -v go)"
 
-    if "$BUILDER" --skip-compilation="${skipcompilation}" --config manifest.yaml > _build/build.log 2>&1; then
+    if "$BUILDER" --skip-compilation="${skipcompilation}" --generate-schema --config manifest.yaml > _build/build.log 2>&1; then
         echo "✅ SUCCESS: distribution '${distribution}' built."
     else
         echo "❌ ERROR: failed to build the distribution '${distribution}'."

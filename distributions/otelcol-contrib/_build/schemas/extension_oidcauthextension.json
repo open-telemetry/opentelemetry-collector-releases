@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "attribute": {
+      "description": "The attribute (header name) to look for auth data. Optional, default value: \"authorization\".",
+      "type": "string"
+    },
+    "audience": {
+      "deprecated": true,
+      "description": "Deprecated: use Providers instead. Audience of the token, used during the verification. For example: \"https://accounts.google.com\" or \"https://login.salesforce.com\". Required unless IgnoreAudience is true.",
+      "type": "string"
+    },
+    "groups_claim": {
+      "deprecated": true,
+      "description": "Deprecated: use Providers instead. The claim that holds the subject's group membership information. Optional.",
+      "type": "string"
+    },
+    "ignore_audience": {
+      "deprecated": true,
+      "description": "Deprecated: use Providers instead. When true, this skips validating the audience field. Optional.",
+      "type": "boolean"
+    },
+    "issuer_ca_path": {
+      "deprecated": true,
+      "description": "Deprecated: use Providers instead. The local path for the issuer CA's TLS server cert. Optional.",
+      "type": "string"
+    },
+    "issuer_url": {
+      "deprecated": true,
+      "description": "Deprecated: use Providers instead. IssuerURL is the base URL for the OIDC provider. Required.",
+      "type": "string"
+    },
+    "providers": {
+      "deprecated": true,
+      "description": "Providers allows configuring multiple OIDC providers. Use the getProviderConfigs() method to get the full list of providers, including the legacy configuration.",
+      "items": {
+        "properties": {
+          "audience": {
+            "description": "Audience of the token, used during the verification. For example: \"https://accounts.google.com\" or \"https://login.salesforce.com\". Required unless IgnoreAudience is true.",
+            "type": "string"
+          },
+          "groups_claim": {
+            "description": "The claim that holds the subject's group membership information. Optional.",
+            "type": "string"
+          },
+          "ignore_audience": {
+            "description": "When true, this skips validating the audience field. Optional.",
+            "type": "boolean"
+          },
+          "issuer_ca_path": {
+            "description": "The local path for the issuer CA's TLS server cert. Optional.",
+            "type": "string"
+          },
+          "issuer_url": {
+            "description": "IssuerURL is the base URL for the OIDC provider. Required.",
+            "type": "string"
+          },
+          "username_claim": {
+            "description": "The claim to use as the username, in case the token's 'sub' isn't the suitable source. Optional.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "username_claim": {
+      "deprecated": true,
+      "description": "Deprecated: use Providers instead. The claim to use as the username, in case the token's 'sub' isn't the suitable source. Optional.",
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

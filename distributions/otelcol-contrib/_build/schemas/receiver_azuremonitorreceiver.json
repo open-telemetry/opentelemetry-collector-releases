@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "append_tags_as_attributes": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "auth": {
+      "description": "Authentication accepts the component azureauthextension, and uses it to get an access token to make requests. Using this, `credentials` and any related fields become useless.",
+      "properties": {
+        "authenticator": {
+          "description": "AuthenticatorID specifies the name of the azure extension to authenticate the requests to azure monitor.",
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "cache_resources": {
+      "type": "number"
+    },
+    "cache_resources_definitions": {
+      "type": "number"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "client_secret": {
+      "type": "string"
+    },
+    "cloud": {
+      "type": "string"
+    },
+    "collection_interval": {
+      "description": "CollectionInterval sets how frequently the scraper should be called and used as the context timeout to ensure that scrapers don't exceed the interval.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "credentials": {
+      "deprecated": true,
+      "description": "Deprecated: Credentials is deprecated.",
+      "type": "string"
+    },
+    "dimensions": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "overrides": {
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "discover_subscriptions": {
+      "type": "boolean"
+    },
+    "federated_token_file": {
+      "type": "string"
+    },
+    "initial_delay": {
+      "description": "InitialDelay sets the initial start delay for the scraper, any non positive value is assumed to be immediately.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "maximum_number_of_metrics_in_a_call": {
+      "type": "integer"
+    },
+    "maximum_number_of_records_per_resource": {
+      "type": "integer"
+    },
+    "maximum_resources_per_batch": {
+      "type": "integer"
+    },
+    "metrics": {
+      "type": "object"
+    },
+    "metricsbuilderconfig": {
+      "properties": {
+        "resource_attributes": {
+          "properties": {
+            "azuremonitor.subscription": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "azuremonitor.subscription_id": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "azuremonitor.tenant_id": {
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "resource_groups": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "services": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "subscription_ids": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "timeout": {
+      "description": "Timeout is an optional value used to set scraper's context deadline.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "use_batch_api": {
+      "type": "boolean"
+    }
+  },
+  "type": "object"
+}

@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "agent_description": {
+      "description": "Agent descriptions contains options to modify the AgentDescription message",
+      "properties": {
+        "include_resource_attributes": {
+          "description": "IncludeResourceAttributes determines whether the agent should copy its resource attributes to the non identifying attributes. (default: false)",
+          "type": "boolean"
+        },
+        "non_identifying_attributes": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "NonIdentifyingAttributes are a map of key-value pairs that may be specified to provide extra information about the agent to the OpAMP server.",
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "capabilities": {
+      "description": "Capabilities contains options to enable a particular OpAMP capability",
+      "properties": {
+        "reports_available_components": {
+          "description": "ReportsAvailableComponents enables the OpAMP ReportsAvailableComponents Capability (default: true)",
+          "type": "boolean"
+        },
+        "reports_effective_config": {
+          "description": "ReportsEffectiveConfig enables the OpAMP ReportsEffectiveConfig Capability. (default: true)",
+          "type": "boolean"
+        },
+        "reports_health": {
+          "description": "ReportsHealth enables the OpAMP ReportsHealth Capability. (default: true)",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "instance_uid": {
+      "description": "InstanceUID is a UUID formatted as a 36 character string in canonical representation. Auto-generated on start if missing.",
+      "type": "string"
+    },
+    "ppid": {
+      "description": "PPID is the process ID of the parent for the collector. If the PPID is specified, the extension will continuously poll for the status of the parent process, and emit a fatal error when the parent process is no longer running. If unspecified, the orphan detection logic does not run.",
+      "type": "integer"
+    },
+    "ppid_poll_interval": {
+      "description": "PPIDPollInterval is the time between polling for whether PPID is running.",
+      "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+      "type": "string"
+    },
+    "server": {
+      "properties": {
+        "http": {
+          "properties": {
+            "polling_interval": {
+              "description": "Duration string (e.g., '1s', '5m', '1h')",
+              "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "ws": {
+          "properties": {
+            "auth": {
+              "type": "object"
+            },
+            "endpoint": {
+              "type": "string"
+            },
+            "headers": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "tls": {
+              "properties": {
+                "ca_file": {
+                  "description": "Path to the CA cert. For a client this verifies the server certificate. For a server this verifies client certificates. If empty uses system root CA. (optional)",
+                  "type": "string"
+                },
+                "ca_pem": {
+                  "description": "In memory PEM encoded cert. (optional)",
+                  "type": "string"
+                },
+                "cert_file": {
+                  "description": "Path to the TLS cert to use for TLS required connections. (optional)",
+                  "type": "string"
+                },
+                "cert_pem": {
+                  "description": "In memory PEM encoded TLS cert to use for TLS required connections. (optional)",
+                  "type": "string"
+                },
+                "cipher_suites": {
+                  "description": "CipherSuites is a list of TLS cipher suites that the TLS transport can use. If left blank, a safe default list is used. See https://go.dev/src/crypto/tls/cipher_suites.go for a list of supported cipher suites.",
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "curve_preferences": {
+                  "description": "contains the elliptic curves that will be used in an ECDHE handshake, in preference order Defaults to empty list and \"crypto/tls\" defaults are used, internally.",
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "include_system_ca_certs_pool": {
+                  "description": "If true, load system CA certificates pool in addition to the certificates configured in this struct.",
+                  "type": "boolean"
+                },
+                "insecure": {
+                  "description": "In gRPC and HTTP when set to true, this is used to disable the client transport security. See https://godoc.org/google.golang.org/grpc#WithInsecure for gRPC. Please refer to https://godoc.org/crypto/tls#Config for more information. (optional, default false)",
+                  "type": "boolean"
+                },
+                "insecure_skip_verify": {
+                  "description": "InsecureSkipVerify will enable TLS but not verify the certificate.",
+                  "type": "boolean"
+                },
+                "key_file": {
+                  "description": "Path to the TLS key to use for TLS required connections. (optional)",
+                  "type": "string"
+                },
+                "key_pem": {
+                  "description": "In memory PEM encoded TLS key to use for TLS required connections. (optional)",
+                  "type": "string"
+                },
+                "max_version": {
+                  "description": "MaxVersion sets the maximum TLS version that is acceptable. If not set, refer to crypto/tls for defaults. (optional)",
+                  "type": "string"
+                },
+                "min_version": {
+                  "description": "MinVersion sets the minimum TLS version that is acceptable. If not set, TLS 1.2 will be used. (optional)",
+                  "type": "string"
+                },
+                "reload_interval": {
+                  "description": "ReloadInterval specifies the duration after which the certificate will be reloaded If not set, it will never be reloaded (optional)",
+                  "pattern": "^[0-9]+(ns|us|µs|ms|s|m|h)$",
+                  "type": "string"
+                },
+                "server_name_override": {
+                  "description": "ServerName requested by client for virtual hosting. This sets the ServerName in the TLSConfig. Please refer to https://godoc.org/crypto/tls#Config for more information. (optional)",
+                  "type": "string"
+                },
+                "tpm": {
+                  "description": "Trusted platform module configuration",
+                  "properties": {
+                    "auth": {
+                      "type": "string"
+                    },
+                    "enabled": {
+                      "type": "boolean"
+                    },
+                    "owner_auth": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "description": "The path to the TPM device or Unix domain socket. For instance /dev/tpm0 or /dev/tpmrm0.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}
