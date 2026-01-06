@@ -4,6 +4,12 @@
 
 <!-- next version -->
 
+## v0.143.1
+
+### 🧰 Bug fixes 🧰
+
+- `opampsupervisor`: revert "Add MSI package release artifacts for the OpAMP supervisor (#1261)" (#1332)
+
 ## v0.143.0
 
 ### 💡 Enhancements 💡
