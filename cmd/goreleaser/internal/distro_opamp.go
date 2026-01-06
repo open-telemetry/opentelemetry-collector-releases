@@ -33,7 +33,6 @@ var (
 		withBinaryMonorepo(".contrib/cmd/opampsupervisor").
 		withDefaultBinaryRelease(opampReleaseHeader).
 		withDefaultNfpms().
-		withDefaultMSIConfig().
 		// This is required because of some non-obvious path/workdir handling in
 		// Github Actions specific to the binaries CI.
 		withConfigFunc(func(d *distribution) {
@@ -49,9 +48,6 @@ var (
 			d.Nfpms[0].Scripts.PreInstall = path.Join("cmd", d.Name, d.Nfpms[0].Scripts.PreInstall)
 			d.Nfpms[0].Scripts.PostInstall = path.Join("cmd", d.Name, d.Nfpms[0].Scripts.PostInstall)
 			d.Nfpms[0].Scripts.PreRemove = path.Join("cmd", d.Name, d.Nfpms[0].Scripts.PreRemove)
-
-			d.MsiConfig[0].Files = append(d.MsiConfig[0].Files, "config.windows.example.yaml")
-			d.MsiConfig[0].WXS = path.Join("cmd", d.Name, d.MsiConfig[0].WXS)
 		}).
 		withNightlyConfig().
 		build()
