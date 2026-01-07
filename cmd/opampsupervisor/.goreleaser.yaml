@@ -69,6 +69,8 @@ nfpms:
       rpm:
         dependencies:
           - /bin/sh
+        scripts:
+          postinstall: postinstall-rpm.sh
     id: opampsupervisor
     ids:
       - opampsupervisor-linux
