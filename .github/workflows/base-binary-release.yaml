@@ -16,6 +16,11 @@ on:
         type: string
         default: ""
         description: "The collector dependency will be put into this folder"
+      windows-msi:
+        required: false
+        type: boolean
+        default: false
+        description: "Set to true if the binary needs a Windows MSI to be built"
 
 env:
   # renovate: datasource=github-releases packageName=goreleaser/goreleaser-pro
@@ -85,6 +90,12 @@ jobs:
       - name: Copy Dockerfile to Collector dependency directory
         run: cp cmd/${{ inputs.binary }}/Dockerfile ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}/Dockerfile
 
+      - name: Copy MSI files to Core Repo directory
+        if: inputs.windows-msi == true
+        run: |
+          cp cmd/${{ inputs.binary }}/opentelemetry.ico ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}
+          cp cmd/${{ inputs.binary }}/config.windows.example.yaml ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}
+
       - uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # v4.0.0
         with:
           cosign-release: "v2.6.1"
@@ -101,6 +112,12 @@ jobs:
         uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6.1.0
         with:
           go-version: "~1.25.0"
+
+      - name: Setup wixl # Required to build MSI packages for Windows
+        if: inputs.windows-msi == true && runner.os != 'Windows'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wixl
 
       - name: Log into Docker.io
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0

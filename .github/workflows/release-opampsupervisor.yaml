@@ -15,5 +15,6 @@ jobs:
       binary: opampsupervisor
       collector-dependency: 'open-telemetry/opentelemetry-collector-contrib'
       dependency-target-folder: '.contrib'
+      windows-msi: true
     secrets: inherit
     permissions: write-all
