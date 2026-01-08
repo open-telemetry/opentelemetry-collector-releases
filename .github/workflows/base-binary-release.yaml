@@ -16,6 +16,11 @@ on:
         type: string
         default: ""
         description: "The collector dependency will be put into this folder"
+      windows-msi:
+        required: false
+        type: boolean
+        default: false
+        description: "Set to true if the binary needs a Windows MSI to be built"
 
 env:
   # renovate: datasource=github-releases packageName=goreleaser/goreleaser-pro
@@ -86,6 +91,7 @@ jobs:
         run: cp cmd/${{ inputs.binary }}/Dockerfile ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}/Dockerfile
 
       - name: Copy MSI files to Core Repo directory
+        if: inputs.windows-msi == true
         run: |
           cp cmd/${{ inputs.binary }}/opentelemetry.ico ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}
           cp cmd/${{ inputs.binary }}/config.windows.example.yaml ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}
@@ -108,7 +114,7 @@ jobs:
           go-version: "~1.25.0"
 
       - name: Setup wixl # Required to build MSI packages for Windows
-        if: runner.os != 'Windows'
+        if: inputs.windows-msi == true && runner.os != 'Windows'
         run: |
           sudo apt-get update
           sudo apt-get install -y wixl

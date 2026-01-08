@@ -78,7 +78,7 @@ jobs:
           go-version: "~1.25.0"
 
       - name: Setup wixl # Required to build MSI packages for Windows
-        if: runner.os != 'Windows'
+        if: inputs.windows-msi == true && runner.os != 'Windows'
         run: |
           sudo apt-get update
           sudo apt-get install -y wixl
