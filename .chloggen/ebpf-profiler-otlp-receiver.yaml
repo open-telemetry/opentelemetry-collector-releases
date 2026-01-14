@@ -5,7 +5,7 @@ change_type: enhancement
 component: ebpf-profiler
 
 # A brief description of the change.  Surround your text with quotes ("") if it needs to start with a backtick (`).
-note: Add the prometheus receiver to the ebpf-profiler distribution
+note: Add the otlp receiver to the ebpf-profiler distribution
 
 # One or more tracking issues or pull requests related to the change
 issues: [1343]
