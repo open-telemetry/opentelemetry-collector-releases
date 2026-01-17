@@ -45,6 +45,11 @@ var (
 				content.Source = path.Join("cmd", d.Name, content.Source)
 				d.Nfpms[0].Contents[i] = content
 			}
+
+			rpm_overrides := d.Nfpms[0].Overrides["rpm"]
+			rpm_overrides.Scripts.PostInstall = path.Join("cmd", d.Name, d.Nfpms[0].Overrides["rpm"].Scripts.PostInstall)
+			d.Nfpms[0].Overrides["rpm"] = rpm_overrides
+
 			d.Nfpms[0].Scripts.PreInstall = path.Join("cmd", d.Name, d.Nfpms[0].Scripts.PreInstall)
 			d.Nfpms[0].Scripts.PostInstall = path.Join("cmd", d.Name, d.Nfpms[0].Scripts.PostInstall)
 			d.Nfpms[0].Scripts.PreRemove = path.Join("cmd", d.Name, d.Nfpms[0].Scripts.PreRemove)
