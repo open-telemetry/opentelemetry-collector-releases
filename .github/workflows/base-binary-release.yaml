@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Checkout Releases Repo
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
 
@@ -80,7 +80,7 @@ jobs:
           echo "NIGHTLY_FLAG=--nightly" >> "$GITHUB_OUTPUT"
 
       - name: Checkout Collector dependency repo
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
           repository: ${{ inputs.collector-dependency }}
@@ -100,7 +100,7 @@ jobs:
         with:
           cosign-release: "v2.6.1"
 
-      - uses: anchore/sbom-action/download-syft@0b82b0b1a22399a1c542d4d656f70cd903571b5c # v0.21.1
+      - uses: anchore/sbom-action/download-syft@62ad5284b8ced813296287a0b63906cb364b73ee # v0.22.0
 
       - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
         with:
