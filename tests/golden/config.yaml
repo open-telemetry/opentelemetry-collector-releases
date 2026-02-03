@@ -10,7 +10,7 @@ receivers:
 exporters:
   debug:
     verbosity: detailed
-  otlp:
+  otlp_grpc:
     endpoint: http://golden:4317
     tls:
       insecure: true
@@ -24,4 +24,4 @@ service:
       receivers:
         - prometheus
       exporters:
-        - otlp
+        - otlp_grpc
