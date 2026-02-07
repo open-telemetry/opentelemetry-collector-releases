@@ -81,6 +81,23 @@ podman run --name "$container_name" --privileged -v /sys/fs/cgroup:/sys/fs/cgrou
 
 install_pkg "$container_name" "$PKG_PATH"
 
+if [[ "$pkg_type" == "rpm" ]]; then
+    echo "Checking $SERVICE_NAME service state after install ..."
+    if $container_exec systemctl is-active "$SERVICE_NAME"; then
+        echo "$SERVICE_NAME service running after rpm install" >&2
+        exit 1
+    fi
+    echo "$SERVICE_NAME service correctly not running after rpm install"
+
+    if $container_exec systemctl is-enabled "$SERVICE_NAME"; then
+        echo "$SERVICE_NAME service enabled after rpm install" >&2
+        exit 1
+    fi
+    echo "$SERVICE_NAME service correctly not enabled after rpm install"
+
+    $container_exec systemctl start "$SERVICE_NAME"
+fi
+
 # If we got to this point, we might need to check the logs of the systemd service
 # when it's not properly active. This is added as a trap because the check
 # for service status below will return an error exitcode if the service is 
