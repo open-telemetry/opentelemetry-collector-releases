@@ -113,7 +113,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6.2.0
         with:
-          go-version: "~1.25.0"
+          go-version: "~1.26.0"
           check-latest: true
 
       - name: Create artifacts directory to store build artifacts
@@ -268,7 +268,7 @@ jobs:
 
       - name: Build container images locally (Linux)
         if: matrix.GOOS == 'linux' && contains(steps.prep.outputs.types, 'Docker Image')
-        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
         with:
           context: ./distributions/${{ inputs.distribution }}
           push: false
