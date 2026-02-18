@@ -9,3 +9,4 @@ dist/
 .tools
 .DS_Store
 .zed
+distributions/*/windows-installer.wxs
