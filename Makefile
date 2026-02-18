@@ -25,7 +25,7 @@ BINARIES ?= "builder,opampsupervisor"
 ci: check build
 check: ensure-goreleaser-up-to-date validate-components validate-version-consistency
 
-build: go ocb
+build: go ocb check-obi-generated
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -b ${OTELCOL_BUILDER}
 
 generate: generate-sources generate-goreleaser
@@ -33,8 +33,32 @@ generate: generate-sources generate-goreleaser
 generate-goreleaser: go
 	@./scripts/generate-goreleaser.sh -d "${DISTRIBUTIONS}" -b "${BINARIES}" -g ${GO}
 
-generate-sources: go ocb generate-msi
+generate-sources: go ocb generate-msi check-obi-generated
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER}
+
+# Generate OBI eBPF artifacts (requires Docker)
+.PHONY: generate-obi
+generate-obi:
+	@if [ ! -d "internal/obi" ]; then \
+		echo "Error: OBI submodule not initialized."; \
+		echo "Run: git submodule update --init --recursive"; \
+		exit 1; \
+	fi
+	@echo "Generating OBI eBPF artifacts (this takes 2-5 minutes)..."
+	@cd internal/obi && $(MAKE) docker-generate
+	@echo "✓ OBI eBPF artifacts generated successfully"
+
+# Check if OBI eBPF artifacts have been generated
+.PHONY: check-obi-generated
+check-obi-generated:
+	@if [ -d "internal/obi" ]; then \
+		if ! find internal/obi -name "*_bpfel.go" | grep -q .; then \
+			echo "Error: OBI eBPF artifacts not generated."; \
+			echo "Run: make generate-obi"; \
+			echo "This requires Docker to be available."; \
+			exit 1; \
+		fi \
+	fi
 
 generate-msi: go ocb
 	$(GO) run cmd/msi-generator/main.go -d "${DISTRIBUTIONS}"
