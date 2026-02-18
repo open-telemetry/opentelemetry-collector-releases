@@ -131,6 +131,9 @@ processors:
 receivers:
   - gomod: go.opentelemetry.io/collector/receiver/nopreceiver v0.147.0
   - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.147.0
+  # OBI (eBPF Instrumentation) - requires submodule at internal/obi
+  - gomod: go.opentelemetry.io/obi v0.5.0
+    import: go.opentelemetry.io/obi/collector
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/activedirectorydsreceiver v0.147.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/aerospikereceiver v0.147.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/apachereceiver v0.147.0
@@ -259,3 +262,8 @@ providers:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/s3provider v0.147.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/secretsmanagerprovider v0.147.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/googlesecretmanagerprovider v0.147.0
+
+replaces:
+  # OBI submodule - required for eBPF artifact generation
+  # Path is relative to distributions/otelcol-contrib/
+  - go.opentelemetry.io/obi => ../../../internal/obi
