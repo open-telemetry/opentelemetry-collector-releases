@@ -4,6 +4,8 @@
 
 <!-- next version -->
 
+## v0.145.0
+
 ## v0.144.0
 
 ### 💡 Enhancements 💡
