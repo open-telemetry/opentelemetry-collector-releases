@@ -4,6 +4,12 @@
 
 <!-- next version -->
 
+## v0.146.1
+
+### 🛑 Breaking changes 🛑
+
+- `bigipreceiver`: Removing unmaintained component (#46039)
+
 ## v0.145.0
 
 ## v0.144.0
