@@ -39,7 +39,13 @@ do
     echo "Using Builder: $(command -v "$BUILDER")"
     echo "Using Go: $(command -v go)"
 
-    if "$BUILDER" --skip-compilation="${skipcompilation}" --config manifest.yaml > _build/build.log 2>&1; then
+    build_env=""
+    if [[ "$distribution" = "otelcol-ebpf-profiler" ]]; then
+        build_env="GOOS=linux" # EBPF is linux exclusive
+        echo "⚠️ eBPF is only supported on Linux, building with GOOS=linux"
+    fi
+
+    if env ${build_env} "$BUILDER" --skip-compilation="${skipcompilation}" --config manifest.yaml > _build/build.log 2>&1; then
         echo "✅ SUCCESS: distribution '${distribution}' built."
     else
         echo "❌ ERROR: failed to build the distribution '${distribution}'."
