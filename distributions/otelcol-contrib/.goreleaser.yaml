@@ -95,6 +95,8 @@ nfpms:
       rpm:
         dependencies:
           - /bin/sh
+        scripts:
+          postinstall: postinstall-rpm.sh
     id: otelcol-contrib
     ids:
       - otelcol-contrib-linux
