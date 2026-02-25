@@ -6,7 +6,7 @@ receivers:
         endpoint: 0.0.0.0:4317
 
 exporters:
-  otlphttp:
+  otlp_http:
     endpoint: "http://0.0.0.0:4317"
 
 service:
@@ -14,4 +14,4 @@ service:
     metrics:
       receivers: [otlp]
       processors: []
-      exporters: [otlphttp]
+      exporters: [otlp_http]

@@ -4,6 +4,20 @@
 
 <!-- next version -->
 
+## v0.146.1
+
+### 🛑 Breaking changes 🛑
+
+- `bigipreceiver`: Removing unmaintained component (#46039)
+
+## v0.145.0
+
+## v0.144.0
+
+### 💡 Enhancements 💡
+
+- `opampsupervisor`: Readd fixed MSI package release artifacts for the OpAMP supervisor (#1261, #1332)
+
 ## v0.143.1
 
 ### 🧰 Bug fixes 🧰

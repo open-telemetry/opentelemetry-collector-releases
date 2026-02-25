@@ -3,7 +3,7 @@ receivers:
     samples_per_second: 19
 
 exporters:
-  otlphttp:
+  otlp_http:
     endpoint: "http://0.0.0.0:4317"
 
 service:
@@ -11,4 +11,4 @@ service:
     profiles:
       receivers: [profiling]
       processors: []
-      exporters: [otlphttp]
+      exporters: [otlp_http]
