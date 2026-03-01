@@ -225,6 +225,23 @@ func (b *distributionBuilder) newNfpms(dist string) []config.NFPM {
 	}
 }
 
+func (b *distributionBuilder) withVarLibDir(user, group string) *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		for i := range d.Nfpms {
+			d.Nfpms[i].Contents = append(d.Nfpms[i].Contents, config.NFPMContent{
+				Destination: path.Join("/var", "lib", d.Name),
+				Type:        "dir",
+				FileInfo: config.FileInfo{
+					Owner: user,
+					Group: group,
+					Mode:  0750,
+				},
+			})
+		}
+	})
+	return b
+}
+
 func (b *distributionBuilder) withDefaultMSIConfig() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
 		d.MsiConfig = b.newMSIConfig(d.Name)
