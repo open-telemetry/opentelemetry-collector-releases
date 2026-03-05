@@ -4,6 +4,16 @@
 
 <!-- next version -->
 
+## v0.147.0
+
+### 🛑 Breaking changes 🛑
+
+- `contrib`: Remove SAPM exporter from contrib distribution (#1393)
+
+### 💡 Enhancements 💡
+
+- `otelcol`: Add Windows ARM64 executable to release artifacts (#1383)
+
 ## v0.146.1
 
 ### 🛑 Breaking changes 🛑
