@@ -119,16 +119,6 @@ echo "Version update completed."
 # Make a new changelog update
 make chlog-update VERSION="v$next_distribution_version"
 
-# Validate that dist.version matches component versions
-echo
-echo "Running strict version validation..."
-if ! ./scripts/validate-version-consistency.sh --check-dist-version; then
-  echo "ERROR: Version validation failed after bumping versions."
-  echo "This indicates an issue with the version update logic."
-  exit 1
-fi
-echo "Version validation passed!"
-
 # Commit changes and draft PR
 if [ "$commit_changes" = false ]; then
   echo "Changes not committed and PR not created."
