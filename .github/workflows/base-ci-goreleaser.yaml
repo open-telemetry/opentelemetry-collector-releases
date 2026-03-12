@@ -195,7 +195,7 @@ jobs:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
           workdir: distributions/${{ inputs.distribution }}
-          args: --snapshot --clean --skip=sign,sbom --timeout 2h --split
+          args: --snapshot --clean --skip=sign,sbom --timeout 2h --split --verbose
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
