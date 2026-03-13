@@ -3,7 +3,7 @@
       Name="OpenTelemetry OpAMP Supervisor ({{ .Version }})"
       Id="*"
       UpgradeCode="457B2070-3249-4092-A99E-EF8F7D2F5534"
-      Version="{{ if .IsSnapshot }}{{ .RawVersion }}{{ else }}{{ .Version }}{{ end }}"
+      Version="{{ if .IsNightly }}{{ .RawVersion }}.{{ .Now.Format "00215" }}{{ else if .IsSnapshot }}{{ .RawVersion }}{{ else }}{{ .Version }}{{ end }}"
       Manufacturer="OpenTelemetry"
       Language="1033">
 
