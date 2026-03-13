@@ -1,6 +1,8 @@
 GO ?= go
 GORELEASER ?= goreleaser
 
+# a random change to trigger CI
+
 # SRC_ROOT is the top of the source tree.
 SRC_ROOT := $(shell git rev-parse --show-toplevel)
 
