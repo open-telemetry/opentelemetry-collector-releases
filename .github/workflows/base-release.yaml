@@ -108,6 +108,10 @@ jobs:
         run: |
           echo "NIGHTLY_FLAG=--nightly" >> "$GITHUB_OUTPUT"
 
+      - name: Fetch OBI source
+        if: inputs.distribution == 'otelcol-contrib'
+        uses: ./.github/actions/fetch-obi
+
       - name: Generate distribution sources
         run: make generate-sources
         env:

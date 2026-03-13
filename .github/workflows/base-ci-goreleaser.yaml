@@ -114,6 +114,10 @@ jobs:
           go-version: "~1.26.0"
           check-latest: true
 
+      - name: Fetch OBI source
+        if: inputs.distribution == 'otelcol-contrib' && inputs.nightly != true
+        uses: ./.github/actions/fetch-obi
+
       - name: Create artifacts directory to store build artifacts
         if: inputs.distribution == 'otelcol-contrib'
         run: mkdir -p distributions/otelcol-contrib/artifacts

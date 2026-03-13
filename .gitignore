@@ -12,3 +12,4 @@ dist/
 distributions/*/windows-installer.wxs
 internal/obi/
 internal/obi-src/
+.local/
