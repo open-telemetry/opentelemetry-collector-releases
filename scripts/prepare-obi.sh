@@ -3,6 +3,15 @@
 # Copyright The OpenTelemetry Authors
 # SPDX-License-Identifier: Apache-2.0
 
+# Downloads the OBI (opentelemetry-ebpf-instrumentation) release tarball
+# (obi-vX.Y.Z-source-generated.tar.gz), which includes all pre-generated BPF
+# source files, verifies its SHA256 checksum, and extracts it to internal/obi-src.
+#
+# No BPF toolchain (Docker, clang, bpf2go) is required.
+#
+# The version is read from distributions/otelcol-contrib/manifest.yaml unless
+# OBI_VERSION is already set in the environment (e.g. by the CI composite action).
+
 set -euo pipefail
 
 REPO_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." &> /dev/null && pwd )"
@@ -24,53 +33,53 @@ if [[ ! -f "${MANIFEST}" ]]; then
   exit 1
 fi
 
-obi_module_version="$(
+OBI_VERSION="${OBI_VERSION:-$(
   awk '/- gomod: go\.opentelemetry\.io\/obi / {print $NF; exit}' "${MANIFEST}"
-)"
+)}"
 
-if [[ -z "${obi_module_version}" ]]; then
+if [[ -z "${OBI_VERSION}" ]]; then
   echo "ERROR: failed to resolve OBI version from ${MANIFEST}" >&2
   exit 1
 fi
 
-obi_archive_url="https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation/archive/refs/tags/${obi_module_version}.tar.gz"
-version_file="${OBI_DIR}/.obi-version"
-prepared_version=""
-if [[ -f "${version_file}" ]]; then
-  prepared_version="$(cat "${version_file}")"
-fi
+TARBALL="obi-${OBI_VERSION}-source-generated.tar.gz"
+BASE_URL="https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation/releases/download/${OBI_VERSION}"
+TARBALL_CACHE="${REPO_DIR}/.local/${TARBALL}"
+OBI_STAMP="${OBI_DIR}/.obi-${OBI_VERSION}"
 
-if [[ "${prepared_version}" != "${obi_module_version}" ]]; then
-  tmpdir="$(mktemp -d)"
-  archive="${tmpdir}/obi-source.tar.gz"
-  trap 'rm -rf "${tmpdir}"' EXIT
-
-  echo "Preparing OBI source ${obi_module_version} from ${obi_archive_url}"
-  curl --fail --show-error --location --retry 3 --retry-delay 1 \
-    --output "${archive}" "${obi_archive_url}"
-  tar -xzf "${archive}" -C "${tmpdir}"
-
-  extracted_dir="$(find "${tmpdir}" -mindepth 1 -maxdepth 1 -type d | head -n1)"
-  if [[ -z "${extracted_dir}" ]]; then
-    echo "ERROR: failed to unpack OBI archive ${obi_archive_url}" >&2
-    exit 1
-  fi
-
-  rm -rf "${OBI_DIR}"
-  mv "${extracted_dir}" "${OBI_DIR}"
-  echo "${obi_module_version}" > "${version_file}"
-fi
-
-# Linux builds compile OBI's eBPF-enabled paths and require generated files.
-if [[ "$(uname -s)" != "Linux" ]]; then
+# Fast path: version-keyed stamp file already exists → nothing to do.
+if [[ -f "${OBI_STAMP}" ]]; then
+  echo "OBI ${OBI_VERSION} already prepared at ${OBI_DIR}"
   exit 0
 fi
 
-if ! find "${OBI_DIR}" -name "*_bpfel.go" | grep -q .; then
-  if ! command -v docker > /dev/null 2>&1; then
-    echo "ERROR: docker is required to generate OBI eBPF artifacts on Linux." >&2
-    exit 1
-  fi
-  echo "Generating OBI eBPF artifacts (this may take a few minutes)..."
-  make -C "${OBI_DIR}" docker-generate
+echo "Fetching OBI ${OBI_VERSION} source-generated tarball..."
+
+# Download the tarball to .local/ if it is not already cached there.
+mkdir -p "${REPO_DIR}/.local"
+if [[ ! -f "${TARBALL_CACHE}" ]]; then
+  curl --fail --show-error --location --retry 3 --retry-delay 1 \
+    --output "${TARBALL_CACHE}" "${BASE_URL}/${TARBALL}"
 fi
+
+# Verify checksum against the upstream SHA256SUMS release asset.
+echo "Verifying OBI ${OBI_VERSION} tarball checksum..."
+if [[ "$(uname -s)" == "Linux" ]]; then
+  curl -fsSL "${BASE_URL}/SHA256SUMS" | grep -F "${TARBALL}" \
+    | (cd "${REPO_DIR}/.local" && sha256sum --check) \
+    || { rm -f "${TARBALL_CACHE}"; echo "ERROR: checksum verification failed." >&2; exit 1; }
+else
+  curl -fsSL "${BASE_URL}/SHA256SUMS" | grep -F "${TARBALL}" \
+    | (cd "${REPO_DIR}/.local" && shasum -a 256 --check) \
+    || { rm -f "${TARBALL_CACHE}"; echo "ERROR: checksum verification failed." >&2; exit 1; }
+fi
+
+# Extract to OBI_DIR.
+rm -rf "${OBI_DIR}"
+mkdir -p "${OBI_DIR}"
+tar xzf "${TARBALL_CACHE}" --strip-components=1 -C "${OBI_DIR}"
+
+# Version-keyed stamp file: signals that this OBI version is ready and lets
+# subsequent Make invocations (and the CI composite action) skip the download.
+touch "${OBI_STAMP}"
+echo "OBI ${OBI_VERSION} source prepared at ${OBI_DIR}"
