@@ -9,11 +9,13 @@ var (
 	// otlp distro
 	otlpDist = newDistributionBuilder(otlpDistro).withConfigFunc(func(d *distribution) {
 		d.BuildConfigs = []buildConfig{
+			&fullBuildConfig{TargetOS: "aix", TargetArch: aixArchs, BuildDir: defaultBuildDir},
 			&fullBuildConfig{TargetOS: "linux", TargetArch: baseArchs, BuildDir: defaultBuildDir, ArmVersion: []string{"7"}, Ppc64Version: []string{"power8"}},
 			&fullBuildConfig{TargetOS: "darwin", TargetArch: darwinArchs, BuildDir: defaultBuildDir},
 			&fullBuildConfig{TargetOS: "windows", TargetArch: winArchs, BuildDir: defaultBuildDir},
 		}
 		d.ContainerImages = slices.Concat(
+			newContainerImages(d.Name, "aix", aixArchs, containerImageOptions{}),
 			newContainerImages(d.Name, "linux", baseArchs, containerImageOptions{armVersion: "7"}),
 			newContainerImages(d.Name, "windows", winContainerArchs, containerImageOptions{winVersion: "2019"}),
 			newContainerImages(d.Name, "windows", winContainerArchs, containerImageOptions{winVersion: "2022"}),
