@@ -18,6 +18,17 @@ msi:
       - opentelemetry.ico
       - config.yaml
 builds:
+  - id: otelcol-aix
+    goos:
+      - aix
+    goarch:
+      - ppc64
+    dir: _build
+    binary: otelcol
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
   - id: otelcol-linux
     goos:
       - linux
@@ -67,6 +78,7 @@ builds:
 archives:
   - id: otelcol
     ids:
+      - otelcol-aix
       - otelcol-linux
       - otelcol-darwin
       - otelcol-windows
@@ -134,6 +146,26 @@ nightly:
   tag_name: nightly-otelcol
   keep_single_release: true
 dockers:
+  - goos: aix
+    goarch: ppc64
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector:{{ .Version }}-ppc64
+      - otel/opentelemetry-collector:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Version }}-ppc64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/ppc64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
   - goos: linux
     goarch: "386"
     dockerfile: Dockerfile

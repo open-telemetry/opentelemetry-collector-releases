@@ -18,6 +18,20 @@ msi:
       - opentelemetry.ico
       - config.yaml
 builds:
+  - id: otelcol-contrib-aix
+    goos:
+      - aix
+    goarch:
+      - ppc64
+    goarm:
+      - "7"
+    goppc64:
+      - power8
+    dir: _build
+    binary: otelcol-contrib
+    builder: prebuilt
+    prebuilt:
+      path: artifacts/otelcol-contrib-aix_{{ .Target }}/otelcol-contrib
   - id: otelcol-contrib-linux
     goos:
       - linux
@@ -72,6 +86,7 @@ builds:
 archives:
   - id: otelcol-contrib
     ids:
+      - otelcol-contrib-aix
       - otelcol-contrib-linux
       - otelcol-contrib-darwin
       - otelcol-contrib-windows
@@ -139,6 +154,26 @@ nightly:
   tag_name: nightly-otelcol-contrib
   keep_single_release: true
 dockers:
+  - goos: aix
+    goarch: ppc64
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-contrib:{{ .Version }}-ppc64
+      - otel/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-ppc64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/ppc64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
   - goos: linux
     goarch: "386"
     dockerfile: Dockerfile

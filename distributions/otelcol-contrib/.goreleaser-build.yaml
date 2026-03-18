@@ -11,6 +11,17 @@ env:
 release:
   replace_existing_artifacts: true
 builds:
+  - id: otelcol-contrib-aix
+    goos:
+      - aix
+    goarch:
+      - ppc64
+    dir: _build
+    binary: otelcol-contrib
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
   - id: otelcol-contrib-linux
     goos:
       - linux
