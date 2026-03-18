@@ -63,6 +63,22 @@ jobs:
         GOOS: ${{ fromJSON( inputs.goos) }}
         GOARCH: ${{ fromJSON( inputs.goarch) }}
         exclude:
+          - GOOS: aix
+            GOARCH: 386
+          - GOOS: aix
+            GOARCH: amd64
+          - GOOS: aix
+            GOARCH: arm
+          - GOOS: aix
+            GOARCH: arm64
+          - GOOS: aix
+            GOARCH: ppc64le
+          - GOOS: aix
+            GOARCH: riscv64
+          - GOOS: aix
+            GOARCH: s390x
+          - GOOS: linux
+            GOARCH: ppc64
           - GOOS: darwin
             GOARCH: "386"
           - GOOS: darwin
@@ -72,7 +88,13 @@ jobs:
           - GOOS: windows
             GOARCH: arm
           - GOOS: windows
+            GOARCH: aix
+          - GOOS: windows
             GOARCH: s390x
+          - GOOS: darwin
+            GOARCH: ppc64
+          - GOOS: windows
+            GOARCH: ppc64
           - GOOS: darwin
             GOARCH: ppc64le
           - GOOS: windows

@@ -36,8 +36,8 @@ jobs:
     uses: ./.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-contrib
-      goos: '[ "linux", "darwin" ]'
-      goarch: '[ "386", "amd64", "arm", "arm64", "ppc64le", "riscv64", "s390x" ]'
+      goos: '[ "aix", "linux", "darwin" ]'
+      goarch: '[ "386", "amd64", "arm", "arm64", "ppc64", "ppc64le", "riscv64", "s390x" ]'
     secrets: inherit
 
   check-goreleaser-windows:
