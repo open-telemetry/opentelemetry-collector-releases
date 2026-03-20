@@ -7,6 +7,15 @@ receivers:
           scrape_interval: 2s
           static_configs:
             - targets: ['0.0.0.0:8888']
+          metric_relabel_configs:
+            - source_labels: [service_name]
+              target_label: service.name
+            - source_labels: [service_instance_id]
+              target_label: service.instance.id
+            - source_labels: [service_version]
+              target_label: service.version
+            - regex: service_name|service_instance_id|service_version
+              action: labeldrop
 exporters:
   debug:
     verbosity: detailed
