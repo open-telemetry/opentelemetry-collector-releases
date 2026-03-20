@@ -7,6 +7,8 @@ receivers:
           scrape_interval: 2s
           static_configs:
             - targets: ['0.0.0.0:8888']
+
+          # Remove once https://github.com/open-telemetry/opentelemetry-collector/issues/14814 is fixed
           metric_relabel_configs:
             - source_labels: [service_name]
               target_label: service.name
@@ -16,6 +18,7 @@ receivers:
               target_label: service.version
             - regex: service_name|service_instance_id|service_version
               action: labeldrop
+
 exporters:
   debug:
     verbosity: detailed
