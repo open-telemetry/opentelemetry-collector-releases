@@ -73,18 +73,18 @@ jobs:
 
       - run: ./.github/workflows/scripts/free-disk-space.sh
 
-      - uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # v4.0.0
+      - uses: sigstore/cosign-installer@ba7bc0a3fef59531c69a25acd34668d6d3fe6f22 # v4.1.0
         with:
           cosign-release: "v2.6.1"
 
-      - uses: anchore/sbom-action/download-syft@deef08a0db64bfad603422135db61477b16cef56 # v0.22.1
+      - uses: anchore/sbom-action/download-syft@57aae528053a48a3f6235f2d9461b05fbcb7366d # v0.23.1
 
-      - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
+      - uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
         if: runner.os != 'Windows'
         with:
           platforms: arm64,ppc64le,linux/arm/v7,s390x,riscv64
 
-      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+      - uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
         if: runner.os != 'Windows'
 
         # Fix slow Go compile and cache restore
@@ -97,9 +97,9 @@ jobs:
           echo "GOTMPDIR=D:\gotmp" | Out-File -FilePath $env:GITHUB_ENV -Append
           mkdir D:\gotmp
 
-      - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6.2.0
+      - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
         with:
-          go-version: "~1.25.0"
+          go-version: "~1.26.0"
           check-latest: true
 
       - name: Set nightly enabled
@@ -114,13 +114,13 @@ jobs:
           DISTRIBUTIONS: ${{ inputs.distribution }}
 
       - name: Log into Docker.io
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         with:
           username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
 
       - name: Login to GitHub Package Registry
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -134,7 +134,7 @@ jobs:
         # otelcol-contrib is built in a separate stage
       - name: Build ${{ inputs.distribution }}
         if: inputs.distribution == 'otelcol-contrib'
-        uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a # v6.4.0
+        uses: goreleaser/goreleaser-action@ec59f474b9834571250b370d4735c50f8e2d1e29 # v7.0.0
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
@@ -161,7 +161,7 @@ jobs:
         shell: bash
         run: ls -laR distributions/otelcol-contrib/artifacts
 
-      - uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a # v6.4.0
+      - uses: goreleaser/goreleaser-action@ec59f474b9834571250b370d4735c50f8e2d1e29 # v7.0.0
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
@@ -176,7 +176,7 @@ jobs:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GORELEASER_CURRENT_TAG: ${{ github.ref_name }}
 
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: artifacts-${{ inputs.distribution }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
           path: distributions/${{ inputs.distribution }}/dist/**/*
@@ -202,18 +202,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # v4.0.0
+      - uses: sigstore/cosign-installer@ba7bc0a3fef59531c69a25acd34668d6d3fe6f22 # v4.1.0
         with:
           cosign-release: "v2.6.1"
 
-      - uses: anchore/sbom-action/download-syft@deef08a0db64bfad603422135db61477b16cef56 # v0.22.1
+      - uses: anchore/sbom-action/download-syft@57aae528053a48a3f6235f2d9461b05fbcb7366d # v0.23.1
 
-      - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
+      - uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
         if: runner.os != 'Windows'
         with:
           platforms: arm64,ppc64le,s390x,riscv64
 
-      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+      - uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
         if: runner.os != 'Windows'
 
         # Fix slow Go compile and cache restore
@@ -226,26 +226,26 @@ jobs:
           echo "GOTMPDIR=D:\gotmp" | Out-File -FilePath $env:GITHUB_ENV -Append
           mkdir D:\gotmp
 
-      - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6.2.0
+      - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
         with:
-          go-version: "~1.25.0"
+          go-version: "~1.26.0"
           check-latest: true
 
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         if: runner.os == 'Windows'
         with:
           pattern: artifacts-${{ inputs.distribution }}-windows-*
           path: distributions/${{ inputs.distribution }}/dist
           merge-multiple: true
 
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         if: runner.os != 'Windows'
         with:
           pattern: artifacts-${{ inputs.distribution }}-darwin-*
           path: distributions/${{ inputs.distribution }}/dist
           merge-multiple: true
 
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         if: runner.os != 'Windows'
         with:
           pattern: artifacts-${{ inputs.distribution }}-linux-*
@@ -257,19 +257,19 @@ jobs:
         run: ls -R distributions/${{ inputs.distribution }}/dist
 
       - name: Log into Docker.io
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         with:
           username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
 
       - name: Login to GitHub Package Registry
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a # v6.4.0
+      - uses: goreleaser/goreleaser-action@ec59f474b9834571250b370d4735c50f8e2d1e29 # v7.0.0
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
