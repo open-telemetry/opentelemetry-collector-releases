@@ -34,6 +34,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 - [Andrzej Stencel](https://github.com/andrzej-stencel), Elastic
 - [Antoine Toulme](https://github.com/atoulme), Splunk
 - [Bogdan Drutu](https://github.com/bogdandrutu), Snowflake
+- [Damien Mathieu](https://github.com/dmathieu), Elastic
 - [Dmitrii Anoshin](https://github.com/dmitryax), Splunk
 - [Evan Bradley](https://github.com/evan-bradley), Dynatrace
 - [Moritz Wiesinger](https://github.com/mowies), Dynatrace
