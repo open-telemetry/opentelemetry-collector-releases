@@ -22,16 +22,6 @@ resourceMetrics:
             gauge:
               dataPoints:
                 - asDouble: 2.0731296e+07
-                  attributes:
-                    - key: service.instance.id
-                      value:
-                        stringValue: 5230d18c-f0dc-4ff3-9284-f273297bb543
-                    - key: service.name
-                      value:
-                        stringValue: otelcol-contrib
-                    - key: service.version
-                      value:
-                        stringValue: 0.139.0
                   timeUnixNano: "1000000"
             metadata:
               - key: prometheus.type
@@ -72,16 +62,6 @@ resourceMetrics:
               aggregationTemporality: 2
               dataPoints:
                 - asDouble: 3.2133528e+07
-                  attributes:
-                    - key: service.instance.id
-                      value:
-                        stringValue: 5230d18c-f0dc-4ff3-9284-f273297bb543
-                    - key: service.name
-                      value:
-                        stringValue: otelcol-contrib
-                    - key: service.version
-                      value:
-                        stringValue: 0.139.0
                   startTimeUnixNano: "1000000"
                   timeUnixNano: "1000000"
               isMonotonic: true
@@ -89,16 +69,6 @@ resourceMetrics:
             gauge:
               dataPoints:
                 - asDouble: 3.7312776e+07
-                  attributes:
-                    - key: service.instance.id
-                      value:
-                        stringValue: 5230d18c-f0dc-4ff3-9284-f273297bb543
-                    - key: service.name
-                      value:
-                        stringValue: otelcol-contrib
-                    - key: service.version
-                      value:
-                        stringValue: 0.139.0
                   timeUnixNano: "1000000"
             metadata:
               - key: prometheus.type
@@ -115,16 +85,6 @@ resourceMetrics:
               aggregationTemporality: 2
               dataPoints:
                 - asDouble: 6.80132517
-                  attributes:
-                    - key: service.instance.id
-                      value:
-                        stringValue: 5230d18c-f0dc-4ff3-9284-f273297bb543
-                    - key: service.name
-                      value:
-                        stringValue: otelcol-contrib
-                    - key: service.version
-                      value:
-                        stringValue: 0.139.0
                   startTimeUnixNano: "1000000"
                   timeUnixNano: "1000000"
               isMonotonic: true
@@ -189,16 +149,6 @@ resourceMetrics:
               aggregationTemporality: 2
               dataPoints:
                 - asDouble: 0.2
-                  attributes:
-                    - key: service.instance.id
-                      value:
-                        stringValue: 5230d18c-f0dc-4ff3-9284-f273297bb543
-                    - key: service.name
-                      value:
-                        stringValue: otelcol-contrib
-                    - key: service.version
-                      value:
-                        stringValue: 0.139.0
                   startTimeUnixNano: "1000000"
                   timeUnixNano: "1000000"
               isMonotonic: true
@@ -206,16 +156,6 @@ resourceMetrics:
             gauge:
               dataPoints:
                 - asDouble: 1.72855296e+08
-                  attributes:
-                    - key: service.instance.id
-                      value:
-                        stringValue: 5230d18c-f0dc-4ff3-9284-f273297bb543
-                    - key: service.name
-                      value:
-                        stringValue: otelcol-contrib
-                    - key: service.version
-                      value:
-                        stringValue: 0.139.0
                   timeUnixNano: "1000000"
             metadata:
               - key: prometheus.type
