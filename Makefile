@@ -92,11 +92,7 @@ goreleaser:
 REMOTE?=git@github.com:open-telemetry/opentelemetry-collector-releases.git
 .PHONY: push-tags
 push-tags:
-	@[ "${TAG}" ] || ( echo ">> env var TAG is not set"; exit 1 )
-	@echo "Adding tag ${TAG}"
-	@git tag -a ${TAG} -s -m "Version ${TAG}"
-	@echo "Pushing tag ${TAG}"
-	@git push ${REMOTE} ${TAG}
+	@./scripts/push-tag.sh
 
 # Used for debug only
 REMOTE?=git@github.com:open-telemetry/opentelemetry-collector-releases.git
