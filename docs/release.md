@@ -14,7 +14,7 @@ For general information about all Collector repositories release procedures, see
 1. Review and merge the Renovate PR for core and contrib components, including OCB. If they were not created or updated yet, you can go to the **Dependency Dashboard** GitHub issue and check the boxes for the updates or for a manual Renovate run to expedite the process.
 2. Run the GitHub Action workflow "[Update Version in Distributions and Prepare PR](https://github.com/open-telemetry/opentelemetry-collector-releases/actions/workflows/update-version.yaml)" which will update the minor version automatically (e.g. v0.116.0 -> v0.117.0) or manually provide a new version if releasing a bugfix or skipping a version. Select "create pr" option.
 The PR needs to be manually closed and re-opened once to trigger pipelines.
-   -  🛑 **Do not move forward until this PR is merged.** 🛑
+   -  🛑 **Do not move forward until the '[chore] Prepare release...' PR is merged.** 🛑
 3. Check out main and ensure it has the "Update version from ..." commit in your local
    copy by pulling in the latest from
    `open-telemetry/opentelemetry-collector-releases`. Assuming your upstream
@@ -26,7 +26,7 @@ The PR needs to be manually closed and re-opened once to trigger pipelines.
    
    - `make push-tags TAG=v0.85.0`
 5. Wait for the new tag build to pass successfully.
-6. Ensure the "Release Core", "Release Contrib", "Release k8s", "Release OTLP", "Release Builder" and "Release OpAMP Suporvisor" actions pass, this will
+6. Ensure the "Release Core", "Release Contrib", "Release k8s", "Release OTLP", "Release Builder" and "Release OpAMP Supervisor" actions pass, this will
     1. push new container images to `https://hub.docker.com/repository/docker/otel/opentelemetry-collector`, `https://hub.docker.com/repository/docker/otel/opentelemetry-collector-contrib` and `https://hub.docker.com/repository/docker/otel/opentelemetry-collector-k8s` as well as their respective counterparts on GHCR
     2. create a Github release for the tag and push all the build artifacts to the Github release. See [example](https://github.com/open-telemetry/opentelemetry-collector-releases/actions/workflows/release-core.yaml).
     3. build and release ocb and opampsupervisor binaries under a separate tagged Github release, e.g. `cmd/{builder,opampsupervisor}/v0.85.0`
