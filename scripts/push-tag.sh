@@ -41,6 +41,6 @@ if [ "${VALIDATE}" = "true" ]; then
 fi
 
 echo "Adding tag ${TAG}"
-git tag -a ${TAG} -s -m "Version ${TAG}"
+git tag -a "${TAG}" -s -m "Version ${TAG}"
 echo "Pushing tag ${TAG}"
-git push ${REMOTE} ${TAG}
+git push "${REMOTE}" "${TAG}"
