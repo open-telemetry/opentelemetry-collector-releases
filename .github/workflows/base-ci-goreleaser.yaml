@@ -37,7 +37,7 @@ permissions:
 
 env:
   # renovate: datasource=github-releases packageName=goreleaser/goreleaser-pro
-  GORELEASER_PRO_VERSION: v2.13.3
+  GORELEASER_PRO_VERSION: v2.15.2
 
 jobs:
   prev-tag:
@@ -217,7 +217,7 @@ jobs:
 
       - name: Upload linux service packages
         if: ${{ matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' && (inputs.distribution == 'otelcol-contrib' || inputs.distribution == 'otelcol') }}
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: linux-packages
           path: distributions/${{ inputs.distribution }}/dist/linux_amd64_v1/*
@@ -225,7 +225,7 @@ jobs:
 
       - name: Upload MSI packages
         if: matrix.GOOS == 'windows' && matrix.GOARCH == 'amd64' && (inputs.distribution == 'otelcol-contrib' || inputs.distribution == 'otelcol')
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: msi-packages
           path: distributions/${{ inputs.distribution }}/dist/windows_amd64_v1/**/*.msi
@@ -266,7 +266,7 @@ jobs:
 
       - name: Build container images locally (Linux)
         if: matrix.GOOS == 'linux' && contains(steps.prep.outputs.types, 'Docker Image')
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         with:
           context: ./distributions/${{ inputs.distribution }}
           push: false
@@ -288,7 +288,7 @@ jobs:
 
       - name: Upload container image artifact
         if: (matrix.GOOS == 'linux' || matrix.GOOS == 'windows') && contains(steps.prep.outputs.types, 'Docker Image')
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{ inputs.distribution }}-image-${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
           path: ${{ runner.temp }}/${{ inputs.distribution }}.tar

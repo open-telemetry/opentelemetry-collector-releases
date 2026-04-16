@@ -2,37 +2,38 @@ dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/ebpf-profiler
   name: otelcol-ebpf-profiler
   description: OpenTelemetry Collector for eBPF Profiling
-  version: 0.149.0
+  version: 0.150.1
   output_path: ./_build
   build_tags: "grpcnotrace"
 
 extensions:
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/opampextension v0.149.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.149.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.149.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/opampextension v0.150.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.150.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.150.0
 
 exporters:
-  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.149.0
-  - gomod: go.opentelemetry.io/collector/exporter/nopexporter v0.149.0
-  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.149.0
-  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.149.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.149.0
+  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.150.0
+  - gomod: go.opentelemetry.io/collector/exporter/nopexporter v0.150.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.150.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.150.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.150.0
 
 processors:
-  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.149.0
-  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.149.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.149.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.149.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.149.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.149.0
+  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.150.0
+  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.150.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.150.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.150.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.150.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.150.0
 
 receivers:
-  - gomod: go.opentelemetry.io/ebpf-profiler v0.0.202613
+  - gomod: go.opentelemetry.io/collector/receiver/nopreceiver v0.150.0
+  - gomod: go.opentelemetry.io/ebpf-profiler v0.0.202614
     import: go.opentelemetry.io/ebpf-profiler/collector
 
 providers:
-  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.55.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.55.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/httpprovider v1.55.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.55.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.55.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.56.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.56.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/httpprovider v1.56.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.56.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.56.0
