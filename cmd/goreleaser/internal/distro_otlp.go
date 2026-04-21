@@ -21,5 +21,5 @@ var (
 		d.ContainerImageManifests = slices.Concat(
 			newContainerImageManifests(d.Name, "linux", baseArchs, containerImageOptions{}),
 		)
-	}).withPackagingDefaults().build()
+	}).withPackagingDefaults().withVarLibDir("otelcol-otlp", "otelcol-otlp").build()
 )
