@@ -58,19 +58,14 @@ For more information about the maintainer role, see the [community repository](h
 
 For more information about the approver role, see the [community repository](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#approver).
 
-### Emeritus Maintainers
+### Emeritus
 
-- [Daniel Jaglowski](https://github.com/djaglowski)
-- [Juraci Paixão Kröhling](https://github.com/jpkrohling)
-- [Tigran Najaryan](https://github.com/tigrannajaryan)
-
-For more information about the emeritus role, see the [community repository](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#emeritus-maintainerapprovertriager).
-
-### Emeritus Approvers
-
-- [Anthony Mirabella](https://github.com/Aneurysm9)
-- [Bryan Aguilar](https://github.com/bryan-aguilar)
-- [Przemek Maciolek](https://github.com/pmm-sumo)
-- [Ruslan Kovalov](https://github.com/kovrus)
+- [Anthony Mirabella](https://github.com/Aneurysm9), Approver
+- [Bryan Aguilar](https://github.com/bryan-aguilar), Approver
+- [Daniel Jaglowski](https://github.com/djaglowski), Maintainer
+- [Juraci Paixão Kröhling](https://github.com/jpkrohling), Maintainer
+- [Przemek Maciolek](https://github.com/pmm-sumo), Approver
+- [Ruslan Kovalov](https://github.com/kovrus), Approver
+- [Tigran Najaryan](https://github.com/tigrannajaryan), Maintainer
 
 For more information about the emeritus role, see the [community repository](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#emeritus-maintainerapprovertriager).

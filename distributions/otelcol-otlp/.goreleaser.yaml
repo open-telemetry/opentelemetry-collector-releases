@@ -78,6 +78,12 @@ nfpms:
       - src: otelcol-otlp.conf
         dst: /etc/otelcol-otlp/otelcol-otlp.conf
         type: config|noreplace
+      - dst: /var/lib/otelcol-otlp
+        type: dir
+        file_info:
+          owner: otelcol-otlp
+          group: otelcol-otlp
+          mode: 488
     scripts:
       preinstall: preinstall.sh
       postinstall: postinstall.sh
