@@ -24,7 +24,7 @@ on:
 
 env:
   # renovate: datasource=github-releases packageName=goreleaser/goreleaser-pro
-  GORELEASER_PRO_VERSION: v2.15.2
+  GORELEASER_PRO_VERSION: v2.15.4
 
 permissions:
   contents: read
@@ -133,7 +133,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@ec59f474b9834571250b370d4735c50f8e2d1e29 # v7.0.0
+        uses: goreleaser/goreleaser-action@1a80836c5c9d9e5755a25cb59ec6f45a3b5f41a8 # v7.2.1
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}

@@ -5,7 +5,7 @@ GORELEASER ?= goreleaser
 SRC_ROOT := $(shell git rev-parse --show-toplevel)
 
 # renovate: datasource=github-releases depName=OCB packageName=open-telemetry/opentelemetry-collector
-OTELCOL_BUILDER_VERSION ?= 0.149.0
+OTELCOL_BUILDER_VERSION ?= 0.150.0
 
 OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
@@ -92,11 +92,7 @@ goreleaser:
 REMOTE?=git@github.com:open-telemetry/opentelemetry-collector-releases.git
 .PHONY: push-tags
 push-tags:
-	@[ "${TAG}" ] || ( echo ">> env var TAG is not set"; exit 1 )
-	@echo "Adding tag ${TAG}"
-	@git tag -a ${TAG} -s -m "Version ${TAG}"
-	@echo "Pushing tag ${TAG}"
-	@git push ${REMOTE} ${TAG}
+	@./scripts/push-tag.sh
 
 # Used for debug only
 REMOTE?=git@github.com:open-telemetry/opentelemetry-collector-releases.git
