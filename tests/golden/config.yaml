@@ -1,24 +1,8 @@
 receivers:
-  # Collect own metrics
-  prometheus:
-    config:
-      scrape_configs:
-        - job_name: 'otel-collector'
-          scrape_interval: 2s
-          static_configs:
-            - targets: ['0.0.0.0:8888']
-
-          # Remove once https://github.com/open-telemetry/opentelemetry-collector/issues/14814 is fixed
-          metric_relabel_configs:
-            - source_labels: [service_name]
-              target_label: service.name
-            - source_labels: [service_instance_id]
-              target_label: service.instance.id
-            - source_labels: [service_version]
-              target_label: service.version
-            - regex: service_name|service_instance_id|service_version
-              action: labeldrop
-
+  otlp:
+    protocols:
+      grpc:
+      http:
 exporters:
   debug:
     verbosity: detailed
@@ -31,9 +15,19 @@ exporters:
     sending_queue:
       enabled: false
 service:
+  telemetry:
+    metrics:
+      level: basic
+      readers:
+        - periodic:
+            interval: 10000
+            exporter:
+              otlp:
+                protocol: grpc
+                endpoint: http://localhost:4317
   pipelines:
     metrics:
       receivers:
-        - prometheus
+        - otlp
       exporters:
         - otlp_grpc
