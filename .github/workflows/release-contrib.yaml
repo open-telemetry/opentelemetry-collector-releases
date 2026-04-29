@@ -20,12 +20,12 @@ jobs:
     permissions: write-all
   release-windows:
     name: Release Contrib (Windows)
-    if: ${{ !contains(github.ref, '-nightly') }}
     uses: ./.github/workflows/base-release.yaml
     with:
       distribution: otelcol-contrib
       goos: '[ "windows" ]'
       goarch: '[ "386", "amd64", "arm64" ]'
       runner_os: windows-2022
+      nightly: ${{ contains(github.ref, '-nightly') }}
     secrets: inherit
     permissions: write-all
