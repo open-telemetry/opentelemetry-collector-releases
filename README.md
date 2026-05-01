@@ -58,6 +58,7 @@ For more information about the approver role, see the [community repository](htt
 
 - [Anthony Mirabella](https://github.com/Aneurysm9), Approver
 - [Bryan Aguilar](https://github.com/bryan-aguilar), Approver
+- [David Ashpole](https://github.com/dashpole), Approver
 - [Daniel Jaglowski](https://github.com/djaglowski), Maintainer
 - [Edmo Vamerlatti Costa](https://github.com/edmocosta), Maintainer
 - [John L. Peterson (Jack)](https://github.com/jackgopack4), Approver
