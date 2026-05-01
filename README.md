@@ -49,7 +49,6 @@ For more information about the maintainer role, see the [community repository](h
 
 - [Christos Markou](https://github.com/ChrsMark), Elastic
 - [Curtis Robert](https://github.com/crobert-1), Splunk
-- [David Ashpole](https://github.com/dashpole), Google
 - [Douglas Camata](https://github.com/douglascamata), Coralogix
 - [Sam DeHaan](https://github.com/dehaansa), Grafana Labs
 
