@@ -4,6 +4,34 @@
 
 <!-- next version -->
 
+## v0.151.0
+
+### 🚀 New components 🚀
+
+- `ebpf-profiler`: Add nopreceiver to the ebpf profiler distribution (#1464)
+
+### 💡 Enhancements 💡
+
+- `packaging`: Add /var/lib persistent state directories for collector RPM/DEB packages (#1396)
+
+## v0.150.1
+
+## v0.149.0
+
+## v0.148.0
+
+### 🚀 New components 🚀
+
+- `contrib`: add ciscoosreceiver to the contrib distribution (#1418)
+- `contrib`: Add the pprofreceiver to the contrib distribution (#1415)
+- `contrib`: Add awslambda receiver to contrib (#1417)
+- `contrib`: Add azure_encoding extension to the contrib distribution (#1416)
+
+### 💡 Enhancements 💡
+
+- `cmd/builder`: Upgrade Go version to 1.25 in the builder Docker image (#1412)
+- `otelcol-k8s`: Add metricsgenerationprocessor to the otelcol-k8s distribution (#1388)
+
 ## v0.147.0
 
 ### 🛑 Breaking changes 🛑

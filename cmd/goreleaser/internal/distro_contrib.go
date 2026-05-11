@@ -43,7 +43,7 @@ var (
 		d.ContainerImageManifests = slices.Concat(
 			newContainerImageManifests(d.Name, "linux", baseArchs, containerImageOptions{}),
 		)
-	}).withPackagingDefaults().withDefaultConfigIncluded().build()
+	}).withPackagingDefaults().withDefaultConfigIncluded().withVarLibDir("otelcol-contrib", "otelcol-contrib").build()
 
 	// contrib build-only project
 	contribBuildOnlyDist = newDistributionBuilder(contribDistro).withConfigFunc(func(d *distribution) {

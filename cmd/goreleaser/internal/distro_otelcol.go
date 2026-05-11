@@ -21,5 +21,5 @@ var (
 		d.ContainerImageManifests = slices.Concat(
 			newContainerImageManifests(d.Name, "linux", baseArchs, containerImageOptions{}),
 		)
-	}).withPackagingDefaults().withDefaultConfigIncluded().build()
+	}).withPackagingDefaults().withDefaultConfigIncluded().withVarLibDir("otel", "otel").build()
 )
