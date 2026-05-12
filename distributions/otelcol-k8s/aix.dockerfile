@@ -8,8 +8,11 @@ ARG USER_GID=10001
 USER ${USER_UID}:${USER_GID}
 
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --chmod=755 otelcol-contrib /otelcol-contrib
-COPY config.yaml /etc/otelcol-contrib/config.yaml
-ENTRYPOINT ["/otelcol-contrib"]
-CMD ["--config", "/etc/otelcol-contrib/config.yaml"]
-EXPOSE 4317 4318 55679
+COPY --chmod=755 otelcol-k8s /otelcol-k8s
+ENTRYPOINT ["/otelcol-k8s"]
+# `4137` and `4318`: OTLP
+# `55679`: zpages
+# `6831`, `14268`, and `14250`: Jaeger
+# `9411`: Zipkin
+EXPOSE 4317 4318 55679 6831 14268 14250 9411
+
