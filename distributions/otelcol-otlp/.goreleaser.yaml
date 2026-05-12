@@ -150,7 +150,7 @@ nightly:
 dockers:
   - goos: aix
     goarch: ppc64
-    dockerfile: Dockerfile
+    dockerfile: aix.dockerfile
     image_templates:
       - otel/opentelemetry-collector-otlp:{{ .Version }}-ppc64
       - otel/opentelemetry-collector-otlp:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64
