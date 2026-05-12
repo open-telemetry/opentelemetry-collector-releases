@@ -9,3 +9,7 @@ dist/
 .tools
 .DS_Store
 .zed
+distributions/*/windows-installer.wxs
+internal/obi/
+internal/obi-src/
+.local/

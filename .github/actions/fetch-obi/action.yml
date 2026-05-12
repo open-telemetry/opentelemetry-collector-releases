@@ -1,0 +1,116 @@
+name: Fetch OBI source
+description: |
+  Downloads the OBI (opentelemetry-ebpf-instrumentation) release tarball
+  (obi-vX.Y.Z-source-generated.tar.gz), which includes all pre-generated BPF
+  source files, verifies its SHA256 checksum, and extracts it to
+  internal/obi-src. The tarball is cached by OBI version so re-runs are instant
+  when the version has not changed.
+
+  No BPF toolchain (Docker, clang, bpf2go) is required.
+
+  The version is read from distributions/otelcol-contrib/manifest.yaml unless
+  obi-version is explicitly provided.
+
+inputs:
+  obi-version:
+    description: |
+      OBI version to fetch (e.g., v0.5.0). When empty (default), the version is
+      resolved from distributions/otelcol-contrib/manifest.yaml.
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Resolve OBI version
+      shell: bash
+      run: |
+        VERSION="${{ inputs.obi-version }}"
+        if [[ -z "${VERSION}" ]]; then
+          VERSION=$(awk '/- gomod: go\.opentelemetry\.io\/obi / {print $NF; exit}' distributions/otelcol-contrib/manifest.yaml)
+        fi
+        if [[ -z "${VERSION}" ]]; then
+          echo "ERROR: failed to resolve OBI version from manifest.yaml" >&2
+          exit 1
+        fi
+        echo "OBI_VERSION=${VERSION}" >> "$GITHUB_ENV"
+
+    - name: Cache OBI source
+      id: cache-obi
+      uses: actions/cache@v4
+      with:
+        path: |
+          .local/obi-${{ env.OBI_VERSION }}-source-generated.tar.gz
+          internal/obi-src
+        key: obi-source-${{ env.OBI_VERSION }}
+
+    - name: Fetch OBI source tarball (Linux/macOS)
+      if: steps.cache-obi.outputs.cache-hit != 'true' && runner.os != 'Windows'
+      shell: bash
+      run: |
+        TARBALL="obi-${OBI_VERSION}-source-generated.tar.gz"
+        BASE_URL="https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation/releases/download/${OBI_VERSION}"
+        DEST="internal/obi-src"
+
+        # Download tarball to .local/ — same location the script uses — so the
+        # version-keyed stamp file check in prepare-obi.sh finds it cached.
+        mkdir -p .local
+        curl -fL -o ".local/${TARBALL}" "${BASE_URL}/${TARBALL}"
+
+        # Verify checksum via the upstream SHA256SUMS release asset.
+        # Use uname to distinguish Linux (GNU sha256sum) from macOS (BSD sha256sum
+        # lacks --check; use perl shasum instead).
+        if [[ "$(uname -s)" == "Linux" ]]; then
+          curl -fsSL "${BASE_URL}/SHA256SUMS" | grep -F "${TARBALL}" | (cd .local && sha256sum --check)
+        else
+          curl -fsSL "${BASE_URL}/SHA256SUMS" | grep -F "${TARBALL}" | (cd .local && shasum -a 256 --check)
+        fi
+
+        # Extract verified tarball.
+        mkdir -p "${DEST}"
+        tar xzf ".local/${TARBALL}" --strip-components=1 -C "${DEST}"
+
+        # Create the version-keyed stamp file so prepare-obi.sh exits immediately
+        # on subsequent Make invocations (matches OBI_STAMP in the Makefile).
+        touch "${DEST}/.obi-${OBI_VERSION}"
+
+    - name: Fetch OBI source tarball (Windows)
+      if: steps.cache-obi.outputs.cache-hit != 'true' && runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $Version = $env:OBI_VERSION
+        $Tarball = "obi-${Version}-source-generated.tar.gz"
+        $BaseUrl = "https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation/releases/download/${Version}"
+        $Dest = "internal\obi-src"
+
+        # Download tarball to .local\ — same location the script uses.
+        New-Item -ItemType Directory -Force -Path ".local" | Out-Null
+        $LocalTarball = ".local\$Tarball"
+        curl.exe -fL -o $LocalTarball "${BaseUrl}/${Tarball}"
+
+        # Download SHA256SUMS and extract the expected hash for our tarball.
+        $SumsFile = ".local\SHA256SUMS.tmp"
+        curl.exe -fsSL -o $SumsFile "${BaseUrl}/SHA256SUMS"
+        $Expected = (Get-Content $SumsFile | Where-Object { $_ -match [regex]::Escape($Tarball) } | Select-Object -First 1)
+        Remove-Item $SumsFile
+        if (-not $Expected) {
+          Write-Error "ERROR: ${Tarball} not found in SHA256SUMS"
+          exit 1
+        }
+        $Expected = $Expected.Split(' ')[0].Trim()
+
+        # Verify hash.
+        $Actual = (Get-FileHash $LocalTarball -Algorithm SHA256).Hash.ToLower()
+        if ($Actual -ne $Expected) {
+          Write-Error "ERROR: SHA256 checksum verification failed for ${Tarball}`n  Expected: ${Expected}`n  Actual:   ${Actual}"
+          exit 1
+        }
+        Write-Host "SHA256 verified: ${Tarball}"
+
+        # Extract verified tarball.
+        New-Item -ItemType Directory -Force -Path $Dest | Out-Null
+        tar xzf $LocalTarball --strip-components=1 -C $Dest
+
+        # Create the version-keyed stamp file so prepare-obi.sh exits immediately.
+        New-Item -ItemType File -Force -Path "$Dest\.obi-$Version" | Out-Null
+

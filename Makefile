@@ -25,7 +25,7 @@ BINARIES ?= "builder,opampsupervisor"
 ci: check build
 check: ensure-goreleaser-up-to-date validate-components validate-version-consistency
 
-build: go ocb
+build: go ocb prepare-obi
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -b ${OTELCOL_BUILDER}
 
 generate: generate-sources generate-goreleaser
@@ -33,8 +33,20 @@ generate: generate-sources generate-goreleaser
 generate-goreleaser: go
 	@./scripts/generate-goreleaser.sh -d "${DISTRIBUTIONS}" -b "${BINARIES}" -g ${GO}
 
-generate-sources: go ocb generate-msi
+generate-sources: go ocb generate-msi prepare-obi
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER}
+
+# OBI (opentelemetry-ebpf-instrumentation) configuration.
+# The version is kept here and in distributions/otelcol-contrib/manifest.yaml;
+# they must stay in sync. The stamp file is version-keyed so that changing
+# OBI_VERSION automatically triggers a re-download on the next build.
+OBI_VERSION := $(shell awk '/- gomod: go\.opentelemetry\.io\/obi / { print $$NF; exit }' $(SRC_ROOT)/distributions/otelcol-contrib/manifest.yaml)
+OBI_DIR     := $(SRC_ROOT)/internal/obi-src
+OBI_STAMP   := $(OBI_DIR)/.obi-$(OBI_VERSION)
+
+.PHONY: prepare-obi
+prepare-obi:
+	@./scripts/prepare-obi.sh "${DISTRIBUTIONS}"
 
 generate-msi: go ocb
 	$(GO) run cmd/msi-generator/main.go -d "${DISTRIBUTIONS}"
