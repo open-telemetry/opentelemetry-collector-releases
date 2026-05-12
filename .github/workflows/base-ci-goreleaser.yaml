@@ -362,6 +362,8 @@ jobs:
           - GOOS: darwin
             GOARCH: s390x
           - GOOS: darwin
+            GOARCH: amd64
+          - GOOS: darwin
             GOARCH: arm64
           - GOOS: darwin
             GOARCH: arm
