@@ -263,7 +263,7 @@ jobs:
           if-no-files-found: error
 
       - name: Prepare variables
-        if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
+        if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows' || matrix.GOOS == 'aix'
         id: prep
         shell: bash
         run: |
@@ -282,7 +282,7 @@ jobs:
 
 
       - name: Print version and target
-        if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
+        if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows' || matrix.GOOS == 'aix'
         run: |
           echo 'Version: ${{ steps.prep.outputs.version }}'
           echo 'Types: ${{ steps.prep.outputs.types }}'
@@ -292,12 +292,21 @@ jobs:
           echo 'Image tag: ${{ env.TAG }}'
 
       - name: Copy binary to distro root folder
-        if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
+        if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows' || matrix.GOOS == 'aix'
         run: cp ./distributions/${{ inputs.distribution }}/${{ steps.prep.outputs.binarypath }} ./distributions/${{ inputs.distribution }}
 
       - name: Build container images locally (Linux)
         if: matrix.GOOS == 'linux' && contains(steps.prep.outputs.types, 'Docker Image')
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: ./distributions/${{ inputs.distribution }}
+          push: false
+          load: true
+          tags: ${{ env.TAG }}
+
+      - name: Build container images locally (AIX)
+        if: matrix.GOOS == 'aix' && contains(steps.prep.outputs.types, 'Docker Image')
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         with:
           context: ./distributions/${{ inputs.distribution }}
           push: false
@@ -356,6 +365,8 @@ jobs:
             GOARCH: "386"
           - GOOS: darwin
             GOARCH: s390x
+          - GOOS: darwin
+            GOARCH: arm64
           - GOOS: darwin
             GOARCH: arm
           - GOOS: windows
