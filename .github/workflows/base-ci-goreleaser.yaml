@@ -370,6 +370,8 @@ jobs:
           - GOOS: windows
             GOARCH: arm
           - GOOS: windows
+            GOARCH: arm64
+          - GOOS: windows
             GOARCH: aix
           - GOOS: windows
             GOARCH: s390x
