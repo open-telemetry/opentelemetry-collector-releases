@@ -372,7 +372,7 @@ jobs:
           - GOOS: windows
             GOARCH: arm64
           - GOOS: windows
-            GOARCH: aix
+            GOARCH: "386"
           - GOOS: windows
             GOARCH: s390x
           - GOOS: darwin
