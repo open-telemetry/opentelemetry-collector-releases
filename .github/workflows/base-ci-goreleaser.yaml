@@ -300,15 +300,6 @@ jobs:
           load: true
           tags: ${{ env.TAG }}
 
-      - name: Build container images locally (AIX)
-        if: matrix.GOOS == 'aix' && contains(steps.prep.outputs.types, 'Docker Image')
-        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
-        with:
-          context: ./distributions/${{ inputs.distribution }}
-          push: false
-          load: true
-          tags: ${{ env.TAG }}
-
       - name: Build container images locally (Windows)
         if: matrix.GOOS == 'windows' && contains(steps.prep.outputs.types, 'Docker Image')
         run: |
@@ -318,12 +309,12 @@ jobs:
             ./distributions/${{ inputs.distribution }}/
 
       - name: Export container image to tarball
-        if: (matrix.GOOS == 'linux' || matrix.GOOS == 'windows' || matrix.GOOS == 'aix') && contains(steps.prep.outputs.types, 'Docker Image')
+        if: (matrix.GOOS == 'linux' || matrix.GOOS == 'windows') && contains(steps.prep.outputs.types, 'Docker Image')
         run: |
           docker save ${{ env.TAG }} > ${{ runner.temp }}/${{ inputs.distribution }}.tar
 
       - name: Upload container image artifact
-        if: (matrix.GOOS == 'linux' || matrix.GOOS == 'windows' || matrix.GOOS == 'aix') && contains(steps.prep.outputs.types, 'Docker Image')
+        if: (matrix.GOOS == 'linux' || matrix.GOOS == 'windows') && contains(steps.prep.outputs.types, 'Docker Image')
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{ inputs.distribution }}-image-${{ steps.prep.outputs.version }}-${{ steps.prep.outputs.arch }}
@@ -398,7 +389,7 @@ jobs:
         if: runner.os != 'Windows'
         uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
         with:
-          platforms: arm64,ppc64,ppc64le,linux/arm/v7,s390x,riscv64
+          platforms: arm64,ppc64le,linux/arm/v7,s390x,riscv64
 
       - name: Start Docker daemon (Windows)
         if: runner.os == 'Windows'

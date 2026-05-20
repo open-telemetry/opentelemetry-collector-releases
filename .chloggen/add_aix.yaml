@@ -7,7 +7,7 @@ change_type: enhancement
 component: all
 
 # A brief description of the change.  Surround your text with quotes ("") if it needs to start with a backtick (`).
-note: Add new binaries and docker images for aix/ppc64
+note: Add new binaries for aix/ppc64
 
 # One or more tracking issues or pull requests related to the change
 issues: [1424]

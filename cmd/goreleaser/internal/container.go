@@ -105,13 +105,9 @@ func buildDockerImageWithOS(dist, os, arch string, opts containerImageOptions) c
 	label := func(name, template string) string {
 		return fmt.Sprintf("--label=org.opencontainers.image.%s={{%s}}", name, template)
 	}
-	dockerfile := "Dockerfile"
-	if os == "aix" {
-		dockerfile = "aix.dockerfile"
-	}
 	imageConfig := config.Docker{
 		ImageTemplates: imageTemplates,
-		Dockerfile:     dockerfile,
+		Dockerfile:     "Dockerfile",
 		Use:            "buildx",
 		BuildFlagTemplates: []string{
 			"--pull",

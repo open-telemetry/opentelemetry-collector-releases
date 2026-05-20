@@ -93,24 +93,6 @@ nightly:
   tag_name: nightly-otelcol-k8s
   keep_single_release: true
 dockers:
-  - goos: aix
-    goarch: ppc64
-    dockerfile: aix.dockerfile
-    image_templates:
-      - otel/opentelemetry-collector-k8s:{{ .Version }}-ppc64
-      - otel/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-ppc64
-      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-ppc64
-    build_flag_templates:
-      - --pull
-      - --platform=linux/ppc64
-      - --label=org.opencontainers.image.created={{.Date}}
-      - --label=org.opencontainers.image.name={{.ProjectName}}
-      - --label=org.opencontainers.image.revision={{.FullCommit}}
-      - --label=org.opencontainers.image.version={{.Version}}
-      - --label=org.opencontainers.image.source={{.GitURL}}
-      - --label=org.opencontainers.image.licenses=Apache-2.0
-    use: buildx
   - goos: linux
     goarch: amd64
     dockerfile: Dockerfile

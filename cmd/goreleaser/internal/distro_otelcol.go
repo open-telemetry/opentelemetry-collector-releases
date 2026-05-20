@@ -15,7 +15,6 @@ var (
 			&fullBuildConfig{TargetOS: "windows", TargetArch: winArchs, BuildDir: defaultBuildDir},
 		}
 		d.ContainerImages = slices.Concat(
-			newContainerImages(d.Name, "aix", aixArchs, containerImageOptions{}),
 			newContainerImages(d.Name, "linux", baseArchs, containerImageOptions{armVersion: "7"}),
 			newContainerImages(d.Name, "windows", winContainerArchs, containerImageOptions{winVersion: "2019"}),
 			newContainerImages(d.Name, "windows", winContainerArchs, containerImageOptions{winVersion: "2022"}),
