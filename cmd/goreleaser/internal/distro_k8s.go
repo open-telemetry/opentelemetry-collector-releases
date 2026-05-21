@@ -9,7 +9,6 @@ var (
 	// k8s distro
 	k8sDist = newDistributionBuilder(k8sDistro).withConfigFunc(func(d *distribution) {
 		d.BuildConfigs = []buildConfig{
-			&fullBuildConfig{TargetOS: "aix", TargetArch: aixArchs, BuildDir: defaultBuildDir},
 			&fullBuildConfig{TargetOS: "linux", TargetArch: k8sArchs, BuildDir: defaultBuildDir, Ppc64Version: []string{"power8"}},
 			&fullBuildConfig{TargetOS: "windows", TargetArch: winContainerArchs, BuildDir: defaultBuildDir},
 		}
