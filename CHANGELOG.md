@@ -4,6 +4,15 @@
 
 <!-- next version -->
 
+## v0.152.1
+
+## v0.152.0
+
+### 🚀 New components 🚀
+
+- `drainprocessor`: Add drain processor to contrib distribution. (#47235)
+- `drainprocessor`: Add drain processor to k8s distribution. (#47235)
+
 ## v0.151.0
 
 ### 🚀 New components 🚀
