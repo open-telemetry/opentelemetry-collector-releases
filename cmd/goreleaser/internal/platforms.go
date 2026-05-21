@@ -10,7 +10,7 @@ var (
 	winArchs          = []string{"386", "amd64", "arm64"}
 	winContainerArchs = []string{"amd64"}
 	darwinArchs       = []string{"amd64", "arm64"}
-	k8sArchs          = []string{"amd64", "arm64", "ppc64le", "ppc64", "riscv64", "s390x"}
+	k8sArchs          = []string{"amd64", "arm64", "ppc64le", "riscv64", "s390x"}
 	ocbArchs          = []string{"amd64", "arm64", "ppc64le", "riscv64"}
 	opAmpArchs        = []string{"amd64", "arm64", "ppc64le"}
 )
