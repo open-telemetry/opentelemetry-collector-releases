@@ -63,22 +63,6 @@ jobs:
         GOOS: ${{ fromJSON( inputs.goos) }}
         GOARCH: ${{ fromJSON( inputs.goarch) }}
         exclude:
-          - GOOS: aix
-            GOARCH: 386
-          - GOOS: aix
-            GOARCH: amd64
-          - GOOS: aix
-            GOARCH: arm
-          - GOOS: aix
-            GOARCH: arm64
-          - GOOS: aix
-            GOARCH: ppc64le
-          - GOOS: aix
-            GOARCH: riscv64
-          - GOOS: aix
-            GOARCH: s390x
-          - GOOS: linux
-            GOARCH: ppc64
           - GOOS: darwin
             GOARCH: "386"
           - GOOS: darwin
@@ -89,10 +73,6 @@ jobs:
             GOARCH: arm
           - GOOS: windows
             GOARCH: s390x
-          - GOOS: darwin
-            GOARCH: ppc64
-          - GOOS: windows
-            GOARCH: ppc64
           - GOOS: darwin
             GOARCH: ppc64le
           - GOOS: windows
@@ -330,39 +310,11 @@ jobs:
         GOOS: ${{ fromJSON( inputs.goos) }}
         GOARCH: ${{ fromJSON( inputs.goarch) }}
         exclude:
-          - GOOS: aix
-          - GOOS: linux
-            GOARCH: ppc64
           - GOOS: darwin
-            GOARCH: "386"
-          - GOOS: darwin
-            GOARCH: s390x
-          - GOOS: darwin
-            GOARCH: amd64
-          - GOOS: darwin
-            GOARCH: arm64
-          - GOOS: darwin
-            GOARCH: arm
-          - GOOS: windows
-            GOARCH: arm
-          - GOOS: windows
-            GOARCH: arm64
           - GOOS: windows
             GOARCH: "386"
           - GOOS: windows
-            GOARCH: s390x
-          - GOOS: darwin
-            GOARCH: ppc64
-          - GOOS: windows
-            GOARCH: ppc64
-          - GOOS: darwin
-            GOARCH: ppc64le
-          - GOOS: windows
-            GOARCH: ppc64le
-          - GOOS: darwin
-            GOARCH: riscv64
-          - GOOS: windows
-            GOARCH: riscv64
+            GOARCH: arm64
     runs-on: ${{ inputs.runner_os }}
     env:
       TAG: ${{ needs.check-goreleaser.outputs.version }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
