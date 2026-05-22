@@ -13,8 +13,19 @@ jobs:
     uses: ./.github/workflows/base-release.yaml
     with:
       distribution: otelcol-contrib
-      goos: '[ "aix", "linux", "darwin" ]'
-      goarch: '[ "386", "amd64", "arm", "arm64", "ppc64", "ppc64le", "riscv64", "s390x" ]'
+      goos: '[ "linux", "darwin" ]'
+      goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x", "riscv64" ]'
+      nightly: ${{ contains(github.ref, '-nightly') }}
+    secrets: inherit
+    permissions: write-all
+  release-aix:
+    name: Release Contrib (AIX)
+    if: ${{ !contains(github.ref, '-nightly') }}
+    uses: ./.github/workflows/base-release.yaml
+    with:
+      distribution: otelcol-contrib
+      goos: '[ "aix" ]'
+      goarch: '[ "ppc64 ]'
       nightly: ${{ contains(github.ref, '-nightly') }}
     secrets: inherit
     permissions: write-all
