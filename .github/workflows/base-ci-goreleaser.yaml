@@ -311,6 +311,7 @@ jobs:
         GOARCH: ${{ fromJSON( inputs.goarch) }}
         exclude:
           - GOOS: darwin
+          - GOOS: aix
           - GOOS: windows
             GOARCH: "386"
           - GOOS: windows
