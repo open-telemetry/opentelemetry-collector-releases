@@ -88,8 +88,6 @@ jobs:
           - GOOS: windows
             GOARCH: arm
           - GOOS: windows
-            GOARCH: aix
-          - GOOS: windows
             GOARCH: s390x
           - GOOS: darwin
             GOARCH: ppc64
