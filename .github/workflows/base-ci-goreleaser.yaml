@@ -312,6 +312,7 @@ jobs:
         exclude:
           - GOOS: darwin
           - GOOS: aix
+            GOARCH: ppc64
           - GOOS: windows
             GOARCH: "386"
           - GOOS: windows
