@@ -303,6 +303,7 @@ jobs:
         run: ./.github/workflows/scripts/check-disk-space.sh
 
   docker-tests:
+    if: inputs.goos != '[ "aix" ]'
     needs:
       - check-goreleaser
     strategy:
@@ -311,8 +312,6 @@ jobs:
         GOARCH: ${{ fromJSON( inputs.goarch) }}
         exclude:
           - GOOS: darwin
-          - GOOS: aix
-            GOARCH: ppc64
           - GOOS: windows
             GOARCH: "386"
           - GOOS: windows
