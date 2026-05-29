@@ -25,7 +25,7 @@ jobs:
     with:
       distribution: otelcol-contrib
       goos: '[ "aix" ]'
-      goarch: '[ "ppc64 ]'
+      goarch: '[ "ppc64" ]'
       nightly: ${{ contains(github.ref, '-nightly') }}
     secrets: inherit
     permissions: write-all
