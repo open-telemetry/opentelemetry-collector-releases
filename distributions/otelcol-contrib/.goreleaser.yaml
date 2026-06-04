@@ -87,6 +87,12 @@ nfpms:
       - src: config.yaml
         dst: /etc/otelcol-contrib/config.yaml
         type: config|noreplace
+      - dst: /var/lib/otelcol-contrib
+        type: dir
+        file_info:
+          owner: otelcol-contrib
+          group: otelcol-contrib
+          mode: 488
     scripts:
       preinstall: preinstall.sh
       postinstall: postinstall.sh

@@ -225,6 +225,27 @@ func (b *distributionBuilder) newNfpms(dist string) []config.NFPM {
 	}
 }
 
+func (b *distributionBuilder) withVarLibDir(user, group string) *distributionBuilder {
+	b.configFuncs = append(b.configFuncs, func(d *distribution) {
+		for i := range d.Nfpms {
+			d.Nfpms[i].Contents = append(d.Nfpms[i].Contents, config.NFPMContent{
+				Destination: path.Join("/var", "lib", d.Name),
+				Type:        "dir",
+				FileInfo: config.FileInfo{
+					Owner: user,
+					Group: group,
+					// 0750 (octal) = 488 (decimal). The generated YAML emits 488 because
+					// go.yaml.in/yaml/v3 serializes integers as decimal. This is intentional:
+					// decimal 488 is unambiguous across YAML 1.1 and 1.2, whereas octal
+					// notations (0750 / 0o750) are misinterpreted by one or the other.
+					Mode: 0750,
+				},
+			})
+		}
+	})
+	return b
+}
+
 func (b *distributionBuilder) withDefaultMSIConfig() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
 		d.MsiConfig = b.newMSIConfig(d.Name)

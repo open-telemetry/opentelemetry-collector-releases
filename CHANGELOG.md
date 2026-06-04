@@ -4,6 +4,63 @@
 
 <!-- next version -->
 
+## v0.153.0
+
+## v0.152.1
+
+## v0.152.0
+
+### 🚀 New components 🚀
+
+- `drainprocessor`: Add drain processor to contrib distribution. (#47235)
+- `drainprocessor`: Add drain processor to k8s distribution. (#47235)
+
+## v0.151.0
+
+### 🚀 New components 🚀
+
+- `ebpf-profiler`: Add nopreceiver to the ebpf profiler distribution (#1464)
+
+### 💡 Enhancements 💡
+
+- `packaging`: Add /var/lib persistent state directories for collector RPM/DEB packages (#1396)
+
+## v0.150.1
+
+## v0.149.0
+
+## v0.148.0
+
+### 🚀 New components 🚀
+
+- `contrib`: add ciscoosreceiver to the contrib distribution (#1418)
+- `contrib`: Add the pprofreceiver to the contrib distribution (#1415)
+- `contrib`: Add awslambda receiver to contrib (#1417)
+- `contrib`: Add azure_encoding extension to the contrib distribution (#1416)
+
+### 💡 Enhancements 💡
+
+- `cmd/builder`: Upgrade Go version to 1.25 in the builder Docker image (#1412)
+- `otelcol-k8s`: Add metricsgenerationprocessor to the otelcol-k8s distribution (#1388)
+
+## v0.147.0
+
+### 🛑 Breaking changes 🛑
+
+- `contrib`: Remove SAPM exporter from contrib distribution (#1393)
+
+### 💡 Enhancements 💡
+
+- `otelcol`: Add Windows ARM64 executable to release artifacts (#1383)
+
+## v0.146.1
+
+### 🛑 Breaking changes 🛑
+
+- `bigipreceiver`: Removing unmaintained component (#46039)
+
+## v0.145.0
+
 ## v0.144.0
 
 ### 💡 Enhancements 💡
