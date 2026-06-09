@@ -48,7 +48,6 @@ func (c *fullBuildConfig) Build(dist string) config.Build {
 		Goppc64: c.Ppc64Version,
 	}
 
-
 	if c.BinaryName != "" {
 		buildConfiguration.Binary = c.BinaryName
 	}
