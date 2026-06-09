@@ -20,7 +20,6 @@ jobs:
     permissions: write-all
   release-aix:
     name: Release Contrib (AIX)
-    if: ${{ !contains(github.ref, '-nightly') }}
     uses: ./.github/workflows/base-release.yaml
     with:
       distribution: otelcol-contrib
