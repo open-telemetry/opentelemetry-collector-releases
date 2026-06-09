@@ -18,17 +18,6 @@ jobs:
       nightly: ${{ contains(github.ref, '-nightly') }}
     secrets: inherit
     permissions: write-all
-  release-aix:
-    name: Release k8s (AIX)
-    if: ${{ !contains(github.ref, '-nightly') }}
-    uses: ./.github/workflows/base-release.yaml
-    with:
-      distribution: otelcol-k8s
-      goos: '[ "aix" ]'
-      goarch: '[ "ppc64" ]'
-      nightly: ${{ contains(github.ref, '-nightly') }}
-    secrets: inherit
-    permissions: write-all
   release-windows:
     name: Release k8s (Windows)
     if: ${{ !contains(github.ref, '-nightly') }}
