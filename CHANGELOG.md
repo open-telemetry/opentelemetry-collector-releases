@@ -4,6 +4,16 @@
 
 <!-- next version -->
 
+## v0.154.0
+
+### 🚩 Deprecations 🚩
+
+- `jmxreceiver`: Remove deprecated JMX receiver from contrib distribution (#1519)
+
+## v0.153.0
+
+## v0.152.1
+
 ## v0.152.0
 
 ### 🚀 New components 🚀

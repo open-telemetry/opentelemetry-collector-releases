@@ -2,38 +2,38 @@ dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/ebpf-profiler
   name: otelcol-ebpf-profiler
   description: OpenTelemetry Collector for eBPF Profiling
-  version: 0.152.0
+  version: 0.154.0
   output_path: ./_build
   build_tags: "grpcnotrace"
 
 extensions:
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/opampextension v0.152.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.152.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.152.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/opampextension v0.154.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.154.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.154.0
 
 exporters:
-  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.152.0
-  - gomod: go.opentelemetry.io/collector/exporter/nopexporter v0.152.0
-  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.152.0
-  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.152.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.152.0
+  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.154.0
+  - gomod: go.opentelemetry.io/collector/exporter/nopexporter v0.154.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.154.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.154.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.154.0
 
 processors:
-  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.152.0
-  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.152.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.152.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.152.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.152.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.152.0
+  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.154.0
+  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.154.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.154.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.154.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.154.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.154.0
 
 receivers:
-  - gomod: go.opentelemetry.io/collector/receiver/nopreceiver v0.152.0
-  - gomod: go.opentelemetry.io/ebpf-profiler v0.0.202618
+  - gomod: go.opentelemetry.io/collector/receiver/nopreceiver v0.154.0
+  - gomod: go.opentelemetry.io/ebpf-profiler v0.0.202623
     import: go.opentelemetry.io/ebpf-profiler/collector
 
 providers:
-  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.58.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.58.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/httpprovider v1.58.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.58.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.58.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.60.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.60.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/httpprovider v1.60.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.60.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.60.0

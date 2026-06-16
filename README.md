@@ -40,7 +40,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 - [Moritz Wiesinger](https://github.com/mowies), Dynatrace
 - [Pablo Baeyens](https://github.com/mx-psi), DataDog
 - [Sean Marciniak](https://github.com/MovieStoreGuy), Splunk
-- [Tyler Helmuth](https://github.com/TylerHelmuth), Honeycomb
+- [Tyler Helmuth](https://github.com/TylerHelmuth), Grafana Labs
 - [Yang Song](https://github.com/songy23), DataDog
 
 For more information about the maintainer role, see the [community repository](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#maintainer).
@@ -49,12 +49,8 @@ For more information about the maintainer role, see the [community repository](h
 
 - [Christos Markou](https://github.com/ChrsMark), Elastic
 - [Curtis Robert](https://github.com/crobert-1), Splunk
-- [David Ashpole](https://github.com/dashpole), Google
 - [Douglas Camata](https://github.com/douglascamata), Coralogix
-- [John L. Peterson (Jack)](https://github.com/jackgopack4), Datadog
-- [Matt Wear](https://github.com/mwear), Lightstep
 - [Sam DeHaan](https://github.com/dehaansa), Grafana Labs
-- [Ziqi Zhao](https://github.com/fatsheep9146), Alibaba
 
 For more information about the approver role, see the [community repository](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#approver).
 
@@ -62,10 +58,15 @@ For more information about the approver role, see the [community repository](htt
 
 - [Anthony Mirabella](https://github.com/Aneurysm9), Approver
 - [Bryan Aguilar](https://github.com/bryan-aguilar), Approver
+- [David Ashpole](https://github.com/dashpole), Approver
 - [Daniel Jaglowski](https://github.com/djaglowski), Maintainer
+- [Edmo Vamerlatti Costa](https://github.com/edmocosta), Maintainer
+- [John L. Peterson (Jack)](https://github.com/jackgopack4), Approver
 - [Juraci Paixão Kröhling](https://github.com/jpkrohling), Maintainer
+- [Matt Wear](https://github.com/mwear), Approver
 - [Przemek Maciolek](https://github.com/pmm-sumo), Approver
 - [Ruslan Kovalov](https://github.com/kovrus), Approver
 - [Tigran Najaryan](https://github.com/tigrannajaryan), Maintainer
+- [Ziqi Zhao](https://github.com/fatsheep9146), Approver
 
 For more information about the emeritus role, see the [community repository](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#emeritus-maintainerapprovertriager).
