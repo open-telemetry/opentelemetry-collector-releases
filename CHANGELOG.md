@@ -4,6 +4,8 @@
 
 <!-- next version -->
 
+## v0.155.0
+
 ## v0.154.0
 
 ### 🚩 Deprecations 🚩
