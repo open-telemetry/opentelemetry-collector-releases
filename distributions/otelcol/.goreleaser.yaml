@@ -18,6 +18,17 @@ msi:
       - opentelemetry.ico
       - config.yaml
 builds:
+  - id: otelcol-aix
+    goos:
+      - aix
+    goarch:
+      - ppc64
+    dir: _build
+    binary: otelcol
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
   - id: otelcol-linux
     goos:
       - linux
@@ -67,6 +78,7 @@ builds:
 archives:
   - id: otelcol
     ids:
+      - otelcol-aix
       - otelcol-linux
       - otelcol-darwin
       - otelcol-windows
