@@ -27,6 +27,11 @@ func main() {
 
 	os.Stdout.WriteString("# yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json\n")
 	e := yaml.NewEncoder(os.Stdout)
+	defer func() {
+		if err := e.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 	e.SetIndent(2)
 	if err := e.Encode(&project); err != nil {
 		log.Fatal(err)
