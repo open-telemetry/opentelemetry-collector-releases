@@ -14,7 +14,7 @@ description: |
 inputs:
   obi-version:
     description: |
-      OBI version to fetch (e.g., v0.5.0). When empty (default), the version is
+      OBI version to fetch (vX.Y.Z). When empty (default), the version is
       resolved from distributions/otelcol-contrib/manifest.yaml.
     required: false
     default: ""
@@ -55,23 +55,48 @@ runs:
         # Download tarball to .local/ — same location the script uses — so the
         # version-keyed stamp file check in prepare-obi.sh finds it cached.
         mkdir -p .local
-        curl -fL -o ".local/${TARBALL}" "${BASE_URL}/${TARBALL}"
+        curl --fail --show-error --location --retry 3 --retry-delay 1 \
+          --output ".local/${TARBALL}" "${BASE_URL}/${TARBALL}"
 
-        # Verify checksum via the upstream SHA256SUMS release asset.
-        # Use uname to distinguish Linux (GNU sha256sum) from macOS (BSD sha256sum
-        # lacks --check; use perl shasum instead).
-        if [[ "$(uname -s)" == "Linux" ]]; then
-          curl -fsSL "${BASE_URL}/SHA256SUMS" | grep -F "${TARBALL}" | (cd .local && sha256sum --check)
-        else
-          curl -fsSL "${BASE_URL}/SHA256SUMS" | grep -F "${TARBALL}" | (cd .local && shasum -a 256 --check)
+        # Verify checksum against the exact tarball entry in SHA256SUMS.
+        if ! EXPECTED_SHA256="$(
+          curl --fail --show-error --location --silent --retry 3 --retry-delay 1 \
+            "${BASE_URL}/SHA256SUMS" \
+            | awk -v filename="${TARBALL}" '
+                {
+                  checksum_filename = $2
+                  sub(/^\*/, "", checksum_filename)
+                  if (checksum_filename == filename) {
+                    print $1
+                    found = 1
+                    exit
+                  }
+                }
+                END { if (!found) exit 1 }
+              '
+        )"; then
+          echo "ERROR: ${TARBALL} not found in SHA256SUMS" >&2
+          exit 1
         fi
+
+        if [[ "$(uname -s)" == "Linux" ]]; then
+          ACTUAL_SHA256="$(sha256sum ".local/${TARBALL}" | awk '{print $1}')"
+        else
+          ACTUAL_SHA256="$(shasum -a 256 ".local/${TARBALL}" | awk '{print $1}')"
+        fi
+
+        if [[ "${ACTUAL_SHA256}" != "${EXPECTED_SHA256}" ]]; then
+          echo "ERROR: SHA256 checksum verification failed for ${TARBALL}" >&2
+          exit 1
+        fi
+        echo "SHA256 verified: ${TARBALL}"
 
         # Extract verified tarball.
         mkdir -p "${DEST}"
         tar xzf ".local/${TARBALL}" --strip-components=1 -C "${DEST}"
 
         # Create the version-keyed stamp file so prepare-obi.sh exits immediately
-        # on subsequent Make invocations (matches OBI_STAMP in the Makefile).
+        # on subsequent Make invocations (matches the check in prepare-obi.sh).
         touch "${DEST}/.obi-${OBI_VERSION}"
 
     - name: Fetch OBI source tarball (Windows)
@@ -86,12 +111,15 @@ runs:
         # Download tarball to .local\ — same location the script uses.
         New-Item -ItemType Directory -Force -Path ".local" | Out-Null
         $LocalTarball = ".local\$Tarball"
-        curl.exe -fL -o $LocalTarball "${BaseUrl}/${Tarball}"
+        curl.exe --fail --show-error --location --retry 3 --retry-delay 1 `
+          --output $LocalTarball "${BaseUrl}/${Tarball}"
 
-        # Download SHA256SUMS and extract the expected hash for our tarball.
+        # Download SHA256SUMS and extract the exact tarball entry.
         $SumsFile = ".local\SHA256SUMS.tmp"
-        curl.exe -fsSL -o $SumsFile "${BaseUrl}/SHA256SUMS"
-        $Expected = (Get-Content $SumsFile | Where-Object { $_ -match [regex]::Escape($Tarball) } | Select-Object -First 1)
+        curl.exe --fail --show-error --location --silent --retry 3 --retry-delay 1 `
+          --output $SumsFile "${BaseUrl}/SHA256SUMS"
+        $EscapedTarball = [regex]::Escape($Tarball)
+        $Expected = (Get-Content $SumsFile | Where-Object { $_ -match "^[0-9a-fA-F]{64}\s+\*?${EscapedTarball}$" } | Select-Object -First 1)
         Remove-Item $SumsFile
         if (-not $Expected) {
           Write-Error "ERROR: ${Tarball} not found in SHA256SUMS"

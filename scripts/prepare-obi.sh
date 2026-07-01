@@ -62,17 +62,41 @@ if [[ ! -f "${TARBALL_CACHE}" ]]; then
     --output "${TARBALL_CACHE}" "${BASE_URL}/${TARBALL}"
 fi
 
-# Verify checksum against the upstream SHA256SUMS release asset.
+# Verify checksum against the exact entry in the upstream SHA256SUMS release asset.
 echo "Verifying OBI ${OBI_VERSION} tarball checksum..."
-if [[ "$(uname -s)" == "Linux" ]]; then
-  curl -fsSL "${BASE_URL}/SHA256SUMS" | grep -F "${TARBALL}" \
-    | (cd "${REPO_DIR}/.local" && sha256sum --check) \
-    || { rm -f "${TARBALL_CACHE}"; echo "ERROR: checksum verification failed." >&2; exit 1; }
-else
-  curl -fsSL "${BASE_URL}/SHA256SUMS" | grep -F "${TARBALL}" \
-    | (cd "${REPO_DIR}/.local" && shasum -a 256 --check) \
-    || { rm -f "${TARBALL_CACHE}"; echo "ERROR: checksum verification failed." >&2; exit 1; }
+if ! expected_checksum="$(
+  curl --fail --show-error --location --silent --retry 3 --retry-delay 1 \
+    "${BASE_URL}/SHA256SUMS" \
+    | awk -v filename="${TARBALL}" '
+        {
+          checksum_filename = $2
+          sub(/^\*/, "", checksum_filename)
+          if (checksum_filename == filename) {
+            print $1
+            found = 1
+            exit
+          }
+        }
+        END { if (!found) exit 1 }
+      '
+)"; then
+  rm -f "${TARBALL_CACHE}"
+  echo "ERROR: ${TARBALL} not found in SHA256SUMS." >&2
+  exit 1
 fi
+
+if [[ "$(uname -s)" == "Linux" ]]; then
+  actual_checksum="$(sha256sum "${TARBALL_CACHE}" | awk '{print $1}')"
+else
+  actual_checksum="$(shasum -a 256 "${TARBALL_CACHE}" | awk '{print $1}')"
+fi
+
+if [[ "${actual_checksum}" != "${expected_checksum}" ]]; then
+  rm -f "${TARBALL_CACHE}"
+  echo "ERROR: checksum verification failed for ${TARBALL}." >&2
+  exit 1
+fi
+echo "SHA256 verified: ${TARBALL}"
 
 # Extract to OBI_DIR.
 rm -rf "${OBI_DIR}"
