@@ -26,7 +26,7 @@ The `otelcol-contrib` distribution manifest includes:
 
 ```yaml
 receivers:
-  - gomod: go.opentelemetry.io/obi v0.5.0
+  - gomod: go.opentelemetry.io/obi vX.Y.Z
     import: go.opentelemetry.io/obi/collector
 
 replaces:
