@@ -113,4 +113,3 @@ runs:
 
         # Create the version-keyed stamp file so prepare-obi.sh exits immediately.
         New-Item -ItemType File -Force -Path "$Dest\.obi-$Version" | Out-Null
-

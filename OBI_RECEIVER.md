@@ -95,4 +95,3 @@ The `go.opentelemetry.io/obi/collector` package uses build tags (`//go:build lin
 - OBI repository: https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation
 - OBI collector example: https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation/tree/main/examples/otel-collector
 - Collector builder docs: https://opentelemetry.io/docs/collector/custom-collector/
-
