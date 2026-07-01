@@ -1,0 +1,6 @@
+change_type: new_component
+component: otelcol-contrib
+note: Add the OBI receiver to the OpenTelemetry Collector Contrib distribution.
+issues: [1386]
+subtext:
+change_logs: [user]
