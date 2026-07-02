@@ -32,6 +32,15 @@ Additional Notes:
 
 ---
 
+## Generative AI Contribution Policy
+
+The OpenTelemetry Collector Distributions project welcomes contributions from all sources,
+including those generated with the help of AI tools. However, contributions assisted by such
+tools will be subject to the [OpenTelemetry Generative AI Contribution Policy](https://github.com/open-telemetry/community/blob/main/policies/genai.md). Please ensure you review and comply with this policy when submitting contributions
+that involve AI-generated content for a smooth experience.
+
+---
+
 ## Repository Structure
 
 Understanding the repository's structure will help you navigate and contribute effectively:
