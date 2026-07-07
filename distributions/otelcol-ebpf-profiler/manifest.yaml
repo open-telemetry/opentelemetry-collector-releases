@@ -9,7 +9,7 @@ dist:
 extensions:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/opampextension v0.156.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.156.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.155.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.156.0
 
 exporters:
   - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.156.0
