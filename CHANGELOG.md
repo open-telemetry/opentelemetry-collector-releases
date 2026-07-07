@@ -4,6 +4,12 @@
 
 <!-- next version -->
 
+## v0.156.0
+
+### 🚀 New components 🚀
+
+- `otelcol-contrib`: Add the OBI receiver to the OpenTelemetry Collector Contrib distribution. (#1386)
+
 ## v0.155.0
 
 ## v0.154.0
