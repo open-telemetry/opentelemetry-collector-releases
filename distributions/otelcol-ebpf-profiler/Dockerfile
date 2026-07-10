@@ -1,4 +1,13 @@
-FROM golang:1.26.4@sha256:f96cc555eb8db430159a3aa6797cd5bae561945b7b0fe7d0e284c63a3b291609
+FROM alpine:3.24@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b as certs
+RUN apk --update add ca-certificates
 
+FROM scratch
+
+ARG USER_UID=10001
+ARG USER_GID=10001
+USER ${USER_UID}:${USER_GID}
+
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --chmod=755 otelcol-ebpf-profiler /otelcol-ebpf-profiler
 ENTRYPOINT ["/otelcol-ebpf-profiler"]
+EXPOSE 4317 4318 55679
