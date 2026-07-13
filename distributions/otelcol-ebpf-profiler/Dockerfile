@@ -3,8 +3,9 @@ RUN apk --update add ca-certificates
 
 FROM scratch
 
-ARG USER_UID=10001
-ARG USER_GID=10001
+# By default, requires to run as root or with privileges to see all processes.
+ARG USER_UID=0
+ARG USER_GID=0
 USER ${USER_UID}:${USER_GID}
 
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
