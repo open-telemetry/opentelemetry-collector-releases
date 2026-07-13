@@ -40,7 +40,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 - [Moritz Wiesinger](https://github.com/mowies), Dynatrace
 - [Pablo Baeyens](https://github.com/mx-psi), DataDog
 - [Sean Marciniak](https://github.com/MovieStoreGuy), Splunk
-- [Tyler Helmuth](https://github.com/TylerHelmuth), Honeycomb
+- [Tyler Helmuth](https://github.com/TylerHelmuth), Grafana Labs
 - [Yang Song](https://github.com/songy23), DataDog
 
 For more information about the maintainer role, see the [community repository](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#maintainer).
