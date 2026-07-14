@@ -1,4 +1,15 @@
-FROM golang:1.26.5@sha256:079e59808d2d252516e27e3f3a9c003740dee7f75e55aa71528766d52bcfc16a
+FROM alpine:3.24@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b as certs
+RUN apk --update add ca-certificates
 
+
+FROM scratch
+
+# By default, requires to run as root or with privileges to see all processes.
+ARG USER_UID=0
+ARG USER_GID=0
+USER ${USER_UID}:${USER_GID}
+
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --chmod=755 otelcol-ebpf-profiler /otelcol-ebpf-profiler
 ENTRYPOINT ["/otelcol-ebpf-profiler"]
+EXPOSE 4317 4318 55679
