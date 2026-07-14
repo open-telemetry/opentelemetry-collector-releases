@@ -210,6 +210,9 @@ func (b *distributionBuilder) newNfpms(dist string) []config.NFPM {
 			Overrides: map[string]config.NFPMOverridables{
 				"rpm": {
 					Dependencies: []string{"/bin/sh"},
+					Scripts: config.NFPMScripts{
+						PostInstall: "postinstall-rpm.sh",
+					},
 				},
 			},
 			NFPMOverridables: config.NFPMOverridables{
