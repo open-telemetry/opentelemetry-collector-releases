@@ -4,6 +4,22 @@
 
 <!-- next version -->
 
+## v0.157.0
+
+### 🛑 Breaking changes 🛑
+
+- `contrib`: Remove deprecated signalfx receiver from the contrib distribution (#1551)
+- `packaging`: Prevent service being started/enabled upon install for rpms (#1334)
+  This brings behaviour inline with usual expectations for rpm packages which usually leave this up to the system administrator.
+
+### 🚀 New components 🚀
+
+- `cardinalityguardianprocessor`: Add Cardinality Guardian processor to the OpenTelemetry Collector Contrib. (#1549)
+
+### 💡 Enhancements 💡
+
+- `ebpf-profiler`: Use a scratch image similar to the contrib image for the ebpf-profiler image (#930)
+
 ## v0.156.0
 
 ### 🚀 New components 🚀
