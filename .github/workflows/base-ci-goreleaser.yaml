@@ -241,7 +241,7 @@ jobs:
           if-no-files-found: error
 
       - name: Prepare variables
-        if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
+        if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows' || matrix.GOOS == 'aix'
         id: prep
         shell: bash
         run: |
@@ -260,7 +260,7 @@ jobs:
 
 
       - name: Print version and target
-        if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
+        if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows' || matrix.GOOS == 'aix'
         run: |
           echo 'Version: ${{ steps.prep.outputs.version }}'
           echo 'Types: ${{ steps.prep.outputs.types }}'
@@ -270,7 +270,7 @@ jobs:
           echo 'Image tag: ${{ env.TAG }}'
 
       - name: Copy binary to distro root folder
-        if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows'
+        if: matrix.GOOS == 'linux' || matrix.GOOS == 'windows' || matrix.GOOS == 'aix'
         run: cp ./distributions/${{ inputs.distribution }}/${{ steps.prep.outputs.binarypath }} ./distributions/${{ inputs.distribution }}
 
       - name: Build container images locally (Linux)
@@ -307,6 +307,7 @@ jobs:
         run: ./.github/workflows/scripts/check-disk-space.sh
 
   docker-tests:
+    if: inputs.goos != '[ "aix" ]'
     needs:
       - check-goreleaser
     strategy:
