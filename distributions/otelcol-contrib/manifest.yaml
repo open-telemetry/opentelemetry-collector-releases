@@ -274,3 +274,5 @@ replaces:
   # Prepared by scripts/prepare-obi.sh from a tagged upstream source archive.
   - go.opentelemetry.io/obi => ../../../internal/obi-src
   - github.com/cilium/ebpf => github.com/cilium/ebpf v0.21.0
+  # github.com/hamba/avro/v2 is no longer maintained and has vulnerabilities
+  - github.com/hamba/avro/v2 => github.com/iskorotkov/avro/v2 v2.33.0
