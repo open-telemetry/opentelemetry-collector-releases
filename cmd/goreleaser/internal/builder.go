@@ -358,7 +358,7 @@ func (b *distributionBuilder) newSboms() []config.SBOM {
 func (b *distributionBuilder) withDefaultChecksum() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
 		b.dist.Checksum = config.Checksum{
-			NameTemplate: fmt.Sprintf("{{ .ProjectName }}_%v{{ if eq .Runtime.Goos \"windows\" }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt", d.Name),
+			NameTemplate: fmt.Sprintf("{{ .ProjectName }}_%v{{ if in (list \"windows\" \"aix\") .Runtime.Goos }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt", d.Name),
 		}
 	})
 	return b

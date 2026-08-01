@@ -18,6 +18,16 @@ jobs:
       nightly: ${{ contains(github.ref, '-nightly') }}
     secrets: inherit
     permissions: write-all
+  release-aix:
+    name: Release OTLP (AIX)
+    uses: ./.github/workflows/base-release.yaml
+    with:
+      distribution: otelcol-otlp
+      goos: '[ "aix" ]'
+      goarch: '[ "ppc64" ]'
+      nightly: ${{ contains(github.ref, '-nightly') }}
+    secrets: inherit
+    permissions: write-all
   release-windows:
     name: Release OTLP (Windows)
     if: ${{ !contains(github.ref, '-nightly') }}
