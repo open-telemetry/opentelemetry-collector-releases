@@ -36,7 +36,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 - [Bogdan Drutu](https://github.com/bogdandrutu), Snowflake
 - [Damien Mathieu](https://github.com/dmathieu), Elastic
 - [Dmitrii Anoshin](https://github.com/dmitryax), Splunk
-- [Evan Bradley](https://github.com/evan-bradley), Dynatrace
 - [Moritz Wiesinger](https://github.com/mowies), Dynatrace
 - [Pablo Baeyens](https://github.com/mx-psi), DataDog
 - [Sean Marciniak](https://github.com/MovieStoreGuy), Splunk
@@ -58,9 +57,10 @@ For more information about the approver role, see the [community repository](htt
 
 - [Anthony Mirabella](https://github.com/Aneurysm9), Approver
 - [Bryan Aguilar](https://github.com/bryan-aguilar), Approver
-- [David Ashpole](https://github.com/dashpole), Approver
 - [Daniel Jaglowski](https://github.com/djaglowski), Maintainer
+- [David Ashpole](https://github.com/dashpole), Approver
 - [Edmo Vamerlatti Costa](https://github.com/edmocosta), Maintainer
+- [Evan Bradley](https://github.com/evan-bradley), Maintainer
 - [John L. Peterson (Jack)](https://github.com/jackgopack4), Approver
 - [Juraci Paixão Kröhling](https://github.com/jpkrohling), Maintainer
 - [Matt Wear](https://github.com/mwear), Approver
