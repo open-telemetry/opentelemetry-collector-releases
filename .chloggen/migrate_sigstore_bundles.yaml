@@ -4,7 +4,7 @@
 change_type: breaking
 
 # The name of the component, or a single word describing the area of concern, (e.g. otlpreceiver)
-component: release
+component: all
 
 # A brief description of the change.  Surround your text with quotes ("") if it needs to start with a backtick (`).
 note: Update Cosign usage to work with v3
@@ -18,8 +18,11 @@ issues: [1570]
 subtext: |
   The Cosign v3 upgrade introduced a change in signing workflow. Previous two files
   were required to map the outputs (certificate and signature), now only one file is required.
-  This file is a bundle that contains both outputs in JSON format.
+  The new file is a bundle that contains both outputs in JSON format.
   This change has been done following the guidance from https://goreleaser.com/blog/cosign-v3/.
+  With this change, anyone who wants to verify the signature of the artifacts produced by the
+  release will need to use Cosign V3 and point to the new bundle file or download the bundle and
+  unpack it to get the certificate and signature files.
 
 # Optional: The change log or logs in which this entry should be included.
 # e.g. '[user]' or '[user, api]'
