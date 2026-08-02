@@ -123,14 +123,10 @@ signs:
   - cmd: cosign
     args:
       - sign-blob
-      - --output-signature
-      - ${artifact}.sig
-      - --output-certificate
-      - ${artifact}.pem
+      - --bundle=${signature}
       - ${artifact}
-    signature: ${artifact}.sig
+    signature: ${artifact}.sigstore.json
     artifacts: all
-    certificate: ${artifact}.pem
 docker_signs:
   - args:
       - sign
