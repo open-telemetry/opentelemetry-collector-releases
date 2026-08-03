@@ -354,7 +354,7 @@ func (b *distributionBuilder) newSboms() []config.SBOM {
 func (b *distributionBuilder) withDefaultChecksum() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
 		b.dist.Checksum = config.Checksum{
-			NameTemplate: fmt.Sprintf("{{ .ProjectName }}_%v{{ if in (list \"windows\" \"aix\") .Runtime.Goos }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt", d.Name),
+			Split: true,
 		}
 	})
 	return b
@@ -363,7 +363,7 @@ func (b *distributionBuilder) withDefaultChecksum() *distributionBuilder {
 func (b *distributionBuilder) withDefaultBinaryChecksum() *distributionBuilder {
 	b.configFuncs = append(b.configFuncs, func(d *distribution) {
 		b.dist.Checksum = config.Checksum{
-			NameTemplate: "checksums.txt",
+			Split: true,
 		}
 	})
 	return b
