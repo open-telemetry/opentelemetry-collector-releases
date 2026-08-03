@@ -278,16 +278,12 @@ func (b *distributionBuilder) withDefaultSigns() *distributionBuilder {
 func (b *distributionBuilder) signs() []config.Sign {
 	return []config.Sign{
 		{
-			Artifacts:   "all",
-			Signature:   "${artifact}.sig",
-			Certificate: "${artifact}.pem",
-			Cmd:         "cosign",
+			Artifacts: "all",
+			Signature: "${artifact}.sigstore.json",
+			Cmd:       "cosign",
 			Args: []string{
 				"sign-blob",
-				"--output-signature",
-				"${artifact}.sig",
-				"--output-certificate",
-				"${artifact}.pem",
+				"--bundle=${signature}",
 				"${artifact}",
 			},
 		},
