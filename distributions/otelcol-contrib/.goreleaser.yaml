@@ -130,7 +130,7 @@ nfpms:
 snapshot:
   version_template: '{{ incpatch .Version }}-next'
 checksum:
-  name_template: '{{ .ProjectName }}_otelcol-contrib{{ if in (list "windows" "aix") .Runtime.Goos }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt'
+  split: true
 signs:
   - cmd: cosign
     args:

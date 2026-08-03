@@ -55,7 +55,7 @@ archives:
 snapshot:
   version_template: '{{ incpatch .Version }}-next'
 checksum:
-  name_template: checksums.txt
+  split: true
 changelog:
   disable: "true"
 signs:
