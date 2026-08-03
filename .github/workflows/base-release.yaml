@@ -20,6 +20,10 @@ on:
         required: false
         type: string
         default: false
+      skips:
+        required: false
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -108,6 +112,12 @@ jobs:
         run: |
           echo "NIGHTLY_FLAG=--nightly" >> "$GITHUB_OUTPUT"
 
+      - name: Set skips flag
+        id: skips-check
+        if: inputs.skips != ''
+        run: |
+          echo "SKIPS_FLAG=--skip=${{ inputs.skips }}" >> "$GITHUB_OUTPUT"
+
       - name: Fetch OBI source
         if: inputs.distribution == 'otelcol-contrib'
         uses: ./.github/actions/fetch-obi
@@ -143,7 +153,7 @@ jobs:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
           workdir: distributions/${{ inputs.distribution }}
-          args: release --clean --split --timeout 2h --config .goreleaser-build.yaml --release-header-tmpl=../../.github/release-template.md ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }}
+          args: release --clean --split --timeout 2h --config .goreleaser-build.yaml --release-header-tmpl=../../.github/release-template.md ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }} ${{ steps.skips-check.outputs.SKIPS_FLAG }}
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
@@ -170,7 +180,7 @@ jobs:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
           workdir: distributions/${{ inputs.distribution }}
-          args: release --clean --split --timeout 2h --release-header-tmpl=../../.github/release-template.md ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }}
+          args: release --clean --split --timeout 2h --release-header-tmpl=../../.github/release-template.md ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }} ${{ steps.skips-check.outputs.SKIPS_FLAG }}
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}

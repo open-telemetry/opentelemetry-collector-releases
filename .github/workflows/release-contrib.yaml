@@ -26,6 +26,7 @@ jobs:
       goos: '[ "aix" ]'
       goarch: '[ "ppc64" ]'
       nightly: ${{ contains(github.ref, '-nightly') }}
+      skips: 'docker'
     secrets: inherit
     permissions: write-all
   release-windows:
