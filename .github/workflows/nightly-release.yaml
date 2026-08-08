@@ -41,3 +41,152 @@ jobs:
           TAG="${MAJOR_VERSION}.${MINOR_VERSION}.0-nightly.$(date +'%Y%m%d%H%M')"
           git tag -a $TAG -m "$TAG: nightly build"
           git push origin $TAG
+
+  cleanup-nightly:
+    name: Cleanup Old Nightly Releases
+    runs-on: ubuntu-latest
+    needs: nightly-release
+    permissions:
+      contents: write   # required to delete git tags
+      packages: write   # required to delete GHCR packages
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      DISTRIBUTIONS: >-
+        opentelemetry-collector
+        opentelemetry-collector-contrib
+        opentelemetry-collector-k8s
+        opentelemetry-collector-otlp
+        opentelemetry-collector-ebpf-profiler
+
+    steps:
+      - uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        id: otelbot-token
+        with:
+          app-id: ${{ vars.OTELBOT_COLLECTOR_RELEASES_APP_ID }}
+          private-key: ${{ secrets.OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY }}
+          permission-contents: write
+          permission-packages: write
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          token: ${{ steps.otelbot-token.outputs.token }}
+
+      - name: Delete nightly git tags older than 2 weeks
+        run: |
+          CUTOFF=$(date -d '2 weeks ago' +%s)
+          git fetch --tags
+
+          git tag -l | grep -E 'v[0-9]+\.[0-9]+\.[0-9]+-nightly\.' | while read TAG; do
+            # get the unix timestamp of when the tag was created (taggerdate for annotated, creatordate fallback)
+            TAG_DATE=$(git log -1 --format=%ct "$TAG" 2>/dev/null || echo 0)
+            if [ "$TAG_DATE" -lt "$CUTOFF" ]; then
+              echo "Deleting old nightly git tag: $TAG (created $(date -d @$TAG_DATE))"
+              git push origin --delete "$TAG"
+            fi
+          done
+
+      - name: Delete nightly GHCR package versions older than 2 weeks
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORG: open-telemetry
+        run: |
+          CUTOFF=$(date -d '2 weeks ago' --iso-8601=seconds)
+
+          for IMAGE in $DISTRIBUTIONS; do
+            echo "Processing GHCR package: $IMAGE"
+
+            # Paginate through all package versions
+            PAGE=1
+            while true; do
+              VERSIONS=$(gh api \
+                -H "Accept: application/vnd.github+json" \
+                -H "X-GitHub-Api-Version: 2022-11-28" \
+                "/orgs/${ORG}/packages/container/${IMAGE}/versions?per_page=100&page=${PAGE}")
+
+              COUNT=$(echo "$VERSIONS" | jq 'length')
+              if [ "$COUNT" -eq 0 ]; then
+                break
+              fi
+
+              # Filter versions whose tags all match the nightly pattern and that are older than the cutoff
+              echo "$VERSIONS" | jq -c '.[] | select(
+                (.metadata.container.tags | length > 0) and
+                (.metadata.container.tags | all(test("^v[0-9]+\\.[0-9]+\\.[0-9]+-nightly\\."))) and
+                (.updated_at < "'"$CUTOFF"'")
+              ) | {id: .id, tags: .metadata.container.tags, updated_at: .updated_at}' | while read VERSION; do
+                VERSION_ID=$(echo "$VERSION" | jq -r '.id')
+                TAGS=$(echo "$VERSION" | jq -r '.tags | join(", ")')
+                UPDATED=$(echo "$VERSION" | jq -r '.updated_at')
+                echo "  Deleting GHCR version $VERSION_ID (tags: $TAGS, updated: $UPDATED)"
+                gh api \
+                  --method DELETE \
+                  -H "Accept: application/vnd.github+json" \
+                  -H "X-GitHub-Api-Version: 2022-11-28" \
+                  "/orgs/${ORG}/packages/container/${IMAGE}/versions/${VERSION_ID}"
+              done
+
+              PAGE=$((PAGE + 1))
+            done
+          done
+
+      - name: Delete nightly Docker Hub tags older than 2 weeks
+        env:
+          DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
+          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
+          DOCKERHUB_ORG: otel
+        run: |
+          CUTOFF=$(date -d '2 weeks ago' +%s)
+
+          # Obtain a Docker Hub JWT
+          HUB_TOKEN=$(curl -s -X POST \
+            -H "Content-Type: application/json" \
+            -d "{\"username\": \"${DOCKER_USERNAME}\", \"password\": \"${DOCKER_TOKEN}\"}" \
+            "https://hub.docker.com/v2/users/login/" | jq -r '.token')
+
+          if [ -z "$HUB_TOKEN" ] || [ "$HUB_TOKEN" = "null" ]; then
+            echo "Failed to authenticate with Docker Hub"
+            exit 1
+          fi
+
+          for IMAGE in $DISTRIBUTIONS; do
+            echo "Processing Docker Hub image: ${DOCKERHUB_ORG}/${IMAGE}"
+
+            PAGE=1
+            while true; do
+              RESPONSE=$(curl -s \
+                -H "Authorization: Bearer ${HUB_TOKEN}" \
+                "https://hub.docker.com/v2/repositories/${DOCKERHUB_ORG}/${IMAGE}/tags/?page_size=100&page=${PAGE}")
+
+              COUNT=$(echo "$RESPONSE" | jq '.results | length')
+              if [ "$COUNT" -eq 0 ]; then
+                break
+              fi
+
+              echo "$RESPONSE" | jq -c '.results[] | select(
+                (.name | test("^v[0-9]+\\.[0-9]+\\.[0-9]+-nightly\\."))
+              ) | {name: .name, last_updated: .last_updated}' | while read TAG_INFO; do
+                TAG_NAME=$(echo "$TAG_INFO" | jq -r '.name')
+                LAST_UPDATED=$(echo "$TAG_INFO" | jq -r '.last_updated')
+                TAG_TIMESTAMP=$(date -d "$LAST_UPDATED" +%s)
+
+                if [ "$TAG_TIMESTAMP" -lt "$CUTOFF" ]; then
+                  echo "  Deleting Docker Hub tag: ${DOCKERHUB_ORG}/${IMAGE}:${TAG_NAME} (updated: $LAST_UPDATED)"
+                  curl -s -X DELETE \
+                    -H "Authorization: Bearer ${HUB_TOKEN}" \
+                    "https://hub.docker.com/v2/repositories/${DOCKERHUB_ORG}/${IMAGE}/tags/${TAG_NAME}/"
+                fi
+              done
+
+              # Check if there are more pages
+              NEXT=$(echo "$RESPONSE" | jq -r '.next')
+              if [ "$NEXT" = "null" ] || [ -z "$NEXT" ]; then
+                break
+              fi
+              PAGE=$((PAGE + 1))
+            done
+          done
+
