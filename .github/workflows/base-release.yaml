@@ -134,11 +134,13 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
 
       - name: Login to GitHub Package Registry
-        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          timeout_minutes: 2
+          max_attempts: 5
+          retry_wait_seconds: 15
+          shell: bash
+          command: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
 
       - name: Create artifacts directory to store build artifacts
         if: inputs.distribution == 'otelcol-contrib'
@@ -284,11 +286,13 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
 
       - name: Login to GitHub Package Registry
-        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          timeout_minutes: 2
+          max_attempts: 5
+          retry_wait_seconds: 15
+          shell: bash
+          command: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
 
       - uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
         with:
