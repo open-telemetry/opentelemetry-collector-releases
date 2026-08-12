@@ -18,6 +18,17 @@ msi:
       - opentelemetry.ico
       - config.yaml
 builds:
+  - id: otelcol-aix
+    goos:
+      - aix
+    goarch:
+      - ppc64
+    dir: _build
+    binary: otelcol
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
   - id: otelcol-linux
     goos:
       - linux
@@ -67,6 +78,7 @@ builds:
 archives:
   - id: otelcol
     ids:
+      - otelcol-aix
       - otelcol-linux
       - otelcol-darwin
       - otelcol-windows
@@ -110,19 +122,15 @@ nfpms:
 snapshot:
   version_template: '{{ incpatch .Version }}-next'
 checksum:
-  name_template: '{{ .ProjectName }}_otelcol{{ if eq .Runtime.Goos "windows" }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt'
+  split: true
 signs:
   - cmd: cosign
     args:
       - sign-blob
-      - --output-signature
-      - ${artifact}.sig
-      - --output-certificate
-      - ${artifact}.pem
+      - --bundle=${signature}
       - ${artifact}
-    signature: ${artifact}.sig
+    signature: ${artifact}.sigstore.json
     artifacts: all
-    certificate: ${artifact}.pem
 docker_signs:
   - args:
       - sign
