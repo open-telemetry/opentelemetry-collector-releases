@@ -41,6 +41,18 @@ After the release is complete, the release manager should do the following steps
 the opentelemetry-collector-releases repository and label them with the `release:retro` label.
 Communicate the list of issues to the core release manager.
 
+## Repo-only releases
+
+A repo-only release carries changes only to this repository (e.g. distribution configuration,
+packaging scripts, or documentation) with no new core or contrib release involved.
+
+1. Run the GitHub Action workflow "[Update Version in Distributions and Prepare PR](https://github.com/open-telemetry/opentelemetry-collector-releases/actions/workflows/update-version.yaml)"
+   with the **"Repo-only release"** checkbox enabled. This bumps the patch part of the current
+   distribution version (e.g. v0.116.0 to v0.116.1) and opens a draft PR. No Renovate PR is expected
+   or required.
+   -  🛑 **Do not move forward until the '[chore] Prepare release...' PR is merged.** 🛑
+2. Follow steps 3–7 of the standard release procedure above to tag and publish the release.
+
 ## Bugfix releases
 
 See the [opentelemetry-collector release procedure][1] document for the bugfix release criteria and
