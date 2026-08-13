@@ -2,7 +2,20 @@ name: Cleanup Old Nightly Releases
 
 on:
   workflow_call:
+    inputs:
+      dry_run:
+        description: Log what would be deleted without deleting anything.
+        type: boolean
+        # The nightly schedule is expected to actually clean up.
+        default: false
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Log what would be deleted without deleting anything.
+        type: boolean
+        # Manual runs default to a preview, so an ad-hoc dispatch cannot delete
+        # anything until it is explicitly asked to.
+        default: true
 
 permissions:
   contents: read
@@ -19,6 +32,7 @@ jobs:
         shell: bash
 
     env:
+      DRY_RUN: ${{ inputs.dry_run }}
       DISTRIBUTIONS: >-
         opentelemetry-collector
         opentelemetry-collector-contrib
@@ -86,6 +100,11 @@ jobs:
             exit 0
           fi
 
+          if [ "$DRY_RUN" = "true" ]; then
+            printf 'DRY RUN: would delete git tag: %s\n' "${TAGS_TO_DELETE[@]}"
+            exit 0
+          fi
+
           printf 'Deleting git tag: %s\n' "${TAGS_TO_DELETE[@]}"
           git push origin --delete "${TAGS_TO_DELETE[@]}"
 
@@ -135,6 +154,11 @@ jobs:
             done
 
             while IFS=$'\t' read -r VERSION_ID TAGS UPDATED; do
+              if [ "$DRY_RUN" = "true" ]; then
+                echo "  DRY RUN: would delete GHCR version $VERSION_ID (tags: $TAGS, updated: $UPDATED)"
+                continue
+              fi
+
               echo "  Deleting GHCR version $VERSION_ID (tags: $TAGS, updated: $UPDATED)"
               gh api \
                 --method DELETE \
@@ -201,6 +225,11 @@ jobs:
             done
 
             while IFS=$'\t' read -r TAG_NAME UPDATED; do
+              if [ "$DRY_RUN" = "true" ]; then
+                echo "  DRY RUN: would delete Docker Hub tag: ${DOCKERHUB_ORG}/${IMAGE}:${TAG_NAME} (updated: $UPDATED)"
+                continue
+              fi
+
               echo "  Deleting Docker Hub tag: ${DOCKERHUB_ORG}/${IMAGE}:${TAG_NAME} (updated: $UPDATED)"
               STATUS=$(curl -s -o /dev/null -w '%{http_code}' -X DELETE \
                 -H "Authorization: Bearer ${HUB_TOKEN}" \
