@@ -24,9 +24,11 @@ jobs:
   cleanup-nightly:
     name: Cleanup Old Nightly Releases
     runs-on: ubuntu-latest
+    # Deletions are authenticated with the otelbot app token (see permission-contents
+    # and permission-packages below), not with GITHUB_TOKEN, so GITHUB_TOKEN itself
+    # needs nothing beyond the read-only default.
     permissions:
-      contents: write   # required to delete git tags
-      packages: write   # required to delete GHCR packages
+      contents: read
     defaults:
       run:
         shell: bash
