@@ -25,9 +25,10 @@ jobs:
         opentelemetry-collector-k8s
         opentelemetry-collector-otlp
         opentelemetry-collector-ebpf-profiler
-      # Each nightly run produces multiple git tags (main, cmd/builder, cmd/opampsupervisor).
-      # Cap deletions per run by number of nightly *runs*, not raw tag count, so that one
-      # run's worth of tags is always removed or kept as a unit.
+      # Every artifact of a nightly run carries the same `nightly.<YYYYMMDDHHMM>` suffix: the
+      # git tags (main, cmd/builder, cmd/opampsupervisor) and the container tags (one per
+      # architecture, plus the multi-arch index). Cap deletions by number of nightly *runs*
+      # rather than raw artifact count, so a run is always removed or kept as a whole.
       MAX_NIGHTLY_RUNS: 14
 
     steps:
@@ -46,71 +47,105 @@ jobs:
 
       - name: Delete nightly git tags older than 2 weeks
         run: |
-          CUTOFF=$(date -d '2 weeks ago' +%s)
+          CUTOFF=$(date -u -d '2 weeks ago' +%s)
           git fetch --tags
 
-          # Each nightly run shares a timestamp suffix (e.g. nightly.202608050305) across all its
-          # tags (main, cmd/builder, cmd/opampsupervisor). Group by that suffix so we delete or
-          # keep complete runs as a unit, then cap at MAX_NIGHTLY_RUNS oldest runs.
-          RUNS_TO_DELETE=$(git tag -l | grep -E 'nightly\.[0-9]+$' | while read TAG; do
-            TAG_DATE=$(git log -1 --format=%ct "$TAG" 2>/dev/null || echo 0)
-            if [ "$TAG_DATE" -lt "$CUTOFF" ]; then
-              echo "$TAG_DATE $(echo "$TAG" | grep -oE 'nightly\.[0-9]+$')"
-            fi
-          done | sort -n | awk '{print $2}' | uniq | head -n "$MAX_NIGHTLY_RUNS")
+          # Age comes from the timestamp in the tag name, not from the commit it points at:
+          # nightly tags are cut from whatever main HEAD happens to be, so a quiet period
+          # would make fresh tags look weeks old. Group by the shared suffix, then take the
+          # MAX_NIGHTLY_RUNS oldest runs (`sort -u` on `nightly.<YYYYMMDDHHMM>` is
+          # chronological).
+          mapfile -t RUNS_TO_DELETE < <(
+            git tag -l \
+              | grep -oE 'nightly\.[0-9]{12}$' \
+              | sort -u \
+              | while read -r RUN; do
+                  STAMP=${RUN#nightly.}
+                  if ! RUN_DATE=$(date -u -d "${STAMP:0:8} ${STAMP:8:2}:${STAMP:10:2}" +%s 2>/dev/null); then
+                    continue
+                  fi
+                  if [ "$RUN_DATE" -lt "$CUTOFF" ]; then
+                    echo "$RUN"
+                  fi
+                done \
+              | head -n "$MAX_NIGHTLY_RUNS"
+          )
 
-          for NIGHTLY_TS in $RUNS_TO_DELETE; do
-            git tag -l | grep "$NIGHTLY_TS" | while read TAG; do
-              echo "Deleting git tag: $TAG"
-              git push origin --delete "$TAG"
-            done
-          done
+          if [ ${#RUNS_TO_DELETE[@]} -eq 0 ]; then
+            echo "No nightly git tags older than the cutoff"
+            exit 0
+          fi
+
+          # Anchor each run timestamp to the end of the tag name so the dots are literal and
+          # a run can never match a longer, unrelated suffix.
+          PATTERN=$(printf '%s\n' "${RUNS_TO_DELETE[@]}" | sed 's/\./\\./g' | paste -sd'|' -)
+          mapfile -t TAGS_TO_DELETE < <(git tag -l | grep -E "(${PATTERN})\$")
+
+          if [ ${#TAGS_TO_DELETE[@]} -eq 0 ]; then
+            echo "No git tags matched the selected runs"
+            exit 0
+          fi
+
+          printf 'Deleting git tag: %s\n' "${TAGS_TO_DELETE[@]}"
+          git push origin --delete "${TAGS_TO_DELETE[@]}"
 
       - name: Delete nightly GHCR package versions older than 2 weeks
         env:
           GH_TOKEN: ${{ steps.otelbot-token.outputs.token }}
           ORG: open-telemetry
+          GHCR_REPO: opentelemetry-collector-releases
         run: |
-          CUTOFF=$(date -d '2 weeks ago' --iso-8601=seconds)
+          CUTOFF=$(date -u -d '2 weeks ago' +%Y-%m-%dT%H:%M:%SZ)
 
           for IMAGE in $DISTRIBUTIONS; do
-            echo "Processing GHCR package: $IMAGE"
+            # Images are published under ghcr.io/<org>/<repo>/<image>, so the package name
+            # includes the repo segment and its slash has to be percent-encoded for the API.
+            PACKAGE="${GHCR_REPO}%2F${IMAGE}"
+            echo "Processing GHCR package: ${GHCR_REPO}/${IMAGE}"
 
-            # Collect all old nightly versions across pages, then sort oldest-first and cap.
+            # Collect all old nightly versions across pages, then group into runs and cap.
             OLD_VERSIONS="[]"
             PAGE=1
             while true; do
               VERSIONS=$(gh api \
                 -H "Accept: application/vnd.github+json" \
                 -H "X-GitHub-Api-Version: 2022-11-28" \
-                "/orgs/${ORG}/packages/container/${IMAGE}/versions?per_page=100&page=${PAGE}")
+                "/orgs/${ORG}/packages/container/${PACKAGE}/versions?per_page=100&page=${PAGE}")
 
               COUNT=$(echo "$VERSIONS" | jq 'length')
               if [ "$COUNT" -eq 0 ]; then
                 break
               fi
 
-              BATCH=$(echo "$VERSIONS" | jq '[.[] | select(
+              # `all` rather than `any`: a version that also carries a release tag such as
+              # `latest` is left alone. `run` records which nightly run produced the version.
+              BATCH=$(echo "$VERSIONS" | jq --arg cutoff "$CUTOFF" '[.[] | select(
                 (.metadata.container.tags | length > 0) and
-                (.metadata.container.tags | all(test("^v[0-9]+\\.[0-9]+\\.[0-9]+-nightly\\."))) and
-                (.updated_at < "'"$CUTOFF"'")
-              ) | {id: .id, tags: .metadata.container.tags, updated_at: .updated_at}]')
+                (.metadata.container.tags | all(test("^v[0-9]+\\.[0-9]+\\.[0-9]+-nightly\\.[0-9]+"))) and
+                (.updated_at < $cutoff)
+              ) | {
+                id: .id,
+                tags: .metadata.container.tags,
+                updated_at: .updated_at,
+                run: (.metadata.container.tags[0] | capture("nightly\\.(?<ts>[0-9]+)") | .ts)
+              }]')
               OLD_VERSIONS=$(jq -n --argjson a "$OLD_VERSIONS" --argjson b "$BATCH" '$a + $b')
 
               PAGE=$((PAGE + 1))
             done
 
-            echo "$OLD_VERSIONS" | jq -c 'sort_by(.updated_at) | .[:'"$MAX_NIGHTLY_RUNS"'] | .[]' | while read VERSION; do
-              VERSION_ID=$(echo "$VERSION" | jq -r '.id')
-              TAGS=$(echo "$VERSION" | jq -r '.tags | join(", ")')
-              UPDATED=$(echo "$VERSION" | jq -r '.updated_at')
+            while IFS=$'\t' read -r VERSION_ID TAGS UPDATED; do
               echo "  Deleting GHCR version $VERSION_ID (tags: $TAGS, updated: $UPDATED)"
               gh api \
                 --method DELETE \
                 -H "Accept: application/vnd.github+json" \
                 -H "X-GitHub-Api-Version: 2022-11-28" \
-                "/orgs/${ORG}/packages/container/${IMAGE}/versions/${VERSION_ID}"
-            done
+                "/orgs/${ORG}/packages/container/${PACKAGE}/versions/${VERSION_ID}"
+            done < <(echo "$OLD_VERSIONS" | jq -r --argjson max "$MAX_NIGHTLY_RUNS" '
+              (map(.run) | unique | .[:$max]) as $runs
+              | map(select(.run | IN($runs[])))
+              | sort_by(.run)[]
+              | [.id, (.tags | join(", ")), .updated_at] | @tsv')
           done
 
       - name: Delete nightly Docker Hub tags older than 2 weeks
@@ -119,7 +154,7 @@ jobs:
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
           DOCKERHUB_ORG: otel
         run: |
-          CUTOFF=$(date -d '2 weeks ago' --iso-8601=seconds)
+          CUTOFF=$(date -u -d '2 weeks ago' +%Y-%m-%dT%H:%M:%SZ)
 
           # Obtain a Docker Hub JWT
           HUB_TOKEN=$(curl -s -X POST \
@@ -135,7 +170,7 @@ jobs:
           for IMAGE in $DISTRIBUTIONS; do
             echo "Processing Docker Hub image: ${DOCKERHUB_ORG}/${IMAGE}"
 
-            # Collect all old nightly tags across pages, then sort oldest-first and cap.
+            # Collect all old nightly tags across pages, then group into runs and cap.
             OLD_TAGS="[]"
             PAGE=1
             while true; do
@@ -148,10 +183,14 @@ jobs:
                 break
               fi
 
-              BATCH=$(echo "$RESPONSE" | jq '[.results[] | select(
-                (.name | test("^v[0-9]+\\.[0-9]+\\.[0-9]+-nightly\\.")) and
-                (.last_updated < "'"$CUTOFF"'")
-              ) | {name: .name, last_updated: .last_updated}]')
+              BATCH=$(echo "$RESPONSE" | jq --arg cutoff "$CUTOFF" '[.results[] | select(
+                (.name | test("^v[0-9]+\\.[0-9]+\\.[0-9]+-nightly\\.[0-9]+")) and
+                (.last_updated < $cutoff)
+              ) | {
+                name: .name,
+                last_updated: .last_updated,
+                run: (.name | capture("nightly\\.(?<ts>[0-9]+)") | .ts)
+              }]')
               OLD_TAGS=$(jq -n --argjson a "$OLD_TAGS" --argjson b "$BATCH" '$a + $b')
 
               NEXT=$(echo "$RESPONSE" | jq -r '.next')
@@ -161,12 +200,18 @@ jobs:
               PAGE=$((PAGE + 1))
             done
 
-            echo "$OLD_TAGS" | jq -c 'sort_by(.last_updated) | .[:'"$MAX_NIGHTLY_RUNS"'] | .[]' | while read TAG_INFO; do
-              TAG_NAME=$(echo "$TAG_INFO" | jq -r '.name')
-              UPDATED=$(echo "$TAG_INFO" | jq -r '.last_updated')
+            while IFS=$'\t' read -r TAG_NAME UPDATED; do
               echo "  Deleting Docker Hub tag: ${DOCKERHUB_ORG}/${IMAGE}:${TAG_NAME} (updated: $UPDATED)"
-              curl -s -X DELETE \
+              STATUS=$(curl -s -o /dev/null -w '%{http_code}' -X DELETE \
                 -H "Authorization: Bearer ${HUB_TOKEN}" \
-                "https://hub.docker.com/v2/repositories/${DOCKERHUB_ORG}/${IMAGE}/tags/${TAG_NAME}/"
-            done
+                "https://hub.docker.com/v2/repositories/${DOCKERHUB_ORG}/${IMAGE}/tags/${TAG_NAME}/")
+              if [ "$STATUS" != "204" ] && [ "$STATUS" != "202" ]; then
+                echo "    Failed to delete ${DOCKERHUB_ORG}/${IMAGE}:${TAG_NAME} (HTTP $STATUS)" >&2
+                exit 1
+              fi
+            done < <(echo "$OLD_TAGS" | jq -r --argjson max "$MAX_NIGHTLY_RUNS" '
+              (map(.run) | unique | .[:$max]) as $runs
+              | map(select(.run | IN($runs[])))
+              | sort_by(.run)[]
+              | [.name, .last_updated] | @tsv')
           done
