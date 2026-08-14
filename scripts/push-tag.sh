@@ -13,8 +13,8 @@ if ! command -v yq &> /dev/null; then
 fi
 
 if [ -z "${TAG:-}" ]; then
-    echo "TAG must be set (e.g. TAG=v0.100.0)"
-    exit 1
+    TAG="v$(yq '.dist.version' distributions/otelcol/manifest.yaml)"
+    echo "TAG not set, inferred from distributions/otelcol/manifest.yaml: ${TAG}"
 fi
 if [[ ! "${TAG}" =~ ^v.* ]]; then
     echo "TAG must start with lowercase 'v' (e.g. v0.100.0)"
