@@ -14,6 +14,13 @@ var (
 	contribDist = newDistributionBuilder(contribDistro).withConfigFunc(func(d *distribution) {
 		d.BuildConfigs = []buildConfig{
 			&preBuiltBuildConfig{
+				TargetOS:   "aix",
+				TargetArch: aixArchs,
+				PreBuilt: config.PreBuiltOptions{
+					Path: "artifacts/otelcol-contrib-aix_{{ .Target }}/otelcol-contrib",
+				},
+			},
+			&preBuiltBuildConfig{
 				TargetOS:   "linux",
 				TargetArch: baseArchs,
 				PreBuilt: config.PreBuiltOptions{
@@ -48,6 +55,7 @@ var (
 	// contrib build-only project
 	contribBuildOnlyDist = newDistributionBuilder(contribDistro).withConfigFunc(func(d *distribution) {
 		d.BuildConfigs = []buildConfig{
+			&fullBuildConfig{TargetOS: "aix", TargetArch: aixArchs, BuildDir: defaultBuildDir},
 			&fullBuildConfig{TargetOS: "linux", TargetArch: baseArchs, BuildDir: defaultBuildDir, ArmVersion: []string{"7"}},
 			&fullBuildConfig{TargetOS: "darwin", TargetArch: darwinArchs, BuildDir: defaultBuildDir},
 			&fullBuildConfig{TargetOS: "windows", TargetArch: winArchs, BuildDir: defaultBuildDir},

@@ -33,19 +33,15 @@ archives:
 snapshot:
   version_template: '{{ incpatch .Version }}-next'
 checksum:
-  name_template: '{{ .ProjectName }}_otelcol-ebpf-profiler{{ if eq .Runtime.Goos "windows" }}_{{ .Runtime.Goos }}{{ end }}_checksums.txt'
+  split: true
 signs:
   - cmd: cosign
     args:
       - sign-blob
-      - --output-signature
-      - ${artifact}.sig
-      - --output-certificate
-      - ${artifact}.pem
+      - --bundle=${signature}
       - ${artifact}
-    signature: ${artifact}.sig
+    signature: ${artifact}.sigstore.json
     artifacts: all
-    certificate: ${artifact}.pem
 docker_signs:
   - args:
       - sign
