@@ -41,3 +41,13 @@ jobs:
           TAG="${MAJOR_VERSION}.${MINOR_VERSION}.0-nightly.$(date +'%Y%m%d%H%M')"
           git tag -a $TAG -m "$TAG: nightly build"
           git push origin $TAG
+
+  cleanup-nightly:
+    needs: nightly-release
+    uses: ./.github/workflows/cleanup-nightly.yaml
+    secrets: inherit
+    # Caps the GITHUB_TOKEN handed to the called workflow. It deletes via the otelbot
+    # app token instead, so read-only is enough.
+    permissions:
+      contents: read
+
