@@ -59,8 +59,12 @@ jobs:
           message="Releasing ${{ inputs.binary }} binaries for ${{ steps.collector-ref.outputs.COLLECTOR_REF }}"
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          git tag -a "${tag}" -m "${message}"
-          git push origin "${tag}"
+          if git ls-remote --exit-code --tags origin "${tag}" > /dev/null; then
+            echo "Tag ${tag} already exists on origin, skipping creation (this is a retry)"
+          else
+            git tag -a "${tag}" -m "${message}"
+            git push origin "${tag}"
+          fi
 
       - name: Set goreleaser last tag reference in case of non-nightly release
         id: prev-tag
