@@ -119,9 +119,11 @@ jobs:
 
       - name: Setup wixl # Required to build MSI packages for Windows
         if: inputs.windows-msi == true && runner.os != 'Windows'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wixl
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        with:
+          timeout_minutes: 5
+          max_attempts: 3
+          command: sudo apt-get update && sudo apt-get install -y wixl
 
       - name: Log into Docker.io
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
