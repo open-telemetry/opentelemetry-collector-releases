@@ -24,11 +24,14 @@ jobs:
   cleanup-nightly:
     name: Cleanup Old Nightly Releases
     runs-on: ubuntu-latest
-    # Deletions are authenticated with the otelbot app token (see permission-contents
-    # and permission-packages below), not with GITHUB_TOKEN, so GITHUB_TOKEN itself
-    # needs nothing beyond the read-only default.
+    # Git tag deletion uses the otelbot app token (permission-contents below).
+    # Container package deletion uses GITHUB_TOKEN instead, matching how the release
+    # workflows authenticate against GHCR: the otelbot app installation is not granted
+    # the packages permission, and requesting it makes the token request fail with
+    # "The permissions requested are not granted to this installation".
     permissions:
       contents: read
+      packages: write # required to delete GHCR package versions
     defaults:
       run:
         shell: bash
@@ -54,7 +57,6 @@ jobs:
           client-id: ${{ vars.OTELBOT_COLLECTOR_RELEASES_CLIENT_ID }}
           private-key: ${{ secrets.OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY }}
           permission-contents: write
-          permission-packages: write
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -66,7 +68,7 @@ jobs:
 
       - name: Delete nightly GHCR package versions older than 2 weeks
         env:
-          GH_TOKEN: ${{ steps.otelbot-token.outputs.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ORG: open-telemetry
           GHCR_REPO: opentelemetry-collector-releases
         run: ./.github/workflows/scripts/cleanup-nightly-ghcr.sh
