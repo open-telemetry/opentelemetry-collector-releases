@@ -79,9 +79,11 @@ jobs:
 
       - name: Setup wixl # Required to build MSI packages for Windows
         if: inputs.windows-msi == true && runner.os != 'Windows'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wixl
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        with:
+          timeout_minutes: 5
+          max_attempts: 3
+          command: sudo apt-get update && sudo apt-get install -y wixl
 
       - name: Check GoReleaser
         uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
