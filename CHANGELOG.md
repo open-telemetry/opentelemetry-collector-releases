@@ -4,6 +4,16 @@
 
 <!-- next version -->
 
+## v0.159.0
+
+### 🛑 Breaking changes 🛑
+
+- `contrib`: Remove deprecated kafkatopicsobserver extension from the contrib distribution (#1597)
+
+### 🚀 New components 🚀
+
+- `extension/aws_iam_db_auth`: Add `aws_iam_db_auth` to the contrib distribution (#1591)
+
 ## v0.158.0
 
 ### 🛑 Breaking changes 🛑
