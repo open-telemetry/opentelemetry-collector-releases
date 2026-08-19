@@ -1,0 +1,6 @@
+change_type: bug_fix
+component: otelcol-contrib
+note: Remove the obsolete cilium/ebpf v0.21.0 override so OBI v0.11.0 builds with v0.22.0.
+issues: [1604]
+subtext:
+change_logs: [user]
