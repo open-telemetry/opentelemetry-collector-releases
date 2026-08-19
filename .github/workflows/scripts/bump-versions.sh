@@ -36,6 +36,7 @@ validate_and_strip_version() {
 }
 commit_changes=false
 create_pr=false
+repo_only_release=false
 # Parse named arguments
 next_beta_core=$(awk '/^.*go\.opentelemetry\.io\/collector\/.* v0/ {print $4; exit}' distributions/otelcol/manifest.yaml)
 next_beta_contrib=$(awk '/^.*github\.com\/open-telemetry\/opentelemetry-collector-contrib\/.* v0/ {print $4; exit}' distributions/otelcol-contrib/manifest.yaml)
@@ -45,6 +46,7 @@ while [[ "$#" -gt 0 ]]; do
   case $1 in
     --commit) commit_changes=true ;;
     --pull-request) create_pr=true ;;
+    --repo-only-release) repo_only_release=true ;;
     *) echo "Unknown parameter passed: $1"; usage ;;
   esac
   shift
@@ -95,9 +97,30 @@ max_version() {
   echo "$version1"
 }
 
+bump_patch() {
+  local version=$1
+  IFS='.' read -r major minor patch <<< "$version"
+  echo "${major}.${minor}.$((patch + 1))"
+}
+
 # Determine the maximum of next_beta_core and next_beta_contrib
 next_distribution_version=$(max_version "$next_beta_core" "$next_beta_contrib")
 validate_and_strip_version next_distribution_version
+
+current_dist_version=$(awk '/^  version:/{print $2; exit}' distributions/otelcol/manifest.yaml)
+current_dist_version=${current_dist_version#v}
+
+if [ "$next_distribution_version" = "$current_dist_version" ]; then
+  if [ "$repo_only_release" = true ]; then
+    next_distribution_version=$(bump_patch "$next_distribution_version")
+    echo "Repo-only release: bumping patch version to $next_distribution_version"
+  else
+    echo "Error: computed distribution version ($next_distribution_version) equals the current version."
+    echo "No new core or contrib release detected."
+    echo "To release a releases-repo-only change, re-run with --repo-only-release."
+    exit 1
+  fi
+fi
 
 # Update versions in each manifest file
 echo "Making the following updates:"
@@ -148,7 +171,14 @@ create_pr() {
 
 # TODO: Once Collector 1.0 is released, we can consider removing the
 # beta version check for commit and PR creation
-if [ -n "$next_beta_core" ]; then
+if [ "$repo_only_release" = true ]; then
+  if [ "$commit_changes" = true ]; then
+    commit_changes "$next_distribution_version"
+  fi
+  if [ "$create_pr" = true ]; then
+    create_pr "$next_distribution_version"
+  fi
+elif [ -n "$next_beta_core" ]; then
   if [ "$commit_changes" = true ]; then
     commit_changes "$next_beta_core"
   fi

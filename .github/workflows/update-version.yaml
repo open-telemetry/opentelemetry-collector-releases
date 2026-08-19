@@ -1,6 +1,11 @@
 name: Update Version in Distributions and Prepare PR
 on:
   workflow_dispatch:
+    inputs:
+      repo_only_release:
+        description: 'Bump patch version for a releases-repo-only change (no new core/contrib release)'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -33,6 +38,10 @@ jobs:
 
       - name: Run bump-versions.sh
         run: |
-          .github/workflows/scripts/bump-versions.sh --commit --pull-request
+          ARGS="--commit --pull-request"
+          if [ "${{ inputs.repo_only_release }}" = "true" ]; then
+            ARGS="$ARGS --repo-only-release"
+          fi
+          .github/workflows/scripts/bump-versions.sh $ARGS
         env:
           GH_TOKEN: ${{ steps.otelbot-token.outputs.token }}
