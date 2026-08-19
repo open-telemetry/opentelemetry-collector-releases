@@ -137,7 +137,7 @@ receivers:
   - gomod: go.opentelemetry.io/collector/receiver/nopreceiver v0.159.0
   - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.159.0
   # OBI (eBPF Instrumentation)
-  - gomod: go.opentelemetry.io/obi v0.10.0
+  - gomod: go.opentelemetry.io/obi v0.11.0
     import: go.opentelemetry.io/obi/collector
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/activedirectorydsreceiver v0.159.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/aerospikereceiver v0.159.0
@@ -274,6 +274,5 @@ providers:
 replaces:
   # Prepared by scripts/prepare-obi.sh from a tagged upstream source archive.
   - go.opentelemetry.io/obi => ../../../internal/obi-src
-  - github.com/cilium/ebpf => github.com/cilium/ebpf v0.21.0
   # github.com/hamba/avro/v2 is no longer maintained and has vulnerabilities
   - github.com/hamba/avro/v2 => github.com/iskorotkov/avro/v2 v2.33.0
