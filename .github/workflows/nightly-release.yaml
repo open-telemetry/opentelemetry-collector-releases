@@ -46,8 +46,10 @@ jobs:
     needs: nightly-release
     uses: ./.github/workflows/cleanup-nightly.yaml
     secrets: inherit
-    # Caps the GITHUB_TOKEN handed to the called workflow. It deletes via the otelbot
-    # app token instead, so read-only is enough.
+    # Caps the GITHUB_TOKEN handed to the called workflow. Git tags are deleted with the
+    # otelbot app token, but GHCR package deletion uses GITHUB_TOKEN, so packages: write
+    # has to be granted here as well or it is capped away from the called workflow.
     permissions:
       contents: read
+      packages: write
 
