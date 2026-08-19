@@ -46,12 +46,9 @@ jobs:
 
       - name: Set COLLECTOR_REF
         id: collector-ref
-        run: |
-          if [ '${{ contains(github.ref, '-nightly') }}' == 'true' ]; then
-            echo "COLLECTOR_REF=main" >> "$GITHUB_OUTPUT"
-          else
-            echo "COLLECTOR_REF=${{ github.ref }}" >> "$GITHUB_OUTPUT"
-          fi
+        env:
+          BINARY: ${{ inputs.binary }}
+        run: ./.github/workflows/scripts/collector-ref.sh
 
       - name: Push ${{ inputs.binary }} Tag
         run: |
