@@ -24,7 +24,7 @@ on:
 
 env:
   # renovate: datasource=github-releases packageName=goreleaser/goreleaser-pro
-  GORELEASER_PRO_VERSION: v2.17.1
+  GORELEASER_PRO_VERSION: v2.18.0
 
 permissions:
   contents: read
