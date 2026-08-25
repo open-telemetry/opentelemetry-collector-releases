@@ -46,12 +46,9 @@ jobs:
 
       - name: Set COLLECTOR_REF
         id: collector-ref
-        run: |
-          if [ '${{ contains(github.ref, '-nightly') }}' == 'true' ]; then
-            echo "COLLECTOR_REF=main" >> "$GITHUB_OUTPUT"
-          else
-            echo "COLLECTOR_REF=${{ github.ref }}" >> "$GITHUB_OUTPUT"
-          fi
+        env:
+          BINARY: ${{ inputs.binary }}
+        run: ./.github/workflows/scripts/collector-ref.sh
 
       - name: Push ${{ inputs.binary }} Tag
         run: |
@@ -59,8 +56,12 @@ jobs:
           message="Releasing ${{ inputs.binary }} binaries for ${{ steps.collector-ref.outputs.COLLECTOR_REF }}"
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          git tag -a "${tag}" -m "${message}"
-          git push origin "${tag}"
+          if git ls-remote --exit-code --tags origin "${tag}" > /dev/null; then
+            echo "Tag ${tag} already exists on origin, skipping creation (this is a retry)"
+          else
+            git tag -a "${tag}" -m "${message}"
+            git push origin "${tag}"
+          fi
 
       - name: Set goreleaser last tag reference in case of non-nightly release
         id: prev-tag
@@ -115,9 +116,11 @@ jobs:
 
       - name: Setup wixl # Required to build MSI packages for Windows
         if: inputs.windows-msi == true && runner.os != 'Windows'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wixl
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        with:
+          timeout_minutes: 5
+          max_attempts: 3
+          command: sudo apt-get update && sudo apt-get install -y wixl
 
       - name: Log into Docker.io
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0

@@ -103,12 +103,6 @@ jobs:
         shell: powershell
         run: Start-Service docker
 
-      - name: Setup wixl # Required to build MSI packages for Windows
-        if: runner.os != 'Windows'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wixl
-
       - name: Setup Docker Buildx
         if: runner.os != 'Windows'
         uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0

@@ -1,0 +1,81 @@
+name: Cleanup Old Nightly Releases
+
+on:
+  workflow_call:
+    inputs:
+      dry_run:
+        description: Log what would be deleted without deleting anything.
+        type: boolean
+        # The nightly schedule is expected to actually clean up.
+        default: false
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Log what would be deleted without deleting anything.
+        type: boolean
+        # Manual runs default to a preview, so an ad-hoc dispatch cannot delete
+        # anything until it is explicitly asked to.
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup-nightly:
+    name: Cleanup Old Nightly Releases
+    runs-on: ubuntu-latest
+    # Git tag deletion uses the otelbot app token (permission-contents below).
+    # Container package deletion uses GITHUB_TOKEN instead, matching how the release
+    # workflows authenticate against GHCR: the otelbot app installation is not granted
+    # the packages permission, and requesting it makes the token request fail with
+    # "The permissions requested are not granted to this installation".
+    permissions:
+      contents: read
+      packages: write # required to delete GHCR package versions
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      DRY_RUN: ${{ inputs.dry_run }}
+      DISTRIBUTIONS: >-
+        opentelemetry-collector
+        opentelemetry-collector-contrib
+        opentelemetry-collector-k8s
+        opentelemetry-collector-otlp
+        opentelemetry-collector-ebpf-profiler
+      # Every artifact of a nightly run carries the same `nightly.<YYYYMMDDHHMM>` suffix: the
+      # git tags (main, cmd/builder, cmd/opampsupervisor) and the container tags (one per
+      # architecture, plus the multi-arch index). Cap deletions by number of nightly *runs*
+      # rather than raw artifact count, so a run is always removed or kept as a whole.
+      MAX_NIGHTLY_RUNS: 14
+
+    steps:
+      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: otelbot-token
+        with:
+          client-id: ${{ vars.OTELBOT_COLLECTOR_RELEASES_CLIENT_ID }}
+          private-key: ${{ secrets.OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY }}
+          permission-contents: write
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          token: ${{ steps.otelbot-token.outputs.token }}
+
+      - name: Delete nightly git tags older than 2 weeks
+        run: ./.github/workflows/scripts/cleanup-nightly-git-tags.sh
+
+      - name: Delete nightly GHCR package versions older than 2 weeks
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORG: open-telemetry
+          GHCR_REPO: opentelemetry-collector-releases
+        run: ./.github/workflows/scripts/cleanup-nightly-ghcr.sh
+
+      - name: Delete nightly Docker Hub tags older than 2 weeks
+        env:
+          DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
+          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
+          DOCKERHUB_ORG: otel
+        run: ./.github/workflows/scripts/cleanup-nightly-dockerhub.sh
