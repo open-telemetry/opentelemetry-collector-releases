@@ -18,6 +18,7 @@ Current list of distributions:
 - [OpenTelemetry Collector Contrib (also known as "otelcol-contrib")](./distributions/otelcol-contrib)
 - [OpenTelemetry Collector for Kubernetes (also known as "otelcol-k8s")](./distributions/otelcol-k8s)
 - [OpenTelemetry Collector OTLP (also known as "otelcol-otlp")](./distributions/otelcol-otlp)
+- [OpenTelemetry Collector Prometheus (also known as "otelcol-prometheus")](./distributions/otelcol-prometheus)
 - [OpenTelemetry Collector eBPF Profiler (also known as "otelcol-ebpf-profiler")](./distributions/otelcol-ebpf-profiler)
 
 ## Community
