@@ -138,7 +138,7 @@ receivers:
   - gomod: go.opentelemetry.io/collector/receiver/nopreceiver v0.159.0
   - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.159.0
   # OBI (eBPF Instrumentation)
-  - gomod: go.opentelemetry.io/obi v0.11.0
+  - gomod: go.opentelemetry.io/obi v0.12.2
     import: go.opentelemetry.io/obi/collector
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/activedirectorydsreceiver v0.159.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/aerospikereceiver v0.159.0
