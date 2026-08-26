@@ -17,6 +17,7 @@ const (
 	coreDistro       = "otelcol"
 	contribDistro    = "otelcol-contrib"
 	otlpDistro       = "otelcol-otlp"
+	prometheusDistro = "otelcol-prometheus"
 	templateFilename = "cmd/msi-generator/windows-installer.wxs.tmpl"
 	finalFilename    = "windows-installer.wxs"
 	distroFolder     = "distributions"
@@ -44,7 +45,7 @@ func TemplateDist(dist string) {
 	switch dist {
 	case coreDistro, contribDistro:
 		templateDist(dist, true)
-	case otlpDistro:
+	case otlpDistro, prometheusDistro:
 		templateDist(dist, false)
 	default:
 		log.Println("Unknown distribution: " + dist)

@@ -1,0 +1,6 @@
+change_type: enhancement
+component: otelcol-prometheus
+note: Add an experimental distribution for embedded Prometheus exporters.
+issues: [1618]
+subtext:
+change_logs: [user]

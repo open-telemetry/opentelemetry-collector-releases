@@ -26,6 +26,7 @@ jobs:
           - otelcol-contrib
           - otelcol-k8s
           - otelcol-otlp
+          - otelcol-prometheus
           - otelcol-ebpf-profiler
     steps:
       - name: Checkout
@@ -50,6 +51,19 @@ jobs:
         run: make ci
         env:
           DISTRIBUTIONS: ${{ matrix.distro }}
+
+      - name: Verify Prometheus distribution components and configuration
+        if: matrix.distro == 'otelcol-prometheus'
+        run: |
+          components="$(distributions/otelcol-prometheus/_build/otelcol-prometheus components)"
+          for component in stackdriver_exporter yace_exporter prometheus_remote_write opamp health_check; do
+            if [[ "$components" != *"name: $component"* ]]; then
+              echo "Missing required component: $component"
+              exit 1
+            fi
+          done
+          distributions/otelcol-prometheus/_build/otelcol-prometheus validate \
+            --config=tests/docker-tests/prometheus-config.yaml
 
   build-result:
     name: "Build Result"
