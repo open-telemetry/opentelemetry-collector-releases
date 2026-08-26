@@ -67,6 +67,10 @@ valid_components+='
 go.opentelemetry.io/ebpf-profiler'
 valid_components+='
 go.opentelemetry.io/obi'
+valid_components+='
+github.com/prometheus/prometheus-opentelemetry-collector/receivers/stackdriver'
+valid_components+='
+github.com/prometheus/prometheus-opentelemetry-collector/receivers/yace'
 
 if [[ -z "$valid_components" ]]; then
   echo "Error: No valid 'gomod' entries found in builder-config.yaml!"
@@ -109,9 +113,8 @@ done < <(find "$MANIFEST_DIR" -type f -name "manifest.yaml")
 
 if [[ -n "$invalid_components" ]]; then
   echo
-  echo "The following components MUST be listed in"
-  echo "https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/cmd/otelcontribcol/builder-config.yaml"
-  echo "to ensure that they can be built:"
+  echo "The following components MUST be listed in the Contrib builder config"
+  echo "or explicitly approved as standalone components in this script:"
   printf '%b\n' "$invalid_components" | sort -u
   echo
   exit 1

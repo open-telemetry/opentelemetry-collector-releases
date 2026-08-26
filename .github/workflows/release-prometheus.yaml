@@ -1,0 +1,43 @@
+name: Release Prometheus
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  release-linux:
+    name: Release Prometheus (Linux)
+    uses: ./.github/workflows/base-release.yaml
+    with:
+      distribution: otelcol-prometheus
+      goos: '[ "linux" ]'
+      goarch: '[ "amd64", "arm64" ]'
+      nightly: ${{ contains(github.ref, '-nightly') }}
+    secrets: inherit
+    permissions: write-all
+
+  release-darwin:
+    name: Release Prometheus (macOS)
+    uses: ./.github/workflows/base-release.yaml
+    with:
+      distribution: otelcol-prometheus
+      goos: '[ "darwin" ]'
+      goarch: '[ "arm64" ]'
+      nightly: ${{ contains(github.ref, '-nightly') }}
+    secrets: inherit
+    permissions: write-all
+
+  release-windows:
+    name: Release Prometheus (Windows)
+    if: ${{ !contains(github.ref, '-nightly') }}
+    uses: ./.github/workflows/base-release.yaml
+    with:
+      distribution: otelcol-prometheus
+      goos: '[ "windows" ]'
+      goarch: '[ "amd64" ]'
+      runner_os: windows-2022
+    secrets: inherit
+    permissions: write-all

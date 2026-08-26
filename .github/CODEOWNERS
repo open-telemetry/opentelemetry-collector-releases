@@ -16,6 +16,7 @@
 
 /distributions/otelcol/manifest.yaml         @open-telemetry/collector-releases-approvers @open-telemetry/collector-approvers
 /distributions/otelcol-otlp/manifest.yaml    @open-telemetry/collector-releases-approvers @open-telemetry/collector-approvers
+/distributions/otelcol-prometheus            @open-telemetry/collector-releases-approvers @open-telemetry/collector-approvers
 /distributions/otelcol-contrib/manifest.yaml @open-telemetry/collector-releases-approvers @open-telemetry/collector-contrib-approvers
 /distributions/otelcol-k8s/manifest.yaml     @open-telemetry/collector-releases-approvers @open-telemetry/helm-approvers @open-telemetry/operator-approvers
 /distributions/otelcol-ebpf-profiler         @open-telemetry/collector-releases-approvers @open-telemetry/ebpf-profiler-approvers

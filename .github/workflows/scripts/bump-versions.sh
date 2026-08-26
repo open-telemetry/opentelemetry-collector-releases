@@ -10,6 +10,7 @@ manifest_files=(
   "distributions/otelcol/manifest.yaml"
   "distributions/otelcol-k8s/manifest.yaml"
   "distributions/otelcol-otlp/manifest.yaml"
+  "distributions/otelcol-prometheus/manifest.yaml"
   "distributions/otelcol-ebpf-profiler/manifest.yaml"
 )
 
