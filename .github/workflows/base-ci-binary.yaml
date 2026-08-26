@@ -52,13 +52,19 @@ jobs:
           path: ${{ inputs.dependency-target-folder }}
 
       - name: Copy Dockerfile to Core Repo directory
-        run: cp cmd/${{ inputs.binary }}/Dockerfile ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}/Dockerfile
+        run: cp cmd/${INPUTS_BINARY}/Dockerfile ${INPUTS_DEPENDENCY_TARGET_FOLDER}/cmd/${INPUTS_BINARY}/Dockerfile
+        env:
+          INPUTS_BINARY: ${{ inputs.binary }}
+          INPUTS_DEPENDENCY_TARGET_FOLDER: ${{ inputs.dependency-target-folder }}
 
       - name: Copy MSI files to Core Repo directory
         if: inputs.windows-msi == true
         run: |
-          cp cmd/${{ inputs.binary }}/opentelemetry.ico ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}
-          cp cmd/${{ inputs.binary }}/config.windows.example.yaml ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}
+          cp cmd/${INPUTS_BINARY}/opentelemetry.ico ${INPUTS_DEPENDENCY_TARGET_FOLDER}/cmd/${INPUTS_BINARY}
+          cp cmd/${INPUTS_BINARY}/config.windows.example.yaml ${INPUTS_DEPENDENCY_TARGET_FOLDER}/cmd/${INPUTS_BINARY}
+        env:
+          INPUTS_BINARY: ${{ inputs.binary }}
+          INPUTS_DEPENDENCY_TARGET_FOLDER: ${{ inputs.dependency-target-folder }}
 
       - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
         with:
