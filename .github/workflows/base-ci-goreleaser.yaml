@@ -315,7 +315,7 @@ jobs:
         if: (matrix.GOOS == 'linux' || matrix.GOOS == 'windows') && contains(steps.prep.outputs.types, 'Docker Image')
         shell: bash
         run: |
-          docker save ${TAG} > ${{ runner.temp }}/${INPUTS_DISTRIBUTION}.tar
+          docker save --output "${RUNNER_TEMP}/${INPUTS_DISTRIBUTION}.tar" "${TAG}"
         env:
           INPUTS_DISTRIBUTION: ${{ inputs.distribution }}
 
