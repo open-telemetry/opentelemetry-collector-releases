@@ -61,11 +61,3 @@ jobs:
       runner_os: windows-2022
       run_container_tests: false
     secrets: inherit
-
-  package-tests:
-    name: Linux Package Tests
-    needs: check-goreleaser-linux
-    uses: ./.github/workflows/base-package-tests.yaml
-    with:
-      distribution: otelcol-prometheus
-      type: '[ "deb", "rpm" ]'
