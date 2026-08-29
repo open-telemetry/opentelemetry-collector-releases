@@ -48,6 +48,7 @@ jobs:
       distribution: otelcol-prometheus
       goos: '[ "darwin" ]'
       goarch: '[ "arm64" ]'
+      run_container_tests: false
     secrets: inherit
 
   check-goreleaser-windows:
