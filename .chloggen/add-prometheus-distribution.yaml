@@ -1,6 +1,16 @@
-change_type: enhancement
+change_type: new_component
 component: otelcol-prometheus
-note: Add an experimental distribution for embedded Prometheus exporters.
+note: Create the new otelcol-prometheus distribution, which includes "Prometheus exporters" as metric receivers.
 issues: [1618]
-subtext:
+subtext: |
+  The new otelcol-prometheus distribution is a collaboration between the Prometheus and OpenTelemetry communities.
+  Existing [Prometheus exporters](https://prometheus.io/docs/instrumenting/exporters/) are slowly being refactored to implement the OpenTelemetry Receiver interface, making it possible
+  to use them as metric receivers in in custom Collector distributions with OCB.
+
+  As more Prometheus exporters are refactored to implement the OpenTelemetry Receiver interface, we will add them to the otelcol-prometheus distribution.
+
+  The otelcol-prometheus distribution is currently experimental, and is not recommended for production use.
+
+  If components from otelcol and otelcol-contrib are needed, together with embeddable Prometheus exporters, consider building
+  a custom Collector distribution with OCB.
 change_logs: [user]
