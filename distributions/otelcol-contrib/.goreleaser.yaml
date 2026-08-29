@@ -67,6 +67,20 @@ builds:
     builder: prebuilt
     prebuilt:
       path: artifacts/otelcol-contrib-darwin_{{ .Target }}/otelcol-contrib
+  - id: otelcol-contrib-solaris
+    goos:
+      - solaris
+    goarch:
+      - amd64
+    goarm:
+      - "7"
+    goppc64:
+      - power8
+    dir: _build
+    binary: otelcol-contrib
+    builder: prebuilt
+    prebuilt:
+      path: artifacts/otelcol-contrib-solaris_{{ .Target }}/otelcol-contrib
   - id: otelcol-contrib-windows
     goos:
       - windows
@@ -89,6 +103,7 @@ archives:
       - otelcol-contrib-aix
       - otelcol-contrib-linux
       - otelcol-contrib-darwin
+      - otelcol-contrib-solaris
       - otelcol-contrib-windows
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
