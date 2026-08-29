@@ -43,6 +43,7 @@ jobs:
         opentelemetry-collector-contrib
         opentelemetry-collector-k8s
         opentelemetry-collector-otlp
+        opentelemetry-collector-prometheus
         opentelemetry-collector-ebpf-profiler
       # Every artifact of a nightly run carries the same `nightly.<YYYYMMDDHHMM>` suffix: the
       # git tags (main, cmd/builder, cmd/opampsupervisor) and the container tags (one per
