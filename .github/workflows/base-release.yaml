@@ -120,8 +120,11 @@ jobs:
       - name: Set skips flag
         id: skips-check
         if: inputs.skips != ''
+        shell: bash
         run: |
-          echo "SKIPS_FLAG=--skip=${{ inputs.skips }}" >> "$GITHUB_OUTPUT"
+          echo "SKIPS_FLAG=--skip=${INPUTS_SKIPS}" >> "$GITHUB_OUTPUT"
+        env:
+          INPUTS_SKIPS: ${{ inputs.skips }}
 
       - name: Fetch OBI source
         if: inputs.distribution == 'otelcol-contrib'
@@ -289,7 +292,9 @@ jobs:
 
       - name: Display structure of downloaded files
         shell: bash
-        run: ls -R distributions/${{ inputs.distribution }}/dist
+        run: ls -R distributions/${INPUTS_DISTRIBUTION}/dist
+        env:
+          INPUTS_DISTRIBUTION: ${{ inputs.distribution }}
 
       - name: Log into Docker.io
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0

@@ -35,7 +35,10 @@ jobs:
           name: linux-packages
 
       - name: Test ${{ matrix.type }} package
-        run: ./scripts/package-tests/package-tests.sh ./otelcol*-next_linux_amd64.${{ matrix.type }} ${{ inputs.distribution }}
+        run: ./scripts/package-tests/package-tests.sh ./otelcol*-next_linux_amd64.${MATRIX_TYPE} ${INPUTS_DISTRIBUTION}
+        env:
+          MATRIX_TYPE: ${{ matrix.type }}
+          INPUTS_DISTRIBUTION: ${{ inputs.distribution }}
 
   create-issue:
     name: Create GitHub Issue
