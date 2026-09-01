@@ -286,6 +286,7 @@ dockers:
     build_flag_templates:
       - --pull
       - --build-arg=WIN_VERSION=2019
+      - --build-arg=WIN_VERSION_SHA=sha256:217694d5470363a77b86c42d439090b7466cd959ad5a15221c556a4707481305
       - --platform=windows/amd64
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.name={{.ProjectName}}
@@ -307,6 +308,7 @@ dockers:
     build_flag_templates:
       - --pull
       - --build-arg=WIN_VERSION=2022
+      - --build-arg=WIN_VERSION_SHA=sha256:e4ce8c20390c3785c3cbeef15c579d186b3599d37525c596590cf4508e38d3ff
       - --platform=windows/amd64
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.name={{.ProjectName}}
