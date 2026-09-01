@@ -48,9 +48,7 @@ For more information about the maintainer role, see the [community repository](h
 ### Approvers
 
 - [Christos Markou](https://github.com/ChrsMark), Elastic
-- [Curtis Robert](https://github.com/crobert-1), Splunk
 - [Douglas Camata](https://github.com/douglascamata), Coralogix
-- [Sam DeHaan](https://github.com/dehaansa), Grafana Labs
 
 For more information about the approver role, see the [community repository](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#approver).
 
@@ -58,14 +56,16 @@ For more information about the approver role, see the [community repository](htt
 
 - [Anthony Mirabella](https://github.com/Aneurysm9), Approver
 - [Bryan Aguilar](https://github.com/bryan-aguilar), Approver
-- [David Ashpole](https://github.com/dashpole), Approver
+- [Curtis Robert](https://github.com/crobert-1), Approver
 - [Daniel Jaglowski](https://github.com/djaglowski), Maintainer
+- [David Ashpole](https://github.com/dashpole), Approver
 - [Edmo Vamerlatti Costa](https://github.com/edmocosta), Maintainer
 - [John L. Peterson (Jack)](https://github.com/jackgopack4), Approver
 - [Juraci Paixão Kröhling](https://github.com/jpkrohling), Maintainer
 - [Matt Wear](https://github.com/mwear), Approver
 - [Przemek Maciolek](https://github.com/pmm-sumo), Approver
 - [Ruslan Kovalov](https://github.com/kovrus), Approver
+- [Sam DeHaan](https://github.com/dehaansa), Approver
 - [Tigran Najaryan](https://github.com/tigrannajaryan), Maintainer
 - [Ziqi Zhao](https://github.com/fatsheep9146), Approver
 
