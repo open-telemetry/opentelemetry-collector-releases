@@ -428,7 +428,9 @@ jobs:
           echo "Sleeping for a bit..."
           sleep 10
           echo "Checking logs for correct startup..."
-          docker logs $env:INPUTS_DISTRIBUTION *> "docker-logs-${env:INPUTS_DISTRIBUTION}.log"
+          # Don't let the collector's stderr logs trip PowerShell's 'Stop' preference.
+          $ErrorActionPreference = 'Continue'
+          docker logs $env:INPUTS_DISTRIBUTION 2>&1 | Out-File -FilePath "docker-logs-${env:INPUTS_DISTRIBUTION}.log"
           if (Get-Content "docker-logs-${env:INPUTS_DISTRIBUTION}.log" | Select-String -Pattern "Everything is ready.") {
             echo "$env:INPUTS_DISTRIBUTION started up correctly"
           } else {
