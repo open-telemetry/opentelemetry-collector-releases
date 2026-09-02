@@ -4,6 +4,16 @@
 
 <!-- next version -->
 
+## v0.160.0
+
+### 🚀 New components 🚀
+
+- `spanpruningprocessor`: Added missing spanpruningprocessor to otelcol-contrib (#1608)
+
+### 💡 Enhancements 💡
+
+- `otelcol-contrib`: Upgrade go.opentelemetry.io/obi to v0.11.0. (#1604)
+
 ## v0.159.0
 
 ### 🛑 Breaking changes 🛑
