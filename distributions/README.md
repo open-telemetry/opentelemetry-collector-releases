@@ -10,7 +10,7 @@ Distributions supported by the Collector SIG should fulfill the following criter
 2. Should meet general needs and be desired by many users.
 3. Should not be specific to any vendor.
 4. May be focused on development or proof of concept use cases.  The distribution should clearly indicate whether the Collector SIG recommends the distribution be used in production environments.
-5. Must only include components from the `open-telemetry` org.
+5. Must only include components from the `open-telemetry` org, unless the component is hosted by the organization of an Incubating or Graduated [CNCF project](https://www.cncf.io/projects/) and its inclusion is explicitly approved by the Collector SIG.
     - Components that are marked [Unmaintained](https://github.com/open-telemetry/opentelemetry-collector#unmaintained) will be kept in any distributions for six months. After six months of being unmaintained the component will be removed from the distributions.
 6. Must only include components that are properly tagged as Go modules. Updates to components will only be considered if they correspond to a tag.
 7. Have a clearly defined list of criteria for which components are included.

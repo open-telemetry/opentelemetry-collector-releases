@@ -1,0 +1,63 @@
+name: CI - Prometheus - GoReleaser
+
+on:
+  merge_group:
+  push:
+    branches:
+      - main
+      - release/*
+    paths:
+      - "distributions/otelcol-prometheus/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
+  pull_request:
+    branches:
+      - main
+      - release/*
+    paths:
+      - "distributions/otelcol-prometheus/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
+
+permissions:
+  contents: read
+
+jobs:
+  check-goreleaser-linux:
+    name: CI - Prometheus - GoReleaser (Linux)
+    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    with:
+      distribution: otelcol-prometheus
+      goos: '[ "linux" ]'
+      goarch: '[ "amd64", "arm64" ]'
+      config_file: prometheus-config.yaml
+    secrets: inherit
+
+  check-goreleaser-darwin:
+    name: CI - Prometheus - GoReleaser (macOS)
+    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    with:
+      distribution: otelcol-prometheus
+      goos: '[ "darwin" ]'
+      goarch: '[ "arm64" ]'
+      run_container_tests: false
+    secrets: inherit
+
+  check-goreleaser-windows:
+    name: CI - Prometheus - GoReleaser (Windows)
+    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    with:
+      distribution: otelcol-prometheus
+      goos: '[ "windows" ]'
+      goarch: '[ "amd64" ]'
+      runner_os: windows-2022
+      run_container_tests: false
+    secrets: inherit

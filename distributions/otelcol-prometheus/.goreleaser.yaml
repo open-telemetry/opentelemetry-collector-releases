@@ -1,0 +1,177 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json
+version: 2
+project_name: opentelemetry-collector-releases
+env:
+  - COSIGN_YES=true
+  - LD_FLAGS=-s -w
+  - BUILD_FLAGS=-trimpath
+  - CONTAINER_IMAGE_EPHEMERAL_TAG={{ if .IsNightly }}nightly{{ else }}latest{{ end }}
+  - GOPROXY=https://proxy.golang.org,direct
+  - CGO_ENABLED=0
+release:
+  replace_existing_artifacts: true
+msi:
+  - id: otelcol-prometheus
+    name: otelcol-prometheus_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}
+    wxs: windows-installer.wxs
+    extra_files:
+      - opentelemetry.ico
+builds:
+  - id: otelcol-prometheus-linux
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    dir: _build
+    binary: otelcol-prometheus
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
+  - id: otelcol-prometheus-darwin
+    goos:
+      - darwin
+    goarch:
+      - arm64
+    dir: _build
+    binary: otelcol-prometheus
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
+  - id: otelcol-prometheus-windows
+    goos:
+      - windows
+    goarch:
+      - amd64
+    dir: _build
+    binary: otelcol-prometheus
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
+archives:
+  - id: otelcol-prometheus
+    ids:
+      - otelcol-prometheus-linux
+      - otelcol-prometheus-darwin
+      - otelcol-prometheus-windows
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
+nfpms:
+  - package_name: otelcol-prometheus
+    contents:
+      - src: otelcol-prometheus.service
+        dst: /lib/systemd/system/otelcol-prometheus.service
+      - src: otelcol-prometheus.conf
+        dst: /etc/otelcol-prometheus/otelcol-prometheus.conf
+        type: config|noreplace
+      - dst: /var/lib/otelcol-prometheus
+        type: dir
+        file_info:
+          owner: otelcol-prometheus
+          group: otelcol-prometheus
+          mode: 488
+    scripts:
+      preinstall: preinstall.sh
+      postinstall: postinstall.sh
+      preremove: preremove.sh
+    overrides:
+      rpm:
+        dependencies:
+          - /bin/sh
+        scripts:
+          postinstall: postinstall-rpm.sh
+    id: otelcol-prometheus
+    ids:
+      - otelcol-prometheus-linux
+    formats:
+      - deb
+      - rpm
+    maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
+    description: OpenTelemetry Collector - otelcol-prometheus
+    license: Apache 2.0
+snapshot:
+  version_template: '{{ incpatch .Version }}-next'
+checksum:
+  split: true
+signs:
+  - cmd: cosign
+    args:
+      - sign-blob
+      - --bundle=${signature}
+      - ${artifact}
+    signature: ${artifact}.sigstore.json
+    artifacts: all
+docker_signs:
+  - args:
+      - sign
+      - ${artifact}
+    artifacts: all
+sboms:
+  - id: archive
+    artifacts: archive
+  - id: package
+    artifacts: package
+monorepo:
+  tag_prefix: v
+partial:
+  by: target
+nightly:
+  version_template: '{{ incpatch .Version}}-nightly.{{ .ShortCommit }}'
+  tag_name: nightly-otelcol-prometheus
+  keep_single_release: true
+dockers:
+  - goos: linux
+    goarch: amd64
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-prometheus:{{ .Version }}-amd64
+      - otel/opentelemetry-collector-prometheus:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-prometheus:{{ .Version }}-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-prometheus:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
+    build_flag_templates:
+      - --pull
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+  - goos: linux
+    goarch: arm64
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-prometheus:{{ .Version }}-arm64
+      - otel/opentelemetry-collector-prometheus:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-prometheus:{{ .Version }}-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-prometheus:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
+    build_flag_templates:
+      - --pull
+      - --platform=linux/arm64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+docker_manifests:
+  - name_template: otel/opentelemetry-collector-prometheus:{{ .Version }}
+    image_templates:
+      - otel/opentelemetry-collector-prometheus:{{ .Version }}-amd64
+      - otel/opentelemetry-collector-prometheus:{{ .Version }}-arm64
+  - name_template: otel/opentelemetry-collector-prometheus:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
+    image_templates:
+      - otel/opentelemetry-collector-prometheus:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
+      - otel/opentelemetry-collector-prometheus:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
+  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-prometheus:{{ .Version }}
+    image_templates:
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-prometheus:{{ .Version }}-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-prometheus:{{ .Version }}-arm64
+  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-prometheus:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
+    image_templates:
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-prometheus:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-prometheus:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64

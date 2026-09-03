@@ -1,0 +1,16 @@
+[Unit]
+Description=OpenTelemetry Collector Prometheus
+After=network.target
+
+[Service]
+EnvironmentFile=/etc/otelcol-prometheus/otelcol-prometheus.conf
+ExecStart=/usr/bin/otelcol-prometheus $OTELCOL_OPTIONS
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=mixed
+Restart=on-failure
+Type=simple
+User=otelcol-prometheus
+Group=otelcol-prometheus
+
+[Install]
+WantedBy=multi-user.target

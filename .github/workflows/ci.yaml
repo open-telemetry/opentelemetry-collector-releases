@@ -26,6 +26,7 @@ jobs:
           - otelcol-contrib
           - otelcol-k8s
           - otelcol-otlp
+          - otelcol-prometheus
           - otelcol-ebpf-profiler
     steps:
       - name: Checkout

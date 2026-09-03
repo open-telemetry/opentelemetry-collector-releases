@@ -31,6 +31,10 @@ on:
       otelcol_run_options:
         required: false
         type: string
+      run_container_tests:
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -228,7 +232,7 @@ jobs:
           INPUTS_DISTRIBUTION: ${{ inputs.distribution }}
 
       - name: Upload linux service packages
-        if: ${{ matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' && (inputs.distribution == 'otelcol-contrib' || inputs.distribution == 'otelcol') }}
+        if: ${{ matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' && (inputs.distribution == 'otelcol-contrib' || inputs.distribution == 'otelcol' || inputs.distribution == 'otelcol-prometheus') }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: linux-packages
@@ -236,7 +240,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload MSI packages
-        if: matrix.GOOS == 'windows' && matrix.GOARCH == 'amd64' && (inputs.distribution == 'otelcol-contrib' || inputs.distribution == 'otelcol')
+        if: matrix.GOOS == 'windows' && matrix.GOARCH == 'amd64' && (inputs.distribution == 'otelcol-contrib' || inputs.distribution == 'otelcol' || inputs.distribution == 'otelcol-prometheus')
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: msi-packages
@@ -332,7 +336,7 @@ jobs:
         run: ./.github/workflows/scripts/check-disk-space.sh
 
   docker-tests:
-    if: inputs.goos != '[ "aix" ]'
+    if: inputs.run_container_tests && inputs.goos != '[ "aix" ]'
     needs:
       - check-goreleaser
     strategy:
