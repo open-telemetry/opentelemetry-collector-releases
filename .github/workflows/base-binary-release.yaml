@@ -52,8 +52,8 @@ jobs:
 
       - name: Push ${{ inputs.binary }} Tag
         run: |
-          tag="cmd/${{ inputs.binary }}/${{ github.ref_name }}"
-          message="Releasing ${{ inputs.binary }} binaries for ${{ steps.collector-ref.outputs.COLLECTOR_REF }}"
+          tag="cmd/${INPUTS_BINARY}/${GITHUB_REF_NAME}"
+          message="Releasing ${INPUTS_BINARY} binaries for ${STEPS_COLLECTOR_REF_OUTPUTS_COLLECTOR_REF}"
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           if git ls-remote --exit-code --tags origin "${tag}" > /dev/null; then
@@ -62,6 +62,9 @@ jobs:
             git tag -a "${tag}" -m "${message}"
             git push origin "${tag}"
           fi
+        env:
+          INPUTS_BINARY: ${{ inputs.binary }}
+          STEPS_COLLECTOR_REF_OUTPUTS_COLLECTOR_REF: ${{ steps.collector-ref.outputs.COLLECTOR_REF }}
 
       - name: Set goreleaser last tag reference in case of non-nightly release
         id: prev-tag
@@ -69,10 +72,12 @@ jobs:
         # find previous tag by taking only binary tags, filtering out nightly tags and then choosing the
         # second to last tag (last one is the current release)
         run: |
-          prev_tag=$(git tag | grep "cmd/${{ inputs.binary }}" | grep -v "nightly" | sort -r --version-sort | head -n 2 | tail -n 1)
-          current_tag="cmd/${{ inputs.binary }}/${{ github.ref_name }}"
+          prev_tag=$(git tag | grep "cmd/${INPUTS_BINARY}" | grep -v "nightly" | sort -r --version-sort | head -n 2 | tail -n 1)
+          current_tag="cmd/${INPUTS_BINARY}/${GITHUB_REF_NAME}"
           echo "PREVIOUS_RELEASE_TAG=$prev_tag" >> "$GITHUB_OUTPUT"
           echo "CURRENT_TAG=$current_tag" >> "$GITHUB_OUTPUT"
+        env:
+          INPUTS_BINARY: ${{ inputs.binary }}
 
       - name: Set nightly enabled
         id: nightly-check
@@ -89,13 +94,19 @@ jobs:
           path: ${{ inputs.dependency-target-folder }}
 
       - name: Copy Dockerfile to Collector dependency directory
-        run: cp cmd/${{ inputs.binary }}/Dockerfile ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}/Dockerfile
+        run: cp cmd/${INPUTS_BINARY}/Dockerfile ${INPUTS_DEPENDENCY_TARGET_FOLDER}/cmd/${INPUTS_BINARY}/Dockerfile
+        env:
+          INPUTS_BINARY: ${{ inputs.binary }}
+          INPUTS_DEPENDENCY_TARGET_FOLDER: ${{ inputs.dependency-target-folder }}
 
       - name: Copy MSI files to Core Repo directory
         if: inputs.windows-msi == true
         run: |
-          cp cmd/${{ inputs.binary }}/opentelemetry.ico ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}
-          cp cmd/${{ inputs.binary }}/config.windows.example.yaml ${{ inputs.dependency-target-folder }}/cmd/${{ inputs.binary }}
+          cp cmd/${INPUTS_BINARY}/opentelemetry.ico ${INPUTS_DEPENDENCY_TARGET_FOLDER}/cmd/${INPUTS_BINARY}
+          cp cmd/${INPUTS_BINARY}/config.windows.example.yaml ${INPUTS_DEPENDENCY_TARGET_FOLDER}/cmd/${INPUTS_BINARY}
+        env:
+          INPUTS_BINARY: ${{ inputs.binary }}
+          INPUTS_DEPENDENCY_TARGET_FOLDER: ${{ inputs.dependency-target-folder }}
 
       - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
         with:

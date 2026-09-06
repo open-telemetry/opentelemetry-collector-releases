@@ -25,7 +25,7 @@ runs:
     - name: Resolve OBI version
       shell: bash
       run: |
-        VERSION="${{ inputs.obi-version }}"
+        VERSION="${INPUTS_OBI_VERSION}"
         if [[ -z "${VERSION}" ]]; then
           VERSION=$(awk '/- gomod: go\.opentelemetry\.io\/obi / {print $NF; exit}' distributions/otelcol-contrib/manifest.yaml)
         fi
@@ -34,6 +34,8 @@ runs:
           exit 1
         fi
         echo "OBI_VERSION=${VERSION}" >> "$GITHUB_ENV"
+      env:
+        INPUTS_OBI_VERSION: ${{ inputs.obi-version }}
 
     - name: Cache OBI source
       id: cache-obi

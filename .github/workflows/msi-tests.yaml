@@ -32,13 +32,15 @@ jobs:
       - name: Set required environment variables for MSI tests
         run: |
           $ErrorActionPreference = 'Stop'
-          $alt_config_path = Resolve-Path .\distributions\${{ inputs.distribution }}\config.yaml
+          $alt_config_path = Resolve-Path .\distributions\$env:INPUTS_DISTRIBUTION\config.yaml
           Test-Path $alt_config_path
           $msi_path = Resolve-Path .\msi\*\*.msi
           Test-Path $msi_path
           "MSI_TEST_ALTERNATE_CONFIG_FILE=$alt_config_path" | Out-File -FilePath $env:GITHUB_ENV -Append
           "MSI_TEST_COLLECTOR_PATH=$msi_path" | Out-File -FilePath $env:GITHUB_ENV -Append
-          "MSI_TEST_COLLECTOR_SERVICE_NAME=${{ inputs.distribution }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "MSI_TEST_COLLECTOR_SERVICE_NAME=$env:INPUTS_DISTRIBUTION" | Out-File -FilePath $env:GITHUB_ENV -Append
+        env:
+          INPUTS_DISTRIBUTION: ${{ inputs.distribution }}
 
       - name: Run the MSI tests
         working-directory: tests/msi

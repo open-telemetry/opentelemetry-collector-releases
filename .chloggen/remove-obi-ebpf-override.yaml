@@ -1,6 +1,0 @@
-change_type: enhancement
-component: otelcol-contrib
-note: Upgrade go.opentelemetry.io/obi to v0.11.0.
-issues: [1604]
-subtext:
-change_logs: [user]
