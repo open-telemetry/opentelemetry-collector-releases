@@ -124,6 +124,14 @@
       ]
     },
     {
+      "matchPackageNames": [
+        "go.opentelemetry.io/obi{/,}**"
+      ],
+      "labels": [
+        "renovatebot"
+      ]
+    },
+    {
       "matchManagers": [
         "gomod"
       ],
