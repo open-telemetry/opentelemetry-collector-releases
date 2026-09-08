@@ -141,6 +141,15 @@
       "enabled": false
     },
     {
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchDepTypes": [
+        "golang"
+      ],
+      "groupName": "Go version"
+    },
+    {
       "matchPackageNames": [
         "goreleaser/goreleaser-pro",
         "github.com/goreleaser/goreleaser-pro/v2",
