@@ -150,6 +150,15 @@
       "groupName": "Go version"
     },
     {
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchPackageNames": [
+        "go"
+      ],
+      "groupName": "Go version"
+    },
+    {
       "matchPackageNames": [
         "goreleaser/goreleaser-pro",
         "github.com/goreleaser/goreleaser-pro/v2",
