@@ -15,9 +15,6 @@ This distribution does not install a default configuration. Pass a configuration
 The following example embeds `stackdriver_exporter` and sends its metrics over OTLP:
 
 ```yaml
-extensions:
-  health_check:
-
 receivers:
   stackdriver_exporter:
     scrape_interval: 60s
@@ -30,19 +27,17 @@ processors:
   memory_limiter:
     check_interval: 1s
     limit_mib: 512
-  batch:
 
 exporters:
-  otlp:
+  otlp_grpc:
     endpoint: otel-backend.example.com:4317
 
 service:
-  extensions: [health_check]
   pipelines:
     metrics:
       receivers: [stackdriver_exporter]
-      processors: [memory_limiter, batch]
-      exporters: [otlp]
+      processors: [memory_limiter]
+      exporters: [otlp_grpc]
 ```
 
 ## Components
