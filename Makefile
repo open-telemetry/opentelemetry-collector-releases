@@ -19,7 +19,7 @@ TOOLS_BIN_NAMES := $(addprefix $(TOOLS_BIN_DIR)/, $(notdir $(shell echo $(TOOLS_
 CHLOGGEN        := $(TOOLS_BIN_DIR)/chloggen
 CHLOGGEN_CONFIG := .chloggen/config.yaml
 
-DISTRIBUTIONS ?= "otelcol,otelcol-contrib,otelcol-k8s,otelcol-otlp,otelcol-ebpf-profiler"
+DISTRIBUTIONS ?= "otelcol,otelcol-contrib,otelcol-k8s,otelcol-otlp,otelcol-prometheus,otelcol-ebpf-profiler"
 BINARIES ?= "builder,opampsupervisor"
 
 ci: check build

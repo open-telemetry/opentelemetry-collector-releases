@@ -8,6 +8,7 @@ const (
 	contribDistro      = "otelcol-contrib"
 	k8sDistro          = "otelcol-k8s"
 	otlpDistro         = "otelcol-otlp"
+	prometheusDistro   = "otelcol-prometheus"
 	ebpfProfilerDistro = "otelcol-ebpf-profiler"
 	ocbBinary          = "builder"
 	opampBinary        = "opampsupervisor"
