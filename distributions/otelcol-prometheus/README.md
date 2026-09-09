@@ -1,18 +1,16 @@
 # OpenTelemetry Collector Prometheus Distro
 
-This distribution runs selected Prometheus exporters in-process as OpenTelemetry Collector metrics receivers. It preserves the exporters' familiar metric schemas while allowing the metrics to use Collector processors and OTLP or Prometheus-compatible exporters.
-
-Exporter-backed receivers are compatibility alternatives to overlapping native OpenTelemetry receivers, not replacements for them.
+This distribution runs selected Prometheus exporters in-process as OpenTelemetry Collector metrics receivers. It preserves the exporters' familiar metric schemas while allowing data pipelines to use Collector processors and exporters.
 
 ## Recommendation
 
-This distribution is experimental and is not recommended for production. Its bridge-backed receivers are currently at Development stability.
+This distribution is experimental and is not recommended for production.
 
-For production, build a custom Collector with the OpenTelemetry Collector Builder and include only the components required by your environment.
+For production, [build a custom Collector](https://opentelemetry.io/docs/collector/extend/ocb/) and include only the components required by your environment.
 
 ## Configuration
 
-This distribution does not install a default configuration because each embedded exporter requires environment-specific targets, credentials, or files. Pass a configuration with `--config`.
+This distribution does not install a default configuration. Pass a configuration with `--config`.
 
 The following example embeds `stackdriver_exporter` and sends its metrics over OTLP:
 

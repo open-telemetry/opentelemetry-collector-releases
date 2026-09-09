@@ -1,4 +1,4 @@
-name: Release Prometheus
+name: Release Collector Prometheus distribution
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   release-linux:
-    name: Release Prometheus (Linux)
+    name: Release Collector Prometheus distribution (Linux)
     uses: ./.github/workflows/base-release.yaml
     with:
       distribution: otelcol-prometheus
@@ -20,7 +20,7 @@ jobs:
     permissions: write-all
 
   release-darwin:
-    name: Release Prometheus (macOS)
+    name: Release Collector Prometheus distribution (macOS)
     uses: ./.github/workflows/base-release.yaml
     with:
       distribution: otelcol-prometheus
@@ -31,7 +31,7 @@ jobs:
     permissions: write-all
 
   release-windows:
-    name: Release Prometheus (Windows)
+    name: Release Collector Prometheus distribution (Windows)
     if: ${{ !contains(github.ref, '-nightly') }}
     uses: ./.github/workflows/base-release.yaml
     with:

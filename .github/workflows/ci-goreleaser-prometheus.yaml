@@ -1,4 +1,4 @@
-name: CI - Prometheus - GoReleaser
+name: CI - Collector Prometheus distribution - GoReleaser
 
 on:
   merge_group:
@@ -32,7 +32,7 @@ permissions:
 
 jobs:
   check-goreleaser-linux:
-    name: CI - Prometheus - GoReleaser (Linux)
+    name: CI - Collector Prometheus distribution - GoReleaser (Linux)
     uses: ./.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-prometheus
@@ -42,7 +42,7 @@ jobs:
     secrets: inherit
 
   check-goreleaser-darwin:
-    name: CI - Prometheus - GoReleaser (macOS)
+    name: CI - Collector Prometheus distribution - GoReleaser (macOS)
     uses: ./.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-prometheus
@@ -52,7 +52,7 @@ jobs:
     secrets: inherit
 
   check-goreleaser-windows:
-    name: CI - Prometheus - GoReleaser (Windows)
+    name: CI - Collector Prometheus distribution - GoReleaser (Windows)
     uses: ./.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-prometheus
