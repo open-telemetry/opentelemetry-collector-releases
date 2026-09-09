@@ -26,7 +26,7 @@ The PR needs to be manually closed and re-opened once to trigger pipelines.
    
    - `make push-tags`
 5. Wait for the new tag build to pass successfully.
-6. Ensure the "Release Core", "Release Contrib", "Release k8s", "Release OTLP", "Release Prometheus", "Release Builder" and "Release OpAMP Supervisor" actions pass, this will
+6. Ensure the "Release Core", "Release Contrib", "Release k8s", "Release OTLP", "Release Collector Prometheus distribution", "Release Builder" and "Release OpAMP Supervisor" actions pass, this will
     1. push new container images to `https://hub.docker.com/repository/docker/otel/opentelemetry-collector`, `https://hub.docker.com/repository/docker/otel/opentelemetry-collector-contrib`, `https://hub.docker.com/repository/docker/otel/opentelemetry-collector-k8s`, and `https://hub.docker.com/repository/docker/otel/opentelemetry-collector-prometheus` as well as their respective counterparts on GHCR
     2. create a Github release for the tag and push all the build artifacts to the Github release. See [example](https://github.com/open-telemetry/opentelemetry-collector-releases/actions/workflows/release-core.yaml).
     3. build and release ocb and opampsupervisor binaries under a separate tagged Github release, e.g. `cmd/{builder,opampsupervisor}/v0.85.0`
