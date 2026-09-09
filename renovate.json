@@ -124,6 +124,14 @@
       ]
     },
     {
+      "matchPackageNames": [
+        "go.opentelemetry.io/obi{/,}**"
+      ],
+      "labels": [
+        "renovatebot"
+      ]
+    },
+    {
       "matchManagers": [
         "gomod"
       ],
@@ -131,6 +139,24 @@
         "toolchain"
       ],
       "enabled": false
+    },
+    {
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchDepTypes": [
+        "golang"
+      ],
+      "groupName": "Go version"
+    },
+    {
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchPackageNames": [
+        "go"
+      ],
+      "groupName": "Go version"
     },
     {
       "matchPackageNames": [
