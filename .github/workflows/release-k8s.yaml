@@ -17,7 +17,11 @@ jobs:
       goarch: '[ "amd64", "arm64", "ppc64le", "riscv64", "s390x" ]'
       nightly: ${{ contains(github.ref, '-nightly') }}
     secrets: inherit
-    permissions: write-all
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      packages: write
   release-windows:
     name: Release k8s (Windows)
     if: ${{ !contains(github.ref, '-nightly') }}
@@ -28,4 +32,8 @@ jobs:
       goarch: '[ "386", "amd64", "arm64" ]'
       runner_os: windows-2022
     secrets: inherit
-    permissions: write-all
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      packages: write

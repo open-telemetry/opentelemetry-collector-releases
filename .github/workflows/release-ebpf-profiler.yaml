@@ -17,4 +17,8 @@ jobs:
       goarch: '[ "amd64", "arm64" ]'
       nightly: ${{ contains(github.ref, '-nightly') }}
     secrets: inherit
-    permissions: write-all
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      packages: write

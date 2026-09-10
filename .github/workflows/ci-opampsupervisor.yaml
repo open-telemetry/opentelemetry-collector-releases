@@ -40,4 +40,5 @@ jobs:
       linux-packages: true
       windows-msi: true
     secrets: inherit
-    permissions: write-all
+    permissions:
+      contents: read

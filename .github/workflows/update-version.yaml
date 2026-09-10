@@ -24,6 +24,8 @@ jobs:
         with:
           client-id: ${{ vars.OTELBOT_COLLECTOR_RELEASES_CLIENT_ID }}
           private-key: ${{ secrets.OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
 
       - name: Set up commit author name and email
         id: committer
