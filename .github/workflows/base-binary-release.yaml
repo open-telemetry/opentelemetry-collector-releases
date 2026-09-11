@@ -21,6 +21,13 @@ on:
         type: boolean
         default: false
         description: "Set to true if the binary needs a Windows MSI to be built"
+    secrets:
+      DOCKER_TOKEN_COLLECTOR_RELEASES:
+        required: true
+      GITHUB_TOKEN:
+        required: true
+      GORELEASER_KEY:
+        required: true
 
 env:
   # renovate: datasource=github-releases packageName=goreleaser/goreleaser-pro
@@ -40,7 +47,7 @@ jobs:
 
     steps:
       - name: Checkout Releases Repo
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1 # zizmor: ignore[artipacked] credentials are needed to push release tags
         with:
           fetch-depth: 0
 
@@ -89,6 +96,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
           repository: ${{ inputs.collector-dependency }}
           ref: ${{ steps.collector-ref.outputs.COLLECTOR_REF }}
           path: ${{ inputs.dependency-target-folder }}

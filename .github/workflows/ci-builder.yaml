@@ -37,6 +37,8 @@ jobs:
       binary: builder
       collector-dependency: 'open-telemetry/opentelemetry-collector'
       dependency-target-folder: '.core'
-    secrets: inherit
+    secrets:
+      GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       contents: read

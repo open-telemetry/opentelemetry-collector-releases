@@ -16,7 +16,10 @@ jobs:
       goos: '[ "linux" ]'
       goarch: '[ "amd64", "arm64", "ppc64le", "riscv64", "s390x" ]'
       nightly: ${{ contains(github.ref, '-nightly') }}
-    secrets: inherit
+    secrets:
+      DOCKER_TOKEN_COLLECTOR_RELEASES: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
     permissions:
       contents: write
       id-token: write
@@ -31,7 +34,10 @@ jobs:
       goos: '[ "windows" ]'
       goarch: '[ "386", "amd64", "arm64" ]'
       runner_os: windows-2022
-    secrets: inherit
+    secrets:
+      DOCKER_TOKEN_COLLECTOR_RELEASES: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
     permissions:
       contents: write
       id-token: write

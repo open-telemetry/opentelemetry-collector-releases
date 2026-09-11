@@ -24,6 +24,13 @@ on:
         required: false
         type: string
         default: ""
+    secrets:
+      DOCKER_TOKEN_COLLECTOR_RELEASES:
+        required: true
+      GITHUB_TOKEN:
+        required: true
+      GORELEASER_KEY:
+        required: true
 
 permissions:
   contents: read
@@ -41,6 +48,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Set goreleaser last tag reference in case of non-nightly release
         id: prev-tag
         if: inputs.nightly != 'true'
@@ -74,6 +82,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Start Docker daemon (Windows)
         if: runner.os == 'Windows'
@@ -227,6 +236,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Start Docker daemon (Windows)
         if: runner.os == 'Windows'

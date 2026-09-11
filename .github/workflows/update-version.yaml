@@ -34,7 +34,7 @@ jobs:
           git config --global user.email "197425009+otelbot@users.noreply.github.com"
 
       - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1 # zizmor: ignore[artipacked] credentials are needed to push the version branch
         with:
           token: ${{ steps.otelbot-token.outputs.token }}
 

@@ -41,7 +41,9 @@ jobs:
       otelcol_run_options: "--feature-gates=service.profilesSupport"
       goos: '[ "linux" ]'
       goarch: '[ "amd64" ]'
-    secrets: inherit
+    secrets:
+      GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   check-goreleaser-arm64:
     name: CI - eBPF Profiler - GoReleaser
     uses: ./.github/workflows/base-ci-goreleaser.yaml
@@ -53,4 +55,6 @@ jobs:
       goos: '[ "linux" ]'
       goarch: '[ "arm64" ]'
       runner_os: ubuntu-24.04-arm
-    secrets: inherit
+    secrets:
+      GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
