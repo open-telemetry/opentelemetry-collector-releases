@@ -47,7 +47,6 @@ jobs:
     uses: ./.github/workflows/cleanup-nightly.yaml
     secrets:
       DOCKER_TOKEN_COLLECTOR_RELEASES: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY: ${{ secrets.OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY }}
     # Caps the GITHUB_TOKEN handed to the called workflow. Git tags are deleted with the
     # otelbot app token, but GHCR package deletion uses GITHUB_TOKEN, so packages: write

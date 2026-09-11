@@ -11,8 +11,6 @@ on:
     secrets:
       DOCKER_TOKEN_COLLECTOR_RELEASES:
         required: true
-      GITHUB_TOKEN:
-        required: true
       OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY:
         required: true
   workflow_dispatch:

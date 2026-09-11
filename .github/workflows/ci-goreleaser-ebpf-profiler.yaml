@@ -43,7 +43,6 @@ jobs:
       goarch: '[ "amd64" ]'
     secrets:
       GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   check-goreleaser-arm64:
     name: CI - eBPF Profiler - GoReleaser
     uses: ./.github/workflows/base-ci-goreleaser.yaml
@@ -57,4 +56,3 @@ jobs:
       runner_os: ubuntu-24.04-arm
     secrets:
       GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

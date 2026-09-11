@@ -18,7 +18,6 @@ jobs:
       nightly: true
     secrets:
       GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   package-tests:
     name: Linux Package tests

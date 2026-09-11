@@ -40,7 +40,6 @@ jobs:
       goarch: '[ "amd64", "arm64", "ppc64le", "riscv64", "s390x" ]'
     secrets:
       GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   check-goreleaser-windows:
     name: CI - k8s - GoReleaser
     uses: ./.github/workflows/base-ci-goreleaser.yaml
@@ -51,4 +50,3 @@ jobs:
       runner_os: 'windows-2022'
     secrets:
       GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

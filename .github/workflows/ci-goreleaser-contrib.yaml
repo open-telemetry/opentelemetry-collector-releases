@@ -40,7 +40,6 @@ jobs:
       goarch: '[ "386", "amd64", "arm", "arm64", "ppc64le", "riscv64", "s390x" ]'
     secrets:
       GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   check-goreleaser-aix:
     name: CI - Contrib - GoReleaser
@@ -51,7 +50,6 @@ jobs:
       goarch: '[ "ppc64" ]'
     secrets:
       GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   check-goreleaser-windows:
     name: CI - Contrib - GoReleaser
@@ -63,7 +61,6 @@ jobs:
       runner_os: 'windows-2022'
     secrets:
       GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   package-tests:
     name: Package tests
