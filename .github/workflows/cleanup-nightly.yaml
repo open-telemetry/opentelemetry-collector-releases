@@ -8,6 +8,11 @@ on:
         type: boolean
         # The nightly schedule is expected to actually clean up.
         default: false
+    secrets:
+      DOCKER_TOKEN_COLLECTOR_RELEASES:
+        required: true
+      OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY:
+        required: true
   workflow_dispatch:
     inputs:
       dry_run:
@@ -58,7 +63,7 @@ jobs:
           private-key: ${{ secrets.OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY }}
           permission-contents: write
 
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1 # zizmor: ignore[artipacked] credentials are needed to delete expired tags
         with:
           fetch-depth: 0
           token: ${{ steps.otelbot-token.outputs.token }}

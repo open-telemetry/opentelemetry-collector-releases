@@ -39,5 +39,7 @@ jobs:
       dependency-target-folder: '.contrib'
       linux-packages: true
       windows-msi: true
-    secrets: inherit
-    permissions: write-all
+    secrets:
+      GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+    permissions:
+      contents: read

@@ -24,6 +24,8 @@ jobs:
         with:
           client-id: ${{ vars.OTELBOT_COLLECTOR_RELEASES_CLIENT_ID }}
           private-key: ${{ secrets.OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
 
       - name: Set up commit author name and email
         id: committer
@@ -32,7 +34,7 @@ jobs:
           git config --global user.email "197425009+otelbot@users.noreply.github.com"
 
       - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1 # zizmor: ignore[artipacked] credentials are needed to push the version branch
         with:
           token: ${{ steps.otelbot-token.outputs.token }}
 

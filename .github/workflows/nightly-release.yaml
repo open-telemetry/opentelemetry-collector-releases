@@ -21,7 +21,7 @@ jobs:
           private-key: ${{ secrets.OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY }}
           permission-contents: write
 
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1 # zizmor: ignore[artipacked] credentials are needed to push the nightly tag
         with:
           fetch-depth: 0
           token: ${{ steps.otelbot-token.outputs.token }}
@@ -45,7 +45,9 @@ jobs:
   cleanup-nightly:
     needs: nightly-release
     uses: ./.github/workflows/cleanup-nightly.yaml
-    secrets: inherit
+    secrets:
+      DOCKER_TOKEN_COLLECTOR_RELEASES: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
+      OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY: ${{ secrets.OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY }}
     # Caps the GITHUB_TOKEN handed to the called workflow. Git tags are deleted with the
     # otelbot app token, but GHCR package deletion uses GITHUB_TOKEN, so packages: write
     # has to be granted here as well or it is capped away from the called workflow.

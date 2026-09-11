@@ -31,6 +31,9 @@ on:
       otelcol_run_options:
         required: false
         type: string
+    secrets:
+      GORELEASER_KEY:
+        required: true
 
 permissions:
   contents: read
@@ -48,6 +51,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Set goreleaser last tag reference in case of non-nightly release
         id: prev-tag
         if: inputs.nightly != 'true'
@@ -91,6 +95,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup QEMU
         if: runner.os != 'Windows'
@@ -108,7 +113,7 @@ jobs:
         uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
 
       - name: Setup Go
-        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0 # zizmor: ignore[cache-poisoning] Go caches are content-addressed and dependencies are verified by go.sum
         with:
           go-version: "~1.26.0"
           check-latest: true
@@ -351,6 +356,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Setup QEMU
         if: runner.os != 'Windows'
