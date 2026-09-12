@@ -12,6 +12,7 @@ var (
 			&fullBuildConfig{TargetOS: "aix", TargetArch: aixArchs, BuildDir: defaultBuildDir},
 			&fullBuildConfig{TargetOS: "linux", TargetArch: baseArchs, BuildDir: defaultBuildDir, ArmVersion: []string{"7"}, Ppc64Version: []string{"power8"}},
 			&fullBuildConfig{TargetOS: "darwin", TargetArch: darwinArchs, BuildDir: defaultBuildDir},
+			&fullBuildConfig{TargetOS: "solaris", TargetArch: solarisArchs, BuildDir: defaultBuildDir},
 			&fullBuildConfig{TargetOS: "windows", TargetArch: winArchs, BuildDir: defaultBuildDir},
 		}
 		d.ContainerImages = slices.Concat(

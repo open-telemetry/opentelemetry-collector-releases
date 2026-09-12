@@ -61,6 +61,17 @@ builds:
       - '{{ .Env.LD_FLAGS }}'
     flags:
       - '{{ .Env.BUILD_FLAGS }}'
+  - id: otelcol-otlp-solaris
+    goos:
+      - solaris
+    goarch:
+      - amd64
+    dir: _build
+    binary: otelcol-otlp
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
   - id: otelcol-otlp-windows
     goos:
       - windows
@@ -80,6 +91,7 @@ archives:
       - otelcol-otlp-aix
       - otelcol-otlp-linux
       - otelcol-otlp-darwin
+      - otelcol-otlp-solaris
       - otelcol-otlp-windows
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
