@@ -31,6 +31,9 @@ processors:
 exporters:
   otlp_grpc:
     endpoint: otel-backend.example.com:4317
+    sending_queue:
+      batch:
+    
 
 service:
   pipelines:
