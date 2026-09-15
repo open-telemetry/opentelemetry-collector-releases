@@ -276,3 +276,5 @@ replaces:
   - go.opentelemetry.io/obi => ../../../internal/obi-src
   # github.com/hamba/avro/v2 is no longer maintained and has vulnerabilities
   - github.com/hamba/avro/v2 => github.com/iskorotkov/avro/v2 v2.33.0
+  # go.opentelemetry.io/ebpf-profiler v0.0.202633 is required for current version of go.opentelemetry.io/obi/collector
+  - go.opentelemetry.io/ebpf-profiler => go.opentelemetry.io/ebpf-profiler v0.0.202633
