@@ -3,7 +3,7 @@ version: 2
 project_name: opentelemetry-collector-releases
 env:
   - COSIGN_YES=true
-  - LD_FLAGS=-s -w -X github.com/open-telemetry/opentelemetry-collector-contrib/cmd/opampsupervisor/internal.version={{ .Version }}
+  - LD_FLAGS=-s -w -X go.opentelemetry.io/collector-contrib/cmd/opampsupervisor/internal.version={{ .Version }}
   - BUILD_FLAGS=-trimpath
   - CONTAINER_IMAGE_EPHEMERAL_TAG={{ if .IsNightly }}nightly{{ else }}latest{{ end }}
   - GOPROXY=https://proxy.golang.org,direct

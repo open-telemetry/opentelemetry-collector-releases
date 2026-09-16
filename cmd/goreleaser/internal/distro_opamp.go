@@ -28,7 +28,7 @@ var (
 		d.ContainerImageManifests = slices.Concat(
 			newContainerImageManifests(d.Name, "linux", opAmpArchs, containerImageOptions{binaryRelease: true}),
 		)
-		d.LdFlags = "-s -w -X github.com/open-telemetry/opentelemetry-collector-contrib/cmd/opampsupervisor/internal.version={{ .Version }}"
+		d.LdFlags = "-s -w -X go.opentelemetry.io/collector-contrib/cmd/opampsupervisor/internal.version={{ .Version }}"
 	}).withBinaryPackagingDefaults().
 		withBinaryMonorepo(".contrib/cmd/opampsupervisor").
 		withDefaultBinaryRelease(opampReleaseHeader).

@@ -55,7 +55,7 @@ get_major_version() {
 is_core_or_contrib_module() {
     local module_path="$1"
 
-    if [[ "$module_path" == github.com/open-telemetry/opentelemetry-collector-contrib/* ]]; then
+    if [[ "$module_path" == go.opentelemetry.io/collector-contrib/* ]]; then
         return 0
     fi
 
@@ -104,7 +104,7 @@ is_graduated_module() {
 get_module_prefix() {
     local module_path="$1"
 
-    if [[ "$module_path" == github.com/open-telemetry/opentelemetry-collector-contrib/* ]]; then
+    if [[ "$module_path" == go.opentelemetry.io/collector-contrib/* ]]; then
         echo "contrib"
     elif [[ "$module_path" == go.opentelemetry.io/collector/* ]]; then
         echo "core"
