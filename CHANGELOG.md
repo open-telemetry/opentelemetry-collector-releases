@@ -4,6 +4,20 @@
 
 <!-- next version -->
 
+## v0.161.0
+
+### 🛑 Breaking changes 🛑
+
+- `all`: Remove the deprecated mezmo exporter. (#49953)
+  Use the OTLP/HTTP exporter to send logs directly to Mezmo instead. See
+  https://docs.mezmo.com/telemetry-pipelines/otel-collector and
+  https://docs.mezmo.com/telemetry-pipelines/open-telemetry-source for migration guidance.
+  
+
+### 💡 Enhancements 💡
+
+- `otelcol-contrib`: Upgrade go.opentelemetry.io/obi to v0.13.0 (#1643)
+
 ## v0.160.0
 
 ### 🚀 New components 🚀
