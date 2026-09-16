@@ -12,7 +12,6 @@ processors:
   memory_limiter:
     check_interval: 1s
     limit_mib: 128
-  batch:
 
 exporters:
   prometheus:
@@ -23,5 +22,5 @@ service:
   pipelines:
     metrics:
       receivers: [otlp]
-      processors: [memory_limiter, batch]
+      processors: [memory_limiter]
       exporters: [prometheus]
