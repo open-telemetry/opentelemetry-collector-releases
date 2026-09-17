@@ -63,7 +63,10 @@
       "matchManagers": [
         "github-actions"
       ],
-      "groupName": "github-actions deps"
+      "groupName": "github-actions deps",
+      "matchDepNames": [
+        "!go"
+      ]
     },
     {
       "matchManagers": [
@@ -153,7 +156,7 @@
       "matchManagers": [
         "github-actions"
       ],
-      "matchPackageNames": [
+      "matchDepNames": [
         "go"
       ],
       "groupName": "Go version"
