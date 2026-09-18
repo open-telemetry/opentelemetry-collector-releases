@@ -1,0 +1,6 @@
+change_type: new_component
+component: receiver/postgres
+note: Add the [Prometheus postgres_exporter](https://github.com/prometheus-community/postgres_exporter) as a receiver for PostgreSQL metrics in otelcol-prometheus distribution.
+issues: [1664]
+subtext: 
+change_logs: [user]
