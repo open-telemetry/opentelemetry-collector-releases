@@ -1,0 +1,6 @@
+change_type: new_component
+component: receiver/blackbox
+note: Add the [Prometheus blackbox_exporter](https://github.com/prometheus/blackbox_exporter) as a receiver for probe metrics in otelcol-prometheus distribution.
+issues: [1664]
+subtext: 
+change_logs: [user]
