@@ -16,7 +16,8 @@ jobs:
       goos: '[ "linux" ]'
       goarch: '[ "amd64" ]'
       nightly: true
-    secrets: inherit
+    secrets:
+      GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
   package-tests:
     name: Linux Package tests

@@ -16,5 +16,10 @@ jobs:
       collector-dependency: 'open-telemetry/opentelemetry-collector-contrib'
       dependency-target-folder: '.contrib'
       windows-msi: true
-    secrets: inherit
-    permissions: write-all
+    secrets:
+      DOCKER_TOKEN_COLLECTOR_RELEASES: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
+      GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+    permissions:
+      contents: write
+      id-token: write
+      packages: write

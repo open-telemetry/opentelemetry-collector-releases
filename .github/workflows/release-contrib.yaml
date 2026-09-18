@@ -16,8 +16,14 @@ jobs:
       goos: '[ "linux", "darwin" ]'
       goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x", "riscv64" ]'
       nightly: ${{ contains(github.ref, '-nightly') }}
-    secrets: inherit
-    permissions: write-all
+    secrets:
+      DOCKER_TOKEN_COLLECTOR_RELEASES: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
+      GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      packages: write
   release-aix:
     name: Release Contrib (AIX)
     uses: ./.github/workflows/base-release.yaml
@@ -27,8 +33,14 @@ jobs:
       goarch: '[ "ppc64" ]'
       nightly: ${{ contains(github.ref, '-nightly') }}
       skips: 'docker'
-    secrets: inherit
-    permissions: write-all
+    secrets:
+      DOCKER_TOKEN_COLLECTOR_RELEASES: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
+      GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      packages: write
   release-windows:
     name: Release Contrib (Windows)
     if: ${{ !contains(github.ref, '-nightly') }}
@@ -38,5 +50,11 @@ jobs:
       goos: '[ "windows" ]'
       goarch: '[ "386", "amd64", "arm64" ]'
       runner_os: windows-2022
-    secrets: inherit
-    permissions: write-all
+    secrets:
+      DOCKER_TOKEN_COLLECTOR_RELEASES: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
+      GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      packages: write
