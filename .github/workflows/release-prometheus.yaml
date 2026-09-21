@@ -16,6 +16,7 @@ jobs:
       goos: '[ "linux" ]'
       goarch: '[ "amd64", "arm64" ]'
       nightly: ${{ contains(github.ref, '-nightly') }}
+      owns_docker_manifests: true
     secrets: inherit
     permissions: write-all
 
