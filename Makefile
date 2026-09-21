@@ -23,7 +23,7 @@ DISTRIBUTIONS ?= "otelcol,otelcol-contrib,otelcol-k8s,otelcol-otlp,otelcol-prome
 BINARIES ?= "builder,opampsupervisor"
 
 ci: check build
-check: ensure-goreleaser-up-to-date validate-components validate-version-consistency
+check: ensure-goreleaser-up-to-date validate-components validate-version-consistency validate-manifest-ownership
 
 build: go ocb prepare-obi
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -b ${OTELCOL_BUILDER}
@@ -55,6 +55,9 @@ validate-components:
 
 validate-version-consistency:
 	@./scripts/validate-version-consistency.sh
+
+validate-manifest-ownership:
+	@./scripts/validate-manifest-ownership.sh
 
 .PHONY: ocb
 ocb:
