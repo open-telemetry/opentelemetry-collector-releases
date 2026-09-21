@@ -14,6 +14,12 @@ const (
 	armArchitecture = "arm"
 	dockerHubRepo   = "otel"
 	ghcrRepo        = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
+
+	// manifestOwnerGuard skips a docker manifest unless the release job declares it
+	// owns the per-arch images the manifest references. Kept as a template rather
+	// than a plain env lookup because goreleaser renders with missingkey=error, so
+	// `.Env.OWNS_DOCKER_MANIFESTS` would fail outright when the variable is unset.
+	manifestOwnerGuard = `{{ not (isEnvSet "OWNS_DOCKER_MANIFESTS") }}`
 )
 
 var (
@@ -164,8 +170,22 @@ func buildOSDockerManifest(prefix, version, dist, os string, archs []string, opt
 		NameTemplate:   fmt.Sprintf("%s/%s:%s", prefix, imageName(dist, opts), version),
 		ImageTemplates: imageTemplates,
 	}
-	if os == "windows" {
+	switch {
+	case os == "windows":
 		manifest.SkipPush = "{{ not (eq .Runtime.Goos \"windows\") }}"
+	case !opts.binaryRelease:
+		// Distributions are released by several parallel base-release.yaml invocations
+		// (linux, windows, aix, ...), and each one runs `goreleaser continue --merge`
+		// over this same config. Without a guard every invocation would try to create
+		// these manifests, but the per-arch images they reference are only pushed by
+		// the linux invocation -- so whoever gets there first fails with
+		// "no such manifest". Only the invocation that owns those images sets
+		// OWNS_DOCKER_MANIFESTS, so exactly one of them does the work.
+		//
+		// Binary releases (ocb, opampsupervisor) are excluded: they run as a single
+		// goreleaser job with no split/merge, so there is nothing to race against and
+		// nothing sets the variable for them.
+		manifest.SkipPush = manifestOwnerGuard
 	}
 	return manifest
 }

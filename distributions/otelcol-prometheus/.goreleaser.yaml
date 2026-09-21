@@ -160,18 +160,22 @@ dockers:
     use: buildx
 docker_manifests:
   - name_template: otel/opentelemetry-collector-prometheus:{{ .Version }}
+    skip_push: '{{ not (isEnvSet "OWNS_DOCKER_MANIFESTS") }}'
     image_templates:
       - otel/opentelemetry-collector-prometheus:{{ .Version }}-amd64
       - otel/opentelemetry-collector-prometheus:{{ .Version }}-arm64
   - name_template: otel/opentelemetry-collector-prometheus:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
+    skip_push: '{{ not (isEnvSet "OWNS_DOCKER_MANIFESTS") }}'
     image_templates:
       - otel/opentelemetry-collector-prometheus:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
       - otel/opentelemetry-collector-prometheus:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-prometheus:{{ .Version }}
+    skip_push: '{{ not (isEnvSet "OWNS_DOCKER_MANIFESTS") }}'
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-prometheus:{{ .Version }}-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-prometheus:{{ .Version }}-arm64
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-prometheus:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
+    skip_push: '{{ not (isEnvSet "OWNS_DOCKER_MANIFESTS") }}'
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-prometheus:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-prometheus:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64

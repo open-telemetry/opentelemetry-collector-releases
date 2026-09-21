@@ -349,6 +349,7 @@ dockers:
     use: docker
 docker_manifests:
   - name_template: otel/opentelemetry-collector-contrib:{{ .Version }}
+    skip_push: '{{ not (isEnvSet "OWNS_DOCKER_MANIFESTS") }}'
     image_templates:
       - otel/opentelemetry-collector-contrib:{{ .Version }}-386
       - otel/opentelemetry-collector-contrib:{{ .Version }}-amd64
@@ -358,6 +359,7 @@ docker_manifests:
       - otel/opentelemetry-collector-contrib:{{ .Version }}-riscv64
       - otel/opentelemetry-collector-contrib:{{ .Version }}-s390x
   - name_template: otel/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
+    skip_push: '{{ not (isEnvSet "OWNS_DOCKER_MANIFESTS") }}'
     image_templates:
       - otel/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-386
       - otel/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
@@ -367,6 +369,7 @@ docker_manifests:
       - otel/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-riscv64
       - otel/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-s390x
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}
+    skip_push: '{{ not (isEnvSet "OWNS_DOCKER_MANIFESTS") }}'
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-386
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-amd64
@@ -376,6 +379,7 @@ docker_manifests:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-riscv64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Version }}-s390x
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
+    skip_push: '{{ not (isEnvSet "OWNS_DOCKER_MANIFESTS") }}'
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-386
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
