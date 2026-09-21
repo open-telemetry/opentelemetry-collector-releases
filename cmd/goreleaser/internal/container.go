@@ -16,10 +16,11 @@ const (
 	ghcrRepo        = "ghcr.io/open-telemetry/opentelemetry-collector-releases"
 
 	// manifestOwnerGuard skips a docker manifest unless the release job declares it
-	// owns the per-arch images the manifest references. Kept as a template rather
-	// than a plain env lookup because goreleaser renders with missingkey=error, so
-	// `.Env.OWNS_DOCKER_MANIFESTS` would fail outright when the variable is unset.
-	manifestOwnerGuard = `{{ not (isEnvSet "OWNS_DOCKER_MANIFESTS") }}`
+	// owns the per-arch images the manifest references. Uses envOrDefault rather
+	// than a bare `.Env.OWNS_DOCKER_MANIFESTS` because goreleaser renders templates
+	// with missingkey=error, so a plain lookup fails outright whenever the variable
+	// is absent -- which is the normal case for snapshot and CI runs.
+	manifestOwnerGuard = `{{ ne (envOrDefault "OWNS_DOCKER_MANIFESTS" "false") "true" }}`
 )
 
 var (

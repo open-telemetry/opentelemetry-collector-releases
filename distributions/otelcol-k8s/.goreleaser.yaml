@@ -212,7 +212,7 @@ dockers:
     use: docker
 docker_manifests:
   - name_template: otel/opentelemetry-collector-k8s:{{ .Version }}
-    skip_push: '{{ not (isEnvSet "OWNS_DOCKER_MANIFESTS") }}'
+    skip_push: '{{ ne (envOrDefault "OWNS_DOCKER_MANIFESTS" "false") "true" }}'
     image_templates:
       - otel/opentelemetry-collector-k8s:{{ .Version }}-amd64
       - otel/opentelemetry-collector-k8s:{{ .Version }}-arm64
@@ -220,7 +220,7 @@ docker_manifests:
       - otel/opentelemetry-collector-k8s:{{ .Version }}-riscv64
       - otel/opentelemetry-collector-k8s:{{ .Version }}-s390x
   - name_template: otel/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
-    skip_push: '{{ not (isEnvSet "OWNS_DOCKER_MANIFESTS") }}'
+    skip_push: '{{ ne (envOrDefault "OWNS_DOCKER_MANIFESTS" "false") "true" }}'
     image_templates:
       - otel/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
       - otel/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
@@ -228,7 +228,7 @@ docker_manifests:
       - otel/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-riscv64
       - otel/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-s390x
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}
-    skip_push: '{{ not (isEnvSet "OWNS_DOCKER_MANIFESTS") }}'
+    skip_push: '{{ ne (envOrDefault "OWNS_DOCKER_MANIFESTS" "false") "true" }}'
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-arm64
@@ -236,7 +236,7 @@ docker_manifests:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-riscv64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Version }}-s390x
   - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}
-    skip_push: '{{ not (isEnvSet "OWNS_DOCKER_MANIFESTS") }}'
+    skip_push: '{{ ne (envOrDefault "OWNS_DOCKER_MANIFESTS" "false") "true" }}'
     image_templates:
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-amd64
       - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s:{{ .Env.CONTAINER_IMAGE_EPHEMERAL_TAG }}-arm64
