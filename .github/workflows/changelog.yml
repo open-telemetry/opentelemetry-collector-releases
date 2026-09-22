@@ -6,13 +6,15 @@ on:
     branches:
       - main
       - release/*
+  merge_group:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
   changelog:
+    if: github.event_name != 'merge_group'
     permissions:
       contents: read
       pull-requests: read
