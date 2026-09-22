@@ -10,7 +10,7 @@ permissions:
 jobs:
   release:
     name: Release eBPF Profiler
-    uses: ./.github/workflows/base-release.yaml
+    uses: $/.github/workflows/base-release.yaml
     with:
       distribution: otelcol-ebpf-profiler
       goos: '[ "linux" ]'

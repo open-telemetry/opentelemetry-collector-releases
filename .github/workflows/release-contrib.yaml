@@ -10,7 +10,7 @@ permissions:
 jobs:
   release:
     name: Release Contrib
-    uses: ./.github/workflows/base-release.yaml
+    uses: $/.github/workflows/base-release.yaml
     with:
       distribution: otelcol-contrib
       goos: '[ "linux", "darwin" ]'
@@ -26,7 +26,7 @@ jobs:
       packages: write
   release-aix:
     name: Release Contrib (AIX)
-    uses: ./.github/workflows/base-release.yaml
+    uses: $/.github/workflows/base-release.yaml
     with:
       distribution: otelcol-contrib
       goos: '[ "aix" ]'
@@ -44,7 +44,7 @@ jobs:
   release-windows:
     name: Release Contrib (Windows)
     if: ${{ !contains(github.ref, '-nightly') }}
-    uses: ./.github/workflows/base-release.yaml
+    uses: $/.github/workflows/base-release.yaml
     with:
       distribution: otelcol-contrib
       goos: '[ "windows" ]'

@@ -33,7 +33,7 @@ permissions:
 jobs:
   check-goreleaser:
     name: CI - Core - GoReleaser
-    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    uses: $/.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol
       goos: '[ "linux", "darwin" ]'
@@ -43,7 +43,7 @@ jobs:
 
   check-goreleaser-aix:
     name: CI - Core - GoReleaser
-    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    uses: $/.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol
       goos: '[ "aix" ]'
@@ -53,7 +53,7 @@ jobs:
 
   check-goreleaser-windows:
     name: CI - Core - GoReleaser
-    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    uses: $/.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol
       goos: '[ "windows" ]'
@@ -65,7 +65,7 @@ jobs:
   package-tests:
     name: Package tests
     needs: check-goreleaser
-    uses: ./.github/workflows/base-package-tests.yaml
+    uses: $/.github/workflows/base-package-tests.yaml
     with:
       distribution: otelcol
       type: '[ "deb", "rpm" ]'
@@ -73,7 +73,7 @@ jobs:
   msi-tests:
     name: MSI tests
     needs: check-goreleaser-windows
-    uses: ./.github/workflows/msi-tests.yaml
+    uses: $/.github/workflows/msi-tests.yaml
     with:
       distribution: otelcol
       type: '[ "msi" ]'

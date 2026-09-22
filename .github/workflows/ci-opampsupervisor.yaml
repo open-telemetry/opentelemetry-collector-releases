@@ -32,7 +32,7 @@ permissions:
 
 jobs:
   ci:
-    uses: ./.github/workflows/base-ci-binary.yaml
+    uses: $/.github/workflows/base-ci-binary.yaml
     with:
       binary: opampsupervisor
       collector-dependency: 'open-telemetry/opentelemetry-collector-contrib'

@@ -10,7 +10,7 @@ permissions:
 jobs:
   release:
     name: Release OpAMP supervisor
-    uses: ./.github/workflows/base-binary-release.yaml
+    uses: $/.github/workflows/base-binary-release.yaml
     with:
       binary: opampsupervisor
       collector-dependency: 'open-telemetry/opentelemetry-collector-contrib'

@@ -33,7 +33,7 @@ permissions:
 jobs:
   check-goreleaser:
     name: CI - OTLP - GoReleaser
-    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    uses: $/.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-otlp
       goos: '[ "linux", "darwin" ]'
@@ -43,7 +43,7 @@ jobs:
 
   check-goreleaser-aix:
     name: CI - OTLP - GoReleaser
-    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    uses: $/.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-otlp
       goos: '[ "aix" ]'
@@ -53,7 +53,7 @@ jobs:
 
   check-goreleaser-windows:
     name: CI - OTLP - GoReleaser
-    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    uses: $/.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-otlp
       goos: '[ "windows" ]'

@@ -43,7 +43,7 @@ jobs:
 
       - name: Fetch OBI source
         if: matrix.distro == 'otelcol-contrib'
-        uses: ./.github/actions/fetch-obi
+        uses: $/.github/actions/fetch-obi
 
       - name: Tidy go.mod files
         run: go mod tidy

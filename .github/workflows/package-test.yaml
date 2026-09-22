@@ -10,7 +10,7 @@ permissions:
 jobs:
   check-goreleaser:
     name: Build - Contrib - GoReleaser
-    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    uses: $/.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-contrib
       goos: '[ "linux" ]'
@@ -22,7 +22,7 @@ jobs:
   package-tests:
     name: Linux Package tests
     needs: check-goreleaser
-    uses: ./.github/workflows/base-package-tests.yaml
+    uses: $/.github/workflows/base-package-tests.yaml
     with:
       distribution: otelcol-contrib
       type: '[ "deb", "rpm" ]'

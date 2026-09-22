@@ -44,7 +44,7 @@ jobs:
 
   cleanup-nightly:
     needs: nightly-release
-    uses: ./.github/workflows/cleanup-nightly.yaml
+    uses: $/.github/workflows/cleanup-nightly.yaml
     secrets:
       DOCKER_TOKEN_COLLECTOR_RELEASES: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
       OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY: ${{ secrets.OTELBOT_COLLECTOR_RELEASES_PRIVATE_KEY }}
