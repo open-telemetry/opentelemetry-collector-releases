@@ -348,11 +348,33 @@ jobs:
           echo "" >> ${{ env.issue-file }}
           echo "Note: This issue was auto-generated from [base-release.yaml](https://github.com/open-telemetry/opentelemetry-collector-releases/blob/main/.github/workflows/base-release.yaml)" >> ${{ env.issue-file }}
 
-      - name: Create or update issue
+      - name: Find existing open issue
+        id: find-issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          issue_number=$(gh issue list \
+            --repo "$GITHUB_REPOSITORY" \
+            --state open \
+            --label "release:blocker" \
+            --search "Nightly Release Failed in:title" \
+            --json number \
+            --jq '.[0].number // empty')
+          echo "issue_number=$issue_number" >> $GITHUB_OUTPUT
+
+      - name: Post comment on existing issue
+        if: steps.find-issue.outputs.issue_number != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue comment ${{ steps.find-issue.outputs.issue_number }} \
+            --repo "$GITHUB_REPOSITORY" \
+            --body "$(tail -n +4 ${{ env.issue-file }})"
+
+      - name: Create new issue
+        if: steps.find-issue.outputs.issue_number == ''
         uses: JasonEtco/create-an-issue@1b14a70e4d8dc185e5cc76d3bec9eab20257b2c5 # v2.9.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          update_existing: true
-          search_existing: open
           filename: ${{ env.issue-file }}
