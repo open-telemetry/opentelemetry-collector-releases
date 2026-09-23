@@ -1,0 +1,28 @@
+# Use this changelog template to create an entry for release notes.
+
+# One of 'breaking', 'deprecation', 'new_component', 'enhancement', 'bug_fix'
+change_type: bug_fix
+
+# The name of the component, or a single word describing the area of concern, (e.g. otlpreceiver)
+component: ebpf-profiler
+
+# A brief description of the change.  Surround your text with quotes ("") if it needs to start with a backtick (`).
+note: Add the `offcpu` extension to the ebpf-profiler distribution so off-CPU profiling can be configured again.
+
+# One or more tracking issues or pull requests related to the change
+issues: [1678]
+
+# (Optional) One or more lines of additional information to render under the primary note.
+# These lines will be padded with 2 spaces and then inserted directly into the document.
+# Use pipe (|) for multiline entries.
+subtext: |
+  Upstream moved off-CPU profiling out of the `profiling` receiver into the `offcpu` probe extension,
+  but the distribution did not register it, so neither the removed `off_cpu_threshold` receiver setting
+  nor the new `extensions.offcpu` configuration worked.
+
+# Optional: The change log or logs in which this entry should be included.
+# e.g. '[user]' or '[user, api]'
+# Include 'user' if the change is relevant to end users.
+# Include 'api' if there is a change to a library API.
+# Default: '[user]'
+change_logs: [user]
