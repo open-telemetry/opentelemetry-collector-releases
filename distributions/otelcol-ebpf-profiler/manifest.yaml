@@ -10,6 +10,8 @@ extensions:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/opampextension v0.161.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.161.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.161.0
+  - gomod: go.opentelemetry.io/ebpf-profiler v0.0.202636
+    import: go.opentelemetry.io/ebpf-profiler/probes/offcpu
 
 exporters:
   - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.161.0
