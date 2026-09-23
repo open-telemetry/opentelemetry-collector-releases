@@ -24,6 +24,16 @@ on:
         required: false
         type: string
         default: ""
+      owns_docker_manifests:
+        required: false
+        type: boolean
+        default: false
+        description: >-
+          Set this on the single invocation whose prepare jobs push the linux
+          per-arch container images. That invocation creates the multi-arch docker
+          manifests; every other invocation skips them, because the images the
+          manifests reference do not exist yet from its point of view. Enforced by
+          scripts/validate-manifest-ownership.sh.
 
 permissions:
   contents: read
@@ -320,6 +330,7 @@ jobs:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GORELEASER_PREVIOUS_TAG: ${{ needs.prev-tag.outputs.PREVIOUS_RELEASE_TAG }}
           GORELEASER_CURRENT_TAG: ${{ github.ref_name }}
+          OWNS_DOCKER_MANIFESTS: ${{ inputs.owns_docker_manifests }}
 
       - if: always()
         run: ./.github/workflows/scripts/check-disk-space.sh
