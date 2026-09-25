@@ -34,6 +34,11 @@ on:
           manifests; every other invocation skips them, because the images the
           manifests reference do not exist yet from its point of view. Enforced by
           scripts/validate-manifest-ownership.sh.
+    secrets:
+      DOCKER_TOKEN_COLLECTOR_RELEASES:
+        required: true
+      GORELEASER_KEY:
+        required: true
 
 permissions:
   contents: read
@@ -51,6 +56,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Set goreleaser last tag reference in case of non-nightly release
         id: prev-tag
         if: inputs.nightly != 'true'
@@ -85,6 +91,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Start Docker daemon (Windows)
         if: runner.os == 'Windows'
@@ -111,7 +118,7 @@ jobs:
           echo "GOTMPDIR=D:\gotmp" | Out-File -FilePath $env:GITHUB_ENV -Append
           mkdir D:\gotmp
 
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0 # zizmor: ignore[cache-poisoning] Go caches are content-addressed and dependencies are verified by go.sum
         with:
           go-version: "~1.26.0"
           check-latest: true
@@ -133,7 +140,7 @@ jobs:
 
       - name: Fetch OBI source
         if: inputs.distribution == 'otelcol-contrib'
-        uses: ./.github/actions/fetch-obi
+        uses: $/.github/actions/fetch-obi
 
       - name: Generate distribution sources
         run: make generate-sources
@@ -232,6 +239,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Start Docker daemon (Windows)
         if: runner.os == 'Windows'
@@ -262,7 +270,7 @@ jobs:
           echo "GOTMPDIR=D:\gotmp" | Out-File -FilePath $env:GITHUB_ENV -Append
           mkdir D:\gotmp
 
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0 # zizmor: ignore[cache-poisoning] Go caches are content-addressed and dependencies are verified by go.sum
         with:
           go-version: "~1.26.0"
           check-latest: true
@@ -349,6 +357,7 @@ jobs:
       - name: Formulate issue
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISTRIBUTION: ${{ inputs.distribution }}
         run: |
           # create a markdown file that contains details about the failure
           failed_jobs=$(gh api \
@@ -363,7 +372,7 @@ jobs:
           echo "The nightly release failed in the following GitHub Actions run." >> ${{ env.issue-file }}
           echo "" >> ${{ env.issue-file }}
           echo "## Build Information" >> ${{ env.issue-file }}
-          echo "* **Distribution:** ${{ inputs.distribution }}" >> ${{ env.issue-file }}
+          echo "* **Distribution:** $DISTRIBUTION" >> ${{ env.issue-file }}
           echo "* **Ref:** $GITHUB_REF_NAME" >> ${{ env.issue-file }}
           echo "* **Commit:** $GITHUB_SHA" >> ${{ env.issue-file }}
           echo "* **Run attempt:** $GITHUB_RUN_ATTEMPT" >> ${{ env.issue-file }}
@@ -396,8 +405,9 @@ jobs:
         if: steps.find-issue.outputs.issue_number != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ steps.find-issue.outputs.issue_number }}
         run: |
-          gh issue comment ${{ steps.find-issue.outputs.issue_number }} \
+          gh issue comment "$ISSUE_NUMBER" \
             --repo "$GITHUB_REPOSITORY" \
             --body "$(tail -n +4 ${{ env.issue-file }})"
 

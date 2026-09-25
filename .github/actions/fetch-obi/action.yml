@@ -23,8 +23,9 @@ runs:
   using: composite
   steps:
     - name: Resolve OBI version
+      id: resolve-version
       shell: bash
-      run: |
+      run: | # zizmor: ignore[github-env] VERSION is restricted to vX.Y.Z before export
         VERSION="${INPUTS_OBI_VERSION}"
         if [[ -z "${VERSION}" ]]; then
           VERSION=$(awk '/- gomod: go\.opentelemetry\.io\/obi / {print $NF; exit}' distributions/otelcol-contrib/manifest.yaml)
@@ -33,6 +34,11 @@ runs:
           echo "ERROR: failed to resolve OBI version from manifest.yaml" >&2
           exit 1
         fi
+        if [[ ! "${VERSION}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo "ERROR: invalid OBI version: ${VERSION}" >&2
+          exit 1
+        fi
+        echo "obi-version=${VERSION}" >> "$GITHUB_OUTPUT"
         echo "OBI_VERSION=${VERSION}" >> "$GITHUB_ENV"
       env:
         INPUTS_OBI_VERSION: ${{ inputs.obi-version }}
@@ -42,13 +48,15 @@ runs:
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: |
-          .local/obi-${{ env.OBI_VERSION }}-source-generated.tar.gz
+          .local/obi-${{ steps.resolve-version.outputs.obi-version }}-source-generated.tar.gz
           internal/obi-src
-        key: obi-source-${{ env.OBI_VERSION }}
+        key: obi-source-${{ steps.resolve-version.outputs.obi-version }}
 
     - name: Fetch OBI source tarball (Linux/macOS)
       if: steps.cache-obi.outputs.cache-hit != 'true' && runner.os != 'Windows'
       shell: bash
+      env:
+        OBI_VERSION: ${{ steps.resolve-version.outputs.obi-version }}
       run: |
         TARBALL="obi-${OBI_VERSION}-source-generated.tar.gz"
         BASE_URL="https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation/releases/download/${OBI_VERSION}"
@@ -104,6 +112,8 @@ runs:
     - name: Fetch OBI source tarball (Windows)
       if: steps.cache-obi.outputs.cache-hit != 'true' && runner.os == 'Windows'
       shell: pwsh
+      env:
+        OBI_VERSION: ${{ steps.resolve-version.outputs.obi-version }}
       run: |
         $Version = $env:OBI_VERSION
         $Tarball = "obi-${Version}-source-generated.tar.gz"

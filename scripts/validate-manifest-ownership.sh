@@ -17,7 +17,7 @@
 set -euo pipefail
 
 WORKFLOW_DIR=".github/workflows"
-BASE_WORKFLOW="./.github/workflows/base-release.yaml"
+BASE_WORKFLOW="$/.github/workflows/base-release.yaml"
 DISTRIBUTIONS_DIR="distributions"
 
 if ! command -v yq &> /dev/null; then

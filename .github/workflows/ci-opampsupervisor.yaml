@@ -32,12 +32,14 @@ permissions:
 
 jobs:
   ci:
-    uses: ./.github/workflows/base-ci-binary.yaml
+    uses: $/.github/workflows/base-ci-binary.yaml
     with:
       binary: opampsupervisor
       collector-dependency: 'open-telemetry/opentelemetry-collector-contrib'
       dependency-target-folder: '.contrib'
       linux-packages: true
       windows-msi: true
-    secrets: inherit
-    permissions: write-all
+    secrets:
+      GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+    permissions:
+      contents: read

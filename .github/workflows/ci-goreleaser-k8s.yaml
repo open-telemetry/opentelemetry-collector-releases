@@ -33,18 +33,20 @@ permissions:
 jobs:
   check-goreleaser:
     name: CI - k8s - GoReleaser
-    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    uses: $/.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-k8s
       goos: '[ "linux" ]'
       goarch: '[ "amd64", "arm64", "ppc64le", "riscv64", "s390x" ]'
-    secrets: inherit
+    secrets:
+      GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
   check-goreleaser-windows:
     name: CI - k8s - GoReleaser
-    uses: ./.github/workflows/base-ci-goreleaser.yaml
+    uses: $/.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-k8s
       goos: '[ "windows" ]'
       goarch: '[ "amd64" ]'
       runner_os: 'windows-2022'
-    secrets: inherit
+    secrets:
+      GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
