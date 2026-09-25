@@ -16,6 +16,7 @@ jobs:
       goos: '[ "linux" ]'
       goarch: '[ "amd64", "arm64", "ppc64le", "riscv64", "s390x" ]'
       nightly: ${{ contains(github.ref, '-nightly') }}
+      owns_docker_manifests: true
     secrets:
       DOCKER_TOKEN_COLLECTOR_RELEASES: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
       GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
