@@ -21,6 +21,7 @@ jobs:
       DOCKER_TOKEN_COLLECTOR_RELEASES: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
       GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
     permissions:
+      actions: read
       contents: write
       id-token: write
       issues: write
@@ -37,6 +38,7 @@ jobs:
       DOCKER_TOKEN_COLLECTOR_RELEASES: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
       GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
     permissions:
+      actions: read
       contents: write
       id-token: write
       issues: write
