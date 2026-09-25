@@ -357,6 +357,7 @@ jobs:
       - name: Formulate issue
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISTRIBUTION: ${{ inputs.distribution }}
         run: |
           # create a markdown file that contains details about the failure
           failed_jobs=$(gh api \
@@ -371,7 +372,7 @@ jobs:
           echo "The nightly release failed in the following GitHub Actions run." >> ${{ env.issue-file }}
           echo "" >> ${{ env.issue-file }}
           echo "## Build Information" >> ${{ env.issue-file }}
-          echo "* **Distribution:** ${{ inputs.distribution }}" >> ${{ env.issue-file }}
+          echo "* **Distribution:** $DISTRIBUTION" >> ${{ env.issue-file }}
           echo "* **Ref:** $GITHUB_REF_NAME" >> ${{ env.issue-file }}
           echo "* **Commit:** $GITHUB_SHA" >> ${{ env.issue-file }}
           echo "* **Run attempt:** $GITHUB_RUN_ATTEMPT" >> ${{ env.issue-file }}
@@ -404,8 +405,9 @@ jobs:
         if: steps.find-issue.outputs.issue_number != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ steps.find-issue.outputs.issue_number }}
         run: |
-          gh issue comment ${{ steps.find-issue.outputs.issue_number }} \
+          gh issue comment "$ISSUE_NUMBER" \
             --repo "$GITHUB_REPOSITORY" \
             --body "$(tail -n +4 ${{ env.issue-file }})"
 
