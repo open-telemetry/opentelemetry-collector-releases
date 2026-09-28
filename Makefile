@@ -5,7 +5,7 @@ GORELEASER ?= goreleaser
 SRC_ROOT := $(shell git rev-parse --show-toplevel)
 
 # renovate: datasource=github-releases depName=OCB packageName=open-telemetry/opentelemetry-collector
-OTELCOL_BUILDER_VERSION ?= 0.160.0
+OTELCOL_BUILDER_VERSION ?= 0.161.0
 
 OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
@@ -19,11 +19,11 @@ TOOLS_BIN_NAMES := $(addprefix $(TOOLS_BIN_DIR)/, $(notdir $(shell echo $(TOOLS_
 CHLOGGEN        := $(TOOLS_BIN_DIR)/chloggen
 CHLOGGEN_CONFIG := .chloggen/config.yaml
 
-DISTRIBUTIONS ?= "otelcol,otelcol-contrib,otelcol-k8s,otelcol-otlp,otelcol-ebpf-profiler"
+DISTRIBUTIONS ?= "otelcol,otelcol-contrib,otelcol-k8s,otelcol-otlp,otelcol-prometheus,otelcol-ebpf-profiler"
 BINARIES ?= "builder,opampsupervisor"
 
 ci: check build
-check: ensure-goreleaser-up-to-date validate-components validate-version-consistency
+check: ensure-goreleaser-up-to-date validate-components validate-version-consistency validate-manifest-ownership
 
 build: go ocb prepare-obi
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -b ${OTELCOL_BUILDER}
@@ -55,6 +55,9 @@ validate-components:
 
 validate-version-consistency:
 	@./scripts/validate-version-consistency.sh
+
+validate-manifest-ownership:
+	@./scripts/validate-manifest-ownership.sh
 
 .PHONY: ocb
 ocb:

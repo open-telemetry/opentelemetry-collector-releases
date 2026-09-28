@@ -4,10 +4,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # This script validates version consistency across manifest files.
-# By default, it only checks that components are internally consistent
-# (all core components have the same version, all contrib components have the same version).
+# By default, it only checks that components are internally consistent:
+# all core (v0.x) components share one version, all contrib (v0.x) components share
+# one version, and separately, all core components that have graduated to v1+
+# versioning share one version, and likewise for graduated contrib components.
 #
-# Use --check-dist-version to additionally validate that dist.version matches component versions.
+# Use --check-dist-version to additionally validate that dist.version matches the
+# v0.x component versions. Graduated (v1+) components are exempt from this check,
+# since they version independently of dist.version.
 # This stricter check is run automatically by the update-version workflow after bumping versions.
 
 set -euo pipefail
@@ -40,26 +44,60 @@ get_dist_version() {
     yq -r '.dist.version' "$manifest_file"
 }
 
-# Check if a module should have its version validated
-# Returns 0 (true) if it should be validated, 1 (false) otherwise
-should_validate_module_version() {
+# Extract the major version number from a "vX.Y.Z" string
+get_major_version() {
+    local version="$1"
+    echo "$version" | sed -E 's/^v([0-9]+)\..*/\1/'
+}
+
+# Returns 0 (true) if the module belongs to the core collector or contrib
+# namespaces, i.e. it is one whose version this script tracks at all.
+is_core_or_contrib_module() {
     local module_path="$1"
 
-    # Validate contrib components
     if [[ "$module_path" == github.com/open-telemetry/opentelemetry-collector-contrib/* ]]; then
         return 0
     fi
 
-    # Validate core collector components, EXCEPT providers (they use different versioning like v1.x)
-    if [[ "$module_path" == go.opentelemetry.io/collector/* ]] && \
-       [[ "$module_path" != go.opentelemetry.io/collector/confmap/provider/* ]]; then
+    if [[ "$module_path" == go.opentelemetry.io/collector/* ]]; then
         return 0
     fi
 
-    # Don't validate:
-    # - Core providers (go.opentelemetry.io/collector/confmap/provider/*) - use v1.x versioning
-    # - eBPF profiler (go.opentelemetry.io/ebpf-profiler) - has its own versioning
     return 1
+}
+
+# Check if a module should be validated against the v0.x dist version train.
+# Returns 0 (true) if it should be validated, 1 (false) otherwise
+should_validate_module_version() {
+    local module_path="$1"
+    local version="$2"
+
+    is_core_or_contrib_module "$module_path" || return 1
+
+    # Modules that have graduated to v1+ (e.g. core confmap providers, or contrib
+    # components like k8sattributesprocessor that stabilized to v1) use their own
+    # independent versioning, decoupled from the v0.x dist version train. These are
+    # validated separately, by is_graduated_module.
+    local major
+    major=$(get_major_version "$version")
+    if [[ "$major" -ge 1 ]]; then
+        return 1
+    fi
+
+    return 0
+}
+
+# Check if a module has graduated to independent (v1+) versioning.
+# Returns 0 (true) if so, 1 (false) otherwise
+is_graduated_module() {
+    local module_path="$1"
+    local version="$2"
+
+    is_core_or_contrib_module "$module_path" || return 1
+
+    local major
+    major=$(get_major_version "$version")
+    [[ "$major" -ge 1 ]]
 }
 
 # Get the module prefix for grouping (core vs contrib)
@@ -130,6 +168,31 @@ validate_dist_versions_match() {
     return 0
 }
 
+# Check that a set of versions collected in a tmp file (one per line) are all
+# identical. Prints the outcome; returns 1 if they differ.
+check_version_group_consistency() {
+    local label="$1"
+    local tmp_file="$2"
+
+    [[ -s "$tmp_file" ]] || return 0
+
+    local unique_versions
+    unique_versions=$(sort -u "$tmp_file")
+    local version_count
+    version_count=$(echo "$unique_versions" | wc -l | tr -d ' ')
+
+    if [[ "$version_count" -gt 1 ]]; then
+        echo "  ERROR: $label components have inconsistent versions:"
+        echo "$unique_versions" | while read -r ver; do
+            echo "    $ver"
+        done
+        return 1
+    fi
+
+    echo "  $label components: $unique_versions"
+    return 0
+}
+
 # Check that all components of the same type (core/contrib) have consistent versions
 validate_component_internal_consistency() {
     echo
@@ -138,10 +201,17 @@ validate_component_internal_consistency() {
     local has_errors=false
     local core_versions_tmp
     local contrib_versions_tmp
+    local core_graduated_tmp
+    local contrib_graduated_tmp
     core_versions_tmp="$(mktemp)"
     contrib_versions_tmp="$(mktemp)"
+    core_graduated_tmp="$(mktemp)"
+    contrib_graduated_tmp="$(mktemp)"
 
-    # Collect all versions by type across all manifests
+    # Collect all versions by type across all manifests. Graduated (v1+) modules
+    # are tracked separately from the v0.x dist version train: they no longer
+    # bump in lockstep with dist.version, but core's graduated modules must still
+    # agree with each other, and likewise for contrib's.
     while IFS= read -r manifest_file; do
         while IFS= read -r line; do
             [[ -z "$line" ]] && continue
@@ -152,61 +222,38 @@ validate_component_internal_consistency() {
 
             [[ -z "$module_path" || -z "$version" ]] && continue
 
-            if should_validate_module_version "$module_path"; then
-                local prefix
-                prefix=$(get_module_prefix "$module_path")
+            local prefix
+            prefix=$(get_module_prefix "$module_path")
 
+            if should_validate_module_version "$module_path" "$version"; then
                 if [[ "$prefix" == "core" ]]; then
                     echo "$version" >> "$core_versions_tmp"
                 elif [[ "$prefix" == "contrib" ]]; then
                     echo "$version" >> "$contrib_versions_tmp"
                 fi
+            elif is_graduated_module "$module_path" "$version"; then
+                if [[ "$prefix" == "core" ]]; then
+                    echo "$version" >> "$core_graduated_tmp"
+                elif [[ "$prefix" == "contrib" ]]; then
+                    echo "$version" >> "$contrib_graduated_tmp"
+                fi
             fi
         done < <(get_validatable_components "$manifest_file")
     done < <(find_manifest_files)
 
-    # Check core components consistency
-    if [[ -s "$core_versions_tmp" ]]; then
-        local unique_core_versions
-        unique_core_versions=$(sort -u "$core_versions_tmp")
-        local core_version_count
-        core_version_count=$(echo "$unique_core_versions" | wc -l | tr -d ' ')
+    check_version_group_consistency "Core" "$core_versions_tmp" || has_errors=true
+    check_version_group_consistency "Contrib" "$contrib_versions_tmp" || has_errors=true
+    check_version_group_consistency "Graduated (v1+) core" "$core_graduated_tmp" || has_errors=true
+    check_version_group_consistency "Graduated (v1+) contrib" "$contrib_graduated_tmp" || has_errors=true
 
-        if [[ "$core_version_count" -gt 1 ]]; then
-            echo "  ERROR: Core collector components have inconsistent versions:"
-            echo "$unique_core_versions" | while read -r ver; do
-                echo "    $ver"
-            done
-            has_errors=true
-        else
-            echo "  Core components: $unique_core_versions"
-        fi
-    fi
-
-    # Check contrib components consistency
-    if [[ -s "$contrib_versions_tmp" ]]; then
-        local unique_contrib_versions
-        unique_contrib_versions=$(sort -u "$contrib_versions_tmp")
-        local contrib_version_count
-        contrib_version_count=$(echo "$unique_contrib_versions" | wc -l | tr -d ' ')
-
-        if [[ "$contrib_version_count" -gt 1 ]]; then
-            echo "  ERROR: Contrib components have inconsistent versions:"
-            echo "$unique_contrib_versions" | while read -r ver; do
-                echo "    $ver"
-            done
-            has_errors=true
-        else
-            echo "  Contrib components: $unique_contrib_versions"
-        fi
-    fi
-
-    rm -f "$core_versions_tmp" "$contrib_versions_tmp"
+    rm -f "$core_versions_tmp" "$contrib_versions_tmp" "$core_graduated_tmp" "$contrib_graduated_tmp"
 
     if [[ "$has_errors" == "true" ]]; then
         echo
         echo "All core components must use the same version."
         echo "All contrib components must use the same version."
+        echo "All graduated (v1+) core components must use the same version."
+        echo "All graduated (v1+) contrib components must use the same version."
         return 1
     fi
 
@@ -229,7 +276,7 @@ validate_components_match_dist_version() {
 
         [[ -z "$module_path" || -z "$version" ]] && continue
 
-        if should_validate_module_version "$module_path"; then
+        if should_validate_module_version "$module_path" "$version"; then
             if [[ "$version" != "$expected_version" ]]; then
                 errors+="    $module_path: found $version, expected $expected_version\n"
             fi
@@ -268,8 +315,11 @@ validate_all_component_versions_match_dist() {
         echo "Components from opentelemetry-collector-contrib and core collector"
         echo "must use the same version as the distribution (v{dist.version})."
         echo
-        echo "Excluded from validation:"
-        echo "  - Core providers (go.opentelemetry.io/collector/confmap/provider/*) - use v1.x versioning"
+        echo "Excluded from this check (validated separately, for internal consistency):"
+        echo "  - Modules that have graduated to v1+ (e.g. core confmap providers,"
+        echo "    or contrib components that stabilized to v1) - use independent versioning"
+        echo
+        echo "Excluded entirely:"
         echo "  - eBPF profiler (go.opentelemetry.io/ebpf-profiler) - has its own versioning"
         return 1
     fi

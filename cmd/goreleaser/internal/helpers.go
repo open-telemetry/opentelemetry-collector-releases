@@ -15,6 +15,8 @@ func BuildDistribution(dist string, onlyBuild bool) config.Project {
 		return otelColDist.buildProject()
 	case otlpDistro:
 		return otlpDist.buildProject()
+	case prometheusDistro:
+		return prometheusDist.buildProject()
 	case k8sDistro:
 		return k8sDist.buildProject()
 	case ebpfProfilerDistro:
