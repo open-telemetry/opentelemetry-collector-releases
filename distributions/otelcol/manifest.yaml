@@ -2,50 +2,50 @@ dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/core
   name: otelcol
   description: OpenTelemetry Collector
-  version: 0.161.0
+  version: 0.162.0
   output_path: ./_build
   build_tags: "grpcnotrace"
 
 receivers:
-  - gomod: go.opentelemetry.io/collector/receiver/nopreceiver v0.161.0
-  - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver v0.161.0
+  - gomod: go.opentelemetry.io/collector/receiver/nopreceiver v0.162.0
+  - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver v0.162.0
 
 exporters:
-  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.161.0
-  - gomod: go.opentelemetry.io/collector/exporter/nopexporter v0.161.0
-  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.161.0
-  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/zipkinexporter v0.161.0
+  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.162.0
+  - gomod: go.opentelemetry.io/collector/exporter/nopexporter v0.162.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.162.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/zipkinexporter v0.162.0
 
 extensions:
-  - gomod: go.opentelemetry.io/collector/extension/zpagesextension v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.161.0
+  - gomod: go.opentelemetry.io/collector/extension/zpagesextension v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.162.0
 
 processors:
-  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.161.0
-  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor v0.161.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.161.0
+  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.162.0
+  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.162.0
 
 connectors:
-  - gomod: go.opentelemetry.io/collector/connector/forwardconnector v0.161.0
+  - gomod: go.opentelemetry.io/collector/connector/forwardconnector v0.162.0
 
 providers:
-  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.67.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.67.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/httpprovider v1.67.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.67.0
-  - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.67.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.68.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.68.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/httpprovider v1.68.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.68.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.68.0
