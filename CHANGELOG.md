@@ -4,6 +4,28 @@
 
 <!-- next version -->
 
+## v0.162.0
+
+### 🛑 Breaking changes 🛑
+
+- `otelcol-contrib`: Remove `wavefrontreceiver` from the contrib distribution after its deprecation period. (#1673)
+
+### 🚀 New components 🚀
+
+- `otelcol-contrib`: Add `sdnotifyextension` to the contrib distribution. (#49607)
+- `otelcol-prometheus`: Create the new otelcol-prometheus distribution, which includes "Prometheus exporters" as metric receivers. (#1618)
+  The new otelcol-prometheus distribution is a collaboration between the Prometheus and OpenTelemetry communities.
+  Existing [Prometheus exporters](https://prometheus.io/docs/instrumenting/exporters/) are slowly being refactored to be usable as Collector receivers in custom Collector distributions built with OCB.
+  
+  As more Prometheus exporters are refactored to be usable as Collector receivers, we will add them to the otelcol-prometheus distribution.
+  
+  The otelcol-prometheus distribution is experimental, and is not recommended for production use.
+  
+  [Build a custom Collector distribution](https://opentelemetry.io/docs/collector/extend/ocb/) if you need components from other OpenTelemetry Collector distributions such as contrib.
+  
+- `receiver/blackbox`: Add the [Prometheus blackbox_exporter](https://github.com/prometheus/blackbox_exporter) as a receiver for probe metrics in otelcol-prometheus distribution. (#1664)
+- `receiver/postgres`: Add the [Prometheus postgres_exporter](https://github.com/prometheus-community/postgres_exporter) as a receiver for PostgreSQL metrics in otelcol-prometheus distribution. (#1664)
+
 ## v0.161.0
 
 ### 🛑 Breaking changes 🛑
