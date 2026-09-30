@@ -20,6 +20,9 @@ subtext: |
   but the distribution did not register it, so neither the removed `off_cpu_threshold` receiver setting
   nor the new `extensions.offcpu` configuration worked.
 
+  The otelcol-ebpf-profiler distribution in v0.161.0 and v0.162.0 does not include the `offcpu` extension,
+  so off-CPU profiling cannot be configured in those releases.
+
 # Optional: The change log or logs in which this entry should be included.
 # e.g. '[user]' or '[user, api]'
 # Include 'user' if the change is relevant to end users.
