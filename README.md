@@ -34,7 +34,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 - [Alex Boten](https://github.com/codeboten), Grafana Labs
 - [Andrzej Stencel](https://github.com/andrzej-stencel), Elastic
 - [Antoine Toulme](https://github.com/atoulme), Splunk
-- [Bogdan Drutu](https://github.com/bogdandrutu), Snowflake
 - [Damien Mathieu](https://github.com/dmathieu), Elastic
 - [Dmitrii Anoshin](https://github.com/dmitryax), Splunk
 - [Evan Bradley](https://github.com/evan-bradley), Dynatrace
@@ -49,7 +48,6 @@ For more information about the maintainer role, see the [community repository](h
 ### Approvers
 
 - [Christos Markou](https://github.com/ChrsMark), Elastic
-- [Curtis Robert](https://github.com/crobert-1), Splunk
 - [Douglas Camata](https://github.com/douglascamata), Coralogix
 - [Sam DeHaan](https://github.com/dehaansa), Grafana Labs
 
@@ -58,9 +56,11 @@ For more information about the approver role, see the [community repository](htt
 ### Emeritus
 
 - [Anthony Mirabella](https://github.com/Aneurysm9), Approver
+- [Bogdan Drutu](https://github.com/bogdandrutu), Maintainer
 - [Bryan Aguilar](https://github.com/bryan-aguilar), Approver
-- [David Ashpole](https://github.com/dashpole), Approver
+- [Curtis Robert](https://github.com/crobert-1), Approver
 - [Daniel Jaglowski](https://github.com/djaglowski), Maintainer
+- [David Ashpole](https://github.com/dashpole), Approver
 - [Edmo Vamerlatti Costa](https://github.com/edmocosta), Maintainer
 - [John L. Peterson (Jack)](https://github.com/jackgopack4), Approver
 - [Juraci Paixão Kröhling](https://github.com/jpkrohling), Maintainer
