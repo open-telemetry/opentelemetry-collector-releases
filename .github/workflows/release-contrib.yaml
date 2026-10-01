@@ -34,7 +34,6 @@ jobs:
       goos: '[ "aix" ]'
       goarch: '[ "ppc64" ]'
       nightly: ${{ contains(github.ref, '-nightly') }}
-      skips: 'docker'
     secrets:
       DOCKER_TOKEN_COLLECTOR_RELEASES: ${{ secrets.DOCKER_TOKEN_COLLECTOR_RELEASES }}
       GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
