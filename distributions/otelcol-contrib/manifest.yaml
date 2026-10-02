@@ -102,6 +102,7 @@ exporters:
 processors:
   - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.162.0
   - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.162.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/adaptivetailsamplingprocessor v0.162.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.162.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor v0.162.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/coralogixprocessor v0.162.0
