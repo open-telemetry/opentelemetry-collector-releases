@@ -28,7 +28,7 @@ runs:
       run: | # zizmor: ignore[github-env] VERSION is restricted to vX.Y.Z before export
         VERSION="${INPUTS_OBI_VERSION}"
         if [[ -z "${VERSION}" ]]; then
-          VERSION=$(awk '/- gomod: go\.opentelemetry\.io\/obi / {print $NF; exit}' distributions/otelcol-contrib/manifest.yaml)
+          VERSION=$(awk '/- gomod: go\.opentelemetry\.io\/obi\/collector / {print $NF; exit}' distributions/otelcol-contrib/manifest.yaml)
         fi
         if [[ -z "${VERSION}" ]]; then
           echo "ERROR: failed to resolve OBI version from manifest.yaml" >&2
