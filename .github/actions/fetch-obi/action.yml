@@ -34,10 +34,10 @@ runs:
           echo "ERROR: failed to resolve OBI version from manifest.yaml" >&2
           exit 1
         fi
-        # if [[ ! "${VERSION}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-        #   echo "ERROR: invalid OBI version: ${VERSION}" >&2
-        #   exit 1
-        # fi
+        if [[ ! "${VERSION}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo "ERROR: invalid OBI version: ${VERSION}" >&2
+          exit 1
+        fi
         echo "obi-version=${VERSION}" >> "$GITHUB_OUTPUT"
         echo "OBI_VERSION=${VERSION}" >> "$GITHUB_ENV"
       env:
