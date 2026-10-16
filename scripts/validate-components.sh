@@ -66,7 +66,7 @@ valid_components="$(
 valid_components+='
 go.opentelemetry.io/ebpf-profiler'
 valid_components+='
-go.opentelemetry.io/obi'
+go.opentelemetry.io/obi/collector'
 valid_components+='
 github.com/prometheus/prometheus-opentelemetry-collector/receivers/blackbox'
 valid_components+='
