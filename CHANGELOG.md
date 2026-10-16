@@ -4,6 +4,30 @@
 
 <!-- next version -->
 
+## v0.163.0
+
+### 🚀 New components 🚀
+
+- `googlecloudpubsubpushreceiver`: Add `googlecloudpubsubpushreceiver` to the contrib distribution. (#1688, #50112)
+- `otelcol-contrib`: Add `rollingspanlatencyprocessor` to the contrib distribution. (#1680)
+- `otelcol-contrib`: Add adaptive tail sampling processor to contrib distribution. (#49311)
+
+### 💡 Enhancements 💡
+
+- `otelcol-contrib`: Upgrade go.opentelemetry.io/obi to v0.15.2 (#1705)
+
+### 🧰 Bug fixes 🧰
+
+- `ebpf-profiler`: Add the `offcpu` extension to the ebpf-profiler distribution so off-CPU profiling can be configured again. (#1678)
+  Upstream moved off-CPU profiling out of the `profiling` receiver into the `offcpu` probe extension,
+  but the distribution did not register it, so neither the removed `off_cpu_threshold` receiver setting
+  nor the new `extensions.offcpu` configuration worked.
+  
+  The otelcol-ebpf-profiler distribution in v0.161.0 and v0.162.0 does not include the `offcpu` extension,
+  so off-CPU profiling cannot be configured in those releases.
+  
+- `otelcol-contrib`: Fix missing multi-arch Docker manifest for otelcol-contrib releases. (#1687)
+
 ## v0.162.0
 
 ### 🛑 Breaking changes 🛑
