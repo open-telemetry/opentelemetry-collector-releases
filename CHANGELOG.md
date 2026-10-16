@@ -14,7 +14,7 @@
 
 ### 💡 Enhancements 💡
 
-- `otelcol-contrib`: Upgrade go.opentelemetry.io/obi to v0.14.0 (#1643)
+- `otelcol-contrib`: Upgrade go.opentelemetry.io/obi to v0.15.2 (#1705)
 
 ### 🧰 Bug fixes 🧰
 
