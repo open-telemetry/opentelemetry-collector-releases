@@ -24,7 +24,7 @@ mapfile -t RUNS_TO_DELETE < <(
           continue
         fi
         if [ "$RUN_DATE" -lt "$CUTOFF" ]; then
-          echo "$RUN"
+          echo "$RUN" || break
         fi
       done \
     | head -n "$MAX_NIGHTLY_RUNS"
