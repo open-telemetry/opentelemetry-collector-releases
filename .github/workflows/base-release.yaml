@@ -20,10 +20,6 @@ on:
         required: false
         type: string
         default: false
-      skips:
-        required: false
-        type: string
-        default: ""
       owns_docker_manifests:
         required: false
         type: boolean
@@ -34,13 +30,18 @@ on:
           manifests; every other invocation skips them, because the images the
           manifests reference do not exist yet from its point of view. Enforced by
           scripts/validate-manifest-ownership.sh.
+    secrets:
+      DOCKER_TOKEN_COLLECTOR_RELEASES:
+        required: true
+      GORELEASER_KEY:
+        required: true
 
 permissions:
   contents: read
 
 env:
   # renovate: datasource=github-releases packageName=goreleaser/goreleaser-pro
-  GORELEASER_PRO_VERSION: v2.18.2
+  GORELEASER_PRO_VERSION: v2.18.3
 
 jobs:
   prev-tag:
@@ -51,6 +52,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Set goreleaser last tag reference in case of non-nightly release
         id: prev-tag
         if: inputs.nightly != 'true'
@@ -85,6 +87,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Start Docker daemon (Windows)
         if: runner.os == 'Windows'
@@ -111,7 +114,7 @@ jobs:
           echo "GOTMPDIR=D:\gotmp" | Out-File -FilePath $env:GITHUB_ENV -Append
           mkdir D:\gotmp
 
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0 # zizmor: ignore[cache-poisoning] Go caches are content-addressed and dependencies are verified by go.sum
         with:
           go-version: "~1.26.0"
           check-latest: true
@@ -122,18 +125,9 @@ jobs:
         run: |
           echo "NIGHTLY_FLAG=--nightly" >> "$GITHUB_OUTPUT"
 
-      - name: Set skips flag
-        id: skips-check
-        if: inputs.skips != ''
-        shell: bash
-        run: |
-          echo "SKIPS_FLAG=--skip=${INPUTS_SKIPS}" >> "$GITHUB_OUTPUT"
-        env:
-          INPUTS_SKIPS: ${{ inputs.skips }}
-
       - name: Fetch OBI source
         if: inputs.distribution == 'otelcol-contrib'
-        uses: ./.github/actions/fetch-obi
+        uses: $/.github/actions/fetch-obi
 
       - name: Generate distribution sources
         run: make generate-sources
@@ -165,12 +159,12 @@ jobs:
         # otelcol-contrib is built in a separate stage
       - name: Build ${{ inputs.distribution }}
         if: inputs.distribution == 'otelcol-contrib'
-        uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
+        uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
           workdir: distributions/${{ inputs.distribution }}
-          args: release --clean --split --timeout 2h --config .goreleaser-build.yaml --release-header-tmpl=../../.github/release-template.md ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }} ${{ steps.skips-check.outputs.SKIPS_FLAG }}
+          args: release --clean --split --timeout 2h --config .goreleaser-build.yaml --release-header-tmpl=../../.github/release-template.md ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }}
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
@@ -192,12 +186,12 @@ jobs:
         shell: bash
         run: ls -laR distributions/otelcol-contrib/artifacts
 
-      - uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
+      - uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
           workdir: distributions/${{ inputs.distribution }}
-          args: release --clean --split --timeout 2h --release-header-tmpl=../../.github/release-template.md ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }} ${{ steps.skips-check.outputs.SKIPS_FLAG }}
+          args: release --clean --split --timeout 2h --release-header-tmpl=../../.github/release-template.md ${{ steps.nightly-check.outputs.NIGHTLY_FLAG }}
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
@@ -207,7 +201,7 @@ jobs:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
           GORELEASER_CURRENT_TAG: ${{ github.ref_name }}
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: artifacts-${{ inputs.distribution }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
           path: distributions/${{ inputs.distribution }}/dist/**/*
@@ -232,6 +226,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Start Docker daemon (Windows)
         if: runner.os == 'Windows'
@@ -242,7 +237,7 @@ jobs:
         with:
           cosign-release: "v3.1.3"
 
-      - uses: anchore/sbom-action/download-syft@3ad7283483fc7af8ff2b4ea19663c2d5ca935e26 # v0.24.2
+      - uses: anchore/sbom-action/download-syft@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
 
       - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         if: runner.os != 'Windows'
@@ -262,33 +257,33 @@ jobs:
           echo "GOTMPDIR=D:\gotmp" | Out-File -FilePath $env:GITHUB_ENV -Append
           mkdir D:\gotmp
 
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0 # zizmor: ignore[cache-poisoning] Go caches are content-addressed and dependencies are verified by go.sum
         with:
           go-version: "~1.26.0"
           check-latest: true
 
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         if: runner.os == 'Windows'
         with:
           pattern: artifacts-${{ inputs.distribution }}-windows-*
           path: distributions/${{ inputs.distribution }}/dist
           merge-multiple: true
 
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         if: runner.os != 'Windows'
         with:
           pattern: artifacts-${{ inputs.distribution }}-darwin-*
           path: distributions/${{ inputs.distribution }}/dist
           merge-multiple: true
 
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         if: runner.os != 'Windows'
         with:
           pattern: artifacts-${{ inputs.distribution }}-linux-*
           path: distributions/${{ inputs.distribution }}/dist
           merge-multiple: true
 
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         if: runner.os != 'Windows'
         with:
           pattern: artifacts-${{ inputs.distribution }}-aix-*
@@ -318,7 +313,7 @@ jobs:
           shell: bash
           command: echo "$GHCR_TOKEN" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
 
-      - uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
+      - uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
         with:
           distribution: goreleaser-pro
           version: ${{ env.GORELEASER_PRO_VERSION }}
@@ -349,6 +344,7 @@ jobs:
       - name: Formulate issue
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISTRIBUTION: ${{ inputs.distribution }}
         run: |
           # create a markdown file that contains details about the failure
           failed_jobs=$(gh api \
@@ -363,7 +359,7 @@ jobs:
           echo "The nightly release failed in the following GitHub Actions run." >> ${{ env.issue-file }}
           echo "" >> ${{ env.issue-file }}
           echo "## Build Information" >> ${{ env.issue-file }}
-          echo "* **Distribution:** ${{ inputs.distribution }}" >> ${{ env.issue-file }}
+          echo "* **Distribution:** $DISTRIBUTION" >> ${{ env.issue-file }}
           echo "* **Ref:** $GITHUB_REF_NAME" >> ${{ env.issue-file }}
           echo "* **Commit:** $GITHUB_SHA" >> ${{ env.issue-file }}
           echo "* **Run attempt:** $GITHUB_RUN_ATTEMPT" >> ${{ env.issue-file }}
@@ -396,8 +392,9 @@ jobs:
         if: steps.find-issue.outputs.issue_number != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ steps.find-issue.outputs.issue_number }}
         run: |
-          gh issue comment ${{ steps.find-issue.outputs.issue_number }} \
+          gh issue comment "$ISSUE_NUMBER" \
             --repo "$GITHUB_REPOSITORY" \
             --body "$(tail -n +4 ${{ env.issue-file }})"
 
