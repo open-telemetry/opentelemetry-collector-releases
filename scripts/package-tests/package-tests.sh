@@ -119,6 +119,10 @@ else
   $container_exec pgrep -a -u otelcol-contrib "$PROCESS_NAME"
 fi
 
+# Check the effective installed settings and the running process.
+podman_cp "$container_name" "$SCRIPT_DIR/check-service-hardening.sh" /tmp/check-service-hardening.sh
+$container_exec bash /tmp/check-service-hardening.sh "$SERVICE_NAME"
+
 # test uninstall
 echo
 uninstall_pkg "$container_name" "$pkg_type" "$DISTRO"
