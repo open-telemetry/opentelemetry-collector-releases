@@ -2,7 +2,7 @@ dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/prometheus
   name: otelcol-prometheus
   description: OpenTelemetry Collector for embedded Prometheus exporters
-  version: 0.163.1
+  version: 0.163.2
   output_path: ./_build
   build_tags: "grpcnotrace"
 
