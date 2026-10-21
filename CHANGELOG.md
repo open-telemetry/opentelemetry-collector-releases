@@ -4,6 +4,22 @@
 
 <!-- next version -->
 
+## v0.163.0
+
+### 💡 Enhancements 💡
+
+- `otelcol`: Add the `filelog` receiver, `resourcedetection` processor and `transform` processor to the core distribution. (#44130)
+  These Contrib components are priorities for stabilization.
+  See https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/44130.
+  
+
+### 🧰 Bug fixes 🧰
+
+- `all`: Build release binaries with Go 1.26.10 and require Alpine `ca-certificates` 20261020-r0 or later in container images. (#1722)
+  Go 1.26.10 includes the `crypto/x509` security fixes released on 2026-10-19.
+  The updated CA bundle removes the distrusted eMudhra emSign roots, including `emSign ECC Root CA - G3`.
+  
+
 ## v0.163.1
 
 ## v0.163.0
