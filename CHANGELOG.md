@@ -4,7 +4,7 @@
 
 <!-- next version -->
 
-## v0.164.1
+## v0.164.0
 
 ### 🚀 New components 🚀
 
