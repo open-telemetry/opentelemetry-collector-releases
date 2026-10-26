@@ -2,29 +2,29 @@ dist:
   module: github.com/open-telemetry/opentelemetry-collector-releases/prometheus
   name: otelcol-prometheus
   description: OpenTelemetry Collector for embedded Prometheus exporters
-  version: 0.164.1
+  version: 0.164.0
   output_path: ./_build
   build_tags: "grpcnotrace"
 
 extensions:
   - gomod: go.opentelemetry.io/collector/extension/zpagesextension v0.164.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.164.1
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/opampextension v0.164.1
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.164.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/opampextension v0.164.0
 
 exporters:
   - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.164.0
   - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.164.0
   - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.164.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.164.1
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.164.1
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.164.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.164.0
 
 processors:
   - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.164.0
 
 receivers:
   - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.164.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.164.1
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusremotewritereceiver v0.164.1
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.164.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusremotewritereceiver v0.164.0
   - gomod: github.com/prometheus/prometheus-opentelemetry-collector/receivers/blackbox v0.2.0
   - gomod: github.com/prometheus/prometheus-opentelemetry-collector/receivers/postgres v0.2.0
   - gomod: github.com/prometheus/prometheus-opentelemetry-collector/receivers/stackdriver v0.2.0
