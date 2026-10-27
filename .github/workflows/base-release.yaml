@@ -41,7 +41,7 @@ permissions:
 
 env:
   # renovate: datasource=github-releases packageName=goreleaser/goreleaser-pro
-  GORELEASER_PRO_VERSION: v2.18.3
+  GORELEASER_PRO_VERSION: v2.19.0
 
 jobs:
   prev-tag:
