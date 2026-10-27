@@ -1,6 +1,6 @@
 # A debian image with systemd enabled.  Must be run with:
 # `-d --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro` flags
-FROM debian:13@sha256:913f6706df59a68922d1dd08f78c2476560a8d367897200a6005b00e5f67c2d5
+FROM debian:13@sha256:4c25275446ca371766b8b093c696782eabce06263fccacb8d5d813b3dc44b308
 
 ENV container=docker \
     DEBIAN_FRONTEND=noninteractive
