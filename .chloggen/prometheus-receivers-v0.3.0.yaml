@@ -1,5 +1,5 @@
 change_type: enhancement
 component: otelcol-prometheus
-note: Update embedded Prometheus receivers to v0.3.0 and add receivers for Amazon ECS task metrics and MySQL server metrics.
+note: Update embedded Prometheus receivers to v0.3.0.
 issues: [1741]
 change_logs: [user]

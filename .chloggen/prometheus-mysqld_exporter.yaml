@@ -1,0 +1,6 @@
+change_type: new_component
+component: receiver/mysqld
+note: Add the [Prometheus mysqld_exporter](https://github.com/prometheus/mysqld_exporter) as a receiver for MySQL server metrics in otelcol-prometheus distribution.
+issues: [1741]
+subtext:
+change_logs: [user]
