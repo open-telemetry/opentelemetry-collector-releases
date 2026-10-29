@@ -12,7 +12,7 @@
 
 ### 💡 Enhancements 💡
 
-- `otelcol`: Add the `filelog` receiver, `resourcedetection` processor and `transform` processor to the core distribution. (#44130)
+- `otelcol`: Add the `file_log` receiver, `resource_detection` processor and `transform` processor to the core distribution. (#44130)
   These Contrib components are priorities for stabilization.
   See https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/44130.
   
