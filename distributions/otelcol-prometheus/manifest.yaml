@@ -25,10 +25,12 @@ receivers:
   - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.164.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.164.1
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusremotewritereceiver v0.164.1
-  - gomod: github.com/prometheus/prometheus-opentelemetry-collector/receivers/blackbox v0.2.0
-  - gomod: github.com/prometheus/prometheus-opentelemetry-collector/receivers/postgres v0.2.0
-  - gomod: github.com/prometheus/prometheus-opentelemetry-collector/receivers/stackdriver v0.2.0
-  - gomod: github.com/prometheus/prometheus-opentelemetry-collector/receivers/yace v0.2.0
+  - gomod: github.com/prometheus/prometheus-opentelemetry-collector/receivers/blackbox v0.3.0
+  - gomod: github.com/prometheus/prometheus-opentelemetry-collector/receivers/ecs v0.3.0
+  - gomod: github.com/prometheus/prometheus-opentelemetry-collector/receivers/mysqld v0.3.0
+  - gomod: github.com/prometheus/prometheus-opentelemetry-collector/receivers/postgres v0.3.0
+  - gomod: github.com/prometheus/prometheus-opentelemetry-collector/receivers/stackdriver v0.3.0
+  - gomod: github.com/prometheus/prometheus-opentelemetry-collector/receivers/yace v0.3.0
 
 providers:
   - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.70.0

@@ -1,0 +1,6 @@
+change_type: new_component
+component: receiver/ecs
+note: Add the [Prometheus ecs_exporter](https://github.com/prometheus-community/ecs_exporter) as a receiver for Amazon ECS task metrics in otelcol-prometheus distribution.
+issues: [1741]
+subtext:
+change_logs: [user]
