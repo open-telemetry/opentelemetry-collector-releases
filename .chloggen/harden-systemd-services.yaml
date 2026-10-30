@@ -1,0 +1,9 @@
+change_type: enhancement
+component: packaging
+note: Enable baseline hardening for packaged Collector systemd services.
+issues: [1690]
+subtext: |
+  Applies to otelcol, otelcol-contrib, otelcol-otlp and otelcol-prometheus.
+  NoNewPrivileges prevents gaining privileges through file capabilities or
+  setuid/setgid programs. Use systemd AmbientCapabilities for required
+  capabilities, or configure a service drop-in for deployment-specific needs.
