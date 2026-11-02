@@ -39,9 +39,6 @@ receivers:
   zipkin:
     endpoint: 0.0.0.0:9411
 
-processors:
-  batch:
-
 exporters:
   debug:
     verbosity: detailed
@@ -65,17 +62,14 @@ service:
 
     traces:
       receivers: [otlp, jaeger, zipkin]
-      processors: [batch]
       exporters: [debug]
 
     metrics:
       receivers: [otlp, prometheus]
-      processors: [batch]
       exporters: [debug]
 
     logs:
       receivers: [otlp]
-      processors: [batch]
       exporters: [debug]
 
   extensions: [health_check, pprof, zpages]

@@ -33,7 +33,7 @@ exporters:
     endpoint: otel-backend.example.com:4317
     sending_queue:
       batch:
-    
+        enabled: true
 
 service:
   pipelines:
