@@ -4,5 +4,5 @@ go 1.26.0
 
 require (
 	github.com/goreleaser/goreleaser-pro/v2 v2.19.0
-	go.yaml.in/yaml/v3 v3.0.5
+	go.yaml.in/yaml/v3 v3.0.6
 )
