@@ -42,6 +42,12 @@ jobs:
           MATRIX_TYPE: ${{ matrix.type }}
           INPUTS_DISTRIBUTION: ${{ inputs.distribution }}
 
+      - name: Test ${{ matrix.type }} package installation during Docker image build
+        run: ./scripts/package-tests/docker-build-test.sh ./otelcol*-next_linux_amd64.${MATRIX_TYPE} ${INPUTS_DISTRIBUTION}
+        env:
+          MATRIX_TYPE: ${{ matrix.type }}
+          INPUTS_DISTRIBUTION: ${{ inputs.distribution }}
+
   create-issue:
     name: Create GitHub Issue
     runs-on: ubuntu-24.04
