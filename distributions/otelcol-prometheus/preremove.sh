@@ -5,7 +5,9 @@
 
 if [ "$1" != "1" ]; then
     if command -v systemctl >/dev/null 2>&1; then
-        systemctl stop otelcol-prometheus.service
+        if [ -d /run/systemd/system ]; then
+            systemctl stop otelcol-prometheus.service
+        fi
         systemctl disable otelcol-prometheus.service
     fi
 fi
