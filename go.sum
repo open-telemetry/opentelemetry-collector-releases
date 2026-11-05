@@ -1,15 +1,4 @@
-github.com/goreleaser/goreleaser-pro/v2 v2.18.0 h1:mjR4lyuTMJTCltkWNCQ7zYQq2QpQJKXuM8r/5w79c1U=
-github.com/goreleaser/goreleaser-pro/v2 v2.18.0/go.mod h1:GA7Uzk7qKA3efeDmgfWwcMTrDJe+V7D6H5RMqXlFvuc=
-github.com/goreleaser/goreleaser-pro/v2 v2.18.1 h1:CqXLzTkv1/ldgqNutAkVQtKYhsLDSpxMhm5Wh3pHTBg=
-github.com/goreleaser/goreleaser-pro/v2 v2.18.1/go.mod h1:GA7Uzk7qKA3efeDmgfWwcMTrDJe+V7D6H5RMqXlFvuc=
-github.com/goreleaser/goreleaser-pro/v2 v2.18.2 h1:Y84AlLH6PM9n1hfGxEJEN1wQaHP/6bm0xIdInaHNCoY=
-github.com/goreleaser/goreleaser-pro/v2 v2.18.2/go.mod h1:GA7Uzk7qKA3efeDmgfWwcMTrDJe+V7D6H5RMqXlFvuc=
-github.com/goreleaser/goreleaser-pro/v2 v2.18.3 h1:H6kTaisiN4S9+ilqfC2oh1HdoWm0WHiFErf6DmS/1WY=
-github.com/goreleaser/goreleaser-pro/v2 v2.18.3/go.mod h1:GA7Uzk7qKA3efeDmgfWwcMTrDJe+V7D6H5RMqXlFvuc=
 github.com/goreleaser/goreleaser-pro/v2 v2.19.0 h1:l/2XRE1QaOGoEiIHOLvB63CAzyWWfqmwChPUTmQiqNI=
 github.com/goreleaser/goreleaser-pro/v2 v2.19.0/go.mod h1:GA7Uzk7qKA3efeDmgfWwcMTrDJe+V7D6H5RMqXlFvuc=
-go.yaml.in/yaml/v3 v3.0.5 h1:N6y/pJk8buWs9NY5ERU2HSMfm+IuD/OtfdAnq6kESPw=
-go.yaml.in/yaml/v3 v3.0.5/go.mod h1:HVTZu1O7/Vkt2N+BFy8Zza+lnLsABggaTM2ZpNIGuKg=
-go.yaml.in/yaml/v3 v3.0.6 h1:zcDfvjXEqTQmpjniUBLc91xYJMB2c4QOFxEF/LCEckM=
-go.yaml.in/yaml/v3 v3.0.6/go.mod h1:HVTZu1O7/Vkt2N+BFy8Zza+lnLsABggaTM2ZpNIGuKg=
+go.yaml.in/yaml/v4 v4.0.0 h1:/LG1pNO84Z4l603j/xMn69CcS5OYhMQ/f7l2LoQUGuw=
 go.yaml.in/yaml/v4 v4.0.0/go.mod h1:aZqd9kCMsGL7AuUv/m/PvWLdg5sjJsZ4oHDEnfPPfY0=
