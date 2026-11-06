@@ -175,6 +175,22 @@ jobs:
           DISTRIBUTIONS: ${{ inputs.distribution }}
         run: make generate-sources
 
+      # Only needs to run once per distribution, not once per GOOS/GOARCH leg.
+      - name: Generate config schema for ${{ inputs.distribution }}
+        if: matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' && inputs.nightly != true
+        env:
+          DISTRIBUTIONS: ${{ inputs.distribution }}
+        run: ./scripts/generate-config-schema.sh -d $DISTRIBUTIONS
+
+      - name: Upload config schema artifact
+        if: matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' && inputs.nightly != true
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ inputs.distribution }}-config-schema
+          path: distributions/${{ inputs.distribution }}/_build/config.schema.json
+          retention-days: 7
+          if-no-files-found: error
+
         # otelcol-contrib is built in a separate stage
       - name: Build ${{ inputs.distribution }}
         if: inputs.distribution == 'otelcol-contrib' && inputs.nightly != true
