@@ -178,7 +178,9 @@ jobs:
       # Only needs to run once per distribution, not once per GOOS/GOARCH leg.
       - name: Generate config schema for ${{ inputs.distribution }}
         if: matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' && inputs.nightly != true
-        run: ./scripts/generate-config-schema.sh -d ${{ inputs.distribution }}
+        env:
+          DISTRIBUTIONS: ${{ inputs.distribution }}
+        run: ./scripts/generate-config-schema.sh -d $DISTRIBUTIONS
 
       - name: Upload config schema artifact
         if: matrix.GOOS == 'linux' && matrix.GOARCH == 'amd64' && inputs.nightly != true
