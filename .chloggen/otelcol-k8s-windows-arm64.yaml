@@ -7,7 +7,7 @@ change_type: enhancement
 component: otelcol-k8s
 
 # A brief description of the change.  Surround your text with quotes ("") if it needs to start with a backtick (`).
-note: Build the Windows binaries for 386 and arm64 as well as amd64, as otelcol and otelcol-contrib do. The Windows container images stay amd64 only.
+note: Add Windows binaries for 386 and arm64. Windows container images stay amd64 only.
 
 # One or more tracking issues or pull requests related to the change
 issues: [412]
