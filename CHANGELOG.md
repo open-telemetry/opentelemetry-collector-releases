@@ -4,6 +4,36 @@
 
 <!-- next version -->
 
+## v0.165.0
+
+### 🛑 Breaking changes 🛑
+
+- `extension/asapauthextension`: disable asapauth extension as it's causing an issue w/ go 1.27 (#1742)
+
+### 🚀 New components 🚀
+
+- `queue_batch`: Add queue_batch processor, eventually to replace batch processor. (#1749)
+  See [docs/rfcs/batching-migration.md](https://github.com/open-telemetry/opentelemetry-collector/blob/main/docs/rfcs/batching-migration.md)
+- `receiver/ecs`: Add the [Prometheus ecs_exporter](https://github.com/prometheus-community/ecs_exporter) as a receiver for Amazon ECS task metrics in otelcol-prometheus distribution. (#1741)
+- `receiver/mysqld`: Add the [Prometheus mysqld_exporter](https://github.com/prometheus/mysqld_exporter) as a receiver for MySQL server metrics in otelcol-prometheus distribution. (#1741)
+
+### 💡 Enhancements 💡
+
+- `otelcol-prometheus`: Update embedded Prometheus receivers to v0.3.0. (#1741)
+- `packaging`: Enable baseline hardening for packaged Collector systemd services. (#1690)
+  Applies to otelcol, otelcol-contrib, otelcol-otlp and otelcol-prometheus.
+  NoNewPrivileges prevents gaining privileges through file capabilities or
+  setuid/setgid programs. Use systemd AmbientCapabilities for required
+  capabilities, or configure a service drop-in for deployment-specific needs.
+  
+
+### 🧰 Bug fixes 🧰
+
+- `packaging`: Skip systemctl commands that need a running systemd when it is not running, e.g. during Docker image builds (#1698)
+  - The preremove scripts (deb and rpm) only call `systemctl stop` when systemd is running. Otherwise it printed errors when upgrading or removing packages.
+  - The rpm postinstall scripts only call `systemctl daemon-reload` and `systemctl try-restart` when systemd is running. Otherwise the %post scriptlet failed when installing or upgrading packages.
+  
+
 ## v0.164.0
 
 ### 🚀 New components 🚀

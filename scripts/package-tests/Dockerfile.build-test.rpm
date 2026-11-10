@@ -1,0 +1,23 @@
+# Installs, reinstalls and removes an rpm package as part of an image build,
+# where systemd is installed but not running as PID 1.
+FROM rockylinux/rockylinux:10.2@sha256:827d37bc128288ccf160ee318bb3cb92d591164cb217e92f8bc61e3982ae1834
+
+ARG PKG
+ARG DISTRO
+
+RUN dnf install -y systemd && \
+    dnf clean all
+
+COPY ${PKG} /tmp/
+
+# rpm only warns when a scriptlet fails, so check its output as well.
+
+# install
+RUN set -o pipefail; rpm -ivh /tmp/${PKG} 2>&1 | tee /tmp/rpm.log && \
+    ! grep 'scriptlet failed' /tmp/rpm.log
+# reinstall to exercise the upgrade path of the preremove and postinstall scripts
+RUN set -o pipefail; rpm -Uvh --replacepkgs /tmp/${PKG} 2>&1 | tee /tmp/rpm.log && \
+    ! grep 'scriptlet failed' /tmp/rpm.log
+# uninstall
+RUN set -o pipefail; rpm -e ${DISTRO} 2>&1 | tee /tmp/rpm.log && \
+    ! grep 'scriptlet failed' /tmp/rpm.log
