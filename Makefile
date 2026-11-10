@@ -33,6 +33,10 @@ generate: generate-sources generate-goreleaser
 generate-goreleaser: go
 	@./scripts/generate-goreleaser.sh -d "${DISTRIBUTIONS}" -b "${BINARIES}" -g ${GO}
 
+.PHONY: config-schema
+config-schema: go generate-sources
+	@./scripts/generate-config-schema.sh -d "${DISTRIBUTIONS}" -g ${GO}
+
 generate-sources: go ocb generate-msi prepare-obi
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER}
 
