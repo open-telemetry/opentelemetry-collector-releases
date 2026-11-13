@@ -12,14 +12,23 @@ set -euo pipefail
 
 CUTOFF=$(date -u -d '2 weeks ago' +%Y-%m-%dT%H:%M:%SZ)
 
-# Obtain a Docker Hub JWT
-HUB_TOKEN=$(curl -s -X POST \
-  -H "Content-Type: application/json" \
-  -d "{\"username\": \"${DOCKER_USERNAME}\", \"password\": \"${DOCKER_TOKEN}\"}" \
-  "https://hub.docker.com/v2/users/login/" | jq -r '.token')
+# Obtain a Docker Hub JWT (retry up to 3 times; the API is occasionally flaky at 2AM UTC)
+for attempt in 1 2 3; do
+  HUB_TOKEN=$(curl -s -X POST \
+    -H "Content-Type: application/json" \
+    -d "{\"username\": \"${DOCKER_USERNAME}\", \"password\": \"${DOCKER_TOKEN}\"}" \
+    "https://hub.docker.com/v2/users/login/" | jq -r '.token')
+  if [ -n "$HUB_TOKEN" ] && [ "$HUB_TOKEN" != "null" ]; then
+    break
+  fi
+  if [ "$attempt" -lt 3 ]; then
+    echo "Docker Hub authentication attempt ${attempt} failed, retrying in 30s..."
+    sleep 30
+  fi
+done
 
 if [ -z "$HUB_TOKEN" ] || [ "$HUB_TOKEN" = "null" ]; then
-  echo "Failed to authenticate with Docker Hub"
+  echo "Failed to authenticate with Docker Hub after 3 attempts"
   exit 1
 fi
 
