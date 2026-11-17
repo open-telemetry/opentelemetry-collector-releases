@@ -1,4 +1,4 @@
-FROM golang:1.27-alpine3.23@sha256:7a93747afee80359e81dbe39c8a65037b147cada0262bf86f5b96dd06842b368
+FROM golang:1.27-alpine3.23@sha256:f70850ef6ce341e8b6427f677049145d63c0b7ce002d4d7e3d464828b1b96dcd
 RUN apk --update add 'ca-certificates>=20261020-r0'
 
 ARG SERVICE_NAME=ocb
