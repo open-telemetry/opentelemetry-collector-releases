@@ -39,7 +39,8 @@ var originNamespaces = []string{
 
 type manifest struct {
 	Dist struct {
-		Name string `yaml:"name"`
+		Name        string `yaml:"name"`
+		Description string `yaml:"description"`
 	} `yaml:"dist"`
 	Receivers  []manifestEntry `yaml:"receivers"`
 	Processors []manifestEntry `yaml:"processors"`
@@ -147,7 +148,11 @@ func (g *generator) run(manifestPath, outPath string) error {
 		}
 	}
 
-	skeleton["title"] = m.Dist.Name + " distribution config"
+	title := m.Dist.Description
+	if title == "" {
+		title = m.Dist.Name + " distribution config"
+	}
+	skeleton["title"] = title
 	skeleton["$defs"] = pool
 
 	out, err := json.MarshalIndent(skeleton, "", "  ")
@@ -338,13 +343,23 @@ func (g *generator) resolveRefs(element any, currentImportPath, currentNamespace
 			key := strings.NewReplacer("/", "_", ".", "_").Replace(targetImportPath) + "__" + defName
 			e["$ref"] = "#/$defs/" + key
 
-			if _, inPool := pool[key]; !inPool && !visited[key] {
+			// Every $ref pointing at `key` must end up resolving to a real
+			// $defs entry, however many places reference it -- so the pool
+			// entry is filled in exactly once, the first time `key` is seen,
+			// whether or not resolution actually succeeds. Gating on
+			// visited[key] alone (rather than also checking pool[key])
+			// guarantees that: a failed lookup still leaves a placeholder in
+			// the pool, instead of leaving every ref after the first one
+			// dangling (pointing at a $defs entry that was never added).
+			if !visited[key] {
 				visited[key] = true
 				targetDef, ok := g.lookupDef(targetImportPath, defName)
 				if !ok {
 					*unresolved = append(*unresolved, fmt.Sprintf("%s -> %s (as %s.%s)", currentImportPath, ref, targetImportPath, defName))
-					delete(e, "$ref")
-					e["type"] = "object"
+					pool[key] = map[string]any{
+						"type":        "object",
+						"description": fmt.Sprintf("No published config.schema.json/yaml was found for go module %q (definition %q). This component's schema could not be generated upstream; the shape of this field is unknown.", targetImportPath, defName),
+					}
 				} else {
 					g.resolveRefs(targetDef, targetImportPath, targetNamespace, pool, visited, unresolved)
 					pool[key] = targetDef
