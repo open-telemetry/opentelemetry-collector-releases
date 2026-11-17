@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "description": "Config defines the configuration for the various elements of collector or agent.",
+  "properties": {
+    "receivers": {
+      "description": "Receivers is a map of ComponentID to Receivers."
+    },
+    "processors": {
+      "description": "Processors is a map of ComponentID to Processors."
+    },
+    "exporters": {
+      "description": "Exporters is a map of ComponentID to Exporters."
+    },
+    "connectors": {
+      "description": "Connectors is a map of ComponentID to connectors."
+    },
+    "extensions": {
+      "description": "Extensions is a map of ComponentID to extensions."
+    },
+    "service": {
+      "type": "object",
+      "description": "service.Config -- not yet modeled by this generator, left unconstrained."
+    }
+  }
+}
