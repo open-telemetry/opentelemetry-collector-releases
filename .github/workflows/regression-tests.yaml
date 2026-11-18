@@ -13,7 +13,7 @@ permissions:
 jobs:
   check-goreleaser:
     name: Check docker token
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Log into Docker.io using old token
         uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
