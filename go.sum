@@ -4,5 +4,7 @@ github.com/goreleaser/goreleaser-pro/v2 v2.20.1 h1:CfO/aACvi5zxgHWR5EE4ZS4XIi2uf
 github.com/goreleaser/goreleaser-pro/v2 v2.20.1/go.mod h1:GA7Uzk7qKA3efeDmgfWwcMTrDJe+V7D6H5RMqXlFvuc=
 github.com/goreleaser/goreleaser-pro/v2 v2.20.2 h1:/Ily/h2RNA++yg3adGrKsyoOCNibPiSFjHaKrS9juSM=
 github.com/goreleaser/goreleaser-pro/v2 v2.20.2/go.mod h1:GA7Uzk7qKA3efeDmgfWwcMTrDJe+V7D6H5RMqXlFvuc=
+github.com/goreleaser/goreleaser-pro/v2 v2.20.3 h1:AIJwt0Lo+1pcF6Spoyvcemx2122/RTs9cPc6SQe/FTo=
+github.com/goreleaser/goreleaser-pro/v2 v2.20.3/go.mod h1:GA7Uzk7qKA3efeDmgfWwcMTrDJe+V7D6H5RMqXlFvuc=
 go.yaml.in/yaml/v4 v4.0.0 h1:/LG1pNO84Z4l603j/xMn69CcS5OYhMQ/f7l2LoQUGuw=
 go.yaml.in/yaml/v4 v4.0.0/go.mod h1:aZqd9kCMsGL7AuUv/m/PvWLdg5sjJsZ4oHDEnfPPfY0=
