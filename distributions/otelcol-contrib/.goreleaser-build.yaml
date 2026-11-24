@@ -53,6 +53,17 @@ builds:
       - '{{ .Env.LD_FLAGS }}'
     flags:
       - '{{ .Env.BUILD_FLAGS }}'
+  - id: otelcol-contrib-solaris
+    goos:
+      - solaris
+    goarch:
+      - amd64
+    dir: _build
+    binary: otelcol-contrib
+    ldflags:
+      - '{{ .Env.LD_FLAGS }}'
+    flags:
+      - '{{ .Env.BUILD_FLAGS }}'
   - id: otelcol-contrib-windows
     goos:
       - windows

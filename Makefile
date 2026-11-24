@@ -5,7 +5,7 @@ GORELEASER ?= goreleaser
 SRC_ROOT := $(shell git rev-parse --show-toplevel)
 
 # renovate: datasource=github-releases depName=OCB packageName=open-telemetry/opentelemetry-collector
-OTELCOL_BUILDER_VERSION ?= 0.162.0
+OTELCOL_BUILDER_VERSION ?= 0.165.0
 
 OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
@@ -32,6 +32,10 @@ generate: generate-sources generate-goreleaser
 
 generate-goreleaser: go
 	@./scripts/generate-goreleaser.sh -d "${DISTRIBUTIONS}" -b "${BINARIES}" -g ${GO}
+
+.PHONY: config-schema
+config-schema: go generate-sources
+	@./scripts/generate-config-schema.sh -d "${DISTRIBUTIONS}" -g ${GO}
 
 generate-sources: go ocb generate-msi prepare-obi
 	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER}

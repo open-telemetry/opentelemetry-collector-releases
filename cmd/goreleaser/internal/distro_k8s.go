@@ -10,7 +10,7 @@ var (
 	k8sDist = newDistributionBuilder(k8sDistro).withConfigFunc(func(d *distribution) {
 		d.BuildConfigs = []buildConfig{
 			&fullBuildConfig{TargetOS: "linux", TargetArch: k8sArchs, BuildDir: defaultBuildDir, Ppc64Version: []string{"power8"}},
-			&fullBuildConfig{TargetOS: "windows", TargetArch: winContainerArchs, BuildDir: defaultBuildDir},
+			&fullBuildConfig{TargetOS: "windows", TargetArch: winArchs, BuildDir: defaultBuildDir},
 		}
 		d.ContainerImages = slices.Concat(
 			newContainerImages(d.Name, "linux", k8sArchs, containerImageOptions{armVersion: "7"}),

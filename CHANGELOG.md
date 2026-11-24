@@ -4,6 +4,82 @@
 
 <!-- next version -->
 
+## v0.165.0
+
+### 🛑 Breaking changes 🛑
+
+- `extension/asapauthextension`: disable asapauth extension as it's causing an issue w/ go 1.27 (#1742)
+
+### 🚀 New components 🚀
+
+- `queue_batch`: Add queue_batch processor, eventually to replace batch processor. (#1749)
+  See [docs/rfcs/batching-migration.md](https://github.com/open-telemetry/opentelemetry-collector/blob/main/docs/rfcs/batching-migration.md)
+- `receiver/ecs`: Add the [Prometheus ecs_exporter](https://github.com/prometheus-community/ecs_exporter) as a receiver for Amazon ECS task metrics in otelcol-prometheus distribution. (#1741)
+- `receiver/mysqld`: Add the [Prometheus mysqld_exporter](https://github.com/prometheus/mysqld_exporter) as a receiver for MySQL server metrics in otelcol-prometheus distribution. (#1741)
+
+### 💡 Enhancements 💡
+
+- `otelcol-prometheus`: Update embedded Prometheus receivers to v0.3.0. (#1741)
+- `packaging`: Enable baseline hardening for packaged Collector systemd services. (#1690)
+  Applies to otelcol, otelcol-contrib, otelcol-otlp and otelcol-prometheus.
+  NoNewPrivileges prevents gaining privileges through file capabilities or
+  setuid/setgid programs. Use systemd AmbientCapabilities for required
+  capabilities, or configure a service drop-in for deployment-specific needs.
+  
+
+### 🧰 Bug fixes 🧰
+
+- `packaging`: Skip systemctl commands that need a running systemd when it is not running, e.g. during Docker image builds (#1698)
+  - The preremove scripts (deb and rpm) only call `systemctl stop` when systemd is running. Otherwise it printed errors when upgrading or removing packages.
+  - The rpm postinstall scripts only call `systemctl daemon-reload` and `systemctl try-restart` when systemd is running. Otherwise the %post scriptlet failed when installing or upgrading packages.
+  
+
+## v0.164.0
+
+### 🚀 New components 🚀
+
+- `otelcol-contrib`: Add the partitioning processor to the Contrib distribution (#1727)
+
+### 💡 Enhancements 💡
+
+- `otelcol`: Add the `file_log` receiver, `resource_detection` processor and `transform` processor to the core distribution. (#44130)
+  These Contrib components are priorities for stabilization.
+  See https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/44130.
+  
+
+### 🧰 Bug fixes 🧰
+
+- `all`: Build release binaries with Go 1.26.10 and require Alpine `ca-certificates` 20261020-r0 or later in container images. (#1722)
+  Go 1.26.10 includes the `crypto/x509` security fixes released on 2026-10-19.
+  The updated CA bundle removes the distrusted eMudhra emSign roots, including `emSign ECC Root CA - G3`.
+  
+
+## v0.163.1
+
+## v0.163.0
+
+### 🚀 New components 🚀
+
+- `googlecloudpubsubpushreceiver`: Add `googlecloudpubsubpushreceiver` to the contrib distribution. (#1688, #50112)
+- `otelcol-contrib`: Add `rollingspanlatencyprocessor` to the contrib distribution. (#1680)
+- `otelcol-contrib`: Add adaptive tail sampling processor to contrib distribution. (#49311)
+
+### 💡 Enhancements 💡
+
+- `otelcol-contrib`: Upgrade go.opentelemetry.io/obi to v0.15.2 (#1705)
+
+### 🧰 Bug fixes 🧰
+
+- `ebpf-profiler`: Add the `offcpu` extension to the ebpf-profiler distribution so off-CPU profiling can be configured again. (#1678)
+  Upstream moved off-CPU profiling out of the `profiling` receiver into the `offcpu` probe extension,
+  but the distribution did not register it, so neither the removed `off_cpu_threshold` receiver setting
+  nor the new `extensions.offcpu` configuration worked.
+  
+  The otelcol-ebpf-profiler distribution in v0.161.0 and v0.162.0 does not include the `offcpu` extension,
+  so off-CPU profiling cannot be configured in those releases.
+  
+- `otelcol-contrib`: Fix missing multi-arch Docker manifest for otelcol-contrib releases. (#1687)
+
 ## v0.162.0
 
 ### 🛑 Breaking changes 🛑

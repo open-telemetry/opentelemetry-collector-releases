@@ -34,7 +34,7 @@ if [[ ! -f "${MANIFEST}" ]]; then
 fi
 
 OBI_VERSION="${OBI_VERSION:-$(
-  awk '/- gomod: go\.opentelemetry\.io\/obi / {print $NF; exit}' "${MANIFEST}"
+  awk '/- gomod: go\.opentelemetry\.io\/obi\/collector / {print $NF; exit}' "${MANIFEST}"
 )}"
 
 if [[ -z "${OBI_VERSION}" ]]; then

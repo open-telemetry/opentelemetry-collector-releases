@@ -24,3 +24,5 @@ To build the Collector Linux packages, a few steps are required:
 - To start the package tests,
   run: `./scripts/package-tests/package-tests.sh ./distributions/<otelcol|otelcol-contrib>/dist/<otelcol|otelcol-contrib>_*-SNAPSHOT-*_linux_amd64.<deb|rpm> <otelcol|otelcol-contrib>`
 
+- To test that a package can be installed, reinstalled and removed during an image build (where systemd is not running),
+  run: `./scripts/package-tests/docker-build-test.sh ./distributions/<otelcol|otelcol-contrib>/dist/<otelcol|otelcol-contrib>_*-SNAPSHOT-*_linux_amd64.<deb|rpm> <otelcol|otelcol-contrib>`

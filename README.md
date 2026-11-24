@@ -21,6 +21,51 @@ Current list of distributions:
 - [OpenTelemetry Collector Prometheus (also known as "otelcol-prometheus")](./distributions/otelcol-prometheus)
 - [OpenTelemetry Collector eBPF Profiler (also known as "otelcol-ebpf-profiler")](./distributions/otelcol-ebpf-profiler)
 
+## Linux systemd services
+
+The packaged `otelcol`, `otelcol-contrib`, `otelcol-otlp` and
+`otelcol-prometheus` services enable these protections by default:
+
+- `NoNewPrivileges=true` prevents the process and its children from gaining
+  privileges through setuid/setgid programs or file capabilities.
+- `LockPersonality=true`, `RestrictRealtime=true` and `RestrictSUIDSGID=true`
+  prevent ABI personality changes, realtime scheduling and creation of
+  setuid/setgid files.
+- `ProtectControlGroups=true`, `ProtectKernelModules=true`,
+  `ProtectKernelTunables=true` and `ProtectHostname=true` prevent changes to
+  the host's cgroups, kernel modules, kernel tunables and hostname.
+
+The complete set requires systemd 242 or newer. Older systemd releases ignore
+unknown directives, so some protections will not apply. Availability also depends
+on kernel support and the service manager's ability to create namespaces and apply
+seccomp filters.
+
+These settings preserve access to application logs, devices and networking for
+receivers, and allow writes to configured storage directories. Stronger
+restrictions depend on the components and paths used by each deployment. For
+example, hiding devices can break hardware monitoring, and making the entire
+filesystem read-only can prevent persistent queues from writing their state.
+
+Use a systemd drop-in to customize the service instead of editing the packaged
+unit. If a receiver needs a privileged port, grant the capability through systemd
+rather than relying on a file capability, which `NoNewPrivileges` prevents from
+adding privileges at execution:
+
+```sh
+sudo systemctl edit otelcol-contrib
+```
+
+```ini
+[Service]
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+```
+
+After saving, restart the service with `sudo systemctl restart otelcol-contrib`.
+Other workloads that require a restricted operation can override the relevant
+setting in a drop-in after assessing the required permissions. The OpAMP
+Supervisor and distributions without a packaged systemd service are outside
+this change.
+
 ## Community
 
 This repository is part of the Collector SIG. Check out the [Community section](https://github.com/open-telemetry/opentelemetry-collector?tab=readme-ov-file#community) on the main Collector repository to see how to get involved.
