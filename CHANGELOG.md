@@ -4,6 +4,13 @@
 
 <!-- next version -->
 
+## v0.165.1
+
+### 💡 Enhancements 💡
+
+- `all`: Generate config schema for each distribution (#1757)
+- `otelcol-k8s`: Add Windows binaries for 386 and arm64. Windows container images stay amd64 only. (#412)
+
 ## v0.165.0
 
 ### 🛑 Breaking changes 🛑
