@@ -36,9 +36,6 @@ processors:
   - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.166.0
   - gomod: go.opentelemetry.io/collector/processor/queuebatchprocessor v0.166.0
   - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.166.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.166.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.166.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor v0.166.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor v0.166.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.166.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.166.0
