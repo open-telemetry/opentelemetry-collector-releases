@@ -74,6 +74,7 @@ func main() {
 	manifestFlag := flag.String("manifest", "", "path to the distribution's manifest.yaml")
 	buildDirFlag := flag.String("build-dir", "", "the OCB-generated build directory for this distribution (go.mod/go.sum pinned to the release)")
 	outFlag := flag.String("o", "", "output path for the bundled config schema")
+	prettyFlag := flag.Bool("pretty", false, "indent the output JSON for human reading (default: compact, for smaller published artifacts)")
 	flag.Parse()
 
 	if *manifestFlag == "" || *buildDirFlag == "" || *outFlag == "" {
@@ -86,7 +87,7 @@ func main() {
 		schemas:  map[string]map[string]any{},
 	}
 
-	if err := g.run(*manifestFlag, *outFlag); err != nil {
+	if err := g.run(*manifestFlag, *outFlag, *prettyFlag); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -97,7 +98,7 @@ type generator struct {
 	schemas  map[string]map[string]any // source dir -> parsed config.schema.*, cached
 }
 
-func (g *generator) run(manifestPath, outPath string) error {
+func (g *generator) run(manifestPath, outPath string, pretty bool) error {
 	manifestBytes, err := os.ReadFile(manifestPath) // #nosec G304
 	if err != nil {
 		return err
@@ -155,7 +156,16 @@ func (g *generator) run(manifestPath, outPath string) error {
 	skeleton["title"] = title
 	skeleton["$defs"] = pool
 
-	out, err := json.MarshalIndent(skeleton, "", "  ")
+	sizeBefore := len(pool)
+	dedupeSchemas(skeleton, pool)
+	log.Printf("deduped %d repeated schema fragment(s) into shared $defs", len(pool)-sizeBefore)
+
+	var out []byte
+	if pretty {
+		out, err = json.MarshalIndent(skeleton, "", "  ")
+	} else {
+		out, err = json.Marshal(skeleton)
+	}
 	if err != nil {
 		return err
 	}
